@@ -1,8 +1,8 @@
-# Intelligent Energy Management System for Buildings INB
+## Intelligent Energy Management System for Buildings INB
 
 ![](resources/assets//logo.png)
 
-### Features
+#### Features
 Retrieval of regional weather data from the existing OpenAPI (OpenWeatherMap), storing to DB for further analysis;
 
 Retrieval of outdoor weather data through Arduino  sensors installed outside the building, storing to DB for further analysis;
@@ -16,11 +16,11 @@ Dashboard interface for authorized users to view the building conditions and man
 Power saving report and power-saving plan based on data analysis, reporting of electrical energy usage, visualize form for using data analysis.
 
 
-## System Architecture
+#### System Architecture
 ![](resources/assets/Systemarchiteture.png)
 > System architeture design
 
 
-### Hardware Diagram
+#### Hardware Diagram
 ![](resources/assets/HardwareDiagram.png)
 > Hardware design
