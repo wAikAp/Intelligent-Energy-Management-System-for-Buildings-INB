@@ -1,6 +1,11 @@
 ## Intelligent Energy Management System for Buildings INB
 
+##### Hong Kong Institute of Vocational Education
+
+
 ![](resources/assets//logo.png)
+
+
 
 #### Features
 Retrieval of regional weather data from the existing OpenAPI (OpenWeatherMap), storing to DB for further analysis;
@@ -19,6 +24,8 @@ Power saving report and power-saving plan based on data analysis, reporting of e
 #### System Architecture
 ![](resources/assets/Systemarchiteture.png)
 > System architeture design
+
+
 
 
 #### Hardware Diagram
