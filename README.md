@@ -1,1 +1,1 @@
-# Intelligent-Energy-Management-System-for-Buildings-INB
+# Intelligent Energy Management System for Buildings INB
