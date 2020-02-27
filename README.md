@@ -1,6 +1,6 @@
-## Intelligent Energy Management System for Buildings INB
+# Intelligent Energy Management System for Buildings INB
 
-##### Hong Kong Institute of Vocational Education
+### Hong Kong Institute of Vocational Education
 <br>
 
 ![](resources/assets//logo.png)
