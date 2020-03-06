@@ -1,0 +1,135 @@
+﻿
+
+
+<head>
+    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <!--<script src="js/bootstrap.min.js"></script>-->
+    <script src="~/js/heatmap.js"></script>
+    <script src="~/js/heatmap.min.js"></script>
+    <script src="~/js/prism.js"></script>
+    <script>
+        $(document).ready(function () {
+            resizeNav();
+            $(window).resize(function () {
+                resizeNav();
+            });
+        $(function () {
+              $('img').imgPreload();
+          });
+        });
+
+        function resizeNav() {
+            $("#nav2").css({ "margin-top": $("#nav1").height() });
+        }
+
+    </script>
+</head>
+<style>
+    .nav-link {
+        margin-right: 20px;
+    }
+</style>
+
+<body class="">
+    <nav class="statusBar navbar navbar-expand-sm py-0 py-md-0 navbar-dark fixed-top" id="nav1">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#"><span id="" class="statusTxt"><b>OUT DOOR</b></span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link " href="#">
+                    <img src="~/img/icon/weather24.png">
+                    <span id="" class="statusTxt">30 &#8451;</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <img src="~/img/icon/humidity24.png">
+                    <span id="" class="statusTxt">90%</span>
+
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <img src="~/img/icon/sun24.png">
+                    <span id="" class="statusTxt">Sunny</span>
+
+                </a>
+            </li>
+        </ul>
+
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <img src="~/img/icon/user24.png">
+                    <span id="userName" class="statusTxt">user</span>
+                </a>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                    <img src="~/img/icon/world24.png">
+                    <span id="language" class="statusTxt">EN</span>
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">EN</a>
+                    <a class="dropdown-item" href="#">CN</a>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+
+                    <img src="~/img/icon/bell24.png">
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <img src="~/img/icon/settings24.png">
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+
+    <nav class="headerarea navbar navbar-expand-lg navbar-dark bg-dark text-white" id="nav2">
+        <a class="navbar-brand" href="~/Home/Index"><img src="~/img/icon/logoT36.png" height="40px"><span id=""></span> </a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon "></span>
+        </button>
+        <div class="collapse navbar-collapse " id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item " id="index">
+                    <a class="nav-link" href="~/Home/Index">Home</a>
+                </li>
+                <li class="nav-item" id="devices">
+                    <a class="nav-link " href="~/Devices/Devices">Devices</a>
+                </li>
+                <li class="nav-item" id="sensors">
+                    <a class="nav-link " href="~/Sensors/Sensors">Sensors</a>
+                </li>
+                <li class="nav-item" id="floors">
+                    <a class="nav-link " href="~/Floors/Floors">Floors</a>
+                </li>
+                <li class="nav-item" id="rooms">
+                    <a class="nav-link  " href="~/Rooms/Rooms">Rooms</a>
+                </li>
+                <li class="nav-item" id="schedule">
+                    <a class="nav-link  " href="~/Schedules/Schedules">Schedules</a>
+                </li>
+            </ul>
+        </div>
+
+    </nav>
+</body>
+
+
+@RenderBody()

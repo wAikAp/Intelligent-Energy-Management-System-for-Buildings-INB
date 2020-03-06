@@ -1,0 +1,1169 @@
+﻿
+@{
+    ViewData["Title"] = "Rooms";
+    Layout = "_Layout";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/style.css">
+
+    <script src="~/js/Chart.min.js"></script>
+    <!--https://www.chartjs.org/-->
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/heatmap.js"></script>
+    <script src="~/js/heatmap.min.js"></script>
+    <script src="~/js/prism.js"></script>
+    <!--loading js-->
+    <script src="~/js/modernizr.js"></script>
+    <script src="~/js/jquery-2.2.4.min.js"></script>
+    <!--loading js-->
+
+    <title>Room Detail</title>
+    <script>
+      $(document).ready(function(){
+          //navbar ui
+          $('.navbar-nav .nav-link').removeClass('active');
+          $("#rooms").addClass('active');
+
+         
+      });
+
+      $(window).load(function() {
+        // Animate loader off screen
+        $(".se-pre-con").fadeOut("fast");
+      });
+    </script>
+</head>
+
+
+<body class="">
+
+    <!--loading page graphic-->
+
+    <div class="se-pre-con"></div>
+
+    <!--loading page graphic-->
+    <!--header-->
+
+    <!--header-->
+    <!--body-->
+    <div class="main  ">
+        <div class=" bg-light p-3">
+            <div class="d-flex flex-column">
+                <!--page title-->
+                <div class="container-fluid ">
+                    <dt class=" h2"><b>Devices</b></dt>
+                </div>
+                <!--page title-->
+                <!--room info-->
+                <div class="card d-flex flex-row  mb-2 mx-2 p-2">
+                    <table class="table table-striped" id="Divicestable">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Type</th>
+                                <th scope="col"> Status</th>
+                                <th scope="col"> Location</th>
+                                <th scope="col"> Floor</th>
+                                <th scope="col"> Room</th>
+                                <th scope="col"> Power</th>
+                                <th scope="col"> Temp</th>
+                                <th scope="col"> Hum</th>
+                                <th scope="col"> Liight</th>
+                                <th scope="col"> Using</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>abc01</td>
+                                <td>Lab</td>
+                                <td>Online</td>
+                                <td>103</td>
+                                <td>1</td>
+                                <td>03</td>
+                                <td>9000 kw</td>
+                                <td>25&#8451;</td>
+                                <td>70%</td>
+                                <td>9/12</td>
+                                <td>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                                        <label class="custom-control-label" for="customSwitch1"></label>
+                                    </div>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <!--room info-->
+                <!--room analysis-->
+                <div class="card  mx-2 p-2">
+                    <div class=" shadow-sm w-100 h-100 p-3 justify-content-center align-items-center">
+                        <div class="container-fluid col-xs-12 col-md-8 pt-4 w-100 px-0">
+
+                            <canvas id="UsageRecordChart"></canvas>
+                            <!--chart js-->
+                            <script>
+
+                var chartID = '';
+                var charttitle = '';
+                var chartType = '';
+                var position = '';
+                var devices = [];
+                var devicesData = [];
+                var gcolor = [];
+                var gdata;
+                var goption;
+
+                getUsageRecordData();
+
+                async function getUsageRecordData() {
+
+                  charttitle = 'Devices Power Usage Record';
+
+                  chartID = 'UsageRecordChart';
+                  chartType = 'line';
+                  position = 'right';
+                  devices.push('deviceA');
+                  devices.push('deviceB');
+                  devices.push('deviceC');
+                  var day = [];
+                  var i;
+                  for (i = 0; i < 30; i++) {
+                    day.push(i);
+                  }
+                  devices.forEach(getRandomColor);
+
+                  //set chart data
+                  dataop = {
+                    labels: day,
+                    datasets: [{
+                      label: devices[0],
+                      borderColor: gcolor[0],
+                      fill: false,
+                      data: [65, 59, 80, 81, 56, 55, 40, 50, 60, 55, 30, 78],
+                    }, {
+                      label: devices[1],
+                      borderColor: gcolor[1],
+                      fill: false,
+                      data: [10, 20, 60, 95, 64, 78, 90, 80, 70, 40, 70, 89],
+                      spanGaps: false,
+                    }, {
+                      label: devices[2],
+                      borderColor: gcolor[2],
+                      fill: false,
+                      data: [30, 20, 80, 50, 64, 78, 100, 40, 50, 40, 75, 90],
+                      spanGaps: false,
+                    }
+
+                    ]
+                  };
+                  //set chart option
+                  goption = {
+                    title: {
+                      display: true,
+                      text: charttitle,
+                      fontSize: 25,
+                    },
+                    legend: {
+                      display: true,
+                      position: position,
+                      labels: {
+                        boxWidth: 20,
+                        fontColor: '#111',
+                        padding: 15
+                      }
+                    }
+                  };
+                  draw();
+
+                }
+
+                //---------------------------------------------------------------------------------
+                function getRandomColor() {
+                  var letters = '0123456789ABCDEF';
+                  var color = '#';
+                  for (var i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                  }
+                  gcolor.push(color);
+                }
+
+                function draw() {
+
+                  let myChart = document.getElementById(chartID).getContext('2d');
+                  // Global Options
+                  Chart.defaults.global.defaultFontFamily = 'Lato';
+                  Chart.defaults.global.defaultFontSize = 18;
+                  Chart.defaults.global.defaultFontColor = '#777';
+
+
+                  let barChart = new Chart(myChart, {
+                    type: chartType,//bar,horizontalBar,pie,line,doughnut,radar,polarArea
+                    data: dataop,
+                    options: goption
+                  });
+                }
+                      //--------------------------------------------------------------------------
+
+                            </script>
+                            <!--chart js-->
+
+                        </div>
+                    </div>
+
+                </div>
+                <!--room analysis-->
+                <div class="card d-flex flex-row  mb-2 mx-2 p-2">
+                    <div class="col-0 px-2">
+                        Fillter
+                    </div>
+                    <div class="col-10">
+                        <div class="col  d-flex  flex-row">
+                            <div class="px-2 pb-3">
+                                type:
+                            </div>
+                            <div class="px-3">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="Fillter-All" value="All">
+                                    <label class="custom-control-label" for="Fillter-All">All</label>
+                                </div>
+                            </div>
+                            <div class="px-3">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="Fillter-Conditioning" value="Conditioning">
+                                    <label class="custom-control-label" for="Fillter-Conditioning">Conditioning</label>
+                                </div>
+                            </div>
+                            <div class="px-3">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="Fillter-Light" value="Light">
+                                    <label class="custom-control-label" for="Fillter-Light">Light</label>
+                                </div>
+                            </div>
+                            <div class="px-3">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="Fillter-Other" value="Other">
+                                    <label class="custom-control-label" for="Fillter-Other">Other</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4  d-flex  flex-row ">
+                            <div class="px-2 pb-3 ">
+                                location:
+                            </div>
+                            <select class="px-3 my-2 ">
+                                <option value="volvo">301</option>
+                                <option value="mercedes">305</option>
+                                <option value="audi">306</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <!--room analysis-->
+                <!--Divices List  -->
+                <div class="card d-flex flex-column mb-2 mx-2 p-2" style="height: 250px;">
+                    <div class="row justify-content-between mb-2">
+                        <div class="col">
+                            <dt class="col h4">
+                                Divices List
+                            </dt>
+
+                        </div>
+                        <div class="col-4 d-flex justify-content-end">
+
+                            <button class="btn btn-outline-secondary px-2 mr-2 " type="button">edit</button>
+                            <button class="btn btn-outline-secondary px-2 mr-2" type="button">&#43;</button>
+
+                        </div>
+                    </div>
+
+                    <div class="overflow-auto ">
+
+                        <table class="table table-striped" id="Divicestable">
+                            <thead>
+                                <tr>
+                                    <th class="th-sm" scope="col">UserName</th>
+                                    <th scope="col">type</th>
+                                    <th scope="col"> statusBar</th>
+                                    <th scope="col"> location</th>
+                                    <th scope="col"> powwer</th>
+                                    <th scope="col"> last modfily date</th>
+                                    <th scope="col"> serial number</th>
+                                    <th scope="col"> value</th>
+                                    <th scope="col"> turn on/off</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>light01</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>light02</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>light02</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>light02</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>light02</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>light02</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>light02</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>light02</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>light02</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>light02</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>light02</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>light02</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>light02</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>light02</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>light02</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>light02</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>light02</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>light02</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>light02</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>light03</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>light04</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>light05</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>Air Conditioning 01</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>Air Conditioning 02</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>Air Conditioning 03</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>Air Conditioning 04</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000kw</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--Divices List  -->
+                <!--report button  -->
+                <div class="card d-flex flex-row mb-2 mx-2 p-2 ">
+                    <div class="flex-wrap">
+                        <button class="p-3 mx-2 btn btn-outline-secondary"> power report</button>
+                        <button class="p-3 mx-2 btn btn-outline-secondary">debices report</button>
+                        <button class="p-3 mx-2 btn btn-outline-secondary">maintain report</button>
+                        <button class="p-3 mx-2 btn btn-outline-secondary">money report</button>
+                    </div>
+                </div>
+                <!--report button  -->
+                <!--room Blueprint-->
+                <div class="card d-flex flex-column mb-2 mx-2 p-2 ">
+
+                    <div class="row justify-content-between mb-2">
+                        <div class="col">
+                            <dt class="col h4">
+                                Room Blueprint
+                            </dt>
+
+                        </div>
+                        <div class="col-4 d-flex justify-content-end">
+
+                            <button class="btn btn-outline-secondary px-0 mr-2 " type="button" data-toggle="modal"
+                                    data-target="#roomSetting">
+                                <img src="https://www.hko.gov.hk/images/icon_setting.png" style="height: 40%;width:40%;">
+                            </button>
+                            <button class="btn btn-outline-secondary px-2 mr-2" type="button">
+                                &#xFF0B;
+                            </button>
+
+                        </div>
+                    </div>
+
+
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="roomSetting" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Room Setting</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body p-2">
+                                    <div class="row mx-3 justify-content-center align-items-center border-bottom pb-2">
+                                        <label class="col h5" for="setTemperature">Default Temperature:</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control bg-white" id="setTemperature" name="setTemperature"
+                                                   value="0" placeholder="25" required readonly>
+
+                                        </div> &#8451;
+                                    </div>
+
+                                    <br>
+                                    <div class="row mx-3 justify-content-center align-items-center border-bottom pb-2">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="customFile">
+                                            <label class="custom-file-label" for="customFile">update BluePrint file</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--end modal body-->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal -->
+
+                    <div class="row   mb-2">
+                        <div class="col col-lg-6 col-xl-6 p-5">
+
+                            <img src="~/img/floorPlan.gif" class="w-100">
+                        </div>
+                        <div class="col-lg-6  col-xl-6 offset-xl-0 px-0 p-3">
+                            <div class="card col p-3 bg-light">
+                                <div class="row justify-content-between">
+                                    <div class="col">
+                                        <dt class="col h4">
+                                            Device Detail
+                                        </dt>
+                                    </div>
+                                    <div class="col-4 d-flex justify-content-end">
+
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="onOffSwitch1" checked>
+                                            <label class="custom-control-label" for="onOffSwitch1"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ml-3">
+                                    <button class="p-2 mx-2 btn btn-outline-secondary">edit</button>
+
+                                    <div>
+                                        <form class="form-horizontal was-validated" action="">
+
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label " for="SerialNumber">Serial number:</label>
+                                                <div class="col-sm-10 ">
+                                                    <input type="text" class="form-control bg-white" id="SerialNumber" name="SerialNumber"
+                                                           value="A1000021111" placeholder="" required readonly>
+
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label " for="name">name:</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control bg-white" id="name" name="name" value="Air 001"
+                                                           placeholder="" required readonly>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label " for="Type">Type:</label>
+                                                <div class="col">
+                                                    <input type="text" class="form-control bg-white" id="Type" name="Type"
+                                                           value="Air conditioning" placeholder="" required readonly>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label " for="Status">Status:</label>
+                                                <div class="col">
+                                                    <input type="text" class="form-control bg-white" id="Status" name="Status" value="Online"
+                                                           placeholder="" required readonly>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label " for="Location">Location:</label>
+                                                <div class="col">
+                                                    <input type="text" class="form-control bg-white" id="Location" name="Location" value="348"
+                                                           placeholder="" required readonly>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label " for="Power">Power/hr:</label>
+                                                <div class="col">
+                                                    <input type="text" class="form-control bg-white" id="Power" name="Power" value="30kwh"
+                                                           placeholder="" required readonly>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label " for="TotalPower">Total Power:</label>
+                                                <div class="col">
+                                                    <input type="text" class="form-control bg-white" id="TotalPower" name="TotalPower"
+                                                           value="3000Kwh" placeholder="" required readonly>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label " for="Temperature">Temperature:</label>
+                                                <div class="col">
+                                                    <input type="text" class="form-control bg-white" id="Temperature" name="Temperature"
+                                                           value="25&#8451;" placeholder="" required readonly>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="form-group ">
+                                                <dt class="col h5">
+                                                    Temperature Log
+                                                </dt>
+                                                <div class="form-group ">
+
+                                                    <select class="custom-select" multiple readonly style="height: 200px;">
+                                                        <option value="01/01/2019 11:11:11 25">
+                                                            01/01/2019 11:11:11 &nbsp; &nbsp; 25&#8451;
+                                                        </option>
+                                                        <option value="01/01/2019 11:11:11 25">
+                                                            01/01/2019 11:11:11 &nbsp; &nbsp; 25&#8451;
+                                                        </option>
+                                                        <option value="01/01/2019 11:11:11 25">
+                                                            01/01/2019 11:11:11 &nbsp; &nbsp; 25&#8451;
+                                                        </option>
+                                                        <option value="01/01/2019 11:11:11 25">
+                                                            01/01/2019 11:11:11 &nbsp; &nbsp; 25&#8451;
+                                                        </option>
+                                                        <option value="01/01/2019 11:11:11 25">
+                                                            01/01/2019 11:11:11 &nbsp; &nbsp; 25&#8451;
+                                                        </option>
+                                                        <option value="01/01/2019 11:11:11 25">
+                                                            01/01/2019 11:11:11 &nbsp; &nbsp; 25&#8451;
+                                                        </option>
+
+                                                    </select>
+                                                </div>
+
+                                            </div>
+                                            <!--lastModefily-->
+
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label h5" for="lastModefily">lastModefily</label>
+                                                <div class="col">
+                                                    <input type="date" class="form-control bg-white" id="lastModefily" name="lastModefily"
+                                                           value="01/01/2019 12:12:00" readonly>
+                                                </div>
+                                            </div>
+                                            <!--lastModefily-->
+                                            <!--MaintenanComment-->
+                                            <div class="form-group">
+                                                <label class="col-sm-2 col-form-label h5" for="MaintenanComment">Maintenan Comment</label>
+                                                <div class="col">
+                                                    <textarea class="form-control is-invalid" id="MaintenanComment" name="MaintenanComment"
+                                                              placeholder="Required example textarea" required></textarea>
+                                                </div>
+                                            </div>
+                                            <!--MaintenanComment-->
+
+                                            <div class="form-group row">
+                                                <div class="col">
+                                                    <button type="submit" class="btn btn-outline-secondary w-100">Submit</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--room Blueprint-->
+                <!--Thermal imaginh-->
+                <div class="card d-flex flex-column mb-2 mx-2 p-2 ">
+                    <div class="col">
+                        <dt class="col h4">
+                            Thermal imaging
+                        </dt>
+                    </div>
+                    <div class="row  mb-2 justify-content-center align-items-center">
+                        <div id="heatmapCol" class="">
+
+                            <div id="wrapper" class="demo-wrapper" style="border-width:1px;">
+                                <div id="heatmapControl" class="heatmap" style="position: relative;">
+                                    <div id="heatmap" class="heatmap">
+                                        <img id="planImg" src="~/img/floorPlan.gif" class="h-100">
+                                    </div>
+                                    <canvas id="BlueCanvas" class="heatmap-canvas"
+                                            style="position: absolute; left: 0px; top: 0px;"></canvas>
+                                </div>
+
+                                <div class="tooltips" style="display: none; transform: translate(39px, 352px);">593</div>
+                                <div id="legendArea" class="legend-area">
+                                    <h4>Legend Title</h4>
+                                    <span id="min">13</span>
+                                    <span id="max">1233</span>
+                                    <img id="gradient"
+                                         src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAKCAYAAABCHPt+AAAAnklEQVRYR+2WQQqDQBAES5wB/f8/Y05RcMWwSu6JIT0Dm4WlH1DUdHew7/z6WYFhhnGRpnlhAEaQpi/ADbh/np0MiBhGhW+2ymFU+DZfg1EhaoB4jCFuMYYcQKZrXwPEVvm5Og0pcYakBvI35G1jNIZ4jCHexxjSpz9ZFUjAynLbpOvqteaODkm9sloz5JF+ZTVmSAWSu9Qb65AvgDwBQoLgVDlWfAQAAAAASUVORK5CYII="
+                                         style="width:100%">
+                                </div>
+                            </div>
+                        </div>
+                        <!--setting the Thermal imaginh with floorplan img size-->
+                        <script>
+              var moveX = document.getElementById("wrapper").style.borderWidth;//this return value has "px"
+              var moveY = 100;
+
+              var heatmapCol = document.getElementById('heatmapCol').offsetWidth;
+              var floorPlanImgW = document.getElementById('planImg').offsetWidth;
+              var floorPlanImgH = document.getElementById('planImg').offsetHeight;
+              var wrapper = document.getElementById("wrapper");
+              var heatmapControl = document.getElementById("heatmapControl");
+              var heatmap = document.getElementById("heatmap");
+              var BlueCanvas = document.getElementById("BlueCanvas");
+              var legendArea = document.getElementById("legendArea");
+
+              floorPlanImgW += moveX;
+              floorPlanImgH += (moveY - parseInt(moveX));
+
+
+              wrapper.style.width = floorPlanImgW + "px";
+              wrapper.style.height = floorPlanImgH + "px";
+              var x = moveY - parseInt(moveX) * 3;
+              //legendArea.style.marginBottom="-"+x+"px";
+
+              floorPlanImgW -= moveX;
+              BlueCanvas.style.width = floorPlanImgW + "px";
+              BlueCanvas.style.height = floorPlanImgH + "px";
+              floorPlanImgH -= (moveY - parseInt(moveX));
+              heatmapControl.style.width = floorPlanImgW + "px";
+              heatmapControl.style.height = floorPlanImgH + "px";
+              heatmap.style.width = floorPlanImgW + "px";
+              heatmap.style.height = floorPlanImgH + "px";
+              heatmapCol.style.width = floorPlanImgW + "px";
+              heatmapCol.style.height = floorPlanImgH + "px";
+                        </script>
+                        <!--setting the Thermal imaginh with floorplan img size-->
+                    </div>
+                </div>
+                <!--Thermal imaginh-->
+
+
+            </div>
+        </div>
+    </div>
+    <!--body-->
+    <!--heatmap js-->
+    <script>
+    window.onload = function () {
+
+      function generateRandomData(len) {
+        var floorPlanImgW = document.getElementById('planImg').offsetWidth;
+        var floorPlanImgH = document.getElementById('planImg').offsetHeight;
+
+
+        // generate some random data
+        var points = [];
+        var max = 0;
+        var min = 0;
+        var width = floorPlanImgW;
+        var height = floorPlanImgH;
+
+        var TData = [[137, 193, 18],
+        [162, 346, 31],
+        [292, 249, 31],
+        [354, 121, 23],
+        [198, 10, 15],
+        [197, 198, 24],
+        [296, 111, 24],
+        [185, 40, 20],
+        [237, 394, 19],
+        [105, 358, 18],
+        [251, 390, 29],
+        [265, 368, 21],
+        [187, 146, 17],
+        [168, 226, 17],
+        [324, 277, 33],
+        [341, 285, 30],
+        [182, 412, 24],
+        [228, 344, 16],
+        [206, 398, 29],
+        [377, 206, 30],
+        [371, 422, 20],
+        [263, 73, 15],
+        [253, 431, 30],
+        [183, 237, 19],
+        [319, 109, 27],
+        [365, 21, 27],
+        [97, 312, 26],
+        [354, 379, 15],
+        [149, 11, 17],
+        [284, 166, 31],
+        [370, 332, 31],
+        [307, 282, 28],
+        [85, 236, 26],
+        [172, 386, 19],
+        [324, 356, 17],
+        [142, 285, 27],
+        [183, 1, 25],
+        [304, 157, 20],
+        [183, 185, 16],
+        ];
+        for (let i = 0; i < TData.length; i++) {
+          var val = TData[i][2];
+
+          max = Math.max(max, val);
+          min = Math.min(min, val);
+          var x = TData[i][0];
+          var y = TData[i][1];
+          var point = {
+            x: x,
+            y: y,
+            value: val
+          };
+          points.push(point);
+        }
+
+
+        var data = { max: max, min: min, data: points };
+
+        return data;
+      };
+
+
+      /*  legend code */
+      // we want to display the gradient, so we have to draw it
+      var legendCanvas = document.createElement('canvas');
+      legendCanvas.width = 100;
+      legendCanvas.height = 10;
+      var min = document.querySelector('#min');
+      var max = document.querySelector('#max');
+      var gradientImg = document.querySelector('#gradient');
+
+      var legendCtx = legendCanvas.getContext('2d');
+      var gradientCfg = {};
+
+      function updateLegend(data) {
+        // the onExtremaChange callback gives us min, max, and the gradientConfig
+        // so we can update the legend
+        min.innerHTML = data.min;
+        max.innerHTML = data.max;
+        // regenerate gradient image
+        if (data.gradient != gradientCfg) {
+          gradientCfg = data.gradient;
+          var gradient = legendCtx.createLinearGradient(0, 0, 100, 1);
+          for (var key in gradientCfg) {
+            gradient.addColorStop(key, gradientCfg[key]);
+          }
+
+          legendCtx.fillStyle = gradient;
+          legendCtx.fillRect(0, 0, 100, 10);
+          gradientImg.src = legendCanvas.toDataURL();
+        }
+      };
+      /* legend code end */
+
+      var heatmapInstance = h337.create({
+        container: document.querySelector('.heatmap'),
+        onExtremaChange: function (data) {
+          updateLegend(data);
+        }
+      });
+
+      // generate 200 random datapoints
+      var data = generateRandomData(200);
+      heatmapInstance.setData(data);
+
+      var demoWrapper = document.querySelector('.demo-wrapper');
+      var tooltip = document.querySelector('.tooltips');
+
+      function updateTooltip(x, y, value) {
+        // + 15 for distance to cursor
+        var transform = 'translate(' + (x + 15) + 'px, ' + (y + 15) + 'px)';
+        tooltip.style.MozTransform = transform; /* Firefox */
+        tooltip.style.msTransform = transform; /* IE (9+) - note ms is lowercase */
+        tooltip.style.OTransform = transform; /* Opera */
+        tooltip.style.WebkitTransform = transform; /* Safari and Chrome */
+        tooltip.style.transform = transform; /* One day, my pretty */
+        tooltip.innerHTML = "x:" + x + ",y:" + y + ",value:" + value;
+      }
+
+      demoWrapper.onmousemove = function (ev) {
+        var x = ev.layerX;
+        var y = ev.layerY;
+        var value = heatmapInstance.getValueAt({
+          x: x,
+          y: y
+        });
+
+        tooltip.style.display = 'block';
+
+        updateTooltip(x, y, value);
+      };
+      demoWrapper.onmouseout = function () {
+        tooltip.style.display = 'none';
+      };
+
+
+      document.querySelector('.trigger-refresh').onclick = function () {
+        heatmapInstance.setData(generateRandomData(200));
+      };
+
+      document.querySelector('.thankyou').onclick = function () {
+        ga('send', 'event', 'social', 'thanks');
+        document.querySelector('.thankyou').style.display = 'none';
+        document.querySelector('#share').style.display = 'block';
+      };
+      var btns = document.querySelectorAll('.symbol');
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].onclick = function () {
+          ga('send', 'event', 'social', 'share');
+        };
+      }
+
+    };
+    </script>
+    <!--heatmap js-->
+
+</body>
+
+
