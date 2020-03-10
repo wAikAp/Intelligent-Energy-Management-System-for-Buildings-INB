@@ -1,0 +1,17 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FYP_WEB_APP", "FYP_WEB_APP.csproj", "{9CEB619B-E1DA-40F7-A5B6-364896BF54FF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9CEB619B-E1DA-40F7-A5B6-364896BF54FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CEB619B-E1DA-40F7-A5B6-364896BF54FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CEB619B-E1DA-40F7-A5B6-364896BF54FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CEB619B-E1DA-40F7-A5B6-364896BF54FF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
