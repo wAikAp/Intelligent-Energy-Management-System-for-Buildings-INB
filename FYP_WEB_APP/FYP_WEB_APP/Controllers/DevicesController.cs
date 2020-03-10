@@ -23,7 +23,7 @@ namespace FYP_WEB_APP.Controllers
 			Debug.WriteLine("");
 			Debug.WriteLine("");
 
-			/*var connectionString = "mongodb+srv://admin:admin@clustertest-kjhvv.azure.mongodb.net/test?retryWrites=true&w=majority";
+			var connectionString = "mongodb+srv://admin:admin@clustertest-kjhvv.azure.mongodb.net/test?retryWrites=true&w=majority";
 			MongoClient dbClient = new MongoClient(connectionString);
 			var database = dbClient.GetDatabase("FYP_1920");
 			var collection = database.GetCollection<MongoLightListModel>("LIGHT_LIST");
@@ -32,7 +32,7 @@ namespace FYP_WEB_APP.Controllers
 			foreach(MongoLightListModel ll in documents)
 			{
 				Debug.WriteLine(ll.lastest_checking_time);
-			}*/
+			}
 
 
 			return View();
