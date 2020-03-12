@@ -8,14 +8,16 @@ using MongoDB.Bson;
 using FYP_WEB_APP.Models.MongoModels;
 using System.Diagnostics;
 
+
 namespace FYP_WEB_APP.Controllers
 {
 	public class DevicesController : Controller
 	{
 		public IActionResult Devices()
 		{
+		
 
-			
+
 			System.Diagnostics.Debug.WriteLine("Hello..........");
 			Debug.WriteLine("");
 			Debug.WriteLine("");
@@ -31,7 +33,7 @@ namespace FYP_WEB_APP.Controllers
 			var documents = collection.Find(new BsonDocument()).ToList();
 			foreach(MongoLightListModel ll in documents)
 			{
-				Debug.WriteLine(ll.lastest_checking_time);
+				Debug.WriteLine(ll.desc);
 			}
 
 
