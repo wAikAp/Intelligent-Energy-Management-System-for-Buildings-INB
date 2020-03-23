@@ -8,7 +8,6 @@ using MongoDB.Bson;
 using FYP_WEB_APP.Models.MongoModels;
 using System.Diagnostics;
 
-
 namespace FYP_WEB_APP.Controllers
 {
 	public class DevicesController : Controller
@@ -33,7 +32,11 @@ namespace FYP_WEB_APP.Controllers
 			foreach(MongoLightListModel ll in documents)
 			{
 				Debug.WriteLine(ll.lastest_checking_time);
+<<<<<<< HEAD
 			}*/
+=======
+			}
+>>>>>>> parent of d16860d... nothing special
 
 
 			return View();
