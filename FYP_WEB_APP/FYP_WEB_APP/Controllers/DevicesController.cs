@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using MongoDB.Bson;
 using FYP_WEB_APP.Models.MongoModels;
+using System.Diagnostics;
 
 
 namespace FYP_WEB_APP.Controllers
@@ -12,8 +15,6 @@ namespace FYP_WEB_APP.Controllers
 	{
 		public IActionResult Devices()
 		{
-			TempData["Category"] = "test";
-
 
 			/*
 			Debug.WriteLine("Hello..........");

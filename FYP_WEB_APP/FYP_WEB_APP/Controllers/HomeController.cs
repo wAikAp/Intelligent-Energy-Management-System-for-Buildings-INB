@@ -10,7 +10,6 @@ using MongoDB.Bson;
 using FYP_WEB_APP.Models.MongoModels;
 using Microsoft.AspNetCore.Session;
 
-
 namespace FYP_WEB_APP.Controllers
 {
 	public class HomeController : Controller
