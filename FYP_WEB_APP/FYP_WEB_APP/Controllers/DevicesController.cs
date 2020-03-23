@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using MongoDB.Bson;
 using FYP_WEB_APP.Models.MongoModels;
-using System.Diagnostics;
+
 
 namespace FYP_WEB_APP.Controllers
 {
@@ -14,38 +12,40 @@ namespace FYP_WEB_APP.Controllers
 	{
 		public IActionResult Devices()
 		{
+			TempData["Category"] = "test";
 
-			
-			System.Diagnostics.Debug.WriteLine("Hello..........");
-			Debug.WriteLine("");
-			Debug.WriteLine("");
-			Debug.WriteLine("");
-			Debug.WriteLine("");
-			Debug.WriteLine("");
 
-			/*var connectionString = "mongodb+srv://admin:admin@clustertest-kjhvv.azure.mongodb.net/test?retryWrites=true&w=majority";
+			/*
+			Debug.WriteLine("Hello..........");
+			Debug.WriteLine("");
+			Debug.WriteLine("");
+			Debug.WriteLine("");
+			Debug.WriteLine("");
+			Debug.WriteLine("");
+			*/
+			var connectionString = ("mongodb://admin:admin@clustertest-shard-00-00-kjhvv.azure.mongodb.net:27017,clustertest-shard-00-01-kjhvv.azure.mongodb.net:27017,clustertest-shard-00-02-kjhvv.azure.mongodb.net:27017/test?ssl=true&replicaSet=ClusterTest-shard-0&authSource=admin&retryWrites=true&w=majority");
+
+			//var connectionString = "mongodb+srv://admin:admin@clustertest-kjhvv.azure.mongodb.net/test?retryWrites=true&w=majority";
 			MongoClient dbClient = new MongoClient(connectionString);
 			var database = dbClient.GetDatabase("FYP_1920");
 			var collection = database.GetCollection<MongoLightListModel>("LIGHT_LIST");
 
 			var documents = collection.Find(new BsonDocument()).ToList();
-			foreach(MongoLightListModel ll in documents)
+			var datalist = new List<MongoLightListModel> { };
+
+			foreach (MongoLightListModel ll in documents)
 			{
-				Debug.WriteLine(ll.lastest_checking_time);
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-			}*/
-=======
-=======
->>>>>>> parent of d16860d... nothing special
-=======
->>>>>>> parent of d16860d... nothing special
+				//Debug.WriteLine(ll.lastest_checking_time);
+				//Debug.WriteLine(ll.roomId);
+				var x = new MongoLightListModel()
+				{
+					roomId = ll.roomId
+				};
+				datalist.Add(x);
 			}
->>>>>>> parent of d16860d... nothing special
 
 
-			return View();
+			return View(datalist);
 		}
 	}
 }
