@@ -1,0 +1,327 @@
+﻿
+@{
+    ViewData["Title"] = "Schedules";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>Multisection events and Recurrings</title>
+    <link rel="stylesheet" href="~/css/style.css">
+
+    <script src="~/js/Chart.min.js"></script>
+    <!--https://www.chartjs.org/-->
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/s/bootstrap.min.js"></script>
+    <script src="~/js/heatmap.js"></script>
+    <script src="~/js/heatmap.min.js"></script>
+    <script src="~/js/prism.js"></script>
+    <!--loading js-->
+    <script src="~/js/modernizr.js"></script>
+    <script src="~/js/jquery-2.2.4.min.js"></script>
+    <!--loading js-->
+
+    <script src="~/lib/codebase/dhtmlxscheduler.js?v=5.3.5" type="text/javascript" charset="utf-8"></script>
+    <script src="~/lib/codebase/ext/dhtmlxscheduler_multisection.js?v=5.3.5" type="text/javascript" charset="utf-8"></script>
+
+    <link rel="stylesheet" href="~/lib/codebase/dhtmlxscheduler_material.css?v=5.3.5" type="text/css" charset="utf-8">
+
+    <script src="~/lib/codebase/ext/dhtmlxscheduler_limit.js?v=5.3.5" type="text/javascript" charset="utf-8"></script>
+    <script src='~/lib/codebase/ext/dhtmlxscheduler_timeline.js?v=5.3.5' type="text/javascript" charset="utf-8"></script>
+    <script src="~/lib/codebase/ext/dhtmlxscheduler_units.js?v=5.3.5" type="text/javascript" charset="utf-8"></script>
+    <script src="~/lib/codebase/ext/dhtmlxscheduler_multiselect.js?v=5.3.5" type="text/javascript" charset="utf-8"></script>
+    <script src="~/lib/codebase/ext/dhtmlxscheduler_recurring.js?v=5.3.5" type="text/javascript" charset="utf-8"></script>
+    <script src="~/lib/codebase/ext/dhtmlxscheduler_collision.js" type="text/javascript" charset="utf-8"></script>
+
+    <style>
+        html,
+        body {
+            margin: 0px;
+            padding: 0px;
+            height: 100%;
+        }
+    </style>
+
+    <script charset="utf-8">
+		function init() {
+			scheduler.config.collision_limit = 1;
+
+			scheduler.config.multi_day = true;
+			scheduler.config.multisection = true;
+			scheduler.config.occurrence_timestamp_in_utc = true;
+			scheduler.config.include_end_by = true;
+			scheduler.config.repeat_precise = true;
+
+			scheduler.locale.labels.timeline_tab = "Timeline";
+			scheduler.locale.labels.unit_tab = "Unit";
+
+			scheduler.locale.labels.section_custom = "Section";
+
+			var unit = [
+				{ key: 309, label: "309" },
+				{ key: 308, label: "308" },
+				{ key: 348, label: "348" },
+				{ key: 349, label: "349" },
+				{ key: 350, label: "350" }
+			];
+			var sections = [
+				{ key: 309, label: "309" },
+				{ key: 308, label: "308" },
+				{ key: 348, label: "348" },
+				{ key: 349, label: "349" },
+				{ key: 350, label: "350" }
+			];
+			var plan = [
+				{ key: 1, label: "A" },
+				{ key: 2, label: "B" },
+				{ key: 3, label: "C" },
+				{ key: 4, label: "D" }
+			];
+
+			scheduler.createTimelineView({
+				name: "timeline",
+				x_unit: "hour",
+				x_date: "%H:%i",
+				x_step: 1,
+				x_size: 24,
+				y_unit: sections,
+				y_property: "section_id",
+				render: "bar",
+				event_dy: "full",
+				second_scale: {
+					x_unit: "day", // unit which should be used for second scale
+					x_date: "%F %d" // date format which should be used for second scale, "July 01"
+				}
+			});
+			scheduler.createUnitsView({
+				name: "unit",
+				property: "section_id",
+				list: sections,
+				days: 1
+			});
+
+			scheduler.addMarkedTimespan({
+				start_date:new Date(2017,5,30,15),
+				end_date: new Date(2017, 5,30, 19),
+				html:"<div class='justify-content-center align-items-center' style='  font-size: 25px;  font-weight: bold;'><div>Blocked<div></div>",
+				css:   "gray_section",
+				type:  "dhx_time_block" ,//the hardcoded value
+				sections: {
+					timeline: 349,
+					unit: 349 // list of sections
+				}
+			});
+
+
+			scheduler.templates.event_text = function (start, end, event) {
+				return "CW-" + event.room + "<br>" + event.user;
+			};
+
+			scheduler.templates.event_bar_text = function (start, end, event) {
+				return "CW-" + event.room + "<br>" + event.user;
+			};
+
+			scheduler.attachEvent("onClick", function (id, e) {
+				dhtmlx.message(scheduler.getEvent(id).text);
+				return true;
+			});
+
+			scheduler.config.lightbox.sections = [
+				{ name: "custom", height: 22, map_to: "section_id", type: "textarea", options: sections, vertical: "false" },
+				{ name: "user", height: 20, map_to: "user", type: "textarea", focus: true },
+				{ name: "description", height: 130, map_to: "text", type: "textarea", focus: true },
+				{ name: "power Plan", height: 30, map_to: "powerPlan", type: "select", options: plan, vertical: "false" },
+				{ name: "recurring", height: 115, type: "recurring", map_to: "rec_type", button: "recurring" },
+				{ name: "time", height: 72, type: "time", map_to: "auto" }
+			];
+
+			scheduler.init('scheduler_here', new Date(2017, 5, 30), "timeline");
+
+			scheduler.parse([
+				{ start_date: "2017-06-30 09:00", end_date: "2017-06-30 12:00", text: "Task A-12458", section_id: '309', user: "ricky...", powerPlan: "1", unit_id: "309" },
+				{ start_date: "2017-06-30 10:00", end_date: "2017-06-30 16:00", text: "Task A-89411", section_id: '308', user: "ricky...", powerPlan: "1", unit_id: "308" },
+				{ start_date: "2017-06-30 4:00", end_date: "2017-06-30 15:00", text: "Sections 1,3", section_id: '348', user: "ricky...", powerPlan: "1", unit_id: "348" },
+				{ start_date: "2017-06-30 16:00", end_date: "2017-06-30 17:00", text: "Task A-46598", section_id: '350', user: "ricky...", powerPlan: "1", unit_id: "350" },
+			]);
+		}
+    </script>
+    <script>
+      $(document).ready(function(){
+          //navbar ui
+          $('.navbar-nav .nav-link').removeClass('active');
+          $("#schedule").addClass('active');
+
+          //<!--loading js-->
+          $(function() {
+              $('img').imgPreload()
+          });
+      });
+
+    $(window).load(function() {
+        // Animate loader off screen
+        $(".se-pre-con").fadeOut("fast");
+        //schedule layout
+        var Sbody = document.getElementById('Sbody').offsetHeight;
+		var header = document.getElementById("header").offsetHeight;
+		var scheduler_here = document.getElementById("scheduler_here");
+		var scheduler_hereW = document.getElementById("scheduler_here").offsetWidth;
+		scheduler_hereW=scheduler_hereW-10;
+		var x=Sbody-header-60;
+		scheduler_here.style.height = x + "px";
+		scheduler_here.style.width =scheduler_hereW + "px";
+      });
+    </script>
+</head>
+<body onload="init();" id="Sbody">
+    <!--loading page graphic-->
+    <div class="se-pre-con"></div>
+    <!--loading page graphic-->
+    <!--header-->
+    <div id="header">
+        <script src="header.js"></script>
+    </div>
+    <!--header-->
+    <!--body-->
+    <div class="main">
+        <div class=" bg-light p-3">
+            <div class="d-flex flex-column">
+                <div class="container-fluid ">
+                    <dt class=" h2"><b>Schedule</b></dt>
+                </div>
+            </div>
+        </div>
+        <div class="row mx-5">
+            <div id="search-panel" class="col-2">
+                <form>
+                    <div class="search_form">
+                        <div class="controls">
+                            <fieldset class="type_filter">
+                                <legend>floor:</legend>
+                                <div id="type-options">
+                                    <label>
+                                        <div class="checkbox">
+                                            <input type="checkbox" name="type" value="1" onchange="updateSections()" checked="">
+                                            <span class="checkbox_marker">
+                                            </span>
+                                        </div>
+                                        <span class="checkbox_text">G</span>
+                                    </label><br><label>
+                                        <div class="checkbox">
+                                            <input type="checkbox" name="type" value="2" onchange="updateSections()" checked="">
+                                            <span class="checkbox_marker">
+
+                                            </span>
+                                        </div><span class="checkbox_text">1</span>
+                                    </label>
+                                    <br>
+                                    <label>
+                                        <div class="checkbox">
+                                            <input type="checkbox" name="type" value="3" onchange="updateSections()" checked="">
+                                            <span class="checkbox_marker"></span>
+                                        </div><span class="checkbox_text">2</span>
+                                    </label><br>
+                                    <label>
+                                        <div class="checkbox">
+                                            <input type="checkbox" name="type" value="4" onchange="updateSections()" checked="">
+                                            <span class="checkbox_marker">
+                                            </span>
+                                        </div>
+                                        <span class="checkbox_text">3</span>
+                                    </label>
+                                </div>
+                            </fieldset>
+                            <fieldset class="type_filter">
+                                <legend>Room:</legend>
+                                <div id="type-options">
+                                    <label>
+                                        <div class="checkbox">
+                                            <input type="checkbox" name="type" value="1" onchange="updateSections()" checked="">
+                                            <span class="checkbox_marker">
+                                            </span>
+                                        </div>
+                                        <span class="checkbox_text">309</span>
+                                    </label><br><label>
+                                        <div class="checkbox">
+                                            <input type="checkbox" name="type" value="2" onchange="updateSections()" checked="">
+                                            <span class="checkbox_marker">
+
+                                            </span>
+                                        </div><span class="checkbox_text">348</span>
+                                    </label>
+                                    <br>
+                                    <label>
+                                        <div class="checkbox">
+                                            <input type="checkbox" name="type" value="3" onchange="updateSections()" checked="">
+                                            <span class="checkbox_marker"></span>
+                                        </div><span class="checkbox_text">308</span>
+                                    </label><br>
+                                    <label>
+                                        <div class="checkbox">
+                                            <input type="checkbox" name="type" value="4" onchange="updateSections()" checked="">
+                                            <span class="checkbox_marker">
+                                            </span>
+                                        </div>
+                                        <span class="checkbox_text">350</span>
+                                    </label>
+                                </div>
+                            </fieldset>
+                            <div class="pick_up_filter">
+                                <span class="search_title">Pick Up Date:</span>
+                                <div class="date_time_selector">
+                                    <img src="img/calendar.svg" class="date_calendar" id="minicalIconTo" onclick="show_minical(this, 'dateFrom')">
+                                    <input class="date" id="dateFrom" name="dateFrom" type="text" value="" placeholder="22/05/2017" onclick="show_minical(this, 'dateFrom')">
+                                    <div class="select">
+                                        <select id="timeFrom" name="timeFrom" onchange="updateSections()"><option value="1">00:00</option><option value="2">01:00</option><option value="3">02:00</option><option value="4">03:00</option><option value="5">04:00</option><option value="6">05:00</option><option value="7">06:00</option><option value="8">07:00</option><option value="9">08:00</option><option value="10">09:00</option><option value="11">10:00</option><option value="12">11:00</option><option value="13">12:00</option><option value="14">13:00</option><option value="15">14:00</option><option value="16">15:00</option><option value="17">16:00</option><option value="18">17:00</option><option value="19">18:00</option><option value="20">19:00</option><option value="21">20:00</option><option value="22">21:00</option><option value="23">22:00</option><option value="24">23:00</option></select>
+                                        <span class="select_layout"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="drop_off_filter">
+                                <span class="search_title">Drop Off Date:</span>
+                                <div class=".form-control date_time_selector">
+                                    <img src="img/calendar.svg" class="date_calendar" id="minicalIconFrom" onclick="show_minical(this, 'dateTo')">
+                                    <input class="date" id="dateTo" name="dateTo" type="text" value="" placeholder="24/05/2017" onclick="show_minical(this, 'dateTo')">
+                                    <div class="select">
+                                        <select id="timeTo" name="timeTo" onchange="updateSections()"><option value="1">00:00</option><option value="2">01:00</option><option value="3">02:00</option><option value="4">03:00</option><option value="5">04:00</option><option value="6">05:00</option><option value="7">06:00</option><option value="8">07:00</option><option value="9">08:00</option><option value="10">09:00</option><option value="11">10:00</option><option value="12">11:00</option><option value="13">12:00</option><option value="14">13:00</option><option value="15">14:00</option><option value="16">15:00</option><option value="17">16:00</option><option value="18">17:00</option><option value="19">18:00</option><option value="20">19:00</option><option value="21">20:00</option><option value="22">21:00</option><option value="23">22:00</option><option value="24">23:00</option></select>
+                                        <span class="select_layout"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="check_dates">
+                                <label>
+                                    <div class="checkbox">
+                                        <input checked="checked" data-val="true" data-val-required="The Boolean field is required." id="dateFilter" name="dateFilter" type="checkbox" value="true" onchange="updateSections()">
+                                        <span class="checkbox_marker"></span>
+                                    </div>
+                                    Only available
+                                </label>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!--body-->
+            <div id="scheduler_here" class="col-10 m-0 border-left dhx_cal_container" style='width:100%; height:100%;margin:10px;'>
+                <div class="dhx_cal_navline">
+                    <div class="dhx_cal_prev_button">&nbsp;</div>
+                    <div class="dhx_cal_next_button">&nbsp;</div>
+                    <div class="dhx_cal_today_button"></div>
+                    <div class="dhx_cal_date"></div>
+                    <div class="dhx_cal_tab" name="unit_tab" style="right:360px;"></div>
+                    <div class="dhx_cal_tab" name="timeline_tab" style="right:280px;"></div>
+                    <div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
+                    <div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
+                    <div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
+                </div>
+                <div class="dhx_cal_header">
+                </div>
+                <div class="dhx_cal_data" style="overflow: auto;">
+                </div>
+            </div>
+        </div>
+</body>
+

@@ -1,0 +1,458 @@
+﻿
+@{
+    ViewData["Title"] = "Floors";
+    Layout = "_Layout";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/style.css">
+
+    <script src="~/js/Chart.min.js"></script>
+    <!--https://www.chartjs.org/-->
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/heatmap.js"></script>
+    <script src="~/js/heatmap.min.js"></script>
+    <script src="~/js/prism.js"></script>
+    <!--loading js-->
+    <script src="~/js/modernizr.js"></script>
+    <script src="~/js/jquery-2.2.4.min.js"></script>
+    <!--loading js-->
+
+    <title>Floors</title>
+    <script>
+      $(document).ready(function(){
+          //navbar ui
+          $('.navbar-nav .nav-link').removeClass('active');
+          $("#floors").addClass('active');
+
+          //<!--loading js-->
+          
+      });
+
+      $(window).load(function() {
+        // Animate loader off screen
+        $(".se-pre-con").fadeOut("fast");
+      });
+    </script>
+</head>
+
+
+<body class="">
+    <!--loading page graphic-->
+    <div class="se-pre-con"></div>
+    <!--loading page graphic-->
+    <!--header-->
+    <!--header-->
+
+
+    <div class="main  ">
+        <div class=" bg-light p-3">
+
+            <div class="d-flex flex-column">
+                <div class="container-fluid ">
+                    <dt class=" h2"><b>Floors And Rooms</b></dt>
+                </div>
+
+
+                <div class="container-fluidn mb-2  p-2">
+                    <div class="row mb-2 mx-0 ">
+                        <div class="card col-xl-6 py-3">
+                            <div class="d-flex flex-column w-100 h-100  ">
+                                <div class="  col border-0 ">
+                                    <div class="input-group align-items-center justify-content-center w-100 h-100">
+                                        <div class="input-group-prepend ">
+                                            <span class="input-group-text bg-white border-0" id="inputGroup-sizing-default">
+                                                <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="15.000000pt"
+                                                     height="15.000000pt" viewBox="0 0 240.000000 240.000000"
+                                                     preserveAspectRatio="xMidYMid meet">
+                                                    <g transform="translate(0.000000,240.000000) scale(0.100000,-0.100000)"
+                                                       fill="#000000" stroke="none">
+                                                        <path d="M721 2379 c-259 -58 -457 -198 -591 -418 -76 -123 -130 -316 -130 -458 0 -101 38 -269 83 -366 133 -287 398 -479 716 -517 121 -15 251 -1 375 41 l90 30 346 -346 c233 -233 352 -345 366 -345 38 0 138 40 192 77 107 73 198 207 210 309 l5 46 -341 342 -341 341 34 100 c46 136 61 255 46 381 -46 393 -316 693 -699 780 -130 29 -242 30 -361 3z m387 -315 c182 -73 318 -225 366 -411 20 -78 20 -218 0 -297 -52 -203 -227 -378 -430 -430 -78 -20 -222 -21 -297 -1 -207 54 -378 225 -432 433 -20 74 -20 221 0 297 49 186 191 343 371 411 127 48 298 47 422 -2z" />
+                                                    </g>
+                                                </svg>
+                                                <!--search area-->
+                                                <div class="mx-3">
+                                                    Floor:
+                                                </div>
+                                                <select class="px-3 ">
+                                                    <option value="all">All</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                </select>
+                                                <div class="mx-3">
+
+                                                    Room:
+                                                </div>
+                                                <select class="px-3 ">
+                                                    <option value="all">All</option>
+                                                    <option value="301">301</option>
+                                                    <option value="305">305</option>
+                                                    <option value="306">306</option>
+                                                </select>
+                                            </span>
+                                        </div>
+
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button">Search</button>
+                                        </div>
+                                        <!--search area-->
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="card col-xl-6 ">
+
+                            <div class="w-100 h-100 p-3 ">
+                                <div class="container-fluid col-xs-12 col-md-8 w-100 px-0">
+                                    <canvas id="UsageRecordChart" style="height: 100%;width: 100%;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card d-flex flex-column mb-2 mx-2 p-2" style="height: 250px;">
+                    <div class="row justify-content-between mb-2">
+                        <div class="col">
+                            <dt class="col h4">
+                                Divices List
+                            </dt>
+
+                        </div>
+                        <div class="col-4 d-flex justify-content-end">
+
+                            <button class="btn btn-outline-secondary px-2 mr-2 " type="button">edit</button>
+                            <button class="btn btn-outline-secondary px-2 mr-2" type="button">&#43;</button>
+
+                        </div>
+                    </div>
+
+                    <div class="overflow-auto ">
+
+                        <table class="table table-striped" id="Divicestable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col"> Status</th>
+                                    <th scope="col"> Location</th>
+                                    <th scope="col"> Floor</th>
+                                    <th scope="col"> Room</th>
+                                    <th scope="col"> Power</th>
+                                    <th scope="col"> Temp</th>
+                                    <th scope="col"> Hum</th>
+                                    <th scope="col"> Liight</th>
+                                    <th scope="col"> Using</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>abc01</td>
+                                    <td>Lab</td>
+                                    <td>Online</td>
+                                    <td>103</td>
+                                    <td>1</td>
+                                    <td>03</td>
+                                    <td>9000 kw</td>
+                                    <td>25&#8451;</td>
+                                    <td>70%</td>
+                                    <td>9/12</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1"
+                                                   checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>abc01</td>
+                                    <td>Lab</td>
+                                    <td>Online</td>
+                                    <td>103</td>
+                                    <td>1</td>
+                                    <td>03</td>
+                                    <td>9000 kw</td>
+                                    <td>25&#8451;</td>
+                                    <td>70%</td>
+                                    <td>9/12</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1"
+                                                   checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>abc01</td>
+                                    <td>Lab</td>
+                                    <td>Online</td>
+                                    <td>103</td>
+                                    <td>1</td>
+                                    <td>03</td>
+                                    <td>9000 kw</td>
+                                    <td>25&#8451;</td>
+                                    <td>70%</td>
+                                    <td>9/12</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1"
+                                                   checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>abc01</td>
+                                    <td>Lab</td>
+                                    <td>Online</td>
+                                    <td>103</td>
+                                    <td>1</td>
+                                    <td>03</td>
+                                    <td>9000 kw</td>
+                                    <td>25&#8451;</td>
+                                    <td>70%</td>
+                                    <td>9/12</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1"
+                                                   checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>abc01</td>
+                                    <td>Lab</td>
+                                    <td>Online</td>
+                                    <td>103</td>
+                                    <td>1</td>
+                                    <td>03</td>
+                                    <td>9000 kw</td>
+                                    <td>25&#8451;</td>
+                                    <td>70%</td>
+                                    <td>9/12</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1"
+                                                   checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card d-flex flex-row mb-2 mx-2 p-3 ">
+                    <button class="p-3 mx-2 btn btn-outline-secondary"> power report</button>
+                    <button class="p-3 mx-2 btn btn-outline-secondary">debices report</button>
+                    <button class="p-3 mx-2 btn btn-outline-secondary">maintain report</button>
+                    <button class="p-3 mx-2 btn btn-outline-secondary">money report</button>
+                </div>
+
+                <div class="card col-md  mx-2 p-2">
+                    <div class=" shadow-sm w-100 h-100 p-3 justify-content-center align-items-center">
+                        <div class="container-fluid col-xs-12 col-md-8 pt-4 w-100 px-0">
+                            <canvas id="FloorPowerUsgaeStatus"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+
+            var chartID = '';
+            var charttitle = '';
+            var chartType = '';
+            var position = '';
+            var floor = [];
+            var floorData = [];
+            var gcolor = [];
+            var gdata=[];
+            var goption;
+            var dataop;
+
+            getUsageRecordData();
+            var devices = [];
+            var devicesData = [];
+            var gcolor = [];
+            getFloorPowerUsgaeStatus();
+
+             async function getFloorPowerUsgaeStatus() {
+                var gdata=[40, 59, 80, 81, 56, 55, 40];
+
+                chartID = 'FloorPowerUsgaeStatus';
+                charttitle = 'Power Usage';
+                chartType = 'doughnut';
+                position = 'right';
+
+                var floor = [];
+                var i;
+                var str;
+                for (i = 0; i < 7; i++) {
+                    str="Floor "+i
+                    floor.push(str);
+                }
+
+                floorData.push(30);
+                floorData.push(20);
+                floorData.push(50);
+                floorData.push(30);
+                floorData.push(20);
+                floorData.push(50);floorData.push(30);
+
+                floor.forEach(getRandomColor);
+                //set chart data
+
+                dataop = {
+                    labels: floor,
+                    datasets: [{
+                        label: floor,
+                        data: floorData,
+                        backgroundColor: gcolor,
+                        borderWidth: 1,
+                        borderColor: '#777',
+                        hoverBorderWidth: 3,
+                        hoverBorderColor: '#000'
+
+                    }]
+                };
+                //set chart option
+
+                goption = {
+                    responsive: true,
+
+                    title: {
+                        display: true,
+                        text: charttitle,
+                        fontSize: 25
+                    },
+                    legend: {
+                        display: true,
+                        position: position,
+                        labels: {
+                            boxWidth: 20,
+                            fontColor: '#111',
+                            padding: 15
+                        }
+                    },plugins: {
+            datalabels: {
+                color: '#111',
+                textAlign: 'center',
+                font: {
+                    lineHeight: 1.6
+                },
+                formatter: function(value, ctx) {
+                    return ctx.chart.data.labels[ctx.dataIndex] + '\n' + value + '%';
+                }
+            }
+        }
+
+
+                };
+
+                draw();
+
+            }
+
+            async function getUsageRecordData() {
+                var gdata=[40, 59, 80, 81, 56, 55, 40];
+
+                charttitle = 'Devices Power Usage Record';
+
+                chartID = 'UsageRecordChart';
+                chartType = 'bar';
+                position = 'right';
+
+                var floor = [];
+                var i;
+                var str;
+                for (i = 0; i < 7; i++) {
+                    str="Floor "+i
+                    floor.push(str);
+                }
+
+                floor.forEach(getRandomColor);
+
+                //set chart data
+                dataop = {
+                    labels: floor,
+
+                    datasets: [{
+                        label: "this month",
+                        backgroundColor:"#fabdb9",
+                        data: gdata
+        }]
+
+
+
+                };
+                //set chart option
+                goption = {
+
+
+                   "scales":{
+                       yAxes:[
+                           {
+                           ticks:{
+                                    beginAtZero:true
+                                  }
+                            }
+                        ]},
+                    title: {
+                        display: true,
+                        text: charttitle,
+                        fontSize: 25,
+                        align:"start"
+                    },
+                    legend: {
+                        display: false,
+                        position: position,
+                        labels: {
+                            boxWidth: 20,
+                            fontColor: '#111',
+                            padding: 15
+                        }
+                    }
+                };
+                draw();
+
+            }
+
+            //---------------------------------------------------------------------------------
+           function getRandomColor() {
+                var letters = '0123456789ABCDEF';
+                var color = '#';
+                for (var i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                gcolor.push(color);
+            }
+
+            function draw() {
+
+                let myChart = document.getElementById(chartID).getContext('2d');
+                // Global Options
+                Chart.defaults.global.defaultFontFamily = 'Lato';
+                Chart.defaults.global.defaultFontSize = 18;
+                Chart.defaults.global.defaultFontColor = '#777';
+
+
+                let barChart = new Chart(myChart, {
+                    type: chartType,//bar,horizontalBar,pie,line,doughnut,radar,polarArea
+                    data: dataop,
+                    options: goption
+                });
+            }
+            //--------------------------------------------------------------------------
+
+    </script>
+</body>
