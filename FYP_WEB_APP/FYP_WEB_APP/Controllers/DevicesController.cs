@@ -33,8 +33,11 @@ namespace FYP_WEB_APP.Controllers
 			{
 				Debug.WriteLine(ll.lastest_checking_time);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			}*/
 =======
+=======
+>>>>>>> parent of d16860d... nothing special
 			}
 >>>>>>> parent of d16860d... nothing special
 
