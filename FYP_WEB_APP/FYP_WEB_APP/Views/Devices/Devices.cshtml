@@ -2,8 +2,6 @@
 @{
     ViewData["Title"] = "Devices";
     Layout = "_Layout";
-    @model IEnumerable<FYP_WEB_APP.Models.MongoModels.MongoLightListModel>
-
 }
 
 <!DOCTYPE html>
@@ -61,14 +59,7 @@
 
             <div class="d-flex flex-column">
                 <div class="container-fluid ">
-                    <dt class=" h2"><b>
-    @foreach (var item in Model)
-    {
-
-        @Html.DisplayFor(modelItem => item.roomId)
-    }
-    Devices
-</b></dt>
+                    <dt class=" h2"><b>Devices</b></dt>
                 </div>
                 <div class="d-flex flex-row  mb-2 p-2">
                     <div class="  col">
@@ -701,7 +692,7 @@
                 options: goption
             });
         }
-                        //--------------------------------------------------------------------------
+                    //--------------------------------------------------------------------------
 
     </script>
 </body>
