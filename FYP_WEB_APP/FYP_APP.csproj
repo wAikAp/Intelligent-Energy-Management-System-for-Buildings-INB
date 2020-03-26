@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>FYP_WEB_APP</AssemblyName>
+    <RootNamespace>FYP_WEB_APP</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
