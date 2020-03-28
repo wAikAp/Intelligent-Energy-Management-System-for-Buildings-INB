@@ -1,17 +1,12 @@
 ﻿
 @{
-    List<FYP_WEB_APP.Models.SensorsListModel> Sensors = ViewData["SensorsListModel"] as List<FYP_WEB_APP.Models.SensorsListModel>;
-
-    List<FYP_WEB_APP.Models.RoomsListModel> Rooms = ViewData["RoomListModel"] as List<FYP_WEB_APP.Models.RoomsListModel>;
     ViewData["Title"] = "Sensors";
     Layout = "_Layout";
 }
-<globalization requestEncoding="utf-8" responseEncoding="utf-8" />
 
 
 <head>
     <link rel="stylesheet" href="~/css/style.css">
-    <meta charset="UTF-8">
 
     <script src="~/js/Chart.min.js"></script>
     <!--https://www.chartjs.org/-->
@@ -46,12 +41,11 @@
     </script>
 </head>
 
-
+ 
 <body class="">
+    @Html.Partial("_AddSensors")
     <!--loading page graphic-->
     <div class="se-pre-con"></div>
-    @Html.Partial("_AddSensors")
-
     <!--loading page graphic-->
     <!--header-->
     <!--header-->
@@ -60,7 +54,7 @@
 
             <div class="d-flex flex-column">
                 <div class="container-fluid ">
-                    <div class=" h2"><b>Sensor</b></div>
+                    <dt class=" h2"><b>Sensor</b></dt>
                 </div>
                 <div class="d-flex flex-row  mb-2 p-2">
                     <div class="  col">
@@ -85,129 +79,156 @@
                         </div>
                     </div>
                 </div>
-                @using (Html.BeginForm("Sensors", "Sensors", FormMethod.Get))
-
-                {
-                    <div class="card d-flex flex-row  mb-2 mx-2 p-2">
-
-
-                        <div class="col-0 px-2">
-                            Fillter
-                        </div>
-                        <div class="col-10 align-items-center">
-                            <div class="col  d-flex  flex-row align-items-center py-2">
-                                <div class="d-flex px-3 align-items-center">
-                                    type:
-                                </div>
-                                <div class="d-flex px-3 align-items-center">
-                                    @Html.CheckBox("All")All
-                                </div>
-                                <div class="d-flex px-3 align-items-center">
-                                    @Html.CheckBox("Temperature") Temperature
-                                </div>
-                                <div class="d-flex px-3 align-items-center">
-                                    @Html.CheckBox("Light")Light
-                                </div>
-                                <div class="d-flex px-3 align-items-center">
-                                    @Html.CheckBox("Humidity") Humidity
-
-                                </div>
-                                <div class="d-flex px-3 align-items-center">
-                                    @Html.CheckBox("Luminosity") Luminosity
-                                </div>
-                            </div>
-                            <div class="col-4  d-flex  flex-row py-2">
-                                <div class="d-flex px-3 align-items-center">
-                                    location:
-                                </div>
-                                <div d-flex px-3 align-items-center">
-                                    <select id="roomId" name="roomId">
-                                        <option value="0">Room.No</option>
-                                        @foreach (var Room in Rooms)
-                                        {
-
-                                            <option value="@Room.roomId">@Room.roomId</option>
-                                        }
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <p>
-                            <input type="submit" value="search" />
-                        </p>
-
+                <div class="card d-flex flex-row  mb-2 mx-2 p-2">
+                    <div class="col-0 px-2">
+                        Fillter
                     </div>
-
-
-                    <div class="card d-flex flex-column mb-2 mx-2 p-2" style="height: 250px;">
-                        <div class="row justify-content-between mb-2">
-                            <div class="col">
-                                <div class="col h4">
-                                    Sensor List
-                                </div>
-
+                    <div class="col-10">
+                        <div class="col  d-flex  flex-row">
+                            <div class="px-2 pb-3">
+                                type:
                             </div>
-                            <div class="col-4 d-flex justify-content-end">
-
-                                <button class="btn btn-outline-secondary px-2 mr-2 " type="button">edit</button>
-                                <button class="btn btn-outline-secondary px-2 mr-2" type="button" data-toggle="modal"
-                                        data-target="#addSensors ">
-                                    &#43;
-                                </button>
-
+                            <div class="px-3"><input type="checkbox" name="Fillter-All" value="All"> All</div>
+                            <div class="px-3">
+                                <input type="checkbox" name="Fillter-AirConditioning"
+                                       value="AirConditioning"> Temperature
                             </div>
+                            <div class="px-3"><input type="checkbox" name="Fillter-Light" value="Light"> Humidity</div>
+                            <div class="px-3"><input type="checkbox" name="Fillter-Other" value="Other"> Luminosity</div>
                         </div>
-                        <div class="overflow-auto ">
-                            <table class="table table-striped" id="Divicestable">
-                                <thead>
-                                    <tr>
-                                        <th class="th-sm" scope="col">Sensor Name</th>
-                                        <th scope="col">Type</th>
-                                        <th scope="col"> Status</th>
-                                        <th scope="col">
-                                            <a href='@ViewBag.roomIdSortParm'>roomId</a>
-                                        </th>
-                                        <th scope="col"> Range</th>
-                                        <th scope="col">
-                                            <a href='@ViewBag.latest_checking_timeSortParm'>latest_checking_time</a>
-                                        </th>
-                                        <th scope="col"> Serial number</th>
-                                        <th scope="col"> Value</th>
-                                        <th scope="col"> Tsurn on/off</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var Sensor in Sensors)
-                                    {
-
-
-                                        <tr>
-                                            <td>Ts01</td>
-                                            <td>T</td>
-                                            <td>online</td>
-                                            <td>
-                                                @Sensor.roomId
-                                            </td>
-                                            <td>9000</td>
-                                            <td>
-                                                @Sensor.latest_checking_time
-                                            </td>
-                                            <td>3100002a</td>
-                                            <td>25c</td>
-                                            <td>
-                                                <div class="custom-control custom-switch">
-                                                    <input type="checkbox" class="custom-control-input" id="customSwitch1"
-                                                           checked disabled>
-                                                    <label class="custom-control-label" for="customSwitch1"></label>
-                                                </div>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
+                        <div class="col-4  d-flex  flex-row ">
+                            <div class="px-2 pb-3 ">
+                                location:
+                            </div>
+                            <select class="px-3 my-2 ">
+                                <option value="volvo">301</option>
+                                <option value="mercedes">305</option>
+                                <option value="audi">306</option>
+                            </select>
                         </div>
                     </div>
-                }
+                </div>
+                <div class="card d-flex flex-column mb-2 mx-2 p-2" style="height: 250px;">
+                    <div class="row justify-content-between mb-2">
+                        <div class="col">
+                            <dt class="col h4">
+                                Sensor List
+                            </dt>
+
+                        </div>
+                        <div class="col-4 d-flex justify-content-end">
+
+                            <button class="btn btn-outline-secondary px-2 mr-2 " type="button">edit</button>
+                            <button class="btn btn-outline-secondary px-2 mr-2" type="button" data-toggle="modal"
+                                    data-target="#addSensors ">
+                                &#43;
+                            </button>
+
+                        </div>
+                    </div>
+
+                    <div class="overflow-auto ">
+
+                        <table class="table table-striped" id="Divicestable">
+                            <thead>
+                                <tr>
+                                    <th class="th-sm" scope="col">Sensor Name</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col"> Status</th>
+                                    <th scope="col"> Location</th>
+                                    <th scope="col"> Range</th>
+                                    <th scope="col"> Last modfily date</th>
+                                    <th scope="col"> Serial number</th>
+                                    <th scope="col"> Value</th>
+                                    <th scope="col"> Tsurn on/off</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Ts01</td>
+                                    <td>T</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>9000</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1"
+                                                   checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>Ts02</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>900</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1"
+                                                   checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>Ts03</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>900</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1"
+                                                   checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>Ts04</td>
+                                    <td>A</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>900</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25c</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1"
+                                                   checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                                <tr>
+                                    <td>Ls01</td>
+                                    <td>L</td>
+                                    <td>online</td>
+                                    <td>348</td>
+                                    <td>900</td>
+                                    <td>01/01/2019</td>
+                                    <td>3100002a</td>
+                                    <td>25%</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1"
+                                                   checked disabled>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        </div>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 <div class="card d-flex flex-row mb-2 mx-2 p-2 ">
                     <button class="p-3 mx-2 btn btn-outline-secondary">Sensor report</button>
                     <button class="p-3 mx-2 btn btn-outline-secondary">Log report</button>
@@ -228,6 +249,7 @@
         </div>
     </div>
     <script>
+
         var chartID = '';
         var charttitle = '';
         var chartType = '';
@@ -327,5 +349,7 @@
                 options: goption
             });
         }
-                                                                //--------------------------------------------------------------------------</script>
+                //--------------------------------------------------------------------------
+
+    </script>
 </body>
