@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using FYP_WEB_APP.Controllers.Mongodb;
-using Microsoft.AspNetCore.Http;
+using FYP_WEB_APP.Models.API;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Newtonsoft.Json;
+
 
 namespace FYP_WEB_APP.Controllers.API
 {
@@ -14,25 +14,45 @@ namespace FYP_WEB_APP.Controllers.API
     [ApiController]
     public class SensorsAddDataController : ControllerBase
     {
-        public object Post(dynamic SensorJson)
+        public object Post([FromBody]object SensorJson)
         {
+            var json = System.Text.Json.JsonSerializer.Serialize(SensorJson);
+
+            var data = JsonConvert.DeserializeObject<List<SensorsAddDataModel>>(json);
+
+
             var str = "";
             ConnectDB conn = new ConnectDB();
             IMongoDatabase database = conn.Conn();
 
             var collection = database.GetCollection<BsonDocument>("SENSOR");
-
-            foreach (var S in SensorJson)
+            if (data != null && data.Count != 0)
             {
-                string id = S.SensorId;
-                double Value = S.Value;
-                DateTime utcNow = DateTime.UtcNow;
-                str += "{ SensorId , " + id + "},{ Value," + Value + "},{ UserPostDate," + utcNow + "}\n";
+                foreach (var S in data)
+                {
 
-                collection.InsertOne(new BsonDocument { { "SensorId", id }, { "Value", Value }, { "UserPostDate", utcNow } });
+                    if (S.Equals(S.Sensorid))
+                    {
+                        string id = S.Sensorid;
+                        string Value = S.Value;
+                        DateTime utcNow = DateTime.UtcNow;
+                        str += "{ SensorId , " + id + "},{ Value," + Value + "},{ UserPostDate," + utcNow + "}\n";
+
+                        collection.InsertOne(new BsonDocument { { "SensorId", id }, { "Value", Value }, { "UserPostDate", utcNow } });
+                    }
+                    else
+                    {
+                        str = "Parameter cannot be null or [{\"SensorId\": \"..\",\"Value\": \"..\"}]\", \"original";
+                    }
+                }
 
             }
-            return "data==" + str;
+            else
+            {
+                str = "Parameter cannot be null or [{\"SensorId\": \"..\",\"Value\": \"..\"}]\", \"original";
+            }
+
+            return str;
         }
     }
 }
