@@ -33,12 +33,12 @@ namespace FYP_WEB_APP.Controllers.API
                 foreach (var S in data)
                 {
                     
-                    string id = S.Sensorid;
-                        string Value = S.Value;
+                    string id = S.Sid;
+                        string Value = S.V;
                         DateTime utcNow = DateTime.UtcNow;
-                        str += "{ SensorId , " + id + "},{ Value," + Value + "},{ UserPostDate," + utcNow + "}\n";
+                        str += "{ SId , " + id + "},{ V," + Value + "},{ PD," + utcNow + "}\n";
 
-                      collection.InsertOne(new BsonDocument { { "SensorId", id }, { "Value", Value }, { "UserPostDate", utcNow } });
+                      collection.InsertOne(new BsonDocument { { "SId", id }, { "V", Value }, { "PD", utcNow } });
                 }
 
             }

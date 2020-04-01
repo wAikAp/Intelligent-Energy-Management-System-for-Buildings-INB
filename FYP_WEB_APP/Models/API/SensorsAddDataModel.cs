@@ -7,8 +7,8 @@ namespace FYP_WEB_APP.Models.API
 {
     public class SensorsAddDataModel
     {
-        public string Sensorid{ get; set; }
-        public string Value{ get; set; }
+        public string Sid{ get; set; }
+        public string V{ get; set; }
 
         internal void Equals()
         {
