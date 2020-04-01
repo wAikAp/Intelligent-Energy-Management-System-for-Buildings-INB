@@ -232,9 +232,7 @@
         var charttitle = '';
         var chartType = '';
         var position = '';
-        var devices = [];
         var devicesData = [];
-        var gcolor = [];
         var gdata;
         var goption;
 
@@ -247,18 +245,13 @@
             chartID = 'UsageRecordChart';
             chartType = 'line';
             position = 'right';
-            devices.push('St01');
-            devices.push('St02');
-            devices.push('St03');
+
             var day = [];
             var i;
             for (i = 0; i < 30; i++) {
                 day.push(i);
             }
-            devices.forEach(getRandomColor);
-            var labelss =@Html.Raw(Json.Serialize(ViewBag.labelss));
-            var colorss =@Html.Raw(Json.Serialize(ViewBag.colorss));
-            var datass =@Html.Raw(Json.Serialize(ViewBag.datass));
+
             var jdatasets =@Html.Raw(ViewBag.datasets);
             
             //set chart data
@@ -288,15 +281,6 @@
         }
 
         //---------------------------------------------------------------------------------
-        function getRandomColor() {
-            var letters = '0123456789ABCDEF';
-            var color = '#';
-            for (var i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            gcolor.push(color);
-        }
-
         function draw() {
 
             let myChart = document.getElementById(chartID).getContext('2d');
