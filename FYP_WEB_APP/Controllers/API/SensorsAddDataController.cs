@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using FYP_WEB_APP.Controllers.Mongodb;
 using FYP_WEB_APP.Models.API;
 using Microsoft.AspNetCore.Mvc;
@@ -26,30 +27,24 @@ namespace FYP_WEB_APP.Controllers.API
             IMongoDatabase database = conn.Conn();
 
             var collection = database.GetCollection<BsonDocument>("SENSOR");
-            if (data != null && data.Count != 0)
+            if (SensorJson != null)
             {
+     
                 foreach (var S in data)
                 {
-
-                    if (S.Equals(S.Sensorid))
-                    {
-                        string id = S.Sensorid;
+                    
+                    string id = S.Sensorid;
                         string Value = S.Value;
                         DateTime utcNow = DateTime.UtcNow;
                         str += "{ SensorId , " + id + "},{ Value," + Value + "},{ UserPostDate," + utcNow + "}\n";
 
-                        collection.InsertOne(new BsonDocument { { "SensorId", id }, { "Value", Value }, { "UserPostDate", utcNow } });
-                    }
-                    else
-                    {
-                        str = "Parameter cannot be null or [{\"SensorId\": \"..\",\"Value\": \"..\"}]\", \"original";
-                    }
+                      collection.InsertOne(new BsonDocument { { "SensorId", id }, { "Value", Value }, { "UserPostDate", utcNow } });
                 }
 
             }
             else
             {
-                str = "Parameter cannot be null or [{\"SensorId\": \"..\",\"Value\": \"..\"}]\", \"original";
+                str = "Parameter cannot be null ";
             }
 
             return str;

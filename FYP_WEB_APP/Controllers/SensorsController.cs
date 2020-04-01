@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using FYP_WEB_APP.Controllers.Mongodb;
@@ -7,23 +9,21 @@ using FYP_WEB_APP.Models;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace FYP_APP.Controllers
 {
     public class SensorsController : Controller
     {
-		public ActionResult Sensors(string sortOrder)
+		public ActionResult Sensors()
 		{
-			if (sortOrder is null)
-			{
-				sortOrder = "";
-			}
-
 			ConnectDB conn = new ConnectDB();
 			IMongoDatabase database = conn.Conn();
 
 			ViewData["SensorsListModel"] = GetSensorsData(database);
 			ViewData["RoomListModel"] = GetRoomData(database);
+			chartData(GetSensorsData(database));
 
 			return View();
 		}
@@ -36,19 +36,17 @@ namespace FYP_APP.Controllers
 				foreach (String key in Request.Query.Keys)
 				{
 					string rk = Request.Query[key];
-					if (!rk.Equals("false") && !key.Equals("sortOrder"))
+					if (!rk.Equals("false") && !key.Equals("sortOrder") && !key.Equals("All"))
 					{
 						string skey = key;
 						string keyValue = Request.Query[key];
 						if (isFirstFilter == false)
 						{
 							filter = Builders<SensorsListModel>.Filter.Eq(key, Request.Query[key]);
-
 						}
 						else
 						{
 							filter &= Builders<SensorsListModel>.Filter.Eq(key, Request.Query[key]);
-
 						}
 					}
 				}
@@ -59,7 +57,7 @@ namespace FYP_APP.Controllers
 		{
 			SortDefinition<SensorsListModel> sort = Builders<SensorsListModel>.Sort.Descending("latest_checking_time");
 			string sortOrder = Request.Query["sortOrder"];
-			sortOrder = ChangeLink(sortOrder);
+			sortOrder = ChangeSortLink(sortOrder);
 
 			if (String.IsNullOrEmpty(sortOrder)) { }
 			else if (sortOrder.Contains("Desc"))
@@ -68,9 +66,7 @@ namespace FYP_APP.Controllers
 			}
 			else
 			{
-
 				sort = Builders<SensorsListModel>.Sort.Ascending(sortOrder);
-
 			}
 
 			return sort;
@@ -92,13 +88,11 @@ namespace FYP_APP.Controllers
 
 			sort = SortList();
 
-
 			//end sorting
 
 			//filter & find data
 
 			filter = SearchSensors();
-
 
 			//end filter & find data
 
@@ -118,6 +112,7 @@ namespace FYP_APP.Controllers
 				var data = new SensorsListModel()
 				{
 					roomId = set.roomId,
+					sensorId = set.sensorId,
 					latest_checking_time = set.latest_checking_time
 				};
 				SensorsDataList.Add(data);
@@ -149,7 +144,7 @@ namespace FYP_APP.Controllers
 
 			return RoomDataList;
 		}
-		public string ChangeLink(string sortOrder)
+		public string ChangeSortLink(string sortOrder)
 		{
 			int count = Request.Query.Keys.Count;
 
@@ -210,6 +205,56 @@ namespace FYP_APP.Controllers
 
 
 			return sortOrder;
+		}
+		//chart js code
+		List<string> Color = new List<string>();
+
+		public void chartData(List<SensorsListModel> SensorsDataList) {
+			List<string> labelss = new List<string>();
+			List<string> datas = new List<string>();
+			List<JObject> datasets = new List<JObject>();
+			string sdatasets = "";
+			int[] x1 = { 65, 59, 80, 81, 56, 55, 40, 50, 60, 55, 30, 78 };
+
+			int[] x2 = { 10, 20, 60, 95, 64, 78, 90, 80, 70, 40, 70, 89 };
+
+			int[] x3 = { 65, 59, 80, 81, 56, 55, 40, 50, 60, 55, 30, 78 };
+
+			int[] x4 = { 50, 59, 70, 71, 56, 55, 45, 55, 60, 50, 30, 50 };
+			datas.Add(x1.ToJson());
+			datas.Add(x2.ToJson());
+			datas.Add(x3.ToJson());
+			datas.Add(x4.ToJson());
+
+			ArrayList day = new ArrayList();
+
+			for (int i = 0; i< 30; i++) {
+                day.Add(i+1);
+            }
+
+			for (int i = 0; i < SensorsDataList.Count; i++)
+			{	
+				getRandomColor();
+
+				labelss.Add(SensorsDataList[i].sensorId);
+			}
+			for (int i = 0; i < SensorsDataList.Count; i++)
+			{
+			 var json = "{ 'label':"+ labelss[i]+
+					  ",'borderColor':'" +  Color[i]+
+					  "','fill': false,'spanGaps': false," +
+					  "'data':"+  datas[i]+"}" ;
+				JObject jObj = JObject.Parse(json);
+
+				datasets.Add(jObj);
+			}
+			ViewBag.datasets = JsonConvert.SerializeObject(datasets);
+		}
+		public void getRandomColor()
+		{
+			var random = new Random();
+			var rmcolor = String.Format("#{0:X6}", random.Next(0x1000000));
+			Color.Add(rmcolor);
 		}
 	}
 }
