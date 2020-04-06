@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using FYP_WEB_APP.Controllers.Mongodb;
 using FYP_WEB_APP.Models;
@@ -16,111 +17,131 @@ namespace FYP_APP.Controllers
 {
     public class SensorsController : Controller
     {
+		private IMongoDatabase database;
 		public ActionResult Sensors()
 		{
+			
 			ConnectDB conn = new ConnectDB();
-			IMongoDatabase database = conn.Conn();
+			this.database = conn.Conn();
+			ViewData["SensorsListModel"] = Setgroup(GetSensorsData());
 
-			ViewData["SensorsListModel"] = GetSensorsData(database);
-			ViewData["RoomListModel"] = GetRoomData(database);
-			chartData(GetSensorsData(database));
+			ViewData["RoomListModel"] = GetRoomData();
+			
+			chartData(GetSensorsData());
 
 			return View();
 		}
-		public FilterDefinition<SensorsListModel> SearchSensors()
+		public List<SensorsListModel> FindSensors(List<SensorsListModel> SensorsDataList)
 		{
-			FilterDefinition<SensorsListModel> filter = null;
-			bool isFirstFilter = false;
-			if (!string.IsNullOrWhiteSpace(Request.ToString()))
-			{
+			List<SensorsListModel> EndDataList = new List<SensorsListModel> { };
+			List<SensorsListModel> FDataList = null;
+			List<SensorsListModel> roomSensorsDataList = null;
+
+			
 				foreach (String key in Request.Query.Keys)
 				{
-					string rk = Request.Query[key];
-					if (!rk.Equals("false") && !key.Equals("sortOrder") && !key.Equals("All"))
+					string skey = key;
+					string keyValue = Request.Query[key];
+
+					switch (skey)
 					{
-						string skey = key;
-						string keyValue = Request.Query[key];
-						if (isFirstFilter == false)
-						{
-							filter = Builders<SensorsListModel>.Filter.Eq(key, Request.Query[key]);
-						}
-						else
-						{
-							filter &= Builders<SensorsListModel>.Filter.Eq(key, Request.Query[key]);
-						}
+						case "roomId":
+							roomSensorsDataList = SensorsDataList.Where(x => x.roomId.Contains(keyValue)).ToList();
+							break;
+						case "TS":
+						case "LS":
+						case "HS":
+							FDataList = SensorsDataList.Where(x => x.sensorId.Contains(skey)).ToList();
+							break;
+						default:
+							break;
+					}
+					if (skey !="sortOrder")
+					{
+						EndDataList.AddRange(FDataList);//B list add in A list
+						EndDataList = EndDataList.Distinct().ToList();//delet double data
 					}
 				}
-			}
-			return filter;
-		}
-		public SortDefinition<SensorsListModel> SortList()
-		{
-			SortDefinition<SensorsListModel> sort = Builders<SensorsListModel>.Sort.Descending("latest_checking_time");
-			string sortOrder = Request.Query["sortOrder"];
-			sortOrder = ChangeSortLink(sortOrder);
 
-			if (String.IsNullOrEmpty(sortOrder)) { }
-			else if (sortOrder.Contains("Desc"))
-			{
-				sort = Builders<SensorsListModel>.Sort.Descending(sortOrder[0..^5]);
-			}
-			else
-			{
-				sort = Builders<SensorsListModel>.Sort.Ascending(sortOrder);
-			}
-
-			return sort;
-		}
-
-		public List<SensorsListModel> GetSensorsData(IMongoDatabase database)
-		{
-
-			List<SensorsListModel> SensorsDataList = new List<SensorsListModel> { };
-			IFindFluent<SensorsListModel, SensorsListModel> FindSensorsDocuments;
-			IMongoCollection<SensorsListModel> collection;
-			FilterDefinition<SensorsListModel> filter;
-			SortDefinition<SensorsListModel> sort;
-
-			//db collection
-			collection = database.GetCollection<SensorsListModel>("SENSOR_LIST");
-
-			// sorting data
-
-			sort = SortList();
-
-			//end sorting
-
-			//filter & find data
-
-			filter = SearchSensors();
-
-			//end filter & find data
-
-
-			if (filter == null)
-			{
-				//not filter or find data using this get documents
-				FindSensorsDocuments = collection.Find(new BsonDocument()).Sort(sort);
-			}
-			else
-			{
-				FindSensorsDocuments = collection.Find(filter).Sort(sort);
-			}
-			//push the data in the model
-			foreach (SensorsListModel set in FindSensorsDocuments.ToList())
-			{
-				var data = new SensorsListModel()
-				{
-					roomId = set.roomId,
-					sensorId = set.sensorId,
-					latest_checking_time = set.latest_checking_time
-				};
-				SensorsDataList.Add(data);
+			//get B & A list Intersect data
+			if (roomSensorsDataList!=null) {
+				SensorsDataList = roomSensorsDataList.Intersect(EndDataList).ToList();
 			}
 
 			return SensorsDataList;
 		}
-		public List<RoomsListModel> GetRoomData(IMongoDatabase database)
+		public List<SensorsListModel> SortList(List<SensorsListModel>DataList)
+		{
+			string sortOrder = Request.Query["sortOrder"];
+			sortOrder = ChangeSortLink(sortOrder);
+
+			if (String.IsNullOrEmpty(sortOrder))
+			{
+				ViewBag.sortIMG = "sort.png";
+			}
+			else if (sortOrder.Contains("Desc"))
+			{
+				DataList = DataList.OrderByDescending(item => item.roomId).ToList();
+				//.Sort.Descending(sortOrder[0..^5]);
+				ViewBag.sortIMG = "sort_desc.png";
+
+			}
+			else
+			{
+				ViewBag.sortIMG = "sort.png";
+
+				DataList = DataList.OrderBy(item => item.roomId).ToList();
+			}
+			Debug.WriteLine("sorting ------>  "+DataList.ToJson().ToString());
+			return DataList;
+		}
+		public List<List<SensorsListModel>> Setgroup(List<SensorsListModel> SensorsDataList)
+		{
+			var groupedList = SensorsDataList.GroupBy(s => s.roomId)
+				.Select(grp =>  grp.ToList() )
+				.ToList();
+			return groupedList;
+		}
+		public List<SensorsListModel> GetSensorsData()
+		{
+
+			List<SensorsListModel> SensorsDataList = new List<SensorsListModel> { };
+		IMongoCollection<SensorsListModel> collection;
+
+			//db collection
+			collection = database.GetCollection<SensorsListModel>("SENSOR_LIST");
+
+			IQueryable <SensorsListModel> query = from c in collection.AsQueryable<SensorsListModel>() select c;
+
+			foreach (SensorsListModel set in query)
+				{					
+				var data = new SensorsListModel()
+					{
+						roomId = set.roomId,
+						sensorId = set.sensorId,
+						latest_checking_time = set.latest_checking_time,
+						current_Value = getSensorCurrentValue(set.sensorId),
+						typeImg = getType(set.sensorId),
+						typeUnit = getunit(set.sensorId)
+					};
+					SensorsDataList.Add(data);
+
+				
+			}
+			if (Request.Query.Count > 0)
+			{
+				SensorsDataList = FindSensors(SensorsDataList);
+				Debug.WriteLine("finded==\n"+SensorsDataList.ToJson().ToString());
+				SensorsDataList = SortList(SensorsDataList);
+			}
+			else
+			{
+				SensorsDataList = SortList(SensorsDataList);
+			}
+
+			return SensorsDataList;
+		}
+		public List<RoomsListModel> GetRoomData()
 		{
 			var RoomDataList = new List<RoomsListModel> { };
 			IMongoCollection<RoomsListModel> collection = database.GetCollection<RoomsListModel>("ROOM");
@@ -147,7 +168,6 @@ namespace FYP_APP.Controllers
 		public string ChangeSortLink(string sortOrder)
 		{
 			int count = Request.Query.Keys.Count;
-
 			var rs = "";
 			bool isfirst = true;
 			foreach (String key in Request.Query.Keys)
@@ -171,40 +191,114 @@ namespace FYP_APP.Controllers
 
 			if (!(count > 1) && String.IsNullOrEmpty(sortOrder))
 			{
-				ViewBag.latest_checking_timeSortParm = "?sortOrder=latest_checking_time";
 				ViewBag.roomIdSortParm = "?sortOrder=roomId";
 			}
 			else if ((count > 1) && String.IsNullOrEmpty(sortOrder))
 			{
 
-				var latest_checking_timeSortParmButton = "?sortOrder=latest_checking_time_Desc" + "&" + rs;
-				ViewBag.latest_checking_timeSortParm = latest_checking_timeSortParmButton;
-				var roomidbutton = "?sortOrder=roomId_Desc" + "&" + rs;
+			var roomidbutton = "?sortOrder=roomId_Desc" + "&" + rs;
 				ViewBag.roomIdSortParm = roomidbutton;
-
 			}
 			else if (!(count > 1) && !String.IsNullOrEmpty(sortOrder))
 			{
 				rs = Request.QueryString.ToString().Substring(1);
 
-				string viewsortOrderlatest = sortOrder == "latest_checking_time" ? "latest_checking_time_Desc" : "latest_checking_time";
-				ViewBag.latest_checking_timeSortParm = "?sortOrder=" + viewsortOrderlatest;
 
 				string viewsortOrderroomId = sortOrder == "roomId" ? "roomId_Desc" : "roomId";
 				ViewBag.roomIdSortParm = "?sortOrder=" + viewsortOrderroomId;
+
 			}
 			else if ((count > 1) && !String.IsNullOrEmpty(sortOrder))
 			{
-				string viewsortOrderlatest = sortOrder == "latest_checking_time" ? "latest_checking_time_Desc" : "latest_checking_time";
-				ViewBag.latest_checking_timeSortParm = "?sortOrder=" + viewsortOrderlatest + "&" + rs;
-
 				string viewsortOrderroomId = sortOrder == "roomId" ? "roomId_Desc" : "roomId";
 				ViewBag.roomIdSortParm = "?sortOrder=" + viewsortOrderroomId + "&" + rs;
+
 			}
 			//end change sorting link
 
 
 			return sortOrder;
+		}
+		public string getunit(string sensorId)
+		{
+			string type = "";
+			switch (sensorId.Substring(0, 2))
+			{
+				case "TS":
+					type = "℃";
+					break;
+				case "LS":
+					type = "lm";
+					break;
+				case "HS":
+					type = "%";
+					break;
+				default:
+					break;
+			}
+			return type;
+		}
+		public string getType(string sensorId) {
+			string type = "";
+			switch (sensorId.Substring(0, 2))
+			{
+				case "TS":
+					type = "temp.png";
+					break;
+				case "LS":
+					type = "light.png";
+					break;
+				case "HS":
+					type = "humidity.png";
+					break;
+				default:
+					break;
+			}
+			return type;
+		}
+		public double getSensorCurrentValue(string sensorId) {
+			
+			IMongoCollection<BsonDocument> collection;
+			FilterDefinition<BsonDocument> filter;
+			IFindFluent<BsonDocument, BsonDocument> FindSensorsDocuments;
+			double value = 0;
+			var dbStr ="";
+			switch (sensorId.Substring(0, 2))
+			{
+				case "TS":
+					dbStr = "TMP_SENSOR";
+					break;
+				case "LS":
+					dbStr = "LIGHT_SENSOR";
+					break;
+				case "HS":
+					dbStr = "HUM_SENSOR";
+					break;
+				default:
+					break;
+			}
+			collection = database.GetCollection<BsonDocument>(dbStr);
+			filter = Builders<BsonDocument>.Filter.Eq("sensorId", sensorId);
+
+			var json = collection.Find(filter).FirstOrDefault();
+			if (json != null)
+			{
+				switch (sensorId.Substring(0, 2))
+			{
+				case "TS":
+						value = Convert.ToDouble(json["current_tmp"]);
+						break;
+				case "LS":
+						value = Convert.ToDouble(json["current_lum"]);
+						break;
+				case "HS":
+						value= Convert.ToDouble(json["current_hum"]);
+						break;
+					default:
+						break;
+				}			
+			}
+			return value;
 		}
 		//chart js code
 		List<string> Color = new List<string>();
@@ -221,10 +315,14 @@ namespace FYP_APP.Controllers
 			int[] x3 = { 65, 59, 80, 81, 56, 55, 40, 50, 60, 55, 30, 78 };
 
 			int[] x4 = { 50, 59, 70, 71, 56, 55, 45, 55, 60, 50, 30, 50 };
+			int[] x5 = { 50, 59, 70, 71, 56, 55, 45, 55, 60, 50, 30, 50 };
+
 			datas.Add(x1.ToJson());
 			datas.Add(x2.ToJson());
 			datas.Add(x3.ToJson());
 			datas.Add(x4.ToJson());
+			datas.Add(x5.ToJson());
+
 
 			ArrayList day = new ArrayList();
 
@@ -235,13 +333,18 @@ namespace FYP_APP.Controllers
 			for (int i = 0; i < SensorsDataList.Count; i++)
 			{	
 				getRandomColor();
+				
 
 				labelss.Add(SensorsDataList[i].sensorId);
 			}
+			Debug.WriteLine("SensorsDataList---------->" + SensorsDataList.Count);
+			Debug.WriteLine("labelss---------->" + labelss.Count);
+			Debug.WriteLine("Color---------->" + Color.Count);
+			Debug.WriteLine("datas---------->" + datas.Count);
 			for (int i = 0; i < SensorsDataList.Count; i++)
 			{
-			 var json = "{ 'label':"+ labelss[i]+
-					  ",'borderColor':'" +  Color[i]+
+			 var json = "{ 'label':'"+ labelss[i]+
+					  "','borderColor':'" +  Color[i]+
 					  "','fill': false,'spanGaps': false," +
 					  "'data':"+  datas[i]+"}" ;
 				JObject jObj = JObject.Parse(json);
