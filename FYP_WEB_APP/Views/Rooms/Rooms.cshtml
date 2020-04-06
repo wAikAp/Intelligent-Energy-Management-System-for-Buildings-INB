@@ -30,19 +30,65 @@
 
          
       });
-
-      //$(window).load(function() {
-      //  // Animate loader off screen
-      //  $(".se-pre-con").fadeOut("fast");
-      //});
     </script>
 </head>
 
 
-<body class="">
+<body class="main ">
+    <div class=" bg-light p-3">
+        <div class="d-flex flex-column">
+            <div class="container-fluid ">
+                <div class=" h2">  <b>Room List</b></div>
+            </div>
+            <div class="card d-flex flex-column mb-2 mx-2 p-2">
+                <div class="row justify-content-between mb-2">
+                    <div class="col-12 d-flex justify-content-end">
+                        <button class="btn btn-outline-secondary px-2 mr-2 " type="button" data-toggle="modal"
+                                data-target="#addDevices ">
+                            edit
+                        </button>
+                        <button class="btn btn-outline-secondary px-2 mr-2" type="button" data-toggle="modal"
+                                data-target="#addDevices ">
+                            &#43;
+                        </button>
 
-    <!--body-->
-  
+                    </div>
+                </div>
+
+
+                <div class="overflow-auto" style="height:100%">
+
+                    <table class="table table-striped" id="RoomsTable">
+                        <thead>
+                            <tr>
+                                <th class="th-sm" scope="col">Room name</th>
+                                <th scope="col">F</th>
+                                <th scope="col">Location</th>
+                                <th scope="col">Power</th>
+                                <th scope="col">Humidity</th>
+                                <th scope="col">Luminosity</th>
+                                <th scope="col">Temperature</th>
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <!--data -->
+                            <tr>
+                                <td>Lab01</td>
+                                <td>3</td>
+                                <td>348</td>
+                                <td>9000kw</td>
+                                <td>90%</td>
+                                <td>80%</td>
+                                <td>25c</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 
