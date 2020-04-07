@@ -18,24 +18,49 @@ namespace FYP_APP.Controllers
     public class SensorsController : Controller
     {
 		private IMongoDatabase database;
+		private string PageRoomId;
+
 		public ActionResult Sensors()
 		{
-			
+			PageRoomId = "";
+			ViewBag.SearchRoomIdENorDisable = "";
 			ConnectDB conn = new ConnectDB();
 			this.database = conn.Conn();
 			ViewData["SensorsListModel"] = Setgroup(GetSensorsData());
 
 			ViewData["RoomListModel"] = GetRoomData();
-			
+
 			chartData(GetSensorsData());
 
 			return View();
 		}
+		[Route("Sensors/Sensors/{id}")]
+		public ActionResult Sensors(string id)
+		{
+			ViewBag.roomID =this.PageRoomId = id;
+			ViewBag.SearchRoomIdENorDisable = "disabled";
+			ConnectDB conn = new ConnectDB();
+			this.database = conn.Conn();
+			ViewData["SensorsListModel"] = Setgroup(GetSensorsData());
+
+			ViewData["RoomListModel"] = GetRoomData(id);
+
+
+			chartData(GetSensorsData());
+
+			return View();
+		}
+		[Route("Sensors/EditSensors")]
+		public ActionResult EditSensors()
+		{
+
+			return PartialView("_AddSensors");
+		}
 		public List<SensorsListModel> FindSensors(List<SensorsListModel> SensorsDataList)
 		{
 			List<SensorsListModel> EndDataList = new List<SensorsListModel> { };
-			List<SensorsListModel> FDataList = null;
-			List<SensorsListModel> roomSensorsDataList = null;
+			List<SensorsListModel> FDataList = new List<SensorsListModel> { };
+			List<SensorsListModel> roomSensorsDataList = new List<SensorsListModel> { };
 
 			
 				foreach (String key in Request.Query.Keys)
@@ -52,19 +77,27 @@ namespace FYP_APP.Controllers
 						case "LS":
 						case "HS":
 							FDataList = SensorsDataList.Where(x => x.sensorId.Contains(skey)).ToList();
-							break;
+						break;
 						default:
 							break;
 					}
 					if (skey !="sortOrder")
 					{
 						EndDataList.AddRange(FDataList);//B list add in A list
-						EndDataList = EndDataList.Distinct().ToList();//delet double data
-					}
+
+					EndDataList = EndDataList.Distinct().ToList();//delet double data
+
 				}
+			}
 
 			//get B & A list Intersect data
-			if (roomSensorsDataList!=null) {
+			if (roomSensorsDataList.Count >0)
+			{
+				SensorsDataList = roomSensorsDataList.Intersect(EndDataList).ToList();
+			}
+			else if (this.PageRoomId.Length > 0)
+			{//Sensors/{id}
+				roomSensorsDataList = SensorsDataList;
 				SensorsDataList = roomSensorsDataList.Intersect(EndDataList).ToList();
 			}
 
@@ -92,7 +125,6 @@ namespace FYP_APP.Controllers
 
 				DataList = DataList.OrderBy(item => item.roomId).ToList();
 			}
-			Debug.WriteLine("sorting ------>  "+DataList.ToJson().ToString());
 			return DataList;
 		}
 		public List<List<SensorsListModel>> Setgroup(List<SensorsListModel> SensorsDataList)
@@ -110,8 +142,14 @@ namespace FYP_APP.Controllers
 
 			//db collection
 			collection = database.GetCollection<SensorsListModel>("SENSOR_LIST");
-
-			IQueryable <SensorsListModel> query = from c in collection.AsQueryable<SensorsListModel>() select c;
+			IQueryable<SensorsListModel> query;
+			if (PageRoomId.Length==0) {
+				 query = from c in collection.AsQueryable<SensorsListModel>() select c;
+			}
+			else
+			{//Sensors/{id}
+				query = from c in collection.AsQueryable<SensorsListModel>()where c.roomId.Contains(PageRoomId) select c;
+			}
 
 			foreach (SensorsListModel set in query)
 				{					
@@ -130,8 +168,8 @@ namespace FYP_APP.Controllers
 			}
 			if (Request.Query.Count > 0)
 			{
+
 				SensorsDataList = FindSensors(SensorsDataList);
-				Debug.WriteLine("finded==\n"+SensorsDataList.ToJson().ToString());
 				SensorsDataList = SortList(SensorsDataList);
 			}
 			else
@@ -162,6 +200,19 @@ namespace FYP_APP.Controllers
 				};
 				RoomDataList.Add(data);
 			}
+
+			return RoomDataList;
+		}
+		public List<RoomsListModel> GetRoomData(string id)
+		{
+			var RoomDataList = new List<RoomsListModel> { };
+			
+				var data = new RoomsListModel()
+				{
+					roomId = id,
+				};
+				RoomDataList.Add(data);
+			
 
 			return RoomDataList;
 		}
@@ -337,10 +388,7 @@ namespace FYP_APP.Controllers
 
 				labelss.Add(SensorsDataList[i].sensorId);
 			}
-			Debug.WriteLine("SensorsDataList---------->" + SensorsDataList.Count);
-			Debug.WriteLine("labelss---------->" + labelss.Count);
-			Debug.WriteLine("Color---------->" + Color.Count);
-			Debug.WriteLine("datas---------->" + datas.Count);
+
 			for (int i = 0; i < SensorsDataList.Count; i++)
 			{
 			 var json = "{ 'label':'"+ labelss[i]+

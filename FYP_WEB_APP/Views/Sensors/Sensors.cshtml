@@ -39,7 +39,7 @@
             <div class="d-flex flex-column bd-highlight mb-3">
                 <div class="p-2 bd-highlight">
                     <div class="container-fluid ">
-                        <div class=" h2"><b>Sensor</b></div>
+                        <div class=" h2">@ViewBag.roomID<b>Sensor</b></div>
                     </div>
                 </div>
                 <div class="p-2 bd-highlight">
@@ -68,7 +68,7 @@
                                                 location:
                                             </div>
                                             <div d-flex px-3 align-items-center">
-                                                <select id="roomId" name="roomId">
+                                                <select id="roomId" name="roomId" @ViewBag.SearchRoomIdENorDisable>
                                                     <option value="">Room.No</option>
                                                     @foreach (var Room in Rooms)
                                                     {
