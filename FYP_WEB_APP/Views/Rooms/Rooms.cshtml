@@ -1,7 +1,10 @@
 ﻿
+@using FYP_APP.Models.MongoModels;
+
 @{
     ViewData["Title"] = "Rooms";
     Layout = "_Layout";
+    var roomsDatalist = (List<MongoRoomModel>)ViewData["roomsDatalist"];
 }
 
 <head>
@@ -16,78 +19,91 @@
     <script src="~/js/heatmap.js"></script>
     <script src="~/js/heatmap.min.js"></script>
     <script src="~/js/prism.js"></script>
-    <!--loading js-->
-    <script src="~/js/modernizr.js"></script>
-    <script src="~/js/jquery-2.2.4.min.js"></script>
-    <!--loading js-->
 
     <title>Rooms List</title>
     <script>
-      $(document).ready(function(){
-          //navbar ui
-          $('.navbar-nav .nav-link').removeClass('active');
-          $("#rooms").addClass('active');
-
-         
-      });
+        $(document).ready(function () {
+            //navbar ui
+        });
     </script>
 </head>
-
-
-<body class="main ">
-    <div class=" bg-light p-3">
-        <div class="d-flex flex-column">
-            <div class="container-fluid ">
-                <div class=" h2">  <b>Room List</b></div>
-            </div>
-            <div class="card d-flex flex-column mb-2 mx-2 p-2">
-                <div class="row justify-content-between mb-2">
-                    <div class="col-12 d-flex justify-content-end">
-                        <button class="btn btn-outline-secondary px-2 mr-2 " type="button" data-toggle="modal"
-                                data-target="#addDevices ">
-                            edit
-                        </button>
-                        <button class="btn btn-outline-secondary px-2 mr-2" type="button" data-toggle="modal"
-                                data-target="#addDevices ">
-                            &#43;
-                        </button>
-
-                    </div>
-                </div>
-
-
-                <div class="overflow-auto" style="height:100%">
-
-                    <table class="table table-striped" id="RoomsTable">
-                        <thead>
-                            <tr>
-                                <th class="th-sm" scope="col">Room name</th>
-                                <th scope="col">F</th>
-                                <th scope="col">Location</th>
-                                <th scope="col">Power</th>
-                                <th scope="col">Humidity</th>
-                                <th scope="col">Luminosity</th>
-                                <th scope="col">Temperature</th>
-
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            <!--data -->
-                            <tr>
-                                <td>Lab01</td>
-                                <td>3</td>
-                                <td>348</td>
-                                <td>9000kw</td>
-                                <td>90%</td>
-                                <td>80%</td>
-                                <td>25c</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+<!--body-->
+<body>
+    <div class="container-fluid p-4 ">
+        <div class="row mb-2">
+            <h1 class="col-sm-9"><b>Room List</b></h1>
+            <div class="d-flex col-sm-3 btn-sm justify-content-end">
+                <button class="btn btn-primary" type="button">+Add Room</button>
             </div>
         </div>
+
+        <!--searchbox-->
+        <div class="card">
+            <div class="row">
+                <div class="col-sm-12 ">
+                    <form action="">
+                        <div class="input-group">
+                            <span class="input-group-text">🔍 </span>
+                            <input class="form-control " type="text" placeholder="Search" name="searchRoom">
+                        </div>
+                        <select class="custom-select custom-select-sm m-2 col-2">
+                            <option value="" disabled selected>Choose /F</option>
+                            <option value="G">G/F</option>
+                            <option value="1">1/F</option>
+                            <option value="2">2/F</option>
+                            <option value="3">3/F</option>
+                        </select>
+                        <input type="checkbox" value="Lab" id="labCheck">
+                        <label class="mr-2" for="labCheck">Lab</label>
+                        <input type="checkbox" value="Class" id="classCheck">
+                        <label for="labCheck">Class</label>
+                        <button class="btn-lg btn-outline-secondary float-right m-2 " type="submit">search</button>
+                    </form>
+                </div>
+
+            </div>
+            <!--table-->
+            <div class="overflow-auto">
+                <table class="table table-bordered table-striped table-hover" id="RoomsTable">
+                    <thead>
+                        <tr>
+                            <th class="th-sm" scope="col">Room name</th>
+                            <th scope="col">Room type</th>
+                            <th scope="col">F</th>
+                            <th scope="col">Location</th>
+                            <th scope="col">Power</th>
+                            <th scope="col">Humidity</th>
+                            <th scope="col">Luminosity</th>
+                            <th scope="col">Temperature</th>
+                            <th scope="col">Description</th>
+
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <!--load data from ViewData:List<MongoRoomModel> -->
+                        @foreach (MongoRoomModel roomModel in roomsDatalist)
+                        {
+                            <tr class='clickable-row' data-href='#' style="cursor: pointer;">
+                                <td>@roomModel.roomName </td>
+                                <td>@roomModel.type </td>
+                                <td>@roomModel.roomId</td>
+                                <td>@roomModel.floor</td>
+                                <td>@roomModel.power</td>
+                                <td>@roomModel.hum</td>
+                                <td>@roomModel.lig</td>
+                                <td>@roomModel.temp C</td>
+                                <td>@roomModel.desc</td>
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+
     </div>
 </body>
 
