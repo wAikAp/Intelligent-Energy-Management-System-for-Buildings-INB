@@ -18,14 +18,19 @@ namespace FYP_APP.Controllers
     public class SensorsController : Controller
     {
 		private IMongoDatabase database;
-		private string PageRoomId;
-
+		private string PageRoomId="";
+		private bool isUpdated;
+		public void getdb() { 
+		ConnectDB conn = new ConnectDB();
+			this.database = conn.Conn();
+		}
+		[Route("Sensors/")]
+		[Route("Sensors/Sensors")]
 		public ActionResult Sensors()
 		{
-			PageRoomId = "";
+
 			ViewBag.SearchRoomIdENorDisable = "";
-			ConnectDB conn = new ConnectDB();
-			this.database = conn.Conn();
+			getdb();
 			ViewData["SensorsListModel"] = Setgroup(GetSensorsData());
 
 			ViewData["RoomListModel"] = GetRoomData();
@@ -39,8 +44,8 @@ namespace FYP_APP.Controllers
 		{
 			ViewBag.roomID =this.PageRoomId = id;
 			ViewBag.SearchRoomIdENorDisable = "disabled";
-			ConnectDB conn = new ConnectDB();
-			this.database = conn.Conn();
+			getdb();
+
 			ViewData["SensorsListModel"] = Setgroup(GetSensorsData());
 
 			ViewData["RoomListModel"] = GetRoomData(id);
@@ -50,11 +55,81 @@ namespace FYP_APP.Controllers
 
 			return View();
 		}
-		[Route("Sensors/EditSensors")]
-		public ActionResult EditSensors()
+		[Route("Sensors/EditSensors/{id}")]
+		public ActionResult EditSensors(string id)
 		{
+			getdb();
+			List<SensorsListModel> list = GetSensorsData();
+			list = list.Where(x => x.sensorId.Contains(id)).ToList();
+			ViewData["EditSensorsListModel"] = list;
+			ViewBag.sid = id;
+			ViewBag.viewType = "Edit";
+			ViewBag.action = "UpdateSensors";
+			return PartialView("_AddSensors", list);
+		}
+		[Route("Sensors/UpdateSensors")]
+		[HttpPost]
+		public ActionResult UpdateSensors(SensorsListModel postData)
+		{
+			Debug.WriteLine("============= Start\n\n");
+
+			getdb();
+			Debug.WriteLine("Sensors/UpdateSensors======>\n"+ postData.ToJson().ToString());
+
+			var collection=database.GetCollection<SensorsListModel>("SENSOR_LIST");
+			var filter = Builders<SensorsListModel>.Filter.Eq("sensorId", postData.sensorId);
+			Debug.WriteLine("Sensors/UpdateSensors data======>\n" + postData.roomId);
+
+			var type = postData.GetType();
+			var props = type.GetProperties();
+
+			foreach (var property in props)
+			{
+				if (!property.Name.Equals("_id") ) {
+					if (property.GetValue(postData) != null) {
+					
+				var up = Builders<SensorsListModel>.Update.Set(property.Name.ToString(), property.GetValue(postData).ToString()); 
+				var Updated = collection.UpdateOne(filter, up);
+				this.isUpdated = Updated.IsAcknowledged;
+				Debug.WriteLine("property=== " + property.Name + "   /    value===" + property.GetValue(postData)+ "    /    isUpdated===" + isUpdated);
+					}
+				}
+			}
+			Debug.WriteLine("\n\n============= end");
+			return RedirectToAction("Sensors");
+		}
+		[Route("Sensors/AddSensors")]
+		public ActionResult AddSensors()//display add sensors form
+		{
+			ViewBag.viewType = "Add";
+			ViewBag.ChangeType = "readonly";
+			ViewData["RoomListModel"] = GetRoomData();
 
 			return PartialView("_AddSensors");
+		}
+		[Route("Sensors/AddSensorsData")]
+		public ActionResult AddSensorsData()//post
+		{
+
+			return View();
+		}
+		[Route("Sensors/DropSensorsData")]
+		public ActionResult DropSensorsData()//post
+		{
+
+			return View();
+		}
+		[Route("Sensors/DropSensors/{id}")]
+		public ActionResult DropSensors(string id)//display Drop sensors form
+		{
+			getdb();
+			List<SensorsListModel> list = GetSensorsData();
+			list = list.Where(x => x.sensorId.Contains(id)).ToList();
+			
+			ViewData["EditSensorsListModel"] = list;
+			ViewBag.sid = id;
+			ViewBag.viewType = "Drop";
+			return PartialView("_AddSensors", list);
 		}
 		public List<SensorsListModel> FindSensors(List<SensorsListModel> SensorsDataList)
 		{
@@ -166,21 +241,32 @@ namespace FYP_APP.Controllers
 
 				
 			}
-			if (Request.Query.Count > 0)
-			{
 
-				SensorsDataList = FindSensors(SensorsDataList);
-				SensorsDataList = SortList(SensorsDataList);
+				try
+				{
+				int count = Request.Query.Count;
+				if (count != null)
+				{
+					SensorsDataList = FindSensors(SensorsDataList);
+					SensorsDataList = SortList(SensorsDataList);
+				}
+				else
+				{
+					SensorsDataList = SortList(SensorsDataList);
+				}
 			}
-			else
-			{
-				SensorsDataList = SortList(SensorsDataList);
-			}
+				catch (NullReferenceException e)
+				{
+					SensorsDataList = SortList(SensorsDataList);
+				}
+			
+
 
 			return SensorsDataList;
 		}
 		public List<RoomsListModel> GetRoomData()
 		{
+			getdb();
 			var RoomDataList = new List<RoomsListModel> { };
 			IMongoCollection<RoomsListModel> collection = database.GetCollection<RoomsListModel>("ROOM");
 

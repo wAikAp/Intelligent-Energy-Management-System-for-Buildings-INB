@@ -31,8 +31,17 @@
 
 <body class="">
 
-    @Html.Partial("_AddSensors")
+    <div class="modal fade" id="EditSensors" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
+        <div class="modal-dialog modal-dialog-centered" role="document">
+
+            <div class="modal-content" id="EditSensorsBody">
+
+
+            </div>
+
+        </div>
+    </div>
 
     <div class="main  ">
         <div class=" bg-light p-3">
@@ -46,72 +55,72 @@
                     @using (Html.BeginForm("Sensors", "Sensors", FormMethod.Get))
 
                     {
-                        <div class="d-flex flex-row mb-2 p-2 w-100">
-                            <div class="col px-0">
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text" id="inputGroup-sizing-default">
-                                            <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="15.000000pt"
-                                                 height="15.000000pt" viewBox="0 0 240.000000 240.000000"
-                                                 preserveAspectRatio="xMidYMid meet">
-                                                <g transform="translate(0.000000,240.000000) scale(0.100000,-0.100000)"
-                                                   fill="#000000" stroke="none">
-                                                    <path d="M721 2379 c-259 -58 -457 -198 -591 -418 -76 -123 -130 -316 -130 -458 0 -101 38 -269 83 -366 133 -287 398 -479 716 -517 121 -15 251 -1 375 41 l90 30 346 -346 c233 -233 352 -345 366 -345 38 0 138 40 192 77 107 73 198 207 210 309 l5 46 -341 342 -341 341 34 100 c46 136 61 255 46 381 -46 393 -316 693 -699 780 -130 29 -242 30 -361 3z m387 -315 c182 -73 318 -225 366 -411 20 -78 20 -218 0 -297 -52 -203 -227 -378 -430 -430 -78 -20 -222 -21 -297 -1 -207 54 -378 225 -432 433 -20 74 -20 221 0 297 49 186 191 343 371 411 127 48 298 47 422 -2z" />
-                                                </g>
-                                            </svg>
-                                        </span>
-                                    </div>
+                    <div class="d-flex flex-row mb-2 p-2 w-100">
+                        <div class="col px-0">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroup-sizing-default">
+                                        <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="15.000000pt"
+                                             height="15.000000pt" viewBox="0 0 240.000000 240.000000"
+                                             preserveAspectRatio="xMidYMid meet">
+                                            <g transform="translate(0.000000,240.000000) scale(0.100000,-0.100000)"
+                                               fill="#000000" stroke="none">
+                                                <path d="M721 2379 c-259 -58 -457 -198 -591 -418 -76 -123 -130 -316 -130 -458 0 -101 38 -269 83 -366 133 -287 398 -479 716 -517 121 -15 251 -1 375 41 l90 30 346 -346 c233 -233 352 -345 366 -345 38 0 138 40 192 77 107 73 198 207 210 309 l5 46 -341 342 -341 341 34 100 c46 136 61 255 46 381 -46 393 -316 693 -699 780 -130 29 -242 30 -361 3z m387 -315 c182 -73 318 -225 366 -411 20 -78 20 -218 0 -297 -52 -203 -227 -378 -430 -430 -78 -20 -222 -21 -297 -1 -207 54 -378 225 -432 433 -20 74 -20 221 0 297 49 186 191 343 371 411 127 48 298 47 422 -2z" />
+                                            </g>
+                                        </svg>
+                                    </span>
+                                </div>
 
-                                    <div class="col align-items-center bg-white  text-dark border border-secondary">
-                                        <div class="col-4  d-flex  flex-row py-2">
-                                            <div class="d-flex px-3 align-items-center">
-                                                location:
-                                            </div>
-                                            <div d-flex px-3 align-items-center">
-                                                <select id="roomId" name="roomId" @ViewBag.SearchRoomIdENorDisable>
-                                                    <option value="">Room.No</option>
-                                                    @foreach (var Room in Rooms)
+                                <div class="col align-items-center bg-white  text-dark border border-secondary">
+                                    <div class="col-4  d-flex  flex-row py-2">
+                                        <div class="d-flex px-3 align-items-center">
+                                            location:
+                                        </div>
+                                        <div d-flex px-3 align-items-center">
+                                            <select class="form-control bg-white"id="roomId" name="roomId" @ViewBag.SearchRoomIdENorDisable>
+                                                <option value="">Room.No</option>
+                                                @foreach (var Room in Rooms)
                                                     {
 
-                                                        <option value="@Room.roomId">@Room.roomId</option>
+                                                <option value="@Room.roomId">@Room.roomId</option>
 
                                                     }
 
-                                                </select>
-                                            </div>
+                                            </select>
                                         </div>
-                                        <div class="col  d-flex  flex-row align-items-center py-2">
-                                            <div class="d-flex px-3 align-items-center">
-                                                type:
-                                            </div>
-                                            <div class="d-flex px-3 align-items-center">
-
-                                                <input type="checkbox" name="All" value="true" />
-                                                All
-                                            </div>
-                                            <div class="d-flex px-3 align-items-center">
-                                                <input type="checkbox" name="TS" value="true" />
-                                                Temperature
-                                            </div>
-                                            <div class="d-flex px-3 align-items-center">
-                                                <input type="checkbox" name="HS" value="true" />
-                                                Humidity
-
-                                            </div>
-                                            <div class="d-flex px-3 align-items-center">
-                                                <input type="checkbox" name="LS" value="true" />
-                                                Luminosity
-                                            </div>
+                                    </div>
+                                    <div class="col  d-flex  flex-row align-items-center py-2">
+                                        <div class="d-flex px-3 align-items-center">
+                                            type:
                                         </div>
+                                        <div class="d-flex px-3 align-items-center">
 
+                                            <input type="checkbox" name="All" value="true" />
+                                            All
+                                        </div>
+                                        <div class="d-flex px-3 align-items-center">
+                                            <input type="checkbox" name="TS" value="true" />
+                                            Temperature
+                                        </div>
+                                        <div class="d-flex px-3 align-items-center">
+                                            <input type="checkbox" name="HS" value="true" />
+                                            Humidity
+
+                                        </div>
+                                        <div class="d-flex px-3 align-items-center">
+                                            <input type="checkbox" name="LS" value="true" />
+                                            Luminosity
+                                        </div>
                                     </div>
 
-                                    <div class="input-group-append">
-                                        <input class="btn btn-outline-secondary" type="submit" value="search" />
-                                    </div>
+                                </div>
+
+                                <div class="input-group-append">
+                                    <input class="btn btn-outline-secondary" type="submit" value="search" />
                                 </div>
                             </div>
                         </div>
+                    </div>
                     }
                 </div>
                 <div class="p-2 bd-highlight">
@@ -125,63 +134,98 @@
                             </div>
                             <div class=" d-flex justify-content-center align-items-center">
                                 <a class="btn btn-outline-dark mx-2" href='@ViewBag.roomIdSortParm'>
-                                    roomId                                 <img src="~/img/icon/@ViewBag.sortIMG" height="25" />
+                                    roomId
+                                    <img src="~/img/icon/@ViewBag.sortIMG" height="25" />
                                 </a>
                             </div>
                             <div class="d-flex justify-content-end">
-
-                                <button class="btn btn-outline-secondary px-2 mr-2 " type="button">edit</button>
-                                <button class="btn btn-outline-secondary px-2 mr-2" type="button" data-toggle="modal"
-                                        data-target="#addSensors ">
-                                    &#43;
-                                </button>
-
+                                
+                                <a href="#" class="btn btn-outline-success px-2 mr-3" onclick="AddtSensors()">
+                                    &#43; Add
+                                </a>
                             </div>
                         </div>
 
-                            @foreach (var Sensor in Sensors)
+                        @foreach (var Sensor in Sensors)
                             {
-                                <div class="card m-2">
-                                    <div class="card-header p-0" id="heading_@Sensor.First().roomId">
-                                        <h3 class="mb-0">
-                                            <button class="btn btn-outline-secondary w-100 border-0" data-toggle="collapse" data-target="#collapse_@Sensor.First().roomId" aria-expanded="true" aria-controls="collapse_@Sensor.First().roomId">
-                                                @Sensor.First().roomId
-                                            </button>
-                                        </h3>
-                                    </div>
+                        <div class="card m-2">
+                            <div class="card-header p-0" id="heading_@Sensor.First().roomId">
+                                <h3 class="mb-0">
+                                    <button class="btn btn-outline-secondary w-100 border-0" data-toggle="collapse" data-target="#collapse_@Sensor.First().roomId" aria-expanded="true" aria-controls="collapse_@Sensor.First().roomId">
+                                        @Sensor.First().roomId
+                                    </button>
+                                </h3>
+                            </div>
 
-                                    <div id="collapse_@Sensor.First().roomId" class="collapse show" aria-labelledby="heading_@Sensor.First().roomId" >
-                                        <div class="card-body d-flex flex-wrap">
+                            <div id="collapse_@Sensor.First().roomId" class="collapse show" aria-labelledby="heading_@Sensor.First().roomId">
+                                <div class="card-body d-flex flex-wrap">
 
-                                            @foreach (var Sensorss in Sensor)
+                                    @foreach (var Sensorss in Sensor)
                                             {
-                                            <div class="p-2 bd-highlight ">
-                                                <div class="shadow mb-3 bg-white rounded">
-                                                        <div class="p-3 bg-light">
-                                                            <h5 class="card-title">@Sensorss.roomId @Sensorss.sensorId</h5>
+                                    <div class="p-2 bd-highlight ">
+                                        <div class="shadow mb-3 bg-white rounded">
+                                            <div class="p-3 bg-light">
 
-                                                            <div class="d-flex" align-items-center>
-                                                                <img src="~/img/icon/@Sensorss.typeImg" height="50px">
-                                                                <h2 class="ml-3">@Sensorss.current_Value </h2>
-                                                            <h2 class="mx-2">@Sensorss.typeUnit</h2>
-                                                            </div>
+                                                <div class="d-flex align-items-center">
+                                                    <h5 class="card-title mx-2">@Sensorss.roomId @Sensorss.sensorId</h5>
+                                                    <a href="#" class="btn btn-outline-success mx-2" onclick="EditSensors('@Sensorss.sensorId')">edit </a>
 
-                                                            <p class="card-text my-1">@Sensorss.latest_checking_time</p>
-                                                        </div>
+                                                    <a href="#" class="btn btn-outline-danger mx-2" onclick="DropSensors('@Sensorss.sensorId')">Delete </a>
                                                 </div>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="~/img/icon/@Sensorss.typeImg" height="50px">
+                                                    <h2 class="ml-3">@Sensorss.current_Value </h2>
+                                                    <h2 class="mx-2">@Sensorss.typeUnit</h2>
+                                                </div>
+
+                                                <p class="card-text my-1">@Sensorss.latest_checking_time</p>
                                             </div>
-                                            }
-                                            <!--     </div>
-                                                    </div>
-                                                </div>
-                                            </div>-->
                                         </div>
                                     </div>
+                                            }
+                                    <!--     </div>
+                                            </div>
+                                        </div>
+                                    </div>-->
                                 </div>
+                            </div>
+                        </div>
                             }
 
                     </div>
                 </div>
+                <script>
+                    var EditSensors = function (sensorId) {
+
+                        var url = "/Sensors/EditSensors/" + sensorId;
+
+                        $("#EditSensorsBody").load(url, function () {
+                            $("#EditSensors").modal("show");
+
+                        })
+
+                    }
+                    var DropSensors = function (sensorId) {
+
+                        var url = "/Sensors/DropSensors/" + sensorId;
+
+                        $("#EditSensorsBody").load(url, function () {
+                            $("#EditSensors").modal("show");
+
+                        })
+
+                    }
+                    var AddtSensors = function () {
+
+                        var url = "/Sensors/AddSensors";
+
+                        $("#EditSensorsBody").load(url, function () {
+                            $("#EditSensors").modal("show");
+
+                        })
+
+                    }
+                </script>
                 <div class="p-2 bd-highlight">
                     <div class="card d-flex flex-row mb-2 mx-2 p-2 ">
                         <button class="p-3 mx-2 btn btn-outline-secondary">Sensor report</button>
