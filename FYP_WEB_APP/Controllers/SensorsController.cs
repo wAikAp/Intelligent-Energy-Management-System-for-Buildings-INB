@@ -7,6 +7,7 @@ using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using FYP_WEB_APP.Controllers.Mongodb;
 using FYP_WEB_APP.Models;
+using FYP_WEB_APP.Models.MongoModels;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -69,16 +70,13 @@ namespace FYP_APP.Controllers
 		}
 		[Route("Sensors/UpdateSensors")]
 		[HttpPost]
-		public ActionResult UpdateSensors(SensorsListModel postData)
+		public ActionResult UpdateSensors(MongoSensorsListModel postData)
 		{
-			Debug.WriteLine("============= Start\n\n");
 
 			getdb();
-			Debug.WriteLine("Sensors/UpdateSensors======>\n"+ postData.ToJson().ToString());
 
-			var collection=database.GetCollection<SensorsListModel>("SENSOR_LIST");
-			var filter = Builders<SensorsListModel>.Filter.Eq("sensorId", postData.sensorId);
-			Debug.WriteLine("Sensors/UpdateSensors data======>\n" + postData.roomId);
+			var collection=database.GetCollection<MongoSensorsListModel>("SENSOR_LIST");
+			var filter = Builders<MongoSensorsListModel>.Filter.Eq("sensorId", postData.sensorId);
 
 			var type = postData.GetType();
 			var props = type.GetProperties();
@@ -87,15 +85,24 @@ namespace FYP_APP.Controllers
 			{
 				if (!property.Name.Equals("_id") ) {
 					if (property.GetValue(postData) != null) {
-					
-				var up = Builders<SensorsListModel>.Update.Set(property.Name.ToString(), property.GetValue(postData).ToString()); 
-				var Updated = collection.UpdateOne(filter, up);
+						UpdateDefinition<MongoSensorsListModel> up;
+						if (property.Name=="latest_checking_time")
+						{
+							up = Builders<MongoSensorsListModel>.Update.Set(property.Name.ToString(), DateTime.UtcNow);
+
+						}
+						else {
+							 up = Builders<MongoSensorsListModel>.Update.Set(property.Name.ToString(), property.GetValue(postData).ToString());
+
+						}
+						var Updated = collection.UpdateOne(filter, up);
 				this.isUpdated = Updated.IsAcknowledged;
-				Debug.WriteLine("property=== " + property.Name + "   /    value===" + property.GetValue(postData)+ "    /    isUpdated===" + isUpdated);
 					}
 				}
 			}
-			Debug.WriteLine("\n\n============= end");
+
+
+
 			return RedirectToAction("Sensors");
 		}
 		[Route("Sensors/AddSensors")]
@@ -104,20 +111,49 @@ namespace FYP_APP.Controllers
 			ViewBag.viewType = "Add";
 			ViewBag.ChangeType = "readonly";
 			ViewData["RoomListModel"] = GetRoomData();
+			ViewBag.action = "AddSensorsData";
 
 			return PartialView("_AddSensors");
 		}
-		[Route("Sensors/AddSensorsData")]
-		public ActionResult AddSensorsData()//post
+		[Route("Sensors/AddSensorsData")][HttpPost]
+		public ActionResult AddSensorsData(SensorsListModel postData)//post
 		{
+			Debug.WriteLine(postData.ToJson().ToString());
+			getdb();
+			var collection = database.GetCollection<MongoSensorsListModel>("SENSOR_LIST");
 
-			return View();
+			string sensortype = "";
+
+			MongoSensorsListModel insertList = new MongoSensorsListModel { } ;
+
+			var all=GetSensorsData();
+			string count = "";
+			if (all.Count < 10) { count = "00" + all.Count.ToString(); }
+			else if (all.Count < 100) { count = "0" + all.Count.ToString(); }
+
+			sensortype = postData.Sensortype;
+			insertList.roomId = postData.roomId;
+			insertList.sensorId = postData.Sensortype+ count;
+			insertList.location = postData.location;
+			insertList.desc = postData.desc;
+			insertList.latest_checking_time = DateTime.UtcNow;
+			insertList.total_run_time = 0;
+
+			Debug.WriteLine(insertList.ToJson().ToString());
+
+			collection.InsertOneAsync(insertList);
+			return RedirectToAction("Sensors");
 		}
 		[Route("Sensors/DropSensorsData")]
-		public ActionResult DropSensorsData()//post
+		[HttpPost]
+		public ActionResult DropSensorsData(SensorsListModel postData)//post
 		{
+			getdb();
+			var collection = database.GetCollection<MongoSensorsListModel>("SENSOR_LIST");
 
-			return View();
+			var DeleteResult = collection.DeleteOne(Builders<MongoSensorsListModel>.Filter.Eq("sensorId", postData.sensorId));
+
+			return RedirectToAction("Sensors");
 		}
 		[Route("Sensors/DropSensors/{id}")]
 		public ActionResult DropSensors(string id)//display Drop sensors form
@@ -129,6 +165,8 @@ namespace FYP_APP.Controllers
 			ViewData["EditSensorsListModel"] = list;
 			ViewBag.sid = id;
 			ViewBag.viewType = "Drop";
+			ViewBag.action = "DropSensorsData";
+
 			return PartialView("_AddSensors", list);
 		}
 		public List<SensorsListModel> FindSensors(List<SensorsListModel> SensorsDataList)
@@ -397,7 +435,6 @@ namespace FYP_APP.Controllers
 			
 			IMongoCollection<BsonDocument> collection;
 			FilterDefinition<BsonDocument> filter;
-			IFindFluent<BsonDocument, BsonDocument> FindSensorsDocuments;
 			double value = 0;
 			var dbStr ="";
 			switch (sensorId.Substring(0, 2))
@@ -444,7 +481,6 @@ namespace FYP_APP.Controllers
 			List<string> labelss = new List<string>();
 			List<string> datas = new List<string>();
 			List<JObject> datasets = new List<JObject>();
-			string sdatasets = "";
 			int[] x1 = { 65, 59, 80, 81, 56, 55, 40, 50, 60, 55, 30, 78 };
 
 			int[] x2 = { 10, 20, 60, 95, 64, 78, 90, 80, 70, 40, 70, 89 };
@@ -453,12 +489,15 @@ namespace FYP_APP.Controllers
 
 			int[] x4 = { 50, 59, 70, 71, 56, 55, 45, 55, 60, 50, 30, 50 };
 			int[] x5 = { 50, 59, 70, 71, 56, 55, 45, 55, 60, 50, 30, 50 };
+			int[] x6 = { 50, 59, 70, 71, 56, 55, 45, 55, 60, 50, 30, 50 };
 
 			datas.Add(x1.ToJson());
 			datas.Add(x2.ToJson());
 			datas.Add(x3.ToJson());
 			datas.Add(x4.ToJson());
 			datas.Add(x5.ToJson());
+			datas.Add(x6.ToJson());
+
 
 
 			ArrayList day = new ArrayList();
@@ -493,5 +532,21 @@ namespace FYP_APP.Controllers
 			var rmcolor = String.Format("#{0:X6}", random.Next(0x1000000));
 			Color.Add(rmcolor);
 		}
+		public void alert(int type,string title,string str) {
+			switch (type) {
+				case -1:
+					ViewBag.alert_type = "alert-danger";
+					break;
+				case 0:
+					ViewBag.alert_type = "alert-warning";
+					break;
+				case 1:
+					ViewBag.alert_type = "alert-success";
+					break;
+
+			}
+			ViewBag.title = title;
+			ViewBag.str = str;
+		} 
 	}
 }

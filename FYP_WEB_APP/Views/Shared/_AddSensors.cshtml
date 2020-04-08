@@ -111,10 +111,10 @@
 
             <div class="row mx-3 justify-content-center align-items-center pb-2">
 
-                <label class="col h5" for="Sensorlocation">Sensors location:</label>
+                <label class="col h5" for="location">Sensors location:</label>
                 <div class="col">
 
-                    <input type="text" class="form-control bg-white" id="Sensorlocation" name="Sensorlocation" placeholder="location" value="@if(Sensors!=null){@Sensors.First().location}" required >
+                    <input type="text" class="form-control bg-white" id="location" name="location" placeholder="location" value="@if(Sensors!=null){@Sensors.First().location}" required >
 
                 </div>
 
@@ -122,10 +122,10 @@
 
             <div class="row mx-3 justify-content-center align-items-center pb-2">
 
-                <label class="col h5" for="SensorDesc">Description:</label>
+                <label class="col h5" for="desc">Description:</label>
                 <div class="col">
 
-                    <input type="text" class="form-control bg-white" id="SensorDesc" name="SensorDesc" placeholder=" Description of Sensor" value="@if (Sensors != null) {@Sensors.First().desc}" required >
+                    <input type="text" class="form-control bg-white" id="desc" name="desc" placeholder=" Description of Sensor" value="@if (Sensors != null) {@Sensors.First().desc}" required >
 
                 </div>
 
@@ -134,20 +134,20 @@
             {
                 <div class="row mx-3 justify-content-center align-items-center pb-2">
 
-                    <label class="col h5" for="SensorLatest_checking_time">Latest checking time:</label>
+                    <label class="col h5" for="latest_checking_time">Latest checking time:</label>
                     <div class="col">
 
-                        <input type="datetime" class="form-control bg-white" id="SensorLatest_checking_time" name="SensorLatest_checking_time" value="@if (Sensors != null) {@Sensors.First().latest_checking_time}" required >
+                        <input type="datetime" class="form-control bg-white" id="latest_checking_time" name="latest_checking_time" value="@if (Sensors != null) {@Sensors.First().latest_checking_time}" required >
 
                     </div>
 
                 </div>
                 <div class="row mx-3 justify-content-center align-items-center pb-2">
 
-                    <label class="col h5" for="SensorTotal_run_time">Total run time:</label>
+                    <label class="col h5" for="total_run_time">Total run time:</label>
                     <div class="col">
 
-                        <input type="number" class="form-control bg-white" id="SensorTotal_run_time" name="SensorTotal_run_time" value="@if (Sensors != null) {@Sensors.First().total_run_time}" required >
+                        <input type="number" class="form-control bg-white" id="total_run_time" name="total_run_time" value="@if (Sensors != null) {@Sensors.First().total_run_time}" required >
 
                     </div>
 
