@@ -23,7 +23,16 @@
     <title>Rooms List</title>
     <script>
         $(document).ready(function () {
-            //navbar ui
+            $('.navbar-nav .nav-link').removeClass('active');
+            $("#rooms").addClass('active');
+
+            $(".clickable-row").click(function () {
+                var roomID = $(this).data("href");
+                var url = '@Url.Action("RoomDetail", "RoomDetail")';
+                url += "?roomID=" + escape(roomID);
+                window.location.href = url;
+
+            });
         });
     </script>
 </head>
@@ -84,17 +93,22 @@
                         <!--load data from ViewData:List<MongoRoomModel> -->
                         @foreach (MongoRoomModel roomModel in roomsDatalist)
                         {
-                            <tr class='clickable-row' data-href='#' style="cursor: pointer;">
-                                <td>@roomModel.roomName </td>
-                                <td>@roomModel.type </td>
-                                <td>@roomModel.roomId</td>
-                                <td>@roomModel.floor</td>
-                                <td>@roomModel.power</td>
-                                <td>@roomModel.hum</td>
-                                <td>@roomModel.lig</td>
-                                <td>@roomModel.temp C</td>
-                                <td>@roomModel.desc</td>
-                            </tr>
+
+
+                                <tr class='clickable-row' data-href='@roomModel.roomId' style="cursor: pointer;">
+                                    <td>@roomModel.roomName </td>
+                                    <td>@roomModel.type </td>
+                                    <td>@roomModel.roomId</td>
+                                    <td>@roomModel.floor</td>
+                                    <td>@roomModel.power</td>
+                                    <td>@roomModel.hum</td>
+                                    <td>@roomModel.lig</td>
+                                    <td>@roomModel.temp C</td>
+                                    <td>@roomModel.desc</td>
+                                </tr>
+
+
+
 
                         }
                     </tbody>
