@@ -148,6 +148,7 @@ namespace FYP_APP.Controllers
 		[HttpPost]
 		public ActionResult DropSensorsData(SensorsListModel postData)//post
 		{
+			Debug.WriteLine("postData drop--> "+postData.ToJson().ToString());
 			getdb();
 			var collection = database.GetCollection<MongoSensorsListModel>("SENSOR_LIST");
 
@@ -265,13 +266,14 @@ namespace FYP_APP.Controllers
 			}
 
 			foreach (SensorsListModel set in query)
-				{					
+				{
 				var data = new SensorsListModel()
-					{
-						roomId = set.roomId,
-						sensorId = set.sensorId,
-						latest_checking_time = set.latest_checking_time,
-						current_Value = getSensorCurrentValue(set.sensorId),
+				{
+					roomId = set.roomId,
+					sensorId = set.sensorId,
+					latest_checking_time = set.latest_checking_time,
+					total_run_time = set.total_run_time,
+				current_Value = getSensorCurrentValue(set.sensorId),
 						typeImg = getType(set.sensorId),
 						typeUnit = getunit(set.sensorId)
 					};
@@ -279,7 +281,6 @@ namespace FYP_APP.Controllers
 
 				
 			}
-
 				try
 				{
 				int count = Request.Query.Count;

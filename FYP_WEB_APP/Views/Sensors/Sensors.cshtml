@@ -147,52 +147,54 @@
                                 </a>
                             </div>
                         </div>
-
-                        @foreach (var Sensor in Sensors)
+                        @if (Sensors.Count == 0)
+                        {<div class="alert alert-warning text-center font-weight-bold" role="alert">
+                                <h3>TryAgin, No more record in Your condition.  </h3>
+                            </div>}
+                        else
                         {
-                            <div class="card m-2">
-                                <div class="card-header p-0" id="heading_@Sensor.First().roomId">
-                                    <h3 class="mb-0">
-                                        <button class="btn btn-outline-secondary w-100 border-0" data-toggle="collapse" data-target="#collapse_@Sensor.First().roomId" aria-expanded="true" aria-controls="collapse_@Sensor.First().roomId">
-                                            @Sensor.First().roomId
-                                        </button>
-                                    </h3>
-                                </div>
+                            @foreach (var Sensor in Sensors)
+                            {
+                                <div class="card m-2">
+                                    <div class="card-header p-0" id="heading_@Sensor.First().roomId">
+                                        <h3 class="mb-0">
+                                            <button class="btn btn-outline-secondary w-100 border-0" data-toggle="collapse" data-target="#collapse_@Sensor.First().roomId" aria-expanded="true" aria-controls="collapse_@Sensor.First().roomId">
+                                                @Sensor.First().roomId
+                                            </button>
+                                        </h3>
+                                    </div>
 
-                                <div id="collapse_@Sensor.First().roomId" class="collapse show" aria-labelledby="heading_@Sensor.First().roomId">
-                                    <div class="card-body d-flex flex-wrap">
+                                    <div id="collapse_@Sensor.First().roomId" class="collapse show" aria-labelledby="heading_@Sensor.First().roomId">
+                                        <div class="card-body d-flex flex-wrap">
 
-                                        @foreach (var Sensorss in Sensor)
-                                        {
-                                            <div class="p-2 bd-highlight ">
-                                                <div class="shadow mb-3 bg-white rounded">
-                                                    <div class="p-3 bg-light">
+                                            @foreach (var Sensorss in Sensor)
+                                            {
+                                                <div class="p-2 bd-highlight ">
+                                                    <div class="shadow mb-3 bg-white rounded">
+                                                        <div class="p-3 bg-light">
 
-                                                        <div class="d-flex align-items-center">
-                                                            <h5 class="card-title mx-2">@Sensorss.roomId @Sensorss.sensorId</h5>
-                                                            <a href="#" class="btn btn-outline-success mx-2" onclick="EditSensors('@Sensorss.sensorId')">edit </a>
+                                                            <div class="d-flex align-items-center">
+                                                                <h5 class="card-title mx-2">@Sensorss.roomId @Sensorss.sensorId</h5>
+                                                                <a href="#" class="btn btn-outline-success mx-2" onclick="EditSensors('@Sensorss.sensorId')">edit </a>
 
-                                                            <a href="#" class="btn btn-outline-danger mx-2" onclick="DropSensors('@Sensorss.sensorId')">Delete </a>
+                                                                <a href="#" class="btn btn-outline-danger mx-2" onclick="DropSensors('@Sensorss.sensorId')">Delete </a>
+                                                            </div>
+                                                            <div class="d-flex align-items-center">
+                                                                <img src="~/img/icon/@Sensorss.typeImg" height="50px">
+                                                                <h2 class="ml-3">@Sensorss.current_Value </h2>
+                                                                <h2 class="mx-2">@Sensorss.typeUnit</h2>
+                                                            </div>
+
+                                                            <p class="card-text my-1">@Sensorss.latest_checking_time</p>
                                                         </div>
-                                                        <div class="d-flex align-items-center">
-                                                            <img src="~/img/icon/@Sensorss.typeImg" height="50px">
-                                                            <h2 class="ml-3">@Sensorss.current_Value </h2>
-                                                            <h2 class="mx-2">@Sensorss.typeUnit</h2>
-                                                        </div>
-
-                                                        <p class="card-text my-1">@Sensorss.latest_checking_time</p>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        }
-                                        <!--     </div>
-                                                </div>
-                                            </div>
-                                        </div>-->
+                                            }
+
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        }
+                            }}
 
                     </div>
                 </div>
@@ -228,41 +230,30 @@
 
                     }
                 </script>
-                <div class="p-2 bd-highlight">
-                    <div class="card d-flex flex-row mb-2 mx-2 p-2 ">
-                        <button class="p-3 mx-2 btn btn-outline-secondary">Sensor report</button>
-                        <button class="p-3 mx-2 btn btn-outline-secondary">Log report</button>
-                        <button class="p-3 mx-2 btn btn-outline-secondary">Day Log report</button>
+                @if (Sensors.Count != 0)
+                {
 
-                    </div>
-                </div>
-                <div class="p-2 bd-highlight">
-                    <div class="card  mx-2 p-2">
-                        <div class=" shadow-sm w-100 h-100 p-3 justify-content-center align-items-center">
-                            <div class="container-fluid col-xs-12 col-md-8 pt-4 w-100 px-0">
+                    <div class="p-2 bd-highlight">
+                        <div class="card d-flex flex-row mb-2 mx-2 p-2 ">
+                            <button class="p-3 mx-2 btn btn-outline-secondary">Sensor report</button>
+                            <button class="p-3 mx-2 btn btn-outline-secondary">Log report</button>
+                            <button class="p-3 mx-2 btn btn-outline-secondary">Day Log report</button>
 
-                                <canvas id="UsageRecordChart"></canvas>
-                            </div>
                         </div>
-                        <button class="p-3 mx-2 btn btn-outline-secondary">Download the report</button>
-
                     </div>
-                </div>
-            </div>
+                    <div class="p-2 bd-highlight">
+                        <div class="card  mx-2 p-2">
+                            <div class=" shadow-sm w-100 h-100 p-3 justify-content-center align-items-center">
+                                <div class="container-fluid col-xs-12 col-md-8 pt-4 w-100 px-0">
 
+                                    <canvas id="UsageRecordChart"></canvas>
+                                </div>
+                            </div>
+                            <button class="p-3 mx-2 btn btn-outline-secondary">Download the report</button>
 
-
-
-
-
-
-
-
-
-
-        </div>
-    </div>
-    <script>
+                        </div>
+                    </div>
+                    <script>
             var chartID = '';
             var charttitle = '';
             var chartType = '';
@@ -330,6 +321,23 @@
                     data: dataop,
                     options: goption
                 });
-            }
-                                                                    //--------------------------------------------------------------------------</script>
+        }
+                    </script>
+                }
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+    </div>
+                
+
 </body>
