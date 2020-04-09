@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Threading.Tasks;
@@ -118,7 +117,6 @@ namespace FYP_APP.Controllers
 		[Route("Sensors/AddSensorsData")][HttpPost]
 		public ActionResult AddSensorsData(SensorsListModel postData)//post
 		{
-			Debug.WriteLine(postData.ToJson().ToString());
 			getdb();
 			var collection = database.GetCollection<MongoSensorsListModel>("SENSOR_LIST");
 
@@ -139,7 +137,6 @@ namespace FYP_APP.Controllers
 			insertList.latest_checking_time = DateTime.UtcNow;
 			insertList.total_run_time = 0;
 
-			Debug.WriteLine(insertList.ToJson().ToString());
 
 			collection.InsertOneAsync(insertList);
 			return RedirectToAction("Sensors");
@@ -148,7 +145,6 @@ namespace FYP_APP.Controllers
 		[HttpPost]
 		public ActionResult DropSensorsData(SensorsListModel postData)//post
 		{
-			Debug.WriteLine("postData drop--> "+postData.ToJson().ToString());
 			getdb();
 			var collection = database.GetCollection<MongoSensorsListModel>("SENSOR_LIST");
 
