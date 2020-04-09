@@ -1,72 +1,206 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
-<div class="modal fade" id="addSensors" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"aria-hidden ="true">
-    
-    <div class="modal-dialog modal-dialog-centered" role="document">
-       
-        <div class="modal-content">
-            
-            <div class="modal-header">
-                
-                <h5 class="modal-title" id="exampleModalLabel">Add Sensors</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  
-                    <span aria-hidden="true">&times;</span>
-                    
-                </button>
-                
-            </div>
-            <div class="modal-body p-2">
-                
-                <div class="row mx-3 justify-content-center align-items-center pb-2">
-                    
-                    <label class="col h5" for="ADDDevicesName">Sensors Name:</label>
-                    <div class="col">
-                        
-                        <input type="text" class="form-control bg-white" id="ADDDevicesName" name="ADDDevicesName"placeholder ="Name" required readonly>
-                        
-                    </div>
-                    
-                </div>
-                <br>
-                <div class="row mx-3 justify-content-center align-items-center pb-2">
-                    
-                    <label class="col h5" for="ADDDevicestype">Sensors type:</label>
-                    <div class="col">
-                        <select class="form-control bg-white" id="ADDDevicestype" name="ADDDevicestype" placeholder="type" required>
-                           
-                            <option value="t">tempperature</option>
-                            <option value="h">humidity</option>
-                        </select>
-                    </div> 
-                </div>
-                <br>
+@{
+    List<FYP_WEB_APP.Models.SensorsListModel> Sensors = null;
+    List<FYP_WEB_APP.Models.RoomsListModel> Rooms = null;
+    if (ViewBag.viewType.Equals("Edit") || ViewBag.viewType.Equals("Drop"))
+    {
+        Sensors = ViewData["EditSensorsListModel"] as List<FYP_WEB_APP.Models.SensorsListModel>;
+    }
+    else if (ViewBag.viewType.Equals("Add"))
+    {
+        Rooms = ViewData["RoomListModel"] as List<FYP_WEB_APP.Models.RoomsListModel>;
+    }
 
-                <div class="row mx-3 justify-content-center align-items-center pb-2">
-                    
-                    <label class="col h5" for="ADDDeviceslocation">Sensors location:</label>
-                    <div class="col">
-                        
-                        <input type="text" class="form-control bg-white" id="ADDDeviceslocation" name="ADDDevicesName"placeholder ="location" required readonly>
-                        
-                    </div>
-                    
-                </div>
-                <br>
-                
-            </div>
-            <!--end modal body-->
-            <div class="modal-footer">
-                
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-                
-            </div>
-            
-        </div>
-        
+}
+<form action="@ViewBag.action" method="post">
+
+    <div class="modal-header">
+
+        <h5 class="modal-title" id="exampleModalLabel"> @ViewBag.viewType Sensors @ViewBag.sid</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+
+            <span aria-hidden="true">&times;</span>
+
+        </button>
+
     </div>
-    
-</div>
-<!--addSensors -->
+    <div class="modal-body p-2">
+
+        <div class="row mx-3 justify-content-center align-items-center pb-2">
+            <label class="col h5" for="SensorRoomId">Room:</label>
+            <div class="col">
+                @if (!ViewBag.viewType.Equals("Add"))
+                {@if (ViewBag.viewType.Equals("Edit"))
+                    {
+                        <input type="text" class="form-control bg-white" id="roomId" name="roomId" placeholder="id" value="@if (Sensors != null && ViewBag.viewType.Equals("Edit"))
+                    {@Sensors.First().roomId}" required readonly>
+                    }
+                    else
+                    {
+                        <input type="text" class="form-control bg-white d-none" id="CroomId" value="@if (Sensors != null ){@Sensors.First().roomId}" readonly>
+                <input type="text" class="form-control bg-white" id="roomId" name="roomId" placeholder="roomid" value="" required>
+                }
+                }
+                else if (ViewBag.viewType.Equals("Add"))
+                {
+                <select id="roomId" name="roomId" class="form-control bg-white">
+                    <option value="">Room.No</option>
+                    @foreach (var Room in Rooms)
+                    {
+
+                        <option value="@Room.roomId">@Room.roomId</option>
+
+                    }
+
+                </select>}
+            </div>
+        </div>
+        @if (ViewBag.viewType.Equals("Edit") || ViewBag.viewType.Equals("Drop"))
+        {
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+                <label class="col h5" for="SensorRoomId">Sensor id:</label>
+                <div class="col">
+                    @if (ViewBag.viewType.Equals("Edit"))
+                    {
+                        <input type="text" class="form-control bg-white" id="SensorId" name="SensorId" placeholder="SensorId" value="@if (Sensors!=null) {@Sensors.First().sensorId}" required readonly>
+                    }
+                    else if (ViewBag.viewType.Equals("Drop"))
+                    {
+                        <input type="text" class="form-control bg-white d-none" id="CSensorId" value="@if (Sensors!=null) {@Sensors.First().sensorId}" readonly>
+                        <input type="text" class="form-control bg-white" id="SensorId" name="SensorId" placeholder="SensorId" value="" required>
+
+                    }
+                </div>
+            </div>
+        }
+
+
+
+
+        @if (ViewBag.viewType.Equals("Add") || ViewBag.viewType.Equals("Edit"))
+        {
+
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                <label class="col h5" for="Sensortype">Sensors type:</label>
+                <div class="col">
+                    @{
+                    string str = "";}
+                    @if (ViewBag.viewType.Equals("Edit"))
+                    {
+                        <select class="form-control bg-white" id="Sensortype" name="Sensortype" placeholder="type" required disabled>
+
+                                <option value="@Sensors.First().sensorId.Substring(0, 2)">
+                                    @switch (Sensors.First().sensorId.Substring(0, 2))
+                                    {
+                                        case "TS":
+                                            str = "tempperature";
+                                            break;
+                                        case "LS":
+                                            str = "Luminosity";
+                                            break;
+                                        case "HS":
+                                            str = "humidity";
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                    @str
+                                </option>
+                            </select>
+
+
+                    }
+                    else { 
+
+
+                    <select class="form-control bg-white" id="Sensortype" name="Sensortype" placeholder="type" required>
+                        <option value="TS">tempperature</option>
+                        <option value="HS">humidity</option>
+                        <option value="LS">Luminosity</option>
+                    </select>}
+                </div>
+            </div>
+
+
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                <label class="col h5" for="location">Sensors location:</label>
+                <div class="col">
+
+                    <input type="text" class="form-control bg-white" id="location" name="location" placeholder="location" value="@if(Sensors!=null){@Sensors.First().location}" required >
+
+                </div>
+
+            </div>
+
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                <label class="col h5" for="desc">Description:</label>
+                <div class="col">
+
+                    <input type="text" class="form-control bg-white" id="desc" name="desc" placeholder=" Description of Sensor" value="@if (Sensors != null) {@Sensors.First().desc}" required  >
+
+                </div>
+
+            </div>
+            @if (ViewBag.viewType.Equals("Edit"))
+            {
+                <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                    <label class="col h5" for="latest_checking_time">Latest checking time:</label>
+                    <div class="col">
+
+                        <input type="datetime" class="form-control bg-white" id="latest_checking_time" name="latest_checking_time" value="@if (Sensors != null) {@Sensors.First().latest_checking_time}" required readonly>
+
+                    </div>
+
+                </div>
+                <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                    <label class="col h5" for="total_run_time">Total run time:</label>
+                    <div class="col">
+
+                        <input type="number" class="form-control bg-white" id="total_run_time" name="total_run_time" value="@if (Sensors != null) {@Sensors.First().total_run_time}" required readonly>
+                        <a id="resetRunTime">X</a>
+
+                    </div>
+
+                </div>
+            }
+        }
+        <!--end modal body-->
+        <div class="modal-footer">
+
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" id="editSensorSetup" class="btn btn-primary">Save changes</button>
+
+        </div>
+
+    </div>
+</form>
+<script>
+    $("#resetRunTime").click(function () {
+        if (confirm("is reset the Time Count ?")) {
+            $("#total_run_time").val("0");
+        } else {
+        }
+    });
+    $("#editSensorSetup").click(function () {
+        var match = ($("#CSensorId").val() == $("#SensorId").val() && $("#CroomId").val() == $("#roomId").val());
+
+        if (match) {
+            if (confirm("Please confirm the data !! ")) {
+                form.submit();
+                alert("Successful Your Submition !!");
+            } else {
+            }
+        } else {
+            alert("You select the item and input form is NOT MATCH!! \n Please tryAgain");
+
+        }
+    });
+</script>
+
