@@ -271,11 +271,13 @@ namespace FYP_APP.Controllers
 				{
 					roomId = set.roomId,
 					sensorId = set.sensorId,
+					location=set.location,
+					desc=set.desc,
 					latest_checking_time = set.latest_checking_time,
 					total_run_time = set.total_run_time,
-				current_Value = getSensorCurrentValue(set.sensorId),
-						typeImg = getType(set.sensorId),
-						typeUnit = getunit(set.sensorId)
+					current_Value = getSensorCurrentValue(set.sensorId),
+					typeImg = getType(set.sensorId),
+					typeUnit = getunit(set.sensorId)
 					};
 					SensorsDataList.Add(data);
 
