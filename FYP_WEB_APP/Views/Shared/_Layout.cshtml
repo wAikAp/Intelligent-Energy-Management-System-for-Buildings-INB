@@ -2,25 +2,38 @@
 
 
 <head>
+    <link rel="shortcut icon" href="~/img/icon/iconT36.ico" type="image/x-icon">
+    <link rel="icon" href="~/img/icon/iconT36.ico" type="image/x-icon">
+    <script src="~/js/Chart.min.js"></script>
+    <!--https://www.chartjs.org/-->
     <link rel="stylesheet" href="~/css/style.css">
     <link rel="stylesheet" href="~/css/bootstrap.min.css">
     <script src="~/js/jquery.min.js"></script>
     <script src="~/js/popper.min.js"></script>
-    <!--<script src="js/bootstrap.min.js"></script>-->
+    <script src="~/js/bootstrap.min.js"></script>
     <script src="~/js/heatmap.js"></script>
     <script src="~/js/heatmap.min.js"></script>
     <script src="~/js/prism.js"></script>
+    <!--loading js-->
+    <script src="~/js/modernizr.js"></script>
+    <script src="~/js/jquery-2.2.4.min.js"></script>
+    <!--loading js-->
+
+
     <script>
+
+
         $(document).ready(function () {
             resizeNav();
             $(window).resize(function () {
                 resizeNav();
             });
-        $(function () {
-              $('img').imgPreload();
-          });
+            $('.navbar-nav .nav-link').removeClass('active');
+            $("#index").addClass('active');
+            $(window).load(function () {
+                $("#perloaddiv").delay(350).fadeOut("slow");
+            });
         });
-
         function resizeNav() {
             $("#nav2").css({ "margin-top": $("#nav1").height() });
         }
@@ -32,8 +45,11 @@
         margin-right: 20px;
     }
 </style>
+<div id="perloaddiv" class="w-100 h-100 position-fixed">
 
-<body class="">
+</div>
+<header>
+
     <nav class="statusBar navbar navbar-expand-sm py-0 py-md-0 navbar-dark fixed-top" id="nav1">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
@@ -129,7 +145,8 @@
         </div>
 
     </nav>
+</header>
+
+<body>
+    @RenderBody()
 </body>
-
-
-@RenderBody()

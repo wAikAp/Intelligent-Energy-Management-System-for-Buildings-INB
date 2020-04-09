@@ -6,63 +6,22 @@
      
 
 }
-
-<!DOCTYPE html>
-<html lang="en">
-
 <head>
-    <link rel="stylesheet" href="~/css/style.css">
-
-    <script src="~/js/Chart.min.js"></script>
-    <!--https://www.chartjs.org/-->
-    <link rel="stylesheet" href="~/css/bootstrap.min.css">
-    <script src="~/js/popper.min.js"></script>
-    <script src="~/js/heatmap.js"></script>
-    <script src="~/js/heatmap.min.js"></script>
-    <script src="~/js/prism.js"></script>
-    <!--loading js-->
-    <script src="~/js/modernizr.js"></script>
-    <script src="~/js/jquery-2.2.4.min.js"></script>
-    <script src="~/js/bootstrap.min.js"></script>
-    <!--loading js-->
-
-    <title>Devices</title>
-    <script>
-        $(document).ready(function () {
-            //navbar ui
-            $('.navbar-nav .nav-link').removeClass('active');
-            $("#devices").addClass('active');
-
-            //<!--loading js-->
-            $(function () {
-                $('img').imgPreload()
-            });
-        });
-
-        $(window).load(function () {
-            // Animate loader off screen
-            $(".se-pre-con").fadeOut("fast");
-        });
-    </script>
+  
+    <title>@ViewData["Title"]</title>
+    
 </head>
 
 <body class="">
-    <!--test-->
-    <!--loading page graphic-->
-    <div class="se-pre-con"></div>
-    <!--loading page graphic-->
-    <!--header-->
 
     @Html.Partial("_AddDevices")
 
-
-    <!--header-->
     <div class="main  ">
         <div class=" bg-light p-3">
 
             <div class="d-flex flex-column">
                 <div class="container-fluid ">
-                    <dt class=" h2">
+                    <div class=" h2">
                         <b>
                             @foreach (var item in Model)
                             {
@@ -71,7 +30,7 @@
                             }
                             Devices
                         </b>
-                    </dt>
+                    </div>
                 </div>
                 <div class="d-flex flex-row  mb-2 p-2">
                     <div class="  col">
@@ -709,5 +668,5 @@
     </script>
 </body>
 
-</html>
+
 
