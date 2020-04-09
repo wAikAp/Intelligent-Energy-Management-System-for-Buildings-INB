@@ -96,20 +96,20 @@
                                             </div>
                                             <div class="d-flex px-3 align-items-center">
 
-                                                <input type="checkbox" name="All" value="true" />
+                                                <input type="checkbox" id="checkAll" />
                                                 All
                                             </div>
                                             <div class="d-flex px-3 align-items-center">
-                                                <input type="checkbox" name="TS" value="true" />
+                                                <input type="checkbox"id="TS" name="TS" value="true" />
                                                 Temperature
                                             </div>
                                             <div class="d-flex px-3 align-items-center">
-                                                <input type="checkbox" name="HS" value="true" />
+                                                <input type="checkbox"id="HS" name="HS" value="true" />
                                                 Humidity
 
                                             </div>
                                             <div class="d-flex px-3 align-items-center">
-                                                <input type="checkbox" name="LS" value="true" />
+                                                <input type="checkbox"id="LS" name="LS" value="true" />
                                                 Luminosity
                                             </div>
                                         </div>
@@ -337,6 +337,27 @@
 
         </div>
     </div>
-                
+    <script>
+        $("#checkAll").click(function () {
+            if ($("#checkAll").prop("checked")) {
+                $("input[name='TS']").each(function () {
+                    $(this).prop("checked", true);
+                }); $("input[name='HS']").each(function () {
+                    $(this).prop("checked", true);
+                }); $("input[name='LS']").each(function () {
+                    $(this).prop("checked", true);
+                });
+            } else {
+                $("input[name='TS']").each(function () {
+                    $(this).prop("checked", false);
+                }); $("input[name='HS']").each(function () {
+                    $(this).prop("checked", false);
+                }); $("input[name='LS']").each(function () {
+                    $(this).prop("checked", false);
+                });
+            }
+        });
+
+    </script>      
 
 </body>

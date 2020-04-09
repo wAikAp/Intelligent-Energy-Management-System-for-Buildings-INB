@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Threading.Tasks;
@@ -248,7 +249,7 @@ namespace FYP_APP.Controllers
 		{
 
 			List<SensorsListModel> SensorsDataList = new List<SensorsListModel> { };
-		IMongoCollection<SensorsListModel> collection;
+			IMongoCollection<SensorsListModel> collection;
 
 			//db collection
 			collection = database.GetCollection<SensorsListModel>("SENSOR_LIST");
@@ -259,13 +260,15 @@ namespace FYP_APP.Controllers
 			else
 			{//Sensors/{id}
 				query = from c in collection.AsQueryable<SensorsListModel>()where c.roomId.Contains(PageRoomId) select c;
+
 			}
 
 			foreach (SensorsListModel set in query)
-				{
+			{
+
 				var data = new SensorsListModel()
 				{
-					roomId = set.roomId,
+				roomId = set.roomId,
 					sensorId = set.sensorId,
 					location=set.location,
 					desc=set.desc,
@@ -280,24 +283,27 @@ namespace FYP_APP.Controllers
 
 				
 			}
-				try
-				{
+
+			try
+			{
 				int count = Request.Query.Count;
-				if (count != null)
+				if (count!=0)
 				{
 					SensorsDataList = FindSensors(SensorsDataList);
 					SensorsDataList = SortList(SensorsDataList);
+
 				}
 				else
 				{
 					SensorsDataList = SortList(SensorsDataList);
+
 				}
 			}
 				catch (NullReferenceException e)
 				{
 					SensorsDataList = SortList(SensorsDataList);
-				}
-			
+
+			}
 
 
 			return SensorsDataList;
