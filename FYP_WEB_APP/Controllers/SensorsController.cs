@@ -271,7 +271,8 @@ namespace FYP_APP.Controllers
 					desc=set.desc,
 					latest_checking_time = set.latest_checking_time,
 					total_run_time = set.total_run_time,
-					current_Value = getSensorCurrentValue(set.sensorId),
+					current_Value = Convert.ToDouble(getSensorCurrentValue(set.sensorId,"value")),
+					current_Time = Convert.ToDateTime(getSensorCurrentValue(set.sensorId, "datetime")),
 					typeImg = getType(set.sensorId),
 					typeUnit = getunit(set.sensorId)
 					};
@@ -430,11 +431,11 @@ namespace FYP_APP.Controllers
 			}
 			return type;
 		}
-		public double getSensorCurrentValue(string sensorId) {
-			
+		public object getSensorCurrentValue(string sensorId,string type) {
+			object value = null;
+
 			IMongoCollection<BsonDocument> collection;
 			FilterDefinition<BsonDocument> filter;
-			double value = 0;
 			var dbStr ="";
 			switch (sensorId.Substring(0, 2))
 			{
@@ -456,22 +457,31 @@ namespace FYP_APP.Controllers
 			var json = collection.Find(filter).FirstOrDefault();
 			if (json != null)
 			{
+				if (type.Equals("value")) { 
 				switch (sensorId.Substring(0, 2))
 			{
 				case "TS":
-						value = Convert.ToDouble(json["current_tmp"]);
+							 value = json["current_tmp"];
 						break;
 				case "LS":
-						value = Convert.ToDouble(json["current_lum"]);
+							 value = json["current_lum"];
 						break;
 				case "HS":
-						value= Convert.ToDouble(json["current_hum"]);
+							 value = json["current_hum"];
 						break;
 					default:
 						break;
-				}			
+					}
+					return value;
+
+				}
+				else if (type.Equals("datetime")) {
+					value = json["latest_checking_time"];
+
+				}
 			}
 			return value;
+
 		}
 		//chart js code
 		List<string> Color = new List<string>();
