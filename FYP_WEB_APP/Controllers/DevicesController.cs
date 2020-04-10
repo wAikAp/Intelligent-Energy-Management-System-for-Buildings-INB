@@ -4,48 +4,49 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using MongoDB.Bson;
 using FYP_APP.Models.MongoModels;
-
+using FYP_WEB_APP.Controllers.Mongodb;
+using FYP_WEB_APP.Models.MongoModels;
 
 namespace FYP_APP.Controllers
 {
 	public class DevicesController : Controller
 	{
+		public List<MongoDeivcesListModel> MongoDeivcesList = new List<MongoDeivcesListModel> { };
+
 		public IActionResult Devices()
 		{
-			TempData["Category"] = "test";
+			getAlldeivces();
+			   ViewData["MongoDeivcesListModel"] = this.MongoDeivcesList;
 
 
-			/*
-			Debug.WriteLine("Hello..........");
-			Debug.WriteLine("");
-			Debug.WriteLine("");
-			Debug.WriteLine("");
-			Debug.WriteLine("");
-			Debug.WriteLine("");
-			*/
-			var connectionString = ("mongodb://admin:admin@clustertest-shard-00-00-kjhvv.azure.mongodb.net:27017,clustertest-shard-00-01-kjhvv.azure.mongodb.net:27017,clustertest-shard-00-02-kjhvv.azure.mongodb.net:27017/test?ssl=true&replicaSet=ClusterTest-shard-0&authSource=admin&retryWrites=true&w=majority");
+			return View();
+		}
+		public IMongoCollection<MongoDeivcesListModel> getMDLMconn() {
+			ConnectDB conn = new ConnectDB();
+			var database = conn.Conn();
+			var collection = database.GetCollection<MongoDeivcesListModel>("DEVICES_LIST");
+			return collection;
+		}
+		public void getAlldeivces() {
+			var collection = getMDLMconn();
+			IQueryable<MongoDeivcesListModel> query = from d in collection.AsQueryable<MongoDeivcesListModel>() select d;
 
-			//var connectionString = "mongodb+srv://admin:admin@clustertest-kjhvv.azure.mongodb.net/test?retryWrites=true&w=majority";
-			MongoClient dbClient = new MongoClient(connectionString);
-			var database = dbClient.GetDatabase("FYP_1920");
-			var collection = database.GetCollection<MongoLightListModel>("LIGHT_LIST");
-
-			var documents = collection.Find(new BsonDocument()).ToList();
-			var datalist = new List<MongoLightListModel> { };
-
-			foreach (MongoLightListModel ll in documents)
+			foreach (MongoDeivcesListModel set in query.ToList())
 			{
 				//Debug.WriteLine(ll.lastest_checking_time);
 				//Debug.WriteLine(ll.roomId);
-				var x = new MongoLightListModel()
-				{
-					roomId = ll.roomId
+				var data = new MongoDeivcesListModel()
+				{					
+					roomId = set.roomId,
+					devicesId=set.devicesId,
+					devices_Name= set.devices_Name,
+					power = set.power,
+					lastest_checking_time = set.lastest_checking_time,
+					total_run_time = set.total_run_time
 				};
-				datalist.Add(x);
+				this.MongoDeivcesList.Add(data);
 			}
-
-
-			return View(datalist);
 		}
+
 	}
 }
