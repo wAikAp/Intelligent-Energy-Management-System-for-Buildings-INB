@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -10,9 +11,13 @@ namespace FYP_WEB_APP.Controllers
 {
     public class RoomDetailController : Controller
     {
-        // GET: /<controller>/
-        public IActionResult RoomDetail()
+        
+       
+        //[Route("RoomDetail/RoomDetail/{roomID}")]
+        public IActionResult RoomDetail(String roomID)
         {
+            ViewData["roomID"] = roomID;
+            Debug.WriteLine("roomID = " + roomID);
             return View();
         }
     }

@@ -7,11 +7,26 @@
     var roomsDatalist = (List<MongoRoomModel>)ViewData["roomsDatalist"];
 }
 
-<head>
+    <head>
 
-    <title>@ViewData["Title"]</title>
+        <title>@ViewData["Title"]</title>
+        <script>
+        $(document).ready(function () {
+            //navbar ui
+            $('.navbar-nav .nav-link').removeClass('active');
+            $("#rooms").addClass('active');
 
-</head>
+
+            $(".clickable-row").click(function () {
+                var roomID = $(this).data("href");
+                var url = '@Url.Action("RoomDetail", "RoomDetail")';
+                url += "?roomID=" + escape(roomID);
+                window.location.href = url;
+
+            });
+        });
+        </script>
+    </head>
 <!--body-->
 <body>
     <div class="container-fluid p-4 ">

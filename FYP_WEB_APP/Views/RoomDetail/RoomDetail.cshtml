@@ -1,19 +1,30 @@
 ﻿
 @{
+
     ViewData["Title"] = "Rooms Detail";
     Layout = "_Layout";
 }
 
 <head>
+    <title>@ViewData["Title"]</title>     
+    <link rel="stylesheet" href="~/css/style.css">
 
-    <title>@ViewData["Title"]</title>
-    <script>
-      $(document).ready(function(){
-          //navbar ui
-          $('.navbar-nav .nav-link').removeClass('active');
-          $("#rooms").addClass('active');         
-      });      
-    </script>
+    <script src="~/js/Chart.min.js"></script>
+    <!--https://www.chartjs.org/-->
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/heatmap.js"></script>
+    <script src="~/js/heatmap.min.js"></script>
+    <script src="~/js/prism.js"></script>
+    <!--loading js-->
+    <script src="~/js/modernizr.js"></script>
+    <script src="~/js/jquery-2.2.4.min.js"></script>
+    <!--loading js-->
+
+    <title>Room Detail</title>
+
 </head>
 
 
