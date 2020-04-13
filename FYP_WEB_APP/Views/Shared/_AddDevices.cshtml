@@ -1,8 +1,5 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-
-
-
 *@
 @{
     List<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel> Devices = null;
@@ -14,30 +11,38 @@
     else if (ViewBag.viewType.Equals("Add"))
     {
         Rooms = ViewData["RoomListModel"] as List<FYP_WEB_APP.Models.RoomsListModel>;
-    } }
-@if ( (!ViewBag.viewType.Equals("Add")&& Devices.Count>0) || ViewBag.viewType.Equals("Add")) {
+    }
+}
+@if ((!ViewBag.viewType.Equals("Add") && Devices.Count > 0) || ViewBag.viewType.Equals("Add"))
+{
 
     <form action="@ViewBag.action" method="post">
 
         <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">@ViewBag.viewType Devices</h5>
+            <h5 class="modal-title" id="exampleModalLabel">@ViewBag.viewType Devices </h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
         <div class="modal-body p-2">
-            <div class="row mx-3 justify-content-center align-items-center pb-2">
-                <label class="col h5" for="devicesId">Devices Id:</label>
-                <div class="col">
-                    @if (ViewBag.viewType.Equals("Drop"))
-                    {
-                        <input type="text" class="form-control bg-white d-none" id="CdevicesId" value="@Devices.First().roomId" required readonly>
-                    }
-              
-                       <input type="text" class="form-control bg-white" id="devicesId" name="devicesId" placeholder="id" value="@if (ViewBag.viewType.Equals("Edit")) {@Devices.First().roomId }" required readonly>
-                   
-                </div>
-            </div>
+            @if (!ViewBag.viewType.Equals("Add"))
+            {
+                <div class="row mx-3 justify-content-center align-items-center pb-2">
+                    <label class="col h5" for="devicesId">Devices Id:</label>
+                    <div class="col">
+                        @if (ViewBag.viewType.Equals("Drop"))
+                        {
+                            <input type="text" class="form-control bg-white d-none" id="CdevicesId" value="@Devices.First().roomId" required readonly>
+                            <input type="text" class="form-control bg-white" id="devicesId" name="devicesId" placeholder="id" value="" required>
+
+                        }
+                        @if (ViewBag.viewType.Equals("Edit"))
+                        {
+                            <input type="text" class="form-control bg-white" id="devicesId" name="devicesId" placeholder="id" value="@Devices.First().devicesId" required readonly>
+                        }
+
+                    </div>
+                </div>}
             <div class="row mx-3 justify-content-center align-items-center pb-2">
                 <label class="col h5" for="roomId">roomId :</label>
                 <div class="col">
@@ -73,15 +78,16 @@
                 <div class="row mx-3 justify-content-center align-items-center pb-2">
                     <label class="col h5" for="devices_Name">Devices Name:</label>
                     <div class="col">
-                        <input type="text" class="form-control bg-white" id="devices_Name" name="devices_Name"value="@if (ViewBag.viewType.Equals("Edit")) {@Devices.First().devices_Name }" placeholder="Name" required>
+                        <input type="text" class="form-control bg-white" id="devices_Name" name="devices_Name" value="@if (ViewBag.viewType.Equals("Edit"))
+                            {@Devices.First().devices_Name }" placeholder="Name" required>
                     </div>
                 </div>
 
                 <div class="row mx-3 justify-content-center align-items-center pb-2">
-                    <label class="col h5" for="type">Devices type:</label>
+                    <label class="col h5" for="devicesId">Devices type:</label>
                     <div class="col">
                         @if (ViewBag.viewType.Equals("Add"))
-                        {<select class="form-control bg-white" id="type" name="type" placeholder="type" required>
+                        {<select class="form-control bg-white" id="type" name="devicesId" placeholder="type" required>
                                 <option value="LT">light</option>
                                 <option value="AC">Air Conditioning</option>
                                 <option value="HD">Humidity</option>
@@ -91,8 +97,9 @@
                         else
                         {<select class="form-control bg-white" id="type" name="type" placeholder="type" required disabled>
 
-                                <option value="@if (ViewBag.viewType.Equals("Edit")) {@Devices.First().devicesId.Substring(0,2) }">
-                        light
+                                <option value="@if (ViewBag.viewType.Equals("Edit"))
+                                    {@Devices.First().devicesId.Substring(0, 2) }">
+                                    light
                                 </option>
 
                             </select>
@@ -116,7 +123,7 @@
                     <div class="row mx-3 justify-content-center align-items-center pb-2">
                         <label class="col h5" for="lastest_checking_time">Lastest checking time:</label>
                         <div class="col">
-                            <input type="text" class="form-control bg-white" id="lastest_checking_time" name="lastest_checking_time"value="@Devices.First().lastest_checking_time" required readonly>
+                            <input type="text" class="form-control bg-white" id="lastest_checking_time" name="lastest_checking_time" value="@Devices.First().lastest_checking_time" required readonly>
                         </div>
                     </div>
                     <div class="row mx-3 justify-content-center align-items-center pb-2">
@@ -131,14 +138,24 @@
                         </div>
                     </div>
                 }}
+
+            <!--end modal body-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" id="setDevices" class="btn btn-primary">Save changes</button>
+            </div>
         </div>
 
-        <!--end modal body-->
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" id="setDevices" class="btn btn-primary" data-dismiss="modal">Save changes</button>
-        </div>
     </form>
+}
+else 
+{
+    <div class="alert alert-warning text-center font-weight-bold" role="alert">
+        <h3>
+            Error View, @Html.ActionLink("Refresh Page", "Devices", "Devices")
+            .
+        </h3>
+    </div>
 }
 <script>
     $("#resetRunTime").click(function () {
@@ -153,19 +170,35 @@
         } else {
         }
     });
+</script>
+
+
+<script>
 
     $("#setDevices").click(function () {
         var match = ($("#CDevicesId").val() == $("#DevicesId").val() && $("#CroomId").val() == $("#roomId").val());
-
-        if (match) {
-            if (confirm("Please confirm the data !! ")) {
-                form.submit();
-                alert("Successful Your Submition !!");
+        var vi ="@ViewBag.viewType" ;
+            if (vi == "Drop") {
+                if (match) {
+                    if (confirm("Please confirm the data !! ")) {
+                        form.submit();
+                        alert("Successful Your Submition !!");
+                    } else {
+                    }
+                } else {
+                    alert("You select the item and input form is NOT MATCH!! \n Please tryAgain");
+                        }
             } else {
+                if (confirm("Please confirm the data !! ")) {
+                    form.submit();
+                    alert("Successful Your Submition !!");
+                } else {
+                }
             }
-        } else {
-            alert("You select the item and input form is NOT MATCH!! \n Please tryAgain");
 
-        }
     });
+
+
+
 </script>
+

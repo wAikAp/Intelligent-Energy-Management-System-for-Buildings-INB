@@ -21,7 +21,7 @@
 
         <div class="modal-header">
 
-            <h5 class="modal-title" id="exampleModalLabel"> @ViewBag.viewType Sensors @ViewBag.sid</h5>
+            <h5 class="modal-title" id="exampleModalLabel"> @ViewBag.viewType Sensors </h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 
                 <span aria-hidden="true">&times;</span>
@@ -36,19 +36,19 @@
                 <div class="col">
                     @if (!ViewBag.viewType.Equals("Add"))
                     {@if (ViewBag.viewType.Equals("Edit"))
-{
+                        {
                             <input type="text" class="form-control bg-white" id="roomId" name="roomId" placeholder="id" value="@if (Sensors != null && ViewBag.viewType.Equals("Edit"))
                             {@Sensors.First().roomId}" required readonly>
-}
-else
-{
+                        }
+                        else
+                        {
                             <input type="text" class="form-control bg-white d-none" id="CroomId" value="@if (Sensors != null)
                             {@Sensors.First().roomId}" readonly>
                             <input type="text" class="form-control bg-white" id="roomId" name="roomId" placeholder="roomid" value="" required>
-}
-                    }
-                    else if (ViewBag.viewType.Equals("Add"))
-                    {
+                        }
+                }
+                else if (ViewBag.viewType.Equals("Add"))
+                {
                     <select id="roomId" name="roomId" class="form-control bg-white">
                         <option value="">Room.No</option>
                         @foreach (var Room in Rooms)
@@ -185,7 +185,7 @@ else
 
                     </div>
                 }
-                            }
+            }
             <!--end modal body-->
             <div class="modal-footer">
 
@@ -196,27 +196,38 @@ else
 
         </div>
     </form>
-                            }
+}
+<script>
+    $("#resetRunTime").click(function () {
+        if (confirm("is reset the Time Count ?")) {
+            $("#total_run_time").val("0");
+        } else {
+        }
+    });
+</script>
+
+
     <script>
-        $("#resetRunTime").click(function () {
-            if (confirm("is reset the Time Count ?")) {
-                $("#total_run_time").val("0");
-            } else {
-            }
-        });
         $("#editSensorSetup").click(function () {
             var match = ($("#CSensorId").val() == $("#SensorId").val() && $("#CroomId").val() == $("#roomId").val());
+            var vi =@ViewBag.viewType ;
+            if (vi == "Drop") {
+                if (match) {
+                    if (confirm("Please confirm the data !! ")) {
+                        form.submit();
+                        alert("Successful Your Submition !!");
+                    } else {
+                    }
+                } else {
+                    alert("You select the item and input form is NOT MATCH!! \n Please tryAgain");
 
-            if (match) {
+                }
+            } else {
                 if (confirm("Please confirm the data !! ")) {
                     form.submit();
                     alert("Successful Your Submition !!");
                 } else {
-                }
-            } else {
-                alert("You select the item and input form is NOT MATCH!! \n Please tryAgain");
-
-            }
+                }}
         });
     </script>
 

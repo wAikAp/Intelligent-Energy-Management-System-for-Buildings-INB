@@ -170,7 +170,17 @@
                                                                 <h2 class="mx-2">@Sensorss.typeUnit</h2>
                                                             </div>
 
-                                                            <p class="card-text my-1">@Sensorss.current_Time</p>
+                                                            <p class="card-text my-1">
+                                                                @if (Sensorss.current_Time != DateTime.MinValue)
+                                                                {<b>
+                                                                    @Sensorss.current_Time
+                                                                    </b>
+                                                                    }
+                                                                else
+                                                                {
+                                                                    <b> N/A </b>
+                                                                    }
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 </div>
