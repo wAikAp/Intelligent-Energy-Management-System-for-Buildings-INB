@@ -6,14 +6,24 @@ using System.Threading.Tasks;
 
 namespace FYP_WEB_APP.Models.MongoModels
 {
-    public class MongoDeivcesListModel
+    public class MongoDevicesListModel
     {
         public ObjectId _id { get; set; }
+        public string listId { get; set; }
+
         public string roomId { get; set; }
         public string devicesId { get; set; }
         public string devices_Name { get; set; }
         public string power { get; set; }
         public DateTime lastest_checking_time { get; set; }
         public int total_run_time { get; set; }
-    }
+
+
+        public string location { get; set; }
+
+        public string desc { get; set; }
+
+
+
+}
 }
