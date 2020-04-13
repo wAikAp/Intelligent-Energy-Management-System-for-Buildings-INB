@@ -37,7 +37,9 @@ namespace FYP_APP
 			}
 			else
 			{
-				app.UseExceptionHandler("/Home/Error");
+				//app.UseExceptionHandler("/Home/Error");//default
+				app.UseDeveloperExceptionPage();
+
 			}
 			app.UseStaticFiles();
 

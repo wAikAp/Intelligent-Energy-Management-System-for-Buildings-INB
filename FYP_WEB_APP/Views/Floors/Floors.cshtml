@@ -5,55 +5,20 @@
 }
 
 <head>
-    <link rel="stylesheet" href="~/css/style.css">
 
-    <script src="~/js/Chart.min.js"></script>
-    <!--https://www.chartjs.org/-->
-    <link rel="stylesheet" href="~/css/bootstrap.min.css">
-    <script src="~/js/jquery.min.js"></script>
-    <script src="~/js/popper.min.js"></script>
-    <script src="~/js/bootstrap.min.js"></script>
-    <script src="~/js/heatmap.js"></script>
-    <script src="~/js/heatmap.min.js"></script>
-    <script src="~/js/prism.js"></script>
-    <!--loading js-->
-    <script src="~/js/modernizr.js"></script>
-    <script src="~/js/jquery-2.2.4.min.js"></script>
-    <!--loading js-->
-
-    <title>Floors</title>
-    <script>
-      $(document).ready(function(){
-          //navbar ui
-          $('.navbar-nav .nav-link').removeClass('active');
-          $("#floors").addClass('active');
-
-          //<!--loading js-->
-          
-      });
-
-      $(window).load(function() {
-        // Animate loader off screen
-        $(".se-pre-con").fadeOut("fast");
-      });
-    </script>
+    <title>@ViewData["Title"]</title>
+    
 </head>
 
 
 <body class="">
-    <!--loading page graphic-->
-    <div class="se-pre-con"></div>
-    <!--loading page graphic-->
-    <!--header-->
-    <!--header-->
-
 
     <div class="main  ">
         <div class=" bg-light p-3">
 
             <div class="d-flex flex-column">
                 <div class="container-fluid ">
-                    <dt class=" h2"><b>Floors And Rooms</b></dt>
+                    <div class=" h2"><b>Floors And Rooms</b></div>
                 </div>
 
 
@@ -73,7 +38,6 @@
                                                         <path d="M721 2379 c-259 -58 -457 -198 -591 -418 -76 -123 -130 -316 -130 -458 0 -101 38 -269 83 -366 133 -287 398 -479 716 -517 121 -15 251 -1 375 41 l90 30 346 -346 c233 -233 352 -345 366 -345 38 0 138 40 192 77 107 73 198 207 210 309 l5 46 -341 342 -341 341 34 100 c46 136 61 255 46 381 -46 393 -316 693 -699 780 -130 29 -242 30 -361 3z m387 -315 c182 -73 318 -225 366 -411 20 -78 20 -218 0 -297 -52 -203 -227 -378 -430 -430 -78 -20 -222 -21 -297 -1 -207 54 -378 225 -432 433 -20 74 -20 221 0 297 49 186 191 343 371 411 127 48 298 47 422 -2z" />
                                                     </g>
                                                 </svg>
-                                                <!--search area-->
                                                 <div class="mx-3">
                                                     Floor:
                                                 </div>
@@ -99,9 +63,9 @@
                                         <div class="input-group-append">
                                             <button class="btn btn-outline-secondary" type="button">Search</button>
                                         </div>
-                                        <!--search area-->
                                     </div>
                                 </div>
+                            </div>
 
                             </div>
 
@@ -114,15 +78,14 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
                 </div>
 
                 <div class="card d-flex flex-column mb-2 mx-2 p-2" style="height: 250px;">
                     <div class="row justify-content-between mb-2">
                         <div class="col">
-                            <dt class="col h4">
+                            <div class="col h4">
                                 Divices List
-                            </dt>
+                            </div>
 
                         </div>
                         <div class="col-4 d-flex justify-content-end">

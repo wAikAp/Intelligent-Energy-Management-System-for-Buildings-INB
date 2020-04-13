@@ -9,51 +9,10 @@
 }
 
 <head>
-    <link rel="stylesheet" href="~/css/style.css">
-
-    <script src="~/js/Chart.min.js"></script>
-    <!--https://www.chartjs.org/-->
-    <link rel="stylesheet" href="~/css/bootstrap.min.css">
-    <script src="~/js/jquery.min.js"></script>
-    <script src="~/js/popper.min.js"></script>
-    <script src="~/js/bootstrap.min.js"></script>
-    <script src="~/js/heatmap.js"></script>
-    <script src="~/js/heatmap.min.js"></script>
-    <script src="~/js/prism.js"></script>
-    <!--loading js-->
-    <script src="~/js/modernizr.js"></script>
-    <script src="~/js/jquery-2.2.4.min.js"></script>
-    <!--loading js-->
-
-    <title>InB~login</title>
-    <script>
-
-        $(document).ready(function () {
-            //navbar ui
-            $('.navbar-nav .nav-link').removeClass('active');
-            $("#index").addClass('active');
-
-            $(function () {
-                $('img').imgPreload()
-            });
-        
-        });
-
-        $(window).load(function () {
-            // Animate loader off screen
-            $(".se-pre-con").fadeOut("fast");
-        });
-    </script>
+    <title>@ViewBag.Title</title>
+   
 </head>
 
-<body>
-
-    <!--loading page graphic-->
-    <div class="se-pre-con"></div>
-    <!--loading page graphic-->
-    <!--header-->
-
-    <!--header-->
     <div class="" id="loginBox" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <form action="" method="POST">
@@ -62,7 +21,8 @@
                     <div class="modal-header ">
                         <div class="modal-title text-center justify-content-center d-flex w-100 flex-column" id="exampleModalLabel">
                             <div>
-                                <img src="img/icon/logoT36.png">
+
+                                <img src="~/img/icon/logoT36.png" />"
 
                             </div>
                             <h5>LOGIN</h5>
@@ -76,7 +36,7 @@
                         <div class="row mx-3 justify-content-center align-items-center  pb-2">
                             <label class="col h5" for="loginUserName">USERNAME:</label>
                             <div class="col">
-                                <input type="text" class="form-control bg-white" id="loginUserName" name="loginUserName" placeholder="USERNAME" required>
+                                <input type="text" class="form-control bg-white" id="loginUserName" name="loginUserName" placeholder="USERNAME" required />
 
                             </div>
                         </div>
@@ -85,7 +45,7 @@
                         <div class="row mx-3 justify-content-center align-items-center  pb-2">
                             <label class="col h5" for="loginPass">PASSWORD:</label>
                             <div class="col">
-                                <input type="password" class="form-control bg-white" id="loginPass" name="loginPass" placeholder="PASSWORD" required>
+                                <input type="password" class="form-control bg-white" id="loginPass" name="loginPass" placeholder="PASSWORD" required />
 
                             </div>
                         </div>
@@ -99,7 +59,5 @@
             </form>
         </div>
     </div>
-    </div>
 
-</body>
 

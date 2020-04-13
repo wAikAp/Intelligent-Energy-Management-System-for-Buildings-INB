@@ -1,39 +1,55 @@
 ﻿
 
 
-<head>
-    <link rel="stylesheet" href="~/css/style.css">
-    <link rel="stylesheet" href="~/css/bootstrap.min.css">
-    <script src="~/js/jquery.min.js"></script>
-    <script src="~/js/popper.min.js"></script>
-    <!--<script src="js/bootstrap.min.js"></script>-->
-    <script src="~/js/heatmap.js"></script>
-    <script src="~/js/heatmap.min.js"></script>
-    <script src="~/js/prism.js"></script>
-    <script>
-        $(document).ready(function () {
-            resizeNav();
-            $(window).resize(function () {
+    <head>
+        <link rel="shortcut icon" href="~/img/icon/iconT36.ico" type="image/x-icon">
+        <link rel="icon" href="~/img/icon/iconT36.ico" type="image/x-icon">
+        <link rel="stylesheet" href="~/css/style.css">
+        <link rel="stylesheet" href="~/css/bootstrap.min.css">
+
+        <script src="~/js/bootstrap/jquery.min.js"></script>
+        <script src="~/js/bootstrap/popper.min.js"></script>
+        <script src="~/js/bootstrap/bootstrap.min.js"></script>
+
+        <script src="~/js/Chart/Chart.min.js"></script>
+
+        <script src="~/js/heatmap/heatmap.js"></script>
+        <script src="~/js/heatmap/heatmap.min.js"></script>
+
+        <script>
+
+
+            $(document).ready(function () {
                 resizeNav();
+                $(window).resize(function () {
+                    resizeNav();
+                });
+                $('.navbar-nav .nav-link').removeClass('active');
+                $("#index").addClass('active');
+                $(window).on("load", function () {
+                    $("#perloaddiv").delay(200).fadeOut("fast");
+                });
             });
-        $(function () {
-              $('img').imgPreload();
-          });
-        });
+            function resizeNav() {
+                $("#nav2").css({ "margin-top": $("#nav1").height() });
+            }
 
-        function resizeNav() {
-            $("#nav2").css({ "margin-top": $("#nav1").height() });
-        }
+        </script>
+        <style>
+        #perloaddiv { position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; z-index: 9999; background-image: url("http://smallenvelop.com/wp-content/uploads/2014/08/Preloader_11.gif"); background-repeat: no-repeat; background-attachment: fixed; background-position: center; background-color: #fff; }
 
-    </script>
-</head>
+        </style>
+    </head>
 <style>
     .nav-link {
         margin-right: 20px;
     }
 </style>
+<div id="perloaddiv" class="w-100 h-100 position-fixed">
 
-<body class="">
+</div>
+<header>
+
     <nav class="statusBar navbar navbar-expand-sm py-0 py-md-0 navbar-dark fixed-top" id="nav1">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
@@ -129,7 +145,8 @@
         </div>
 
     </nav>
+</header>
+
+<body>
+    @RenderBody()
 </body>
-
-
-@RenderBody()

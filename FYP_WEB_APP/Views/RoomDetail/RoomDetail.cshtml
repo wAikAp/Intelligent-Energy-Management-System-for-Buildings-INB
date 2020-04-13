@@ -1,0 +1,509 @@
+﻿
+@{
+
+    ViewData["Title"] = "Rooms Detail";
+    Layout = "_Layout";
+}
+
+<head>
+    <title>@ViewData["Title"]</title>     
+    <link rel="stylesheet" href="~/css/style.css">
+
+    <script src="~/js/Chart.min.js"></script>
+    <!--https://www.chartjs.org/-->
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/heatmap.js"></script>
+    <script src="~/js/heatmap.min.js"></script>
+    <script src="~/js/prism.js"></script>
+    <!--loading js-->
+    <script src="~/js/modernizr.js"></script>
+    <script src="~/js/jquery-2.2.4.min.js"></script>
+    <!--loading js-->
+
+    <title>Room Detail</title>
+
+</head>
+
+
+<body>
+    <!--page title-->
+    <div class="container-fluid p-4 ">
+        <div class="d-flex">
+            <h1 class="display-4">
+                <strong>Room 348</strong>
+                <span class="badge badge-pill badge-success" style="font-size: 14px">Online</span>
+            </h1>
+            <!-- power -->
+            <div class="bd-callout bd-callout-warning py-2 shadow-sm m-0 ml-sm-4 " style="max-width: 30rem; max-height: 100px;">
+                <h4>
+                    <b style="font-size: .6em;"><img src="~/img/icon/lighting32.png" />Power Usage</b>
+                </h4>
+                <h3><strong class="pl-sm-2">9000KW</strong><snap class="text-black" style="font-size: .6em;">/ pre month</snap></h3>
+            </div>
+        </div>
+        <!-- tag -->
+        <div class="d-flex">
+            <a href="#" class="badge badge-primary mx-0">Lab</a>
+            <a href="#" class="badge badge-warning mx-1">3 / f</a>
+        </div>
+
+        <nav class="col-sm-4 my-2 " aria-label="breadcrumb" style="margin-left: -20px;">
+            <ol class="breadcrumb ">
+                <li class="breadcrumb-item"><a href="#">Rooms List</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Room detail</li>
+            </ol>
+        </nav>
+        <div class="card-deck">
+            <!-- temp -->
+            <div class="card text-white bg-primary mb-3" style="max-width: 13rem;">
+                <div class="card-header">
+                    <a class="text-white" href="#">
+                        Temperature
+                        <img class="float-right mt-1" style="width: 16px;" src="~/img/icon/rightArrow.png" />
+                    </a>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">
+                        <img src="~/img/icon/weather24.png" />
+                        25.5 C
+                    </h4>
+                    <p class="card-text"><small class="text-white">updated 5 mins ago</small></p>
+                </div>
+            </div>
+            <!-- hum -->
+            <div class="card text-white bg-info mb-3" style="max-width: 13rem;">
+                <div class="card-header">
+                    <a class="text-white" href="#">
+                        Humidity
+                        <img class="float-right mt-1" style="width: 16px;" src="~/img/icon/rightArrow.png" />
+                    </a>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">
+                        <img src="~/img/icon/humidity24.png" />
+                        90%
+                    </h4>
+                    <p class="card-text"><small class="text-white">updated 3 mins ago</small></p>
+                </div>
+            </div>
+            <!-- Luminosity -->
+            <div class="card text-white bg-warning mb-3" style="max-width: 13rem;">
+                <div class="card-header">
+                    <a class="text-white" href="#">
+                        Luminosity
+                        <img class="float-right mt-1" style="width: 16px;" src="~/img/icon/rightArrow.png" />
+                    </a>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">
+                        <img src="~/img/icon/sun24.png" />
+                        90%
+                    </h4>
+                    <p class="card-text"><small class="text-white">updated 3 mins ago</small></p>
+                </div>
+            </div>
+        </div>
+        <!-- Devices list -->
+        <h3><b>Devices</b></h3>
+        <!-- data -->
+        <div class="card-deck shadow-sm rounded pt-1 ">
+            <div class="card text-white bg-dark mb-3" style="max-width: 15rem;">
+                <div class="card-header">
+                    <a class="text-white" href="#">
+                        Air conditioner
+                        <img class="float-right mt-1" style="width: 24px;" src="~/img/icon/power-button-on36.png" />
+                    </a>
+                </div>
+                <div class="card-body">
+
+                    <p class="ard-text p-0 m-0">AC01 - 3100002a</p>
+                    <h3 class="card-title">
+                        <img class="mr-2" style="width: 32px;" src="~/img/icon/air-conditioner32.png" />
+                        25.5 C
+                    </h3>
+                    <p class="card-text">
+                        <img style="width: 24px;" src="~/img/icon/lighting32.png" />90KW -
+                        <snap class="card-text"><small> Avg: 9kw / dy</small></snap>
+                    </p>
+                    <a class="badge badge-pill badge-danger" href="#" style="font-size: 14px">Turning off</a>
+                    <p class="card-text"><small>updated 3 mins ago</small></p>
+                </div>
+            </div>
+
+            <div class="card bg-light mb-3 shadow-sm" style="max-width: 15rem;">
+                <div class="card-header">
+                    Light
+                    <a href="#">
+                        <img class="float-right mt-1" style="width: 24px;" src="~/img/icon/power-button-off36.png" />
+                    </a>
+                </div>
+                <div class="card-body">
+                    <p class="ard-text p-0 m-0">l01 - 3100002a</p>
+                    <h3 class="card-title">
+                        <img class="mr-2" style="width: 32px;" src="~/img/icon/light-on32.png" />
+                        N/A
+                    </h3>
+                    <p class="card-text">
+                        <img style="width: 24px;" src="~/img/icon/lighting32.png" />90KW -
+                        <snap class="card-text"><small> Avg: 9kw / dy</small></snap>
+                    </p>
+                    <a class="badge badge-pill badge-success" style="font-size: 14px">Turning on</a>
+                    <p class="card-text"><small>updated 3 mins ago</small></p>
+                </div>
+            </div>
+        </div>
+        <!-- data end -->
+
+        <div class="card">
+            <div class=" shadow-sm w-100 h-100 p-3 justify-content-center align-items-center">
+                <div class="container-fluid col-xs-12 col-md-8 pt-4 w-100 px-0">
+
+                    <canvas id="UsageRecordChart"></canvas>
+                    <!--chart js-->
+                    <script>var chartID = '';
+                        var charttitle = '';
+                        var chartType = '';
+                        var position = '';
+                        var devices = [];
+                        var devicesData = [];
+                        var gcolor = [];
+                        var gdata;
+                        var goption;
+
+                        getUsageRecordData();
+
+
+                        async function getUsageRecordData() {
+
+                            charttitle = 'Devices Power Usage Record';
+
+                            chartID = 'UsageRecordChart';
+                            chartType = 'line';
+                            position = 'right';
+                            devices.push('deviceA');
+                            devices.push('deviceB');
+                            devices.push('deviceC');
+                            var day = [];
+                            var i;
+                            for (i = 0; i < 30; i++) {
+                                day.push(i);
+                            }
+                            devices.forEach(getRandomColor);
+
+                            //set chart data
+                            dataop = {
+                                labels: day,
+                                datasets: [{
+                                    label: devices[0],
+                                    borderColor: gcolor[0],
+                                    fill: false,
+                                    data: [65, 59, 80, 81, 56, 55, 40, 50, 60, 55, 30, 78],
+                                }, {
+                                    label: devices[1],
+                                    borderColor: gcolor[1],
+                                    fill: false,
+                                    data: [10, 20, 60, 95, 64, 78, 90, 80, 70, 40, 70, 89],
+                                    spanGaps: false,
+                                }, {
+                                    label: devices[2],
+                                    borderColor: gcolor[2],
+                                    fill: false,
+                                    data: [30, 20, 80, 50, 64, 78, 100, 40, 50, 40, 75, 90],
+                                    spanGaps: false,
+                                }
+
+                                ]
+                            };
+                            //set chart option
+                            goption = {
+                                title: {
+                                    display: true,
+                                    text: charttitle,
+                                    fontSize: 25,
+                                },
+                                legend: {
+                                    display: true,
+                                    position: position,
+                                    labels: {
+                                        boxWidth: 20,
+                                        fontColor: '#111',
+                                        padding: 15
+                                    }
+                                }
+                            };
+                            draw();
+
+                        }
+
+                        async function getUsageRecordData() {
+
+                            charttitle = 'Devices Power Usage Record';
+
+                            chartID = 'UsageRecordChart';
+                            chartType = 'line';
+                            position = 'right';
+                            devices.push('deviceA');
+                            devices.push('deviceB');
+                            devices.push('deviceC');
+                            var day = [];
+                            var i;
+                            for (i = 0; i < 24; i++) {
+                                day.push(i);
+                            }
+                            devices.forEach(getRandomColor);
+
+                            //set chart data
+                            dataop = {
+                                labels: day,
+                                datasets: [{
+                                    label: devices[0],
+                                    borderColor: gcolor[0],
+                                    fill: false,
+                                    data: [65, 59, 80, 81, 56, 55, 40, 50, 60, 55, 30, 78],
+                                }, {
+                                    label: devices[1],
+                                    borderColor: gcolor[1],
+                                    fill: false,
+                                    data: [10, 20, 60, 95, 64, 78, 90, 80, 70, 40, 70, 89],
+                                    spanGaps: false,
+                                }, {
+                                    label: devices[2],
+                                    borderColor: gcolor[2],
+                                    fill: false,
+                                    data: [30, 20, 80, 50, 64, 78, 100, 40, 50, 40, 75, 90],
+                                    spanGaps: false,
+                                }
+
+                                ]
+                            };
+                            //set chart option
+                            goption = {
+                                title: {
+                                    display: true,
+                                    text: charttitle,
+                                    fontSize: 25,
+                                },
+                                legend: {
+                                    display: true,
+                                    position: position,
+                                    labels: {
+                                        boxWidth: 20,
+                                        fontColor: '#111',
+                                        padding: 15
+                                    }
+                                },
+                                scales: {
+                                    yAxes: [
+                                        {
+                                            ticks: {
+                                                callback: function (label, index, labels) {
+                                                    return label + 'KWH';
+                                                }
+                                            },
+                                            scaleLabel: {
+                                                display: true,
+                                                labelString: 'POWER'
+                                            }
+                                        }
+                                    ],
+                                    xAxes: [
+                                        {
+                                            ticks: {
+                                                callback: function (label, index, labels) {
+                                                    return label + ':00';
+                                                }
+                                            },
+                                            scaleLabel: {
+                                                display: true,
+                                                labelString: 'TIME'
+                                            }
+                                        }
+                                    ]
+                                }
+                            };
+                            draw();
+
+                        }
+
+                        //---------------------------------------------------------------------------------
+                        function getRandomColor() {
+                            var letters = '0123456789ABCDEF';
+                            var color = '#';
+                            for (var i = 0; i < 6; i++) {
+                                color += letters[Math.floor(Math.random() * 16)];
+                            }
+                            gcolor.push(color);
+                        }
+
+                        function draw() {
+
+                            let myChart = document.getElementById(chartID).getContext('2d');
+                            // Global Options
+                            Chart.defaults.global.defaultFontFamily = 'Lato';
+                            Chart.defaults.global.defaultFontSize = 18;
+                            Chart.defaults.global.defaultFontColor = '#777';
+
+
+                            let barChart = new Chart(myChart, {
+                                type: chartType,//bar,horizontalBar,pie,line,doughnut,radar,polarArea
+                                data: dataop,
+                                options: goption
+                            });
+                        }
+                        //--------------------------------------------------------------------------</script>
+                    <!--chart js-->
+
+                </div>
+            </div>
+
+        </div>
+
+        <!--room device analysis-->
+        <div class="card  mx-2 p-2">
+            <div class=" shadow-sm w-100 h-100 p-3 justify-content-center align-items-center">
+                <div class="container-fluid col-xs-12 col-md-8 pt-4 w-100 px-0">
+                    <canvas id="UsageRecordChart01"></canvas>
+                    <!--chart js-->
+                    <script>var chartID = '';
+                        var charttitle = '';
+                        var chartType = '';
+                        var position = '';
+                        var devices = [];
+                        var devicesData = [];
+                        var gcolor = [];
+                        var gdata;
+                        var goption;
+
+                        getUsageRecordData01();
+
+                        async function getUsageRecordData01() {
+
+                            charttitle = 'Temperature Sensors Record';
+
+                            chartID = 'UsageRecordChart01';
+                            chartType = 'line';
+                            position = 'right';
+                            devices.push('SensorA');
+                            devices.push('SensorB');
+                            devices.push('SensorC');
+                            var day = [];
+                            var i;
+                            for (i = 0; i < 24; i++) {
+
+                                day.push(i);
+                            }
+                            devices.forEach(getRandomColor);
+
+                            //set chart data
+                            dataop = {
+                                labels: day,
+                                datasets: [{
+                                    label: devices[0],
+                                    borderColor: gcolor[0],
+                                    fill: false,
+                                    data: [25, 29, 30, 31, 26, 25, 30, 30, 30, 25, 30, 28],
+                                }, {
+                                    label: devices[1],
+                                    borderColor: gcolor[1],
+                                    fill: false,
+                                    data: [20, 20, 20, 25, 24, 28, 30, 30, 30, 30, 30, 29],
+                                    spanGaps: false,
+                                }, {
+                                    label: devices[2],
+                                    borderColor: gcolor[2],
+                                    fill: false,
+                                    data: [30, 20, 30, 30, 24, 28, 20, 30, 30, 30, 29, 30],
+                                    spanGaps: false,
+                                }
+
+                                ]
+                            };
+                            //set chart option
+                            goption = {
+                                title: {
+                                    display: true,
+                                    text: charttitle,
+                                    fontSize: 25,
+                                },
+                                legend: {
+                                    display: true,
+                                    position: position,
+                                    labels: {
+                                        boxWidth: 20,
+                                        fontColor: '#111',
+                                        padding: 15
+                                    }
+                                },
+                                scales: {
+                                    yAxes: [
+                                        {
+                                            ticks: {
+                                                callback: function (label, index, labels) {
+                                                    return label + ' ℃';
+                                                }
+                                            },
+                                            scaleLabel: {
+                                                display: true,
+                                                labelString: 'Temperature'
+                                            }
+                                        }
+                                    ],
+                                    xAxes: [
+                                        {
+                                            ticks: {
+                                                callback: function (label, index, labels) {
+                                                    return label + ':00';
+                                                }
+                                            },
+                                            scaleLabel: {
+                                                display: true,
+                                                labelString: 'TIME'
+                                            }
+                                        }
+                                    ]
+                                }
+                            };
+                            draw();
+
+                        }
+
+                        //---------------------------------------------------------------------------------
+                        function getRandomColor() {
+                            var letters = '0123456789ABCDEF';
+                            var color = '#';
+                            for (var i = 0; i < 6; i++) {
+                                color += letters[Math.floor(Math.random() * 16)];
+                            }
+                            gcolor.push(color);
+                        }
+
+                        function draw() {
+
+                            let myChart = document.getElementById(chartID).getContext('2d');
+                            // Global Options
+
+                            Chart.defaults.global.defaultFontFamily = 'Lato';
+                            Chart.defaults.global.defaultFontSize = 18;
+                            Chart.defaults.global.defaultFontColor = '#777';
+
+
+                            let barChart = new Chart(myChart, {
+                                type: chartType,//bar,horizontalBar,pie,line,doughnut,radar,polarArea
+                                data: dataop,
+                                options: goption
+                            });
+                        }
+                                        //--------------------------------------------------------------------------</script>
+                    <!--chart js-->
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+

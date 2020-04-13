@@ -1,355 +1,349 @@
 ﻿
 @{
+    List<List<FYP_WEB_APP.Models.SensorsListModel>> Sensors = ViewData["SensorsListModel"] as List<List<FYP_WEB_APP.Models.SensorsListModel>>;
+
+    List<FYP_WEB_APP.Models.RoomsListModel> Rooms = ViewData["RoomListModel"] as List<FYP_WEB_APP.Models.RoomsListModel>;
     ViewData["Title"] = "Sensors";
     Layout = "_Layout";
 }
+<globalization requestEncoding="utf-8" responseEncoding="utf-8" />
 
 
 <head>
-    <link rel="stylesheet" href="~/css/style.css">
 
-    <script src="~/js/Chart.min.js"></script>
-    <!--https://www.chartjs.org/-->
-    <link rel="stylesheet" href="~/css/bootstrap.min.css">
-    <script src="~/js/jquery.min.js"></script>
-    <script src="~/js/popper.min.js"></script>
-    <script src="~/js/bootstrap.min.js"></script>
-    <script src="~/js/heatmap.js"></script>
-    <script src="~/js/heatmap.min.js"></script>
-    <script src="~/js/prism.js"></script>
-    <!--loading js-->
-    <script src="~/js/modernizr.js"></script>
-    <script src="~/js/jquery-2.2.4.min.js"></script>
-    <script src="~/js/bootstrap.min.js"></script>
-    <!--loading js-->
+    <title>@ViewData["Title"]</title>
 
-    <title>Sensors</title>
-    <script>
-        $(document).ready(function () {
-            //navbar ui
-            $('.navbar-nav .nav-link').removeClass('active');
-            $("#sensors").addClass('active');
-
-            //<!--loading js-->
-
-        });
-
-        $(window).load(function () {
-            // Animate loader off screen
-            $(".se-pre-con").fadeOut("fast");
-        });
-    </script>
 </head>
 
- 
+
 <body class="">
-    @Html.Partial("_AddSensors")
-    <!--loading page graphic-->
-    <div class="se-pre-con"></div>
-    <!--loading page graphic-->
-    <!--header-->
-    <!--header-->
+
+    <div class="modal fade" id="EditSensors" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered" role="document">
+
+            <div class="modal-content" id="EditSensorsBody">
+
+
+            </div>
+
+        </div>
+    </div>
+
     <div class="main  ">
         <div class=" bg-light p-3">
-
-            <div class="d-flex flex-column">
-                <div class="container-fluid ">
-                    <dt class=" h2"><b>Sensor</b></dt>
-                </div>
-                <div class="d-flex flex-row  mb-2 p-2">
-                    <div class="  col">
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="inputGroup-sizing-default">
-                                    <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="15.000000pt"
-                                         height="15.000000pt" viewBox="0 0 240.000000 240.000000"
-                                         preserveAspectRatio="xMidYMid meet">
-                                        <g transform="translate(0.000000,240.000000) scale(0.100000,-0.100000)"
-                                           fill="#000000" stroke="none">
-                                            <path d="M721 2379 c-259 -58 -457 -198 -591 -418 -76 -123 -130 -316 -130 -458 0 -101 38 -269 83 -366 133 -287 398 -479 716 -517 121 -15 251 -1 375 41 l90 30 346 -346 c233 -233 352 -345 366 -345 38 0 138 40 192 77 107 73 198 207 210 309 l5 46 -341 342 -341 341 34 100 c46 136 61 255 46 381 -46 393 -316 693 -699 780 -130 29 -242 30 -361 3z m387 -315 c182 -73 318 -225 366 -411 20 -78 20 -218 0 -297 -52 -203 -227 -378 -430 -430 -78 -20 -222 -21 -297 -1 -207 54 -378 225 -432 433 -20 74 -20 221 0 297 49 186 191 343 371 411 127 48 298 47 422 -2z" />
-                                        </g>
-                                    </svg>
-                                </span>
-                            </div>
-                            <input type="text" class="form-control" placeholder=""
-                                   aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button">Search</button>
-                            </div>
-                        </div>
+            <div class="d-flex flex-column bd-highlight mb-3">
+                <div class="p-2 bd-highlight">
+                    <div class="container-fluid ">
+                        <div class=" h2">@ViewBag.roomID<b>Sensor</b></div>
                     </div>
                 </div>
-                <div class="card d-flex flex-row  mb-2 mx-2 p-2">
-                    <div class="col-0 px-2">
-                        Fillter
-                    </div>
-                    <div class="col-10">
-                        <div class="col  d-flex  flex-row">
-                            <div class="px-2 pb-3">
-                                type:
-                            </div>
-                            <div class="px-3"><input type="checkbox" name="Fillter-All" value="All"> All</div>
-                            <div class="px-3">
-                                <input type="checkbox" name="Fillter-AirConditioning"
-                                       value="AirConditioning"> Temperature
-                            </div>
-                            <div class="px-3"><input type="checkbox" name="Fillter-Light" value="Light"> Humidity</div>
-                            <div class="px-3"><input type="checkbox" name="Fillter-Other" value="Other"> Luminosity</div>
-                        </div>
-                        <div class="col-4  d-flex  flex-row ">
-                            <div class="px-2 pb-3 ">
-                                location:
-                            </div>
-                            <select class="px-3 my-2 ">
-                                <option value="volvo">301</option>
-                                <option value="mercedes">305</option>
-                                <option value="audi">306</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="card d-flex flex-column mb-2 mx-2 p-2" style="height: 250px;">
-                    <div class="row justify-content-between mb-2">
-                        <div class="col">
-                            <dt class="col h4">
-                                Sensor List
-                            </dt>
+                <div class="p-2 bd-highlight">
+                    @using (Html.BeginForm("Sensors", "Sensors", FormMethod.Get))
 
-                        </div>
-                        <div class="col-4 d-flex justify-content-end">
+                    {
+                        <div class="d-flex flex-row mb-2 p-2 w-100">
+                            <div class="col px-0">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">
+                                            <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="15.000000pt"
+                                                 height="15.000000pt" viewBox="0 0 240.000000 240.000000"
+                                                 preserveAspectRatio="xMidYMid meet">
+                                                <g transform="translate(0.000000,240.000000) scale(0.100000,-0.100000)"
+                                                   fill="#000000" stroke="none">
+                                                    <path d="M721 2379 c-259 -58 -457 -198 -591 -418 -76 -123 -130 -316 -130 -458 0 -101 38 -269 83 -366 133 -287 398 -479 716 -517 121 -15 251 -1 375 41 l90 30 346 -346 c233 -233 352 -345 366 -345 38 0 138 40 192 77 107 73 198 207 210 309 l5 46 -341 342 -341 341 34 100 c46 136 61 255 46 381 -46 393 -316 693 -699 780 -130 29 -242 30 -361 3z m387 -315 c182 -73 318 -225 366 -411 20 -78 20 -218 0 -297 -52 -203 -227 -378 -430 -430 -78 -20 -222 -21 -297 -1 -207 54 -378 225 -432 433 -20 74 -20 221 0 297 49 186 191 343 371 411 127 48 298 47 422 -2z" />
+                                                </g>
+                                            </svg>
+                                        </span>
+                                    </div>
 
-                            <button class="btn btn-outline-secondary px-2 mr-2 " type="button">edit</button>
-                            <button class="btn btn-outline-secondary px-2 mr-2" type="button" data-toggle="modal"
-                                    data-target="#addSensors ">
-                                &#43;
-                            </button>
+                                    <div class="col align-items-center bg-white  text-dark border border-secondary">
+                                        <div class="col-4  d-flex  flex-row py-2">
+                                            <div class="d-flex px-3 align-items-center">
+                                                location:
+                                            </div>
+                                            <div d-flex px-3 align-items-center">
+                                                <select class="form-control bg-white" id="roomId" name="roomId" @ViewBag.SearchRoomIdENorDisable>
+                                                    <option value="">Room.No</option>
+                                                    @foreach (var Room in Rooms)
+                                                    {
 
-                        </div>
-                    </div>
+                                                        <option value="@Room.roomId">@Room.roomId</option>
 
-                    <div class="overflow-auto ">
+                                                    }
 
-                        <table class="table table-striped" id="Divicestable">
-                            <thead>
-                                <tr>
-                                    <th class="th-sm" scope="col">Sensor Name</th>
-                                    <th scope="col">Type</th>
-                                    <th scope="col"> Status</th>
-                                    <th scope="col"> Location</th>
-                                    <th scope="col"> Range</th>
-                                    <th scope="col"> Last modfily date</th>
-                                    <th scope="col"> Serial number</th>
-                                    <th scope="col"> Value</th>
-                                    <th scope="col"> Tsurn on/off</th>
-
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Ts01</td>
-                                    <td>T</td>
-                                    <td>online</td>
-                                    <td>348</td>
-                                    <td>9000</td>
-                                    <td>01/01/2019</td>
-                                    <td>3100002a</td>
-                                    <td>25c</td>
-                                    <td>
-                                        <div class="custom-control custom-switch">
-                                            <input type="checkbox" class="custom-control-input" id="customSwitch1"
-                                                   checked disabled>
-                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                                </select>
+                                            </div>
                                         </div>
-                                </tr>
-                                <tr>
-                                    <td>Ts02</td>
-                                    <td>A</td>
-                                    <td>online</td>
-                                    <td>348</td>
-                                    <td>900</td>
-                                    <td>01/01/2019</td>
-                                    <td>3100002a</td>
-                                    <td>25c</td>
-                                    <td>
-                                        <div class="custom-control custom-switch">
-                                            <input type="checkbox" class="custom-control-input" id="customSwitch1"
-                                                   checked disabled>
-                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                        <div class="col  d-flex  flex-row align-items-center py-2">
+                                            <div class="d-flex px-3 align-items-center">
+                                                type:
+                                            </div>
+                                            <div class="d-flex px-3 align-items-center">
+
+                                                <input type="checkbox" id="checkAll" />
+                                                All
+                                            </div>
+                                            <div class="d-flex px-3 align-items-center">
+                                                <input type="checkbox"id="TS" name="TS" value="true" />
+                                                Temperature
+                                            </div>
+                                            <div class="d-flex px-3 align-items-center">
+                                                <input type="checkbox"id="HS" name="HS" value="true" />
+                                                Humidity
+
+                                            </div>
+                                            <div class="d-flex px-3 align-items-center">
+                                                <input type="checkbox"id="LS" name="LS" value="true" />
+                                                Luminosity
+                                            </div>
                                         </div>
-                                </tr>
-                                <tr>
-                                    <td>Ts03</td>
-                                    <td>A</td>
-                                    <td>online</td>
-                                    <td>348</td>
-                                    <td>900</td>
-                                    <td>01/01/2019</td>
-                                    <td>3100002a</td>
-                                    <td>25c</td>
-                                    <td>
-                                        <div class="custom-control custom-switch">
-                                            <input type="checkbox" class="custom-control-input" id="customSwitch1"
-                                                   checked disabled>
-                                            <label class="custom-control-label" for="customSwitch1"></label>
+
+                                    </div>
+
+                                    <div class="input-group-append">
+                                        <input class="btn btn-outline-secondary" type="submit" value="search" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="p-2 bd-highlight">
+                    <div class="card d-flex flex-column mb-2 mx-2 p-2" style="">
+                        <div class="row justify-content-between align-items-center mb-2 d-flex flex-wrap">
+                            <div class="col ">
+                                <div class="col h4">
+                                    Sensor List
+                                </div>
+
+                            </div>
+                            <div class=" d-flex justify-content-center align-items-center">
+                                <a class="btn btn-outline-dark mx-2" href='@ViewBag.roomIdSortParm'>
+                                    roomId
+                                    <img src="~/img/icon/@ViewBag.sortIMG" height="25" />
+                                </a>
+                            </div>
+                            <div class="d-flex justify-content-end">
+
+                                <a href="#" class="btn btn-outline-success px-2 mr-3" onclick="AddtSensors()">
+                                    &#43; Add
+                                </a>
+                            </div>
+                        </div>
+                        @if (Sensors.Count == 0)
+                        {<div class="alert alert-warning text-center font-weight-bold" role="alert">
+                                <h3>TryAgin, No more record in Your condition.  </h3>
+                            </div>}
+                        else
+                        {
+                            @foreach (var Sensor in Sensors)
+                            {
+                                <div class="card m-2">
+                                    <div class="card-header p-0" id="heading_@Sensor.First().roomId">
+                                        <h3 class="mb-0">
+                                            <button class="btn btn-outline-secondary w-100 border-0" data-toggle="collapse" data-target="#collapse_@Sensor.First().roomId" aria-expanded="true" aria-controls="collapse_@Sensor.First().roomId">
+                                                @Sensor.First().roomId
+                                            </button>
+                                        </h3>
+                                    </div>
+
+                                    <div id="collapse_@Sensor.First().roomId" class="collapse show" aria-labelledby="heading_@Sensor.First().roomId">
+                                        <div class="card-body d-flex flex-wrap">
+
+                                            @foreach (var Sensorss in Sensor)
+                                            {
+                                                <div class="p-2 bd-highlight ">
+                                                    <div class="shadow mb-3 bg-white rounded">
+                                                        <div class="p-3 bg-light">
+
+                                                            <div class="d-flex align-items-center">
+                                                                <h5 class="card-title mx-2">@Sensorss.roomId @Sensorss.sensorId</h5>
+                                                                <a href="#" class="btn btn-outline-success mx-2" onclick="EditSensors('@Sensorss.sensorId')">edit </a>
+
+                                                                <a href="#" class="btn btn-outline-danger mx-2" onclick="DropSensors('@Sensorss.sensorId')">Delete </a>
+                                                            </div>
+                                                            <div class="d-flex align-items-center">
+                                                                <img src="~/img/icon/@Sensorss.typeImg" height="50px">
+                                                                <h2 class="ml-3">@Sensorss.current_Value </h2>
+                                                                <h2 class="mx-2">@Sensorss.typeUnit</h2>
+                                                            </div>
+
+                                                            <p class="card-text my-1">@Sensorss.current_Time</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+
                                         </div>
-                                </tr>
-                                <tr>
-                                    <td>Ts04</td>
-                                    <td>A</td>
-                                    <td>online</td>
-                                    <td>348</td>
-                                    <td>900</td>
-                                    <td>01/01/2019</td>
-                                    <td>3100002a</td>
-                                    <td>25c</td>
-                                    <td>
-                                        <div class="custom-control custom-switch">
-                                            <input type="checkbox" class="custom-control-input" id="customSwitch1"
-                                                   checked disabled>
-                                            <label class="custom-control-label" for="customSwitch1"></label>
-                                        </div>
-                                </tr>
-                                <tr>
-                                    <td>Ls01</td>
-                                    <td>L</td>
-                                    <td>online</td>
-                                    <td>348</td>
-                                    <td>900</td>
-                                    <td>01/01/2019</td>
-                                    <td>3100002a</td>
-                                    <td>25%</td>
-                                    <td>
-                                        <div class="custom-control custom-switch">
-                                            <input type="checkbox" class="custom-control-input" id="customSwitch1"
-                                                   checked disabled>
-                                            <label class="custom-control-label" for="customSwitch1"></label>
-                                        </div>
-                                </tr>
-                            </tbody>
-                        </table>
+                                    </div>
+                                </div>
+                            }}
+
                     </div>
                 </div>
-                <div class="card d-flex flex-row mb-2 mx-2 p-2 ">
-                    <button class="p-3 mx-2 btn btn-outline-secondary">Sensor report</button>
-                    <button class="p-3 mx-2 btn btn-outline-secondary">Log report</button>
-                    <button class="p-3 mx-2 btn btn-outline-secondary">Day Log report</button>
+                <script>
+                    var EditSensors = function (sensorId) {
 
-                </div>
-                <div class="card  mx-2 p-2">
-                    <div class=" shadow-sm w-100 h-100 p-3 justify-content-center align-items-center">
-                        <div class="container-fluid col-xs-12 col-md-8 pt-4 w-100 px-0">
+                        var url = "/Sensors/EditSensors/" + sensorId;
 
-                            <canvas id="UsageRecordChart"></canvas>
+                        $("#EditSensorsBody").load(url, function () {
+                            $("#EditSensors").modal("show");
+
+                        })
+
+                    }
+                    var DropSensors = function (sensorId) {
+
+                        var url = "/Sensors/DropSensors/" + sensorId;
+
+                        $("#EditSensorsBody").load(url, function () {
+                            $("#EditSensors").modal("show");
+
+                        })
+
+                    }
+                    var AddtSensors = function () {
+
+                        var url = "/Sensors/AddSensors";
+
+                        $("#EditSensorsBody").load(url, function () {
+                            $("#EditSensors").modal("show");
+
+                        })
+
+                    }
+                </script>
+                @if (Sensors.Count != 0)
+                {
+
+                    <div class="p-2 bd-highlight">
+                        <div class="card d-flex flex-row mb-2 mx-2 p-2 ">
+                            <button class="p-3 mx-2 btn btn-outline-secondary">Sensor report</button>
+                            <button class="p-3 mx-2 btn btn-outline-secondary">Log report</button>
+                            <button class="p-3 mx-2 btn btn-outline-secondary">Day Log report</button>
+
                         </div>
                     </div>
-                    <button class="p-3 mx-2 btn btn-outline-secondary">Download the report</button>
+                    <div class="p-2 bd-highlight">
+                        <div class="card  mx-2 p-2">
+                            <div class=" shadow-sm w-100 h-100 p-3 justify-content-center align-items-center">
+                                <div class="container-fluid col-xs-12 col-md-8 pt-4 w-100 px-0">
 
-                </div>
+                                    <canvas id="UsageRecordChart"></canvas>
+                                </div>
+                            </div>
+                            <button class="p-3 mx-2 btn btn-outline-secondary">Download the report</button>
+
+                        </div>
+                    </div>
+                    <script>
+            var chartID = '';
+            var charttitle = '';
+            var chartType = '';
+            var position = '';
+            var devicesData = [];
+            var gdata;
+            var goption;
+
+            getUsageRecordData();
+
+            async function getUsageRecordData() {
+
+                charttitle = 'Sensor Log Record';
+
+                chartID = 'UsageRecordChart';
+                chartType = 'line';
+                position = 'right';
+
+                var day = [];
+                var i;
+                for (i = 0; i < 30; i++) {
+                    day.push(i);
+                }
+
+                var jdatasets =@Html.Raw(ViewBag.datasets);
+
+                //set chart data
+                dataop = {
+                    labels: day,
+                    datasets: jdatasets
+                };
+                //set chart option
+                goption = {
+                    title: {
+                        display: true,
+                        text: charttitle,
+                        fontSize: 25,
+                    },
+                    legend: {
+                        display: true,
+                        position: position,
+                        labels: {
+                            boxWidth: 20,
+                            fontColor: '#111',
+                            padding: 15
+                        }
+                    }
+                };
+                draw();
+
+            }
+
+            //---------------------------------------------------------------------------------
+            function draw() {
+
+                let myChart = document.getElementById(chartID).getContext('2d');
+                // Global Options
+                Chart.defaults.global.defaultFontFamily = 'Lato';
+                Chart.defaults.global.defaultFontSize = 18;
+                Chart.defaults.global.defaultFontColor = '#777';
+
+
+                let barChart = new Chart(myChart, {
+                    type: chartType,//bar,horizontalBar,pie,line,doughnut,radar,polarArea
+                    data: dataop,
+                    options: goption
+                });
+        }
+                    </script>
+                }
             </div>
+
+
+
+
+
+
+
+
+
+
+
         </div>
     </div>
     <script>
-
-        var chartID = '';
-        var charttitle = '';
-        var chartType = '';
-        var position = '';
-        var devices = [];
-        var devicesData = [];
-        var gcolor = [];
-        var gdata;
-        var goption;
-
-        getUsageRecordData();
-
-        async function getUsageRecordData() {
-
-            charttitle = 'Sensor Log Record';
-
-            chartID = 'UsageRecordChart';
-            chartType = 'line';
-            position = 'right';
-            devices.push('St01');
-            devices.push('St02');
-            devices.push('St03');
-            var day = [];
-            var i;
-            for (i = 0; i < 30; i++) {
-                day.push(i);
+        $("#checkAll").click(function () {
+            if ($("#checkAll").prop("checked")) {
+                $("input[name='TS']").each(function () {
+                    $(this).prop("checked", true);
+                }); $("input[name='HS']").each(function () {
+                    $(this).prop("checked", true);
+                }); $("input[name='LS']").each(function () {
+                    $(this).prop("checked", true);
+                });
+            } else {
+                $("input[name='TS']").each(function () {
+                    $(this).prop("checked", false);
+                }); $("input[name='HS']").each(function () {
+                    $(this).prop("checked", false);
+                }); $("input[name='LS']").each(function () {
+                    $(this).prop("checked", false);
+                });
             }
-            devices.forEach(getRandomColor);
+        });
 
-            //set chart data
-            dataop = {
-                labels: day,
-                datasets: [{
-                    label: devices[0],
-                    borderColor: gcolor[0],
-                    fill: false,
-                    data: [65, 59, 80, 81, 56, 55, 40, 50, 60, 55, 30, 78],
-                }, {
-                    label: devices[1],
-                    borderColor: gcolor[1],
-                    fill: false,
-                    data: [10, 20, 60, 95, 64, 78, 90, 80, 70, 40, 70, 89],
-                    spanGaps: false,
-                }, {
-                    label: devices[2],
-                    borderColor: gcolor[2],
-                    fill: false,
-                    data: [30, 20, 80, 50, 64, 78, 100, 40, 50, 40, 75, 90],
-                    spanGaps: false,
-                }
+    </script>      
 
-                ]
-            };
-            //set chart option
-            goption = {
-                title: {
-                    display: true,
-                    text: charttitle,
-                    fontSize: 25,
-                },
-                legend: {
-                    display: true,
-                    position: position,
-                    labels: {
-                        boxWidth: 20,
-                        fontColor: '#111',
-                        padding: 15
-                    }
-                }
-            };
-            draw();
-
-        }
-
-        //---------------------------------------------------------------------------------
-        function getRandomColor() {
-            var letters = '0123456789ABCDEF';
-            var color = '#';
-            for (var i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            gcolor.push(color);
-        }
-
-        function draw() {
-
-            let myChart = document.getElementById(chartID).getContext('2d');
-            // Global Options
-            Chart.defaults.global.defaultFontFamily = 'Lato';
-            Chart.defaults.global.defaultFontSize = 18;
-            Chart.defaults.global.defaultFontColor = '#777';
-
-
-            let barChart = new Chart(myChart, {
-                type: chartType,//bar,horizontalBar,pie,line,doughnut,radar,polarArea
-                data: dataop,
-                options: goption
-            });
-        }
-                //--------------------------------------------------------------------------
-
-    </script>
 </body>
