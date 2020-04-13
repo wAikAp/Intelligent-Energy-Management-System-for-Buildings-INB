@@ -3,6 +3,7 @@
     ViewData["Title"] = "Devices";
     Layout = "_Layout";
     List<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel> DevicesList = ViewData["MongoDevicesListModel"] as List < FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>;
+    List<FYP_WEB_APP.Models.RoomsListModel> Rooms = ViewData["RoomListModel"] as List<FYP_WEB_APP.Models.RoomsListModel>;
 
 }
 <head>
@@ -27,179 +28,210 @@
             <div class="d-flex flex-column">
                 <div class="container-fluid ">
                     <div class=" h2">
-                        <b>
+                        <div>
                             Devices
-                        </b>
-                    </div>
-                </div>
-                <div class="d-flex flex-row  mb-2 p-2">
-                    <div class="  col">
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="inputGroup-sizing-default">
-                                    <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="15.000000pt"
-                                         height="15.000000pt" viewBox="0 0 240.000000 240.000000"
-                                         preserveAspectRatio="xMidYMid meet">
-                                        <g transform="translate(0.000000,240.000000) scale(0.100000,-0.100000)"
-                                           fill="#000000" stroke="none">
-                                            <path d="M721 2379 c-259 -58 -457 -198 -591 -418 -76 -123 -130 -316 -130 -458 0 -101 38 -269 83 -366 133 -287 398 -479 716 -517 121 -15 251 -1 375 41 l90 30 346 -346 c233 -233 352 -345 366 -345 38 0 138 40 192 77 107 73 198 207 210 309 l5 46 -341 342 -341 341 34 100 c46 136 61 255 46 381 -46 393 -316 693 -699 780 -130 29 -242 30 -361 3z m387 -315 c182 -73 318 -225 366 -411 20 -78 20 -218 0 -297 -52 -203 -227 -378 -430 -430 -78 -20 -222 -21 -297 -1 -207 54 -378 225 -432 433 -20 74 -20 221 0 297 49 186 191 343 371 411 127 48 298 47 422 -2z" />
-                                        </g>
-                                    </svg>
-                                </span>
-                            </div>
-                            <input type="text" class="form-control" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button">Search</button>
-                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="card d-flex flex-row  mb-2 mx-2 p-2">
-                    <div class="col-0 px-2">
-                        Fillter
-                    </div>
-                    <div class="col-10">
-                        <div class="col  d-flex  flex-row">
-                            <div class="px-2 pb-3">
-                                type:
-                            </div>
-                            <div class="px-3"><input type="checkbox" name="Fillter-All" value="All"> All</div>
-                            <div class="px-3">
-                                <input type="checkbox" name="Fillter-AirConditioning"
-                                       value="AirConditioning"> Air Conditioning
-                            </div>
-                            <div class="px-3"><input type="checkbox" name="Fillter-Light" value="Light"> Light</div>
-                            <div class="px-3"><input type="checkbox" name="Fillter-Other" value="Other"> Other</div>
-                        </div>
-                        <div class="col-4  d-flex  flex-row ">
-                            <div class="px-2 pb-3 ">
-                                location:
-                            </div>
-                            <select class="px-3 my-2 ">
-                                <option value="volvo">301</option>
-                                <option value="mercedes">305</option>
-                                <option value="audi">306</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="card d-flex flex-column mb-2 mx-2 p-2" style="height: 250px;">
-                    <div class="row justify-content-between mb-2">
-                        <div class="col">
-                            <dt class="col h4">
-                                Divices List
-                            </dt>
+                <div class="p-2 bd-highlight">
+                    @using (Html.BeginForm("Sensors", "Sensors", FormMethod.Get))
 
-                        </div>
-                        <div class="col-4 d-flex justify-content-end">
+                    {
+                        <div class="d-flex flex-row mb-2 p-2 w-100">
+                            <div class="col px-0">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">
+                                            <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="15.000000pt"
+                                                 height="15.000000pt" viewBox="0 0 240.000000 240.000000"
+                                                 preserveAspectRatio="xMidYMid meet">
+                                                <g transform="translate(0.000000,240.000000) scale(0.100000,-0.100000)"
+                                                   fill="#000000" stroke="none">
+                                                    <path d="M721 2379 c-259 -58 -457 -198 -591 -418 -76 -123 -130 -316 -130 -458 0 -101 38 -269 83 -366 133 -287 398 -479 716 -517 121 -15 251 -1 375 41 l90 30 346 -346 c233 -233 352 -345 366 -345 38 0 138 40 192 77 107 73 198 207 210 309 l5 46 -341 342 -341 341 34 100 c46 136 61 255 46 381 -46 393 -316 693 -699 780 -130 29 -242 30 -361 3z m387 -315 c182 -73 318 -225 366 -411 20 -78 20 -218 0 -297 -52 -203 -227 -378 -430 -430 -78 -20 -222 -21 -297 -1 -207 54 -378 225 -432 433 -20 74 -20 221 0 297 49 186 191 343 371 411 127 48 298 47 422 -2z" />
+                                                </g>
+                                            </svg>
+                                        </span>
+                                    </div>
 
-                            <button class="btn btn-outline-secondary px-2 mr-2 " type="button" data-toggle="modal"
-                                    data-target="#addDevices ">
-                                edit
-                            </button>
+                                    <div class="col align-items-center bg-white  text-dark border border-secondary">
+                                        <div class="col-4  d-flex  flex-row py-2">
+                                            <div class="d-flex px-3 align-items-center">
+                                                location:
+                                            </div>
+                                            <div d-flex px-3 align-items-center">
+                                                <select class="form-control bg-white" id="roomId" name="roomId" @ViewBag.SearchRoomIdENorDisable>
+                                                    <option value="">Room.No</option>
+                                                    @foreach (var Room in Rooms)
+                                                    {
+
+                                                        <option value="@Room.roomId">@Room.roomId</option>
+
+                                                    }
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col  d-flex  flex-row align-items-center py-2">
+                                            <div class="d-flex px-3 align-items-center">
+                                                type:
+                                            </div>
+                                            <div class="d-flex px-3 align-items-center">
+
+                                                <input type="checkbox" id="checkAll" />
+                                                All
+                                            </div>
+                                            <div class="d-flex px-3 align-items-center">
+                                                <input type="checkbox" id="AC" name="TS" value="true" />
+                                                Air Conditioning
+                                            </div>
+                                            <div class="d-flex px-3 align-items-center">
+                                                <input type="checkbox" id="LT" name="HS" value="true" />
+                                                Light
+                                            </div>
+                                            <div class="d-flex px-3 align-items-center">
+                                                <input type="checkbox" id="LS" name="LS" value="true" />
+                                                Luminosity
+                                            </div>
+                                            <div class="d-flex px-3 align-items-center">
+                                                <input type="checkbox" id="EF" name="LS" value="true" />
+                                                EXH_FAN
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="input-group-append">
+                                        <input class="btn btn-outline-secondary" type="submit" value="search" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <div class="card d-flex flex-column mb-2 mx-2 p-2" style="height: 250px;">
+                        <div class="row justify-content-between mb-2">
+                            <div class="col">
+                                <div class="col h4">
+                                    Divices List
+                                </div>
+
+                            </div>
                             <div class="d-flex justify-content-end">
+                                <div class=" d-flex justify-content-center align-items-center">
+                                    <a class="btn btn-outline-dark mx-2" href='@ViewBag.roomIdSortParm'>
+                                        RoomID
+                                        <img src="~/im
+                                         g/icon/@ViewBag.sortIMG" height="25" />
+                                    </a>
+                                </div>
+                                <div class=" d-flex justify-content-center align-items-center">
+                                    <a class="btn btn-outline-dark mx-2" href='@ViewBag.roomIdSortParm'>
+                                        DevicesID
+                                        <img src="~/img/icon/@ViewBag.sortIMG" height="25" />
+                                    </a>
+                                </div>
+                                <div class="d-flex">
 
-                                <a href="#" class="btn btn-outline-success px-2 mr-3" onclick="AddtDevices()">
-                                    &#43; Add
-                                </a>
+                                    <a href="#" class="btn btn-outline-success px-2 mr-3" onclick="AddtDevices()">
+                                        &#43; Add
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="overflow-auto ">
+                        <div class="overflow-auto ">
 
-                        <table class="table table-striped" id="Divicestable">
-                            <thead>
-                                <tr>
-                                    <th class="th-sm" scope="col">devicesId</th>
-                                    <th scope="col">roomId</th>
-                                    <th scope="col"> devices_Name</th>
-                                    <th scope="col"> power</th>
-                                    <th scope="col"> lastest_checking_time</th>
-                                    <th scope="col"> total_run_time</th>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
-
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var get in DevicesList)
-                                {
+                            <table class="table table-striped" id="Divicestable">
+                                <thead>
                                     <tr>
-                                        <td>@get.devicesId</td>
-                                        <td>@get.roomId</td>
-                                        <td>@get.devices_Name</td>
-                                        <td>@get.power</td>
-                                        <td>@get.lastest_checking_time</td>
-                                        <td>@get.total_run_time</td>
-                                        <td>
-                                            <a href="#" class="btn btn-outline-success mx-2" onclick="EditDevices('@get.devicesId')">Edit </a>
-                                        </td>
-                                        <td>
-                                            <a href="#" class="btn btn-outline-danger mx-2" onclick="DropDevices('@get.devicesId')">Delete </a>
-                                        </td>
-                                        <!--<td>
-                                        <div class="custom-control custom-switch">
-                                            <input type="checkbox" class="custom-control-input" id="customSwitch1"
-                                                   checked disabled>
-                                            <label class="custom-control-label" for="customSwitch1"></label>
-                                        </div>-->
+                                        <th class="th-sm" scope="col">devicesId</th>
+                                        <th scope="col">roomId</th>
+                                        <th scope="col"> devices_Name</th>
+                                        <th scope="col"> power</th>
+                                        <th scope="col"> lastest_checking_time</th>
+                                        <th scope="col"> total_run_time</th>
+                                        <th scope="col"></th>
+                                        <th scope="col"></th>
+
                                     </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var get in DevicesList)
+                                    {
+                                        <tr>
+                                            <td>@get.devicesId</td>
+                                            <td>@get.roomId</td>
+                                            <td>@get.devices_Name</td>
+                                            <td>@get.power</td>
+                                            <td>@get.lastest_checking_time</td>
+                                            <td>@get.total_run_time</td>
+                                            <td>
+                                                <a href="#" class="btn btn-outline-success mx-2" onclick="EditDevices('@get.devicesId')">Edit </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" class="btn btn-outline-danger mx-2" onclick="DropDevices('@get.devicesId')">Delete </a>
+                                            </td>
+                                            <!--<td>
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="customSwitch1"
+                                           checked disabled>
+                                    <label class="custom-control-label" for="customSwitch1"></label>
+                                </div>-->
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                            <script>
+                                var EditDevices = function (Id) {
+
+                                    var url = "/Devices/EditDevices/" + Id;
+
+                                    $("#DevicesFormBody").load(url, function () {
+                                        $("#DevicesForm").modal("show");
+
+                                    })
+
                                 }
-                            </tbody>
-                        </table>
-                        <script>
-                            var EditDevices = function (Id) {
+                                var DropDevices = function (Id) {
 
-                                var url = "/Devices/EditDevices/" + Id;
+                                    var url = "/Devices/DropDevices/" + Id;
 
-                                $("#DevicesFormBody").load(url, function () {
-                                    $("#DevicesForm").modal("show");
+                                    $("#DevicesFormBody").load(url, function () {
+                                        $("#DevicesForm").modal("show");
 
-                                })
+                                    })
 
-                            }
-                            var DropDevices = function (Id) {
+                                }
+                                var AddtDevices = function () {
 
-                                var url = "/Devices/DropDevices/" + Id;
+                                    var url = "/Devices/AddDevices";
 
-                                $("#DevicesFormBody").load(url, function () {
-                                    $("#DevicesForm").modal("show");
+                                    $("#DevicesFormBody").load(url, function () {
+                                        $("#DevicesForm").modal("show");
 
-                                })
+                                    })
 
-                            }
-                            var AddtDevices = function () {
-
-                                var url = "/Devices/AddDevices";
-
-                                $("#DevicesFormBody").load(url, function () {
-                                    $("#DevicesForm").modal("show");
-
-                                })
-
-                            }
-                        </script>
-                    </div>
-                </div>
-                <div class="card d-flex flex-row mb-2 mx-2 p-2 ">
-                    <button class="p-3 mx-2 btn btn-outline-secondary"> power report</button>
-                    <button class="p-3 mx-2 btn btn-outline-secondary">debices report</button>
-                    <button class="p-3 mx-2 btn btn-outline-secondary">maintain report</button>
-                    <button class="p-3 mx-2 btn btn-outline-secondary">money report</button>
-                </div>
-                <div class="card  mx-2 p-2">
-                    <div class=" shadow-sm w-100 h-100 p-3 justify-content-center align-items-center">
-                        <div class="container-fluid col-xs-12 col-md-8 pt-4 w-100 px-0">
-
-                            <canvas id="UsageRecordChart"></canvas>
+                                }
+                            </script>
                         </div>
                     </div>
-                    <button class="p-3 mx-2 btn btn-outline-secondary">Download the report</button>
+                    <div class="card d-flex flex-row mb-2 mx-2 p-2 ">
+                        <button class="p-3 mx-2 btn btn-outline-secondary"> power report</button>
+                        <button class="p-3 mx-2 btn btn-outline-secondary">debices report</button>
+                        <button class="p-3 mx-2 btn btn-outline-secondary">maintain report</button>
+                        <button class="p-3 mx-2 btn btn-outline-secondary">money report</button>
+                    </div>
+                    <div class="card  mx-2 p-2">
+                        <div class=" shadow-sm w-100 h-100 p-3 justify-content-center align-items-center">
+                            <div class="container-fluid col-xs-12 col-md-8 pt-4 w-100 px-0">
 
+                                <canvas id="UsageRecordChart"></canvas>
+                            </div>
+                        </div>
+                        <button class="p-3 mx-2 btn btn-outline-secondary">Download the report</button>
+
+                    </div>
                 </div>
             </div>
-        </div>
     </div>
     <script>
 
