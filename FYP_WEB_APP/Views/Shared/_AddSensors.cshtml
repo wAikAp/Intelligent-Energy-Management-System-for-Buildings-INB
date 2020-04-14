@@ -178,11 +178,20 @@
                                 <div class="input-group-append">
                                     <span class="input-group-text" id="resetRunTime"><img src="https://cdn.onlinewebfonts.com/svg/img_260976.png" width="25" height="25" /></span>
                                 </div>
+                            </div></div></div>
+
+
+                    <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                    <label class="col h5" for="total_run_time">Total run time:</label>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <input type="number" class="form-control bg-white" id="total_run_time" name="total_run_time" value="@if (Sensors != null) {@Sensors.First().total_run_time}" required readonly>
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="resetRunTime"><img src="https://cdn.onlinewebfonts.com/svg/img_260976.png" width="25" height="25"/></span>
                             </div>
-
-
                         </div>
-
+</div>
                     </div>
                 }
             }
