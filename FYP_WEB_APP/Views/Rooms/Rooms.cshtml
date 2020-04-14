@@ -84,7 +84,7 @@
                         <!--load data from ViewData:List<MongoRoomModel> -->
                         @foreach (MongoRoomModel roomModel in roomsDatalist)
                         {
-                            <tr class='clickable-row' data-href='#' style="cursor: pointer;">
+                            <tr class='clickable-row' data-href='@roomModel.roomId' style="cursor: pointer;">
                                 <td>@roomModel.roomName </td>
                                 <td>@roomModel.type </td>
                                 <td>@roomModel.roomId</td>
