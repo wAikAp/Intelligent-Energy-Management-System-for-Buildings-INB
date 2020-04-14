@@ -8,7 +8,7 @@ using FYP_APP.Models;
 using MongoDB.Driver;
 using MongoDB.Bson;
 using FYP_APP.Models.MongoModels;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Session;
 
 
 namespace FYP_APP.Controllers
@@ -21,9 +21,7 @@ namespace FYP_APP.Controllers
 
 		public IActionResult Index()
 		{
-
-			HttpContext.Session.SetString("code", "123456");
-
+		
 
 			//test
 			/*var connectionString = "mongodb+srv://admin:admin@clustertest-kjhvv.azure.mongodb.net/test?retryWrites=true&w=majority";
@@ -62,16 +60,9 @@ namespace FYP_APP.Controllers
 			}*/
 
 
-			
-
 			return View();
 		}
 
-		public IActionResult Home(string ac, string pwd)
-
-		{
-			return View();
-		}
 
 		public IActionResult Home()
 		{
