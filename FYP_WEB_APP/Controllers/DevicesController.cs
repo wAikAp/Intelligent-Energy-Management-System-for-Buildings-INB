@@ -30,7 +30,6 @@ namespace FYP_APP.Controllers
 			//Request.Query["sortOrder"] check 
 			if (Request.Query.ContainsKey("sortOrder"))
 			{
-				System.Diagnostics.Debug.WriteLine("----------have sortorder");
 				this.MongoDevicesList = getDevicesbyid();
 				ViewData["MongoDevicesListModel"] = this.MongoDevicesList;
 				ViewData["RoomListModel"] = GetRoomData();
@@ -43,7 +42,6 @@ namespace FYP_APP.Controllers
 			}
 			else
 			{
-				System.Diagnostics.Debug.WriteLine("----------NOT have sortorder");
 
 				this.MongoDevicesList = getAllDevices();
 				ViewBag.roomIdSortParm = "?sortOrder=roomId";
@@ -74,7 +72,6 @@ namespace FYP_APP.Controllers
 		}
 		public void SearchDevices()
 		{
-			System.Diagnostics.Debug.WriteLine("Start ------ SearchDevices");
 
 			ViewData["Title"] = "Search Devices";
 			var list = getAllDevices();
@@ -88,8 +85,7 @@ namespace FYP_APP.Controllers
 			{
 				string skey = key;
 				string keyValue = Request.Query[key];
-				System.Diagnostics.Debug.WriteLine(skey.ToString());
-				System.Diagnostics.Debug.WriteLine(keyValue.ToString());
+
 
 				switch (skey) {					
 					case "AC":
@@ -140,7 +136,6 @@ namespace FYP_APP.Controllers
 		[HttpPost]
 		public ActionResult AddDevicesData(MongoDevicesListModel postData)//post
 		{
-			System.Diagnostics.Debug.WriteLine("=========="+postData.ToJson().ToString());
 			MongoDevicesListModel insertList = new MongoDevicesListModel { };
 
 			var all = getAllDevices();
@@ -216,7 +211,6 @@ namespace FYP_APP.Controllers
 			if (Request.Query.ContainsKey("sortOrder")is false)
 			{
 				ViewBag.sortIMG = "sort.png";
-				System.Diagnostics.Debug.WriteLine("NOT change link");
 
 			}
 			else if (sortOrder.Contains("Desc"))
@@ -224,7 +218,6 @@ namespace FYP_APP.Controllers
 				list = getAllDevices().OrderByDescending(item => item.roomId).ToList();
 				//.Sort.Descending(sortOrder[0..^5]);
 				ViewBag.sortIMG = "sort_desc.png";
-				System.Diagnostics.Debug.WriteLine("Desc change link sort_desc.png");
 
 			}
 			else
@@ -233,7 +226,6 @@ namespace FYP_APP.Controllers
 				ViewBag.sortIMG = "sort.png";
 
 				list = getAllDevices().OrderBy(item => item.roomId).ToList();
-				System.Diagnostics.Debug.WriteLine("change link sort.png");
 
 			}
 			return list;
