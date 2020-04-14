@@ -40,6 +40,15 @@ namespace FYP_APP.Controllers
 
 			return View();
 		}
+
+		[Route("Sensors/SearchSensorsByRoomid/{id}")]
+		public ActionResult SearchSensorsByRoomid(string id) {
+			getdb();
+			ViewData["SensorsListModel"] = Setgroup(GetSensorsData().Where(x=>x.roomId.Contains(id)).ToList());
+
+			return PartialView("_Sensor");
+		}
+
 		[Route("Sensors/Sensors/{id}")]
 		public ActionResult Sensors(string id)
 		{
