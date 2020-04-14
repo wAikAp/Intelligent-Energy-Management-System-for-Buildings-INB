@@ -46,7 +46,7 @@ namespace FYP_APP.Controllers
 			getdb();
 			ViewData["SensorsListModel"] = Setgroup(GetSensorsData().Where(x=>x.roomId.Contains(id)).ToList());
 
-			return PartialView("_Sensor");
+			return PartialView("_SensorsList");
 		}
 
 		[Route("Sensors/Sensors/{id}")]

@@ -69,7 +69,7 @@ namespace FYP_APP.Controllers
 			ViewData["MongoDevicesListModel"] = getAllDevices().Where(x => x.roomId == id).ToList();
 			ViewData["RoomListModel"] = GetRoomData();
 			//getAllDevices().Where(x => x.roomId == id).ToList().ToJson().ToString()
-			return PartialView("_Devices");
+			return PartialView("_DevicesList");
 
 		}
 		public void SearchDevices()
