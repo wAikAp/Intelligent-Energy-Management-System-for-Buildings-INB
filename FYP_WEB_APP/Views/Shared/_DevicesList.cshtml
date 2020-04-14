@@ -1,0 +1,121 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{ List<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel> DevicesList = ViewData["MongoDevicesListModel"] as List<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>;
+}
+<div class="modal fade" id="DevicesForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" id="DevicesFormBody">
+
+        </div>
+    </div>
+</div>
+<div class="card d-flex flex-column mb-2 mx-2 p-2" style="height: 250px;">
+    <div class="row justify-content-between mb-2">
+        <div class="col">
+            <div class="col h4">
+                Divices List
+            </div>
+
+        </div>
+        <div class="d-flex justify-content-end">
+            @* <div class=" d-flex justify-content-center align-items-center">
+                    <a class="btn btn-outline-dark mx-2" href='@ViewBag.roomIdSortParm'>
+                        RoomID
+                        <img src="~/img/icon/@ViewBag.sortIMG" height="25" />
+                    </a>
+                </div>
+            *@
+            <div class="d-flex">
+
+                <a href="#" class="btn btn-outline-success px-2 mr-3" onclick="AddtDevices()">
+                    &#43; Add
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @if (DevicesList.Count() == 0)
+    {
+        <div class="alert alert-warning text-center font-weight-bold" role="alert">
+            <h3>TryAgin, No more Devices record in Your condition.  </h3>
+        </div>}
+    else
+    {
+
+        <div class="overflow-auto ">
+
+            <table class="table table-striped table-bordered table-sm" id="dt">
+                <thead>
+                    <tr>
+                        <th scope="col">devicesId</th>
+                        <th scope="col">roomId</th>
+                        <th scope="col"> devices_Name</th>
+                        <th scope="col"> power</th>
+                        <th scope="col"> lastest_checking_time</th>
+                        <th scope="col"> total_run_time</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var get in DevicesList)
+                    {
+                        <tr>
+                            <td>@get.devicesId</td>
+                            <td>@get.roomId</td>
+                            <td>@get.devices_Name</td>
+                            <td>@get.power</td>
+                            <td>@get.lastest_checking_time</td>
+                            <td>@get.total_run_time</td>
+                            <td>
+                                <a href="#" class="btn btn-outline-success mx-2" onclick="EditDevices('@get.devicesId')">Edit </a>
+                            </td>
+                            <td>
+                                <a href="#" class="btn btn-outline-danger mx-2" onclick="DropDevices('@get.devicesId')">Delete </a>
+                            </td>
+                            <!--<td>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="customSwitch1"
+                                       checked disabled>
+                                <label class="custom-control-label" for="customSwitch1"></label>
+                            </div>-->
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <script>
+                var EditDevices = function (Id) {
+
+                    var url = "/Devices/EditDevices/" + Id;
+
+                    $("#DevicesFormBody").load(url, function () {
+                        $("#DevicesForm").modal("show");
+
+                    })
+
+                }
+                var DropDevices = function (Id) {
+
+                    var url = "/Devices/DropDevices/" + Id;
+
+                    $("#DevicesFormBody").load(url, function () {
+                        $("#DevicesForm").modal("show");
+
+                    })
+
+                }
+                var AddtDevices = function () {
+
+                    var url = "/Devices/AddDevices";
+
+                    $("#DevicesFormBody").load(url, function () {
+                        $("#DevicesForm").modal("show");
+
+                    })
+
+                }
+            </script>
+        </div>}
+</div>
