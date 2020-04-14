@@ -1,4 +1,14 @@
-﻿
+﻿@*
+    <div id="devicesView"></div>
+    <div id="sensorView"></div>
+
+    <script>
+            $(document).ready(function () {
+                $("#devicesView").load("@Url.Action("SearchDevicesByRoomid", "Devices", new { id = "341" })", function () {});
+                $("#sensorView").load("@Url.Action("SearchSensorsByRoomid", "Sensors", new { id = "341" })", function () {});
+            });
+    </script>
+*@
 @{
     List<List<FYP_WEB_APP.Models.SensorsListModel>> Sensors = ViewData["SensorsListModel"] as List<List<FYP_WEB_APP.Models.SensorsListModel>>;
 
@@ -122,7 +132,7 @@
                     }
                 </div>
 
-                @Html.Partial("_SensorList")
+                @Html.Partial("_SensorsList")
 
                 @if (Sensors.Count != 0)
                 {
