@@ -1,43 +1,60 @@
-﻿
+﻿@using Microsoft.AspNetCore.Http
+@model FYP_APP.Models.MongoModels.MongoUserModel
+
+@{
+    var userName = Context.Session.GetString("userName");
+}
+
+<head>
+    <link rel="shortcut icon" href="~/img/icon/iconT36.ico" type="image/x-icon">
+    <link rel="icon" href="~/img/icon/iconT36.ico" type="image/x-icon">
+    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <script src="~/js/bootstrap/jquery.min.js"></script>
+    <script src="~/js/bootstrap/popper.min.js"></script>
+    <script src="~/js/bootstrap/bootstrap.min.js"></script>
+    <script src="~/js/Chart/Chart.min.js"></script>
+    <script src="~/js/heatmap/heatmap.js"></script>
+    <script src="~/js/heatmap/heatmap.min.js"></script>
+
+    <script>
 
 
-    <head>
-        <link rel="shortcut icon" href="~/img/icon/iconT36.ico" type="image/x-icon">
-        <link rel="icon" href="~/img/icon/iconT36.ico" type="image/x-icon">
-        <link rel="stylesheet" href="~/css/style.css">
-        <link rel="stylesheet" href="~/css/bootstrap.min.css">
-        <script src="~/js/bootstrap/jquery.min.js"></script>
-        <script src="~/js/bootstrap/popper.min.js"></script>
-        <script src="~/js/bootstrap/bootstrap.min.js"></script>
-        <script src="~/js/Chart/Chart.min.js"></script>
-        <script src="~/js/heatmap/heatmap.js"></script>
-        <script src="~/js/heatmap/heatmap.min.js"></script>
-
-        <script>
-
-
-            $(document).ready(function () {
+        $(document).ready(function () {
+            resizeNav();
+            $(window).resize(function () {
                 resizeNav();
-                $(window).resize(function () {
-                    resizeNav();
-                });
-                $('.navbar-nav .nav-link').removeClass('active');
-                $("#index").addClass('active');
-                $(window).on("load", function () {
-                    $("#perloaddiv").delay(200).fadeOut("fast");
-                });
             });
-            function resizeNav() {
-                $("#nav2").css({ "margin-top": $("#nav1").height() });
-            }
+            $('.navbar-nav .nav-link').removeClass('active');
+            $("#index").addClass('active');
+            $(window).on("load", function () {
+                $("#perloaddiv").delay(200).fadeOut("fast");
+            });
+        });
+        function resizeNav() {
+            $("#nav2").css({ "margin-top": $("#nav1").height() });
+        }
 
-        </script>
-        <style>
-        #perloaddiv { position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; z-index: 9999; background-image: url("http://smallenvelop.com/wp-content/uploads/2014/08/Preloader_11.gif"); background-repeat: no-repeat; background-attachment: fixed; background-position: center; background-color: #fff; }
+    </script>
+    <style>
 
-        </style>
-    </head>
+        #perloaddiv {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background-image: url("http://smallenvelop.com/wp-content/uploads/2014/08/Preloader_11.gif");
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            background-color: #fff;
+        }
+    </style>
+</head>
 <style>
+
     .nav-link {
         margin-right: 20px;
     }
@@ -82,14 +99,14 @@
                 <a class="nav-link" href="#">
                     <img src="~/img/icon/user24.png">
                     <span id="userName" class="statusTxt">
-                    @if(ViewData["userName"]!=null)
-                    {
-                        @ViewData["userName"]
-                    }
-                    else
-                    {
-                        <span>Login</span>
-                    }
+                        @if (userName != null)
+                        {
+                            <span>@userName</span>
+                        }
+                        else
+                        {
+                            <span>Login</span>
+                        }
                     </span>
                 </a>
             </li>
@@ -113,7 +130,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="~/Home/UserSetting">
                     <img src="~/img/icon/settings24.png">
                 </a>
             </li>

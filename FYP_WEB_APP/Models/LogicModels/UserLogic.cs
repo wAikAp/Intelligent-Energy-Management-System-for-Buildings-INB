@@ -28,7 +28,6 @@ namespace FYP_APP.Models.LogicModels
 		{
 			this.userName = un;
 			this.pwd = pd;
-
 			var collection = dbManager.DataBase.GetCollection<MongoUserModel>("USER");
 
 			var filterBuilder = Builders<MongoUserModel>.Filter;
@@ -36,6 +35,7 @@ namespace FYP_APP.Models.LogicModels
 			var document = collection.Find(filter).FirstOrDefault();
 			if(document != null)
 			{
+
 				return document;
 			}
 			else

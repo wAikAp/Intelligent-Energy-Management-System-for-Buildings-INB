@@ -36,6 +36,7 @@ namespace FYP_APP.Controllers
 			if(user != null)
 			{
 				HttpContext.Session.Set<MongoUserModel>("user", user);
+				HttpContext.Session.SetString("userName", user.lName);
 				//Debug.WriteLine("json " + HttpContext.Session.Get<MongoUserModel>("user"));
 				return RedirectToAction("Home", "Home");
 			}
@@ -52,8 +53,15 @@ namespace FYP_APP.Controllers
 
 		public IActionResult Home()
 		{
+			//MongoUserModel user = HttpContext.Session.Get<MongoUserModel>("user");
+			return View();
+		}
+
+
+		public IActionResult UserSetting()
+		{
 			MongoUserModel user = HttpContext.Session.Get<MongoUserModel>("user");
-			ViewData["userName"] = user.name;
+
 			return View();
 		}
 
