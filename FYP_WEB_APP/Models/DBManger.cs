@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace FYP_WEB_APP.Models
@@ -19,7 +21,9 @@ namespace FYP_WEB_APP.Models
             this.DataBase = dbClient.GetDatabase(this.dbName);
             //var collection = database.GetCollection<MongoLightListModel>("LIGHT_LIST");
 
-
         }
+
+ 
+		
     }
 }

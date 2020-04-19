@@ -1,64 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using FYP_APP.Models;
-using MongoDB.Driver;
-using MongoDB.Bson;
 using FYP_APP.Models.MongoModels;
-using Microsoft.AspNetCore.Session;
-
+using FYP_APP.Models.LogicModels;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
+using FYP_APP.Extensions;
 
 namespace FYP_APP.Controllers
 {
 	public class HomeController : Controller
 	{
 
-		
 
 
+		[HttpGet]
 		public IActionResult Index()
 		{
-		
-
-			//test
-			/*var connectionString = "mongodb+srv://admin:admin@clustertest-kjhvv.azure.mongodb.net/test?retryWrites=true&w=majority";
-			MongoClient dbClient = new MongoClient(connectionString);
-			var database = dbClient.GetDatabase("FYP_1920");
-			var collection = database.GetCollection<BsonDocument>("USER");
-
-
-			//insert
-			/*var document = new BsonDocument { { "student_id", 10000 }, {
-				"scores",
-				new BsonArray {
-				new BsonDocument { { "type", "exam" }, { "score", 88.12334193287023 } },
-				new BsonDocument { { "type", "quiz" }, { "score", 74.92381029342834 } },
-				new BsonDocument { { "type", "homework" }, { "score", 89.97929384290324 } },
-				new BsonDocument { { "type", "homework" }, { "score", 82.12931030513218 } }
-				}
-				}, { "class_id", 480 }
-			};
-
-			collection.InsertOne(document);
-			//Or 
-			//collection.InsertOneAsync(document);
-
-
-			//end insert
-
-
-
-			/*var dbList = dbClient.ListDatabases().ToList();
-
-			Console.WriteLine("The list of databases on this server is: .............asdhgiagriarb");
-			foreach (var db in dbList)
+			if (HttpContext.Session.Get<MongoUserModel>("user")!= null)
 			{
-				Console.WriteLine(db);
-			}*/
+				return RedirectToAction("Home", "Home");
+			}
+			return View();
+		}
+		
+		[HttpPost]
+		public IActionResult Index(string loginUserName, string loginPass)
+		{
+			
+			UserLogic userLogic = new UserLogic();
+			MongoUserModel user = userLogic.login(loginUserName, loginPass);
 
+			if(user != null)
+			{
+				HttpContext.Session.Set<MongoUserModel>("user", user);
+				//Debug.WriteLine("json " + HttpContext.Session.Get<MongoUserModel>("user"));
+				return RedirectToAction("Home", "Home");
+			}
+			else
+			{
+				ViewData["message"] = "Wrong user name or password!";
+				
+			}
+			
 
 			return View();
 		}
@@ -66,12 +52,11 @@ namespace FYP_APP.Controllers
 
 		public IActionResult Home()
 		{
-
-			
+			MongoUserModel user = HttpContext.Session.Get<MongoUserModel>("user");
+			ViewData["userName"] = user.name;
 			return View();
 		}
 
-		
 
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

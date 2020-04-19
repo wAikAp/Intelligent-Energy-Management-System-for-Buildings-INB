@@ -6,13 +6,10 @@
         <link rel="icon" href="~/img/icon/iconT36.ico" type="image/x-icon">
         <link rel="stylesheet" href="~/css/style.css">
         <link rel="stylesheet" href="~/css/bootstrap.min.css">
-
         <script src="~/js/bootstrap/jquery.min.js"></script>
         <script src="~/js/bootstrap/popper.min.js"></script>
         <script src="~/js/bootstrap/bootstrap.min.js"></script>
-
         <script src="~/js/Chart/Chart.min.js"></script>
-
         <script src="~/js/heatmap/heatmap.js"></script>
         <script src="~/js/heatmap/heatmap.min.js"></script>
 
@@ -84,7 +81,16 @@
             <li class="nav-item">
                 <a class="nav-link" href="#">
                     <img src="~/img/icon/user24.png">
-                    <span id="userName" class="statusTxt">user</span>
+                    <span id="userName" class="statusTxt">
+                    @if(ViewData["userName"]!=null)
+                    {
+                        @ViewData["userName"]
+                    }
+                    else
+                    {
+                        <span>Login</span>
+                    }
+                    </span>
                 </a>
             </li>
 
