@@ -40,6 +40,15 @@ namespace FYP_APP.Controllers
 
 			return View();
 		}
+
+		[Route("Sensors/SearchSensorsByRoomid/{id}")]
+		public ActionResult SearchSensorsByRoomid(string id) {
+			getdb();
+			ViewData["SensorsListModel"] = Setgroup(GetSensorsData().Where(x=>x.roomId.Contains(id)).ToList());
+
+			return PartialView("_SensorsList");
+		}
+
 		[Route("Sensors/Sensors/{id}")]
 		public ActionResult Sensors(string id)
 		{
@@ -63,7 +72,6 @@ namespace FYP_APP.Controllers
 			List<SensorsListModel> list = GetSensorsData();
 			list = list.Where(x => x.sensorId.Contains(id)).ToList();
 			ViewData["EditSensorsListModel"] = list;
-			ViewBag.sid = id;
 			ViewBag.viewType = "Edit";
 			ViewBag.action = "UpdateSensors";
 			return PartialView("_AddSensors", list);
@@ -89,7 +97,7 @@ namespace FYP_APP.Controllers
 						if (property.Name=="latest_checking_time")
 						{
 							up = Builders<MongoSensorsListModel>.Update.Set(property.Name.ToString(), DateTime.UtcNow);
-
+							Debug.WriteLine(DateTime.UtcNow);
 						}
 						else {
 							 up = Builders<MongoSensorsListModel>.Update.Set(property.Name.ToString(), property.GetValue(postData).ToString());
@@ -127,8 +135,8 @@ namespace FYP_APP.Controllers
 
 			var all=GetSensorsData();
 			string count = "";
-			if (all.Count < 10) { count = "00" + all.Count.ToString(); }
-			else if (all.Count < 100) { count = "0" + all.Count.ToString(); }
+			if (all.Count < 10) { count = "00" + (all.Count + 1).ToString(); }
+			else if (all.Count < 100) { count = "0" + (all.Count + 1).ToString(); }
 
 			sensortype = postData.Sensortype;
 			insertList.roomId = postData.roomId;
@@ -161,7 +169,6 @@ namespace FYP_APP.Controllers
 			list = list.Where(x => x.sensorId.Contains(id)).ToList();
 			
 			ViewData["EditSensorsListModel"] = list;
-			ViewBag.sid = id;
 			ViewBag.viewType = "Drop";
 			ViewBag.action = "DropSensorsData";
 
@@ -279,9 +286,7 @@ namespace FYP_APP.Controllers
 					typeImg = getType(set.sensorId),
 					typeUnit = getunit(set.sensorId)
 					};
-					SensorsDataList.Add(data);
-
-				
+					SensorsDataList.Add(data);				
 			}
 
 			try
