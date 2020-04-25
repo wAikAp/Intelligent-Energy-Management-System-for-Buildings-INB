@@ -28,5 +28,6 @@
 
   <ItemGroup>
     <Folder Include="Views\RoomDetail\" />
+    <Folder Include="wwwroot\FoolrPlansImg\" />
   </ItemGroup>
 </Project>
