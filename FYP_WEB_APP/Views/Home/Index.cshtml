@@ -1,31 +1,32 @@
 ﻿@{
     ViewBag.Title = "Login Page";
     Layout = null;
-
-    var date = ViewBag.Date;
-    var student = ViewBag.Student;
-    var list = ViewBag.List;
     Layout = "_Layout";
 }
 
 <head>
     <title>@ViewBag.Title</title>
-   
+
+
 </head>
 
     <div class="" id="loginBox" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
-            <form action="" method="POST">
+            <form action="~/Home/Index" method="post" >
                 <!-- login form -->
                 <div class="modal-content">
                     <div class="modal-header ">
                         <div class="modal-title text-center justify-content-center d-flex w-100 flex-column" id="exampleModalLabel">
                             <div>
 
-                                <img src="~/img/icon/logoT36.png" />"
+                                <img src="~/img/icon/logoT36.png" />
 
                             </div>
-                            <h5>LOGIN</h5>
+                            <h5>Login</h5>
+                            @if (ViewData["message"] != null)
+                            {
+                                <h5 style="color:red;"> @ViewData["message"]</h5>
+                            }
 
                         </div>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
