@@ -21,6 +21,7 @@ namespace FYP_APP.Controllers
 		private IMongoDatabase database;
 		private string PageRoomId="";
 		private bool isUpdated;
+		
 		public void getdb() { 
 		ConnectDB conn = new ConnectDB();
 			this.database = conn.Conn();
@@ -29,7 +30,7 @@ namespace FYP_APP.Controllers
 		[Route("Sensors/Sensors")]
 		public ActionResult Sensors()
 		{
-
+			ViewData["NotGroup"] = "false";
 			ViewBag.SearchRoomIdENorDisable = "";
 			getdb();
 			ViewData["SensorsListModel"] = Setgroup(GetSensorsData());
@@ -40,11 +41,25 @@ namespace FYP_APP.Controllers
 
 			return View();
 		}
-
-		[Route("Sensors/SearchSensorsByRoomid/{id}")]
-		public ActionResult SearchSensorsByRoomid(string id) {
+		[Route("Sensors/SensorsChartByRoomid/{id}")]
+		public ActionResult chart()
+		{
 			getdb();
-			ViewData["SensorsListModel"] = Setgroup(GetSensorsData().Where(x=>x.roomId.Contains(id)).ToList());
+			List<SensorsListModel> lists = GetSensorsData().Where(x => x.roomId.Contains("341")).ToList();
+
+			Debug.WriteLine(Setgroup(lists).ToJson().ToString());
+
+			chartData(lists);
+			return PartialView("_SensorsChart");
+		}
+		[Route("Sensors/SensorsListByRoomid/{id}")]
+		public ActionResult SearchSensorsByRoomid(string id) {
+			ViewData["NotGroup"] = "true";
+			getdb();
+			List<SensorsListModel> lists = GetSensorsData().Where(x=>x.roomId.Contains("341")).ToList();
+
+			Debug.WriteLine(Setgroup(lists).ToJson().ToString());
+			ViewData["SensorsListModel"] = Setgroup(lists);
 
 			return PartialView("_SensorsList");
 		}
@@ -52,6 +67,7 @@ namespace FYP_APP.Controllers
 		[Route("Sensors/Sensors/{id}")]
 		public ActionResult Sensors(string id)
 		{
+			ViewData["NotGroup"] = "true";
 			ViewBag.roomID =this.PageRoomId = id;
 			ViewBag.SearchRoomIdENorDisable = "disabled";
 			getdb();
@@ -129,8 +145,6 @@ namespace FYP_APP.Controllers
 			getdb();
 			var collection = database.GetCollection<MongoSensorsListModel>("SENSOR_LIST");
 
-			string sensortype = "";
-
 			MongoSensorsListModel insertList = new MongoSensorsListModel { } ;
 
 			var all=GetSensorsData();
@@ -138,7 +152,6 @@ namespace FYP_APP.Controllers
 			if (all.Count < 10) { count = "00" + (all.Count + 1).ToString(); }
 			else if (all.Count < 100) { count = "0" + (all.Count + 1).ToString(); }
 
-			sensortype = postData.Sensortype;
 			insertList.roomId = postData.roomId;
 			insertList.sensorId = postData.Sensortype+ count;
 			insertList.location = postData.location;
@@ -387,9 +400,6 @@ namespace FYP_APP.Controllers
 			}
 			else if (!(count > 1) && !String.IsNullOrEmpty(sortOrder))
 			{
-				rs = Request.QueryString.ToString().Substring(1);
-
-
 				string viewsortOrderroomId = sortOrder == "roomId" ? "roomId_Desc" : "roomId";
 				ViewBag.roomIdSortParm = "?sortOrder=" + viewsortOrderroomId;
 
@@ -552,21 +562,6 @@ namespace FYP_APP.Controllers
 			var rmcolor = String.Format("#{0:X6}", random.Next(0x1000000));
 			Color.Add(rmcolor);
 		}
-		public void alert(int type,string title,string str) {
-			switch (type) {
-				case -1:
-					ViewBag.alert_type = "alert-danger";
-					break;
-				case 0:
-					ViewBag.alert_type = "alert-warning";
-					break;
-				case 1:
-					ViewBag.alert_type = "alert-success";
-					break;
 
-			}
-			ViewBag.title = title;
-			ViewBag.str = str;
-		} 
 	}
 }

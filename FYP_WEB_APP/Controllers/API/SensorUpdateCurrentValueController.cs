@@ -48,7 +48,7 @@ namespace FYP_WEB_APP.Controllers.API
                             break;
                         case "HS":
                             valueNmae = "current_hum";
-                            dbname = "LIGHT_SENSOR";
+                            dbname = "HUM_SENSOR";
                             break;
                         case "LS":
                             valueNmae = "current_lum";

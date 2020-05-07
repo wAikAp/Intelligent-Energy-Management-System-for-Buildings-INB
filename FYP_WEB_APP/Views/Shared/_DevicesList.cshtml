@@ -1,8 +1,9 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@{ List<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel> DevicesList = ViewData["MongoDevicesListModel"] as List<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>;
+@{ List<FYP_WEB_APP.Models.DevicesListModel> DevicesList = ViewData["MongoDevicesListModel"] as List<FYP_WEB_APP.Models.DevicesListModel>;
 }
+
 <div class="modal fade" id="DevicesForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content" id="DevicesFormBody">
@@ -10,7 +11,7 @@
         </div>
     </div>
 </div>
-<div class="card d-flex flex-column mb-2 mx-2 p-2" style="height: 250px;">
+<div class="card d-flex flex-column mb-2 mx-2 p-2" >
     <div class="row justify-content-between mb-2">
         <div class="col">
             <div class="col h4">
@@ -44,78 +45,164 @@
     {
 
         <div class="overflow-auto ">
-
-            <table class="table table-striped table-bordered table-sm" id="dt">
-                <thead>
-                    <tr>
-                        <th scope="col">devicesId</th>
-                        <th scope="col">roomId</th>
-                        <th scope="col"> devices_Name</th>
-                        <th scope="col"> power</th>
-                        <th scope="col"> lastest_checking_time</th>
-                        <th scope="col"> total_run_time</th>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var get in DevicesList)
+            <div class="card-deck shadow-sm rounded pt-1 ">
+                @foreach (var get in DevicesList)
+                {
+                    @switch (get.devicesId.Substring(0, 2))
                     {
-                        <tr>
-                            <td>@get.devicesId</td>
-                            <td>@get.roomId</td>
-                            <td>@get.devices_Name</td>
-                            <td>@get.power</td>
-                            <td>@get.lastest_checking_time</td>
-                            <td>@get.total_run_time</td>
-                            <td>
-                                <a href="#" class="btn btn-outline-success mx-2" onclick="EditDevices('@get.devicesId')">Edit </a>
-                            </td>
-                            <td>
-                                <a href="#" class="btn btn-outline-danger mx-2" onclick="DropDevices('@get.devicesId')">Delete </a>
-                            </td>
-                            <!--<td>
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="customSwitch1"
-                                       checked disabled>
-                                <label class="custom-control-label" for="customSwitch1"></label>
-                            </div>-->
-                        </tr>
+                        case "AC":
+                            ViewData["cardType"] = " bg-dark";
+                            ViewData["text"] = "text-white ";
+                            ViewData["devicesType"] = "Air conditioner";
+                            break;
+                        case "LT":
+                            ViewData["cardType"] = "bg-light";
+                            ViewData["text"] = "text-dark ";
+                            ViewData["backimg"] = "filter: invert(100%);";
+                            ViewData["devicesType"] = "Light conditioner";
+
+                            break;
+                        case "HD":
+                            ViewData["devicesType"] = "Humidifier";
+                            
+
+                            break;
+                        case "EF":
+                            ViewData["devicesType"] = "Extemal conditioner";
+                            break;
                     }
-                </tbody>
-            </table>
-            <script>
-                var EditDevices = function (Id) {
 
-                    var url = "/Devices/EditDevices/" + Id;
 
-                    $("#DevicesFormBody").load(url, function () {
-                        $("#DevicesForm").modal("show");
 
-                    })
+                    <div class="card  @ViewData["cardType"] @ViewData["text"] mb-3" style="max-width: 15rem;">
+                        <div class="card-header pr-1">
+                            <div class="d-flex bd-highlight align-items-center">
+                                <div class="mr-auto bd-highlight">
+                                    <a class=" @ViewData["text"] align-middle h-100" href="#">
+                                        @ViewData["devicesType"]
+                                    </a>
+                                </div>
+                                <div class=" bd-highlight">
+                                    <a class="bd-highlight mt-1 align-middle h-100" href="#">
+                                        @if (get.powerOnOff)
+                                        {
+                                            <img class="mt-1" style="width: 24px;" src="~/img/icon/power-button-on36.png" />
+                                        }
+                                        else
+                                        {
+                                            <img class="float-right mt-1" style="width: 24px;" src="~/img/icon/power-button-off36.png" />
+                                        }
 
+                                    </a>
+                                </div>
+                                <div class="dropdown  bd-highlight">
+
+                                    <button role="button" class="btn  float-right mt-1 ml-2" type="button" id="dropdownMenuButton0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <img class=" mt-1" style="width: 16px;@ViewData["backimg"]" src="~/img/icon/rightArrow.png" />
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton0">
+                                        <a href="#" class="dropdown-item text-success " onclick="EditDevices('@get.devicesId')">Edit </a>
+                                        <a href="#" class="dropdown-item text-danger " onclick="DropDevices('@get.devicesId')">Delete </a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+
+                            <p class="ard-text p-0 m-0">@get.roomId - @get.devicesId - @get.devices_Name</p>
+
+                            <h3 class="card-title">
+                                @{
+                                    switch (get.devicesId.Substring(0, 2))
+                                    {
+                                        case "AC":
+                                            <img class="mr-2" style="width: 32px;" src="~/img/icon/air-conditioner32.png" />
+
+                                            break;
+                                        case "LT":
+                                            <img class="mr-2" style="width: 32px;" src="~/img/icon/light-on32.png" />
+
+                                            break;
+                                        case "HD": break;
+                                        case "EF": break;
+                                    }
+
+
+                                }
+
+                                @get.current
+                            </h3>
+                            <p class="card-text">
+
+
+                                <img style="width: 24px;" src="~/img/icon/lighting32.png" />
+                                @get.power -
+                                <snap class="card-text"><small> Avg: @get.avgPower kw / day</small></snap>
+                            </p>
+                            <a class="badge badge-pill badge-danger" href="#" style="font-size: 14px">Turning off</a>
+                            <p class="card-text"><small>@get.lastest_checking_time</small></p>
+                        </div>
+                    </div>
+
+                    <!--    <div class="card bg-light mb-3 shadow-sm" style="max-width: 15rem;">
+            <div class="card-header">
+                Light
+                <a href="#">
+                    <img class="float-right mt-1" style="width: 24px;" src="~/img/icon/power-button-off36.png" />
+                </a>
+            </div>
+            <div class="card-body">
+                <p class="ard-text p-0 m-0">l01 - 3100002a</p>
+                <h3 class="card-title">
+                    <img class="mr-2" style="width: 32px;" src="~/img/icon/light-on32.png" />
+                    N/A
+                </h3>
+                <p class="card-text">
+                    <img style="width: 24px;" src="~/img/icon/lighting32.png" />90KW -
+                    <snap class="card-text"><small> Avg: 9kw / dy</small></snap>
+                </p>
+                <a class="badge badge-pill badge-success" style="font-size: 14px">Turning on</a>
+                <p class="card-text"><small>updated 3 mins ago</small></p>
+            </div>
+        </div>
+        -->
                 }
-                var DropDevices = function (Id) {
+            </div>
 
-                    var url = "/Devices/DropDevices/" + Id;
 
-                    $("#DevicesFormBody").load(url, function () {
-                        $("#DevicesForm").modal("show");
+                    </div>}
+            </div>
+<script>
+    var EditDevices = function (Id) {
 
-                    })
+        var url = "/Devices/EditDevices/" + Id;
 
-                }
-                var AddtDevices = function () {
+        $("#DevicesFormBody").load(url, function () {
+            $("#DevicesForm").modal("show");
 
-                    var url = "/Devices/AddDevices";
+        })
 
-                    $("#DevicesFormBody").load(url, function () {
-                        $("#DevicesForm").modal("show");
+    }
+    var DropDevices = function (Id) {
 
-                    })
+        var url = "/Devices/DropDevices/" + Id;
 
-                }
-            </script>
-        </div>}
-</div>
+        $("#DevicesFormBody").load(url, function () {
+            $("#DevicesForm").modal("show");
+
+        })
+
+    }
+    var AddtDevices = function () {
+
+        var url = "/Devices/AddDevices";
+
+        $("#DevicesFormBody").load(url, function () {
+            $("#DevicesForm").modal("show");
+
+        })
+
+    }
+</script>

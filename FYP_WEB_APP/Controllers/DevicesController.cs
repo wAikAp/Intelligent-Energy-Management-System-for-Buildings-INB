@@ -14,12 +14,12 @@ namespace FYP_APP.Controllers
 {
 	public class DevicesController : Controller
 	{
-		public List<MongoDevicesListModel> MongoDevicesList = new List<MongoDevicesListModel> { };
-		public IMongoCollection<MongoDevicesListModel> getMDLMconn()
+		public List<DevicesListModel> MongoDevicesList = new List<DevicesListModel> { };
+		public IMongoCollection<DevicesListModel> getMDLMconn()
 		{
 			ConnectDB conn = new ConnectDB();
 			var database = conn.Conn();
-			var collection = database.GetCollection<MongoDevicesListModel>("DEVICES_LIST");
+			var collection = database.GetCollection<DevicesListModel>("DEVICES_LIST");
 			return collection;
 		}
 		[Route("Devices/Devices")]
@@ -75,14 +75,26 @@ namespace FYP_APP.Controllers
 
 			ViewData["Title"] = "Search Devices";
 			var list = getAllDevices();
-			List<MongoDevicesListModel> sum = new List<MongoDevicesListModel> { };
+			List<DevicesListModel> sum = new List<DevicesListModel> { };
 
-			List<MongoDevicesListModel> get=new List<MongoDevicesListModel>{ };
+			List<DevicesListModel> get=new List<DevicesListModel> { };
 			if (Request.Query.ContainsKey("roomId")) {
-				list=list.Where(ls => ls.roomId.Contains(Request.Query["roomId"])).ToList();
+				/*			List<MongoDevicesListModel> list = getAllDevices().Where(x => x.roomId == id).ToList();
+			Debug.WriteLine(list);
+			ViewData["MongoDevicesListModel"] = list;
+			ViewData["RoomListModel"] = GetRoomData();
+*/
+				if (Request.Query["roomId"] != string.Empty || Request.Query["roomId"] != "")
+				{ 
+					Debug.WriteLine("\n Request ContainsKey roomId");
+				list = list.Where(ls => ls.roomId.Contains(Request.Query["roomId"])).ToList();
+				Debug.WriteLine(list.ToJson().ToString());
+				}
 			}
 			foreach (String key in Request.Query.Keys)
 			{
+				Debug.WriteLine("in foreach ....");
+
 				string skey = key;
 				string keyValue = Request.Query[key];
 
@@ -95,10 +107,22 @@ namespace FYP_APP.Controllers
 						get = list.Where(ls => ls.devicesId.Contains(skey) ).ToList();
 						break;
 				}
+				if (key != "roomId") {
 				sum.AddRange(get);
 				sum = sum.Distinct().ToList();//delet double data
+					Debug.WriteLine("befor Distinct \n" + sum.ToJson().ToString());
+
 				}
-			list = list.Intersect(sum).ToList();
+
+			}
+			if (Request.Query.Keys.Count() !=1 || Request.Query["roomId"] != "")
+			{
+				list = list.Intersect(sum).ToList();
+				Debug.WriteLine("befor Intersect \n" + list.ToJson().ToString());
+			}
+			
+
+
 			ViewData["MongoDevicesListModel"] = list;
 
 			ViewData["RoomListModel"] = GetRoomData();
@@ -136,12 +160,13 @@ namespace FYP_APP.Controllers
 		[HttpPost]
 		public ActionResult AddDevicesData(MongoDevicesListModel postData)//post
 		{
-			MongoDevicesListModel insertList = new MongoDevicesListModel { };
+			DevicesListModel insertList = new DevicesListModel { };
 
 			var all = getAllDevices();
 			string count = "";
 			if (all.Count < 10) { count = "00" + (all.Count+1).ToString(); }
 			else if (all.Count < 100) { count = "0" + (all.Count + 1).ToString(); }
+			DateTime nowData = new DateTime();
 
 			//sensortype = postData.Sensortype;
 			insertList.roomId = postData.roomId;
@@ -150,7 +175,7 @@ namespace FYP_APP.Controllers
 			insertList.location = postData.location;
 			insertList.desc = postData.desc;
 			insertList.lastest_checking_time = DateTime.UtcNow;
-			insertList.total_run_time = 0;
+			insertList.total_run_time = nowData;
 			insertList.power = 0;
 
 			getMDLMconn().InsertOneAsync(insertList);
@@ -168,8 +193,8 @@ namespace FYP_APP.Controllers
 		[HttpPost]
 		public ActionResult UpdateDevicesData(MongoDevicesListModel postData)
 		{
-			var filter = Builders<MongoDevicesListModel>.Filter.Eq("devicesId", postData.devicesId);
-			filter = filter & Builders<MongoDevicesListModel>.Filter.Eq("roomId", postData.roomId);
+			var filter = Builders<DevicesListModel>.Filter.Eq("devicesId", postData.devicesId);
+			filter = filter & Builders<DevicesListModel>.Filter.Eq("roomId", postData.roomId);
 			var type = postData.GetType();
 			var props = type.GetProperties();
 			foreach (var property in props)
@@ -178,14 +203,14 @@ namespace FYP_APP.Controllers
 				{
 					if (property.GetValue(postData) != null)
 					{
-						UpdateDefinition<MongoDevicesListModel> up;
+						UpdateDefinition<DevicesListModel> up;
 						if (property.Name == "latest_checking_time")
 						{
-							up = Builders<MongoDevicesListModel>.Update.Set(property.Name.ToString(), DateTime.UtcNow);
+							up = Builders<DevicesListModel>.Update.Set(property.Name.ToString(), DateTime.UtcNow);
 						}
 						else
 						{
-							up = Builders<MongoDevicesListModel>.Update.Set(property.Name.ToString(), property.GetValue(postData).ToString());
+							up = Builders<DevicesListModel>.Update.Set(property.Name.ToString(), property.GetValue(postData).ToString());
 
 						}
 						var Updated = getMDLMconn().UpdateOne(filter, up);
@@ -197,14 +222,45 @@ namespace FYP_APP.Controllers
 		}
 
 
-		public List<MongoDevicesListModel> getAllDevices() {			
+		public List<DevicesListModel> getAllDevices() {			
 			var collection = getMDLMconn();
-			IQueryable<MongoDevicesListModel> query = from d in collection.AsQueryable<MongoDevicesListModel>() select d;
+			IQueryable<DevicesListModel> query = from d in collection.AsQueryable<DevicesListModel>() select d;
+			List<DevicesListModel> list=new List<DevicesListModel>();
+			foreach (var get in query.ToList()) {
+
+				DateTime nowData = DateTime.Now;
+				DateTime runtime = get.total_run_time;
+				TimeSpan count = new TimeSpan(nowData.Ticks - runtime.Ticks);
+
+				double currentValue = getCurrentValue(get.devicesId);
+				double avgPowers = get.power/ count.TotalDays;
+				avgPowers = Convert.ToDouble(avgPowers.ToString("0.00"));
+
+				var data = new DevicesListModel()
+				{
+					_id = get._id,
+					listId = get.listId,
+					roomId = get.roomId,
+					devicesId = get.devicesId,
+					devices_Name= get.devices_Name,
+					power= get.power,
+					lastest_checking_time = get.lastest_checking_time,
+					total_run_time = get.total_run_time,
+					location= get.location,
+					desc = get.desc,
+					current= currentValue,
+					powerOnOff = false,
+					avgPower= avgPowers
+				};
+				Debug.WriteLine(data.current);
+				list.Add(data);
+			}
+
 			MongoDevicesList = query.ToList();
-			return query.ToList();
+			return list.ToList();
 		}
-		public List<MongoDevicesListModel> getDevicesbyid() {
-			List<MongoDevicesListModel> list = null;
+		public List<DevicesListModel> getDevicesbyid() {
+			List<DevicesListModel> list = null;
 			string sortOrder = Request.Query["sortOrder"];
 			sortOrder=ChangeSortLink(sortOrder);
 
@@ -321,7 +377,69 @@ namespace FYP_APP.Controllers
 
 			return RoomDataList;
 		}
+		public double getCurrentValue(string Id)
+		{
+			ConnectDB conn = new ConnectDB();
+			var database = conn.Conn();
+			double value = 0;
 
+			IMongoCollection<BsonDocument> collection;
+			FilterDefinition<BsonDocument> filter;
+			var dbStr = "";
+			switch (Id.Substring(0, 2))
+			{				
+				case "EF":
+					dbStr = "EXH_FAN";
+					break;
+				case "AC":
+					dbStr = "AC";
+					break;
+				case "LT":
+					dbStr = "LIGHT";
+					break;
+				case "HD":
+					dbStr = "HUM";
+					break;
+				default:
+					break;
+			}
+			collection = database.GetCollection<BsonDocument>(dbStr);
+			filter = Builders<BsonDocument>.Filter.Eq("devicesId", Id);
+
+			var json = collection.Find(filter).FirstOrDefault();
+			if (json != null)
+			{
+
+				switch (Id.Substring(0, 2))
+				{
+					case "EF":
+						value = Convert.ToDouble(json["current_rmp"].ToString());
+						break;
+					case "AC":
+						value = Convert.ToDouble(json["current_tmp"].ToString());
+						break;
+					case "LT":
+						value = Convert.ToDouble(json["current_lum"].ToString());
+						break;
+					case "HD":
+						value = Convert.ToDouble(json["current_hum"].ToString());
+						break;
+					default:
+						value = 0;
+							break;
+				}
+
+
+
+
+			}
+			else { 
+						value = 0;
+			}
+			Debug.WriteLine("\n geting current data value ==>"+value+"\n");
+			return value;
+
+		}
 
 	}
 }
