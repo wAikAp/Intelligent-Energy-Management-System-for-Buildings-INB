@@ -73,9 +73,9 @@
 
             <script>
             $(document).ready(function () {
-                $("#devicesView").load("@Url.Action("SearchDevicesByRoomid", "Devices", new { id = ViewData["roomID"] })", function () {});
-                $("#sensorView").load("@Url.Action("SearchSensorsByRoomid", "Sensors", new { id = ViewData["roomID"] })", function () {});
-                $("#sensorChartView").load("@Url.Action("SensorsChartByRoomid", "Sensors", new { id = ViewData["roomID"] })", function () {});
+                $("#devicesView").load("@Url.Action("SearchDevicesByRoomid", "Devices", new { roomID = ViewData["roomID"] })", function () {});
+                $("#sensorView").load("@Url.Action("SearchSensorsByRoomid", "Sensors", new { roomID = ViewData["roomID"] })", function () {});
+                $("#sensorChartView").load("@Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"] })", function () {});
             });
             </script>
             <!-- data end -->
