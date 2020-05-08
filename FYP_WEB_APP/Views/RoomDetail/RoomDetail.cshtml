@@ -7,816 +7,730 @@
 
     <head>
         <title>@ViewData["Title"]</title>
-        <link rel="stylesheet" href="~/css/style.css">
-        <link rel="stylesheet" href="~/css/callout.css">
+        <script>
 
-        <script src="~/js/Chart.min.js"></script>
-        <!--https://www.chartjs.org/-->
-        <link rel="stylesheet" href="~/css/bootstrap.min.css">
-        <script src="~/js/jquery.min.js"></script>
-        <script src="~/js/popper.min.js"></script>
-        <script src="~/js/bootstrap.min.js"></script>
-        <script src="~/js/heatmap.js"></script>
-        <script src="~/js/heatmap.min.js"></script>
-        <script src="~/js/prism.js"></script>
-        <!--loading js-->
-        <script src="~/js/modernizr.js"></script>
-        <script src="~/js/jquery-2.2.4.min.js"></script>
-        <!--loading js-->
+            $(function () {
+                $(".draggable").draggable({
 
-        <title>Room Detail</title>
+                    drag: function () {
+                        var position = $(this).position();
+                        $('#posx').text('px: ' + position.left);
+                        $('#posy').text('py: ' + position.top);
+
+                    }
+                });
+            });
+            $(document).ready(function () {
+                //top:y; left:x;
+                $(".draggable").css({ top: '1px', left: '200px'});
+            });
+        </script>
+        <style>
+            .draggable {
+                background-color: aqua;
+                width:80px;
+                
+                z-index:99;
+                position:absolute;
+            }
+        </style>
     </head>
 
 
-<body>
-    <!--page title-->
-    <div class="container-fluid p-4 ">
-        <div class="d-flex">
-            <h1 class="display-4">
-                <strong>Room @ViewData["roomID"]</strong>
-                <span class="badge badge-pill badge-success" style="font-size: 14px">Online</span>
-            </h1>
-            <!-- power -->
-            <div class="bd-callout bd-callout-warning py-2 shadow-sm m-0 ml-sm-4 " style="max-width: 30rem; max-height: 100px;">
-                <h4>
-                    <b style="font-size: .6em;"><img src="~/img/icon/lighting32.png" />Power Usage</b>
-                </h4>
-                <h3><strong class="pl-sm-2">9000KW</strong><snap class="text-black" style="font-size: .6em;">/ pre month</snap></h3>
+    <body>
+        <!--page title-->
+        <div class="container-fluid p-4 ">
+            <div class="d-flex">
+                <h1 class="display-4">
+                    <strong>Room @ViewData["roomID"]</strong>
+                    <span class="badge badge-pill badge-success" style="font-size: 14px">Online</span>
+                </h1>
+                <!-- power -->
+                <div class="bd-callout bd-callout-warning py-2 shadow-sm m-0 ml-sm-4 " style="max-width: 30rem; max-height: 100px;">
+                    <h4>
+                        <b style="font-size: .6em;"><img src="~/img/icon/lighting32.png" />Power Usage</b>
+                    </h4>
+                    <h3><strong class="pl-sm-2">9000KW</strong><snap class="text-black" style="font-size: .6em;">/ pre month</snap></h3>
+                </div>
             </div>
-        </div>
-        <!-- tag -->
-        <div class="d-flex">
-            <a href="#" class="badge badge-primary mx-0">Lab</a>
-            <a href="#" class="badge badge-warning mx-1">3 / f</a>
-        </div>
+            <!-- tag -->
+            <div class="d-flex">
+                <a href="#" class="badge badge-primary mx-0">Lab</a>
+                <a href="#" class="badge badge-warning mx-1">3 / f</a>
+            </div>
 
-        <nav class="col-sm-4 my-2 " aria-label="breadcrumb" style="margin-left: -20px;">
-            <ol class="breadcrumb ">
-                <li class="breadcrumb-item"><a href="#">Rooms List</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Room detail</li>
-            </ol>
-        </nav>
-        <!--   <div class="card-deck">
-    <!-- temp -->
-        <!--     <div class="card text-white bg-primary mb-3" style="max-width: 13rem;">
-        <div class="card-header">
-            <a class="text-white" href="#">
-                Temperature
-                <img class="float-right mt-1" style="width: 16px;" src="~/img/icon/rightArrow.png" />
-            </a>
-        </div>
-        <div class="card-body">
-            <h4 class="card-title">
-                <img src="~/img/icon/weather24.png" />
-                25.5 C
-            </h4>
-            <p class="card-text"><small class="text-white">updated 5 mins ago</small></p>
-        </div>
-    </div>
-    <!-- hum
-        <div class="card text-white bg-info mb-3" style="max-width: 13rem;">
-            <div class="card-header">
-                <a class="text-white" href="#">
-                    Humidity
-                    <img class="float-right mt-1" style="width: 16px;" src="~/img/icon/rightArrow.png" />
-                </a>
-            </div>
-            <div class="card-body">
-                <h4 class="card-title">
-                    <img src="~/img/icon/humidity24.png" />
-                    90%
-                </h4>
-                <p class="card-text"><small class="text-white">updated 3 mins ago</small></p>
-            </div>
-        </div>-->
-        <!-- Luminosity
-        <div class="card text-white bg-warning mb-3" style="max-width: 13rem;">
-            <div class="card-header">
-                <a class="text-white" href="#">
-                    Luminosity
-                    <img class="float-right mt-1" style="width: 16px;" src="~/img/icon/rightArrow.png" />
-                </a>
-            </div>
-            <div class="card-body">
-                <h4 class="card-title">
-                    <img src="~/img/icon/sun24.png" />
-                    90%
-                </h4>
-                <p class="card-text"><small class="text-white">updated 3 mins ago</small></p>
-            </div>
-        </div>
-    </div>-->
-        <!--   Devices list
-
-    <div class="card-deck shadow-sm rounded pt-1 ">
-        <div class="card text-white bg-dark mb-3" style="max-width: 15rem;">
-            <div class="card-header">
-                <a class="text-white" href="#">
-                    Air conditioner
-                    <img class="float-right mt-1" style="width: 24px;" src="~/img/icon/power-button-on36.png" />
-                </a>
-            </div>
-            <div class="card-body">
-
-                <p class="ard-text p-0 m-0">AC01 - 3100002a</p>
-                <h3 class="card-title">
-                    <img class="mr-2" style="width: 32px;" src="~/img/icon/air-conditioner32.png" />
-                    25.5 C
-                </h3>
-                <p class="card-text">
-                    <img style="width: 24px;" src="~/img/icon/lighting32.png" />90KW -
-                    <snap class="card-text"><small> Avg: 9kw / dy</small></snap>
-                </p>
-                <a class="badge badge-pill badge-danger" href="#" style="font-size: 14px">Turning off</a>
-                <p class="card-text"><small>updated 3 mins ago</small></p>
-            </div>
-        </div>
-
-        <div class="card bg-light mb-3 shadow-sm" style="max-width: 15rem;">
-            <div class="card-header">
-                Light
-                <a href="#">
-                    <img class="float-right mt-1" style="width: 24px;" src="~/img/icon/power-button-off36.png" />
-                </a>
-            </div>
-            <div class="card-body">
-                <p class="ard-text p-0 m-0">l01 - 3100002a</p>
-                <h3 class="card-title">
-                    <img class="mr-2" style="width: 32px;" src="~/img/icon/light-on32.png" />
-                    N/A
-                </h3>
-                <p class="card-text">
-                    <img style="width: 24px;" src="~/img/icon/lighting32.png" />90KW -
-                    <snap class="card-text"><small> Avg: 9kw / dy</small></snap>
-                </p>
-                <a class="badge badge-pill badge-success" style="font-size: 14px">Turning on</a>
-                <p class="card-text"><small>updated 3 mins ago</small></p>
-            </div>
-        </div>
-    </div>
-    -->
-        <div id="sensorView"></div>
-        <!-- <h3><b>Devices</b></h3>
-    data -->
-        <div id="devicesView"></div>
-        <div id="sensorChartView"></div>
+            <nav class="col-sm-4 my-2 " aria-label="breadcrumb" style="margin-left: -20px;">
+                <ol class="breadcrumb ">
+                    <li class="breadcrumb-item"><a href="#">Rooms List</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Room detail</li>
+                </ol>
+            </nav>
+            <div id="sensorView"></div>
+            <!-- <h3><b>Devices</b></h3>data -->
+            <div id="devicesView"></div>
+            <div id="sensorChartView"></div>
 
 
-        <script>
+            <script>
             $(document).ready(function () {
                 $("#devicesView").load("@Url.Action("SearchDevicesByRoomid", "Devices", new { id = ViewData["roomID"] })", function () {});
                 $("#sensorView").load("@Url.Action("SearchSensorsByRoomid", "Sensors", new { id = ViewData["roomID"] })", function () {});
                 $("#sensorChartView").load("@Url.Action("SensorsChartByRoomid", "Sensors", new { id = ViewData["roomID"] })", function () {});
             });
-        </script>
-        <!-- data end -->
+            </script>
+            <!-- data end -->
 
-        <div class="card">
-            <div class=" shadow-sm w-100 h-100 p-3 justify-content-center align-items-center">
-                <div class="container-fluid col-xs-12 col-md-8 pt-4 w-100 px-0">
+            <div class="card">
+                <div class=" shadow-sm w-100 h-100 p-3 justify-content-center align-items-center">
+                    <div class="container-fluid col-xs-12 col-md-8 pt-4 w-100 px-0">
 
-                    <canvas id="UsageRecordChart"></canvas>
-                    <!--chart js-->
-                    <script>
-    var chartID = '';
-                        var charttitle = '';
-                        var chartType = '';
-                        var position = '';
-                        var devices = [];
-                        var devicesData = [];
-                        var gcolor = [];
-                        var gdata;
-                        var goption;
+                        <canvas id="UsageRecordChart"></canvas>
+                        <!--chart js-->
+                        <script>var chartID = '';
+                            var charttitle = '';
+                            var chartType = '';
+                            var position = '';
+                            var devices = [];
+                            var devicesData = [];
+                            var gcolor = [];
+                            var gdata;
+                            var goption;
 
-                        getUsageRecordData();
+                            getUsageRecordData();
 
 
-                        async function getUsageRecordData() {
+                            async function getUsageRecordData() {
 
-                            charttitle = 'Devices Power Usage Record';
+                                charttitle = 'Devices Power Usage Record';
 
-                            chartID = 'UsageRecordChart';
-                            chartType = 'line';
-                            position = 'right';
-                            devices.push('deviceA');
-                            devices.push('deviceB');
-                            devices.push('deviceC');
-                            var day = [];
-                            var i;
-                            for (i = 0; i < 30; i++) {
-                                day.push(i);
-                            }
-                            devices.forEach(getRandomColor);
-
-                            //set chart data
-                            dataop = {
-                                labels: day,
-                                datasets: [{
-                                    label: devices[0],
-                                    borderColor: gcolor[0],
-                                    fill: false,
-                                    data: [65, 59, 80, 81, 56, 55, 40, 50, 60, 55, 30, 78],
-                                }, {
-                                    label: devices[1],
-                                    borderColor: gcolor[1],
-                                    fill: false,
-                                    data: [10, 20, 60, 95, 64, 78, 90, 80, 70, 40, 70, 89],
-                                    spanGaps: false,
-                                }, {
-                                    label: devices[2],
-                                    borderColor: gcolor[2],
-                                    fill: false,
-                                    data: [30, 20, 80, 50, 64, 78, 100, 40, 50, 40, 75, 90],
-                                    spanGaps: false,
+                                chartID = 'UsageRecordChart';
+                                chartType = 'line';
+                                position = 'right';
+                                devices.push('deviceA');
+                                devices.push('deviceB');
+                                devices.push('deviceC');
+                                var day = [];
+                                var i;
+                                for (i = 0; i < 30; i++) {
+                                    day.push(i);
                                 }
+                                devices.forEach(getRandomColor);
 
-                                ]
-                            };
-                            //set chart option
-                            goption = {
-                                title: {
-                                    display: true,
-                                    text: charttitle,
-                                    fontSize: 25,
-                                },
-                                legend: {
-                                    display: true,
-                                    position: position,
-                                    labels: {
-                                        boxWidth: 20,
-                                        fontColor: '#111',
-                                        padding: 15
+                                //set chart data
+                                dataop = {
+                                    labels: day,
+                                    datasets: [{
+                                        label: devices[0],
+                                        borderColor: gcolor[0],
+                                        fill: false,
+                                        data: [65, 59, 80, 81, 56, 55, 40, 50, 60, 55, 30, 78],
+                                    }, {
+                                        label: devices[1],
+                                        borderColor: gcolor[1],
+                                        fill: false,
+                                        data: [10, 20, 60, 95, 64, 78, 90, 80, 70, 40, 70, 89],
+                                        spanGaps: false,
+                                    }, {
+                                        label: devices[2],
+                                        borderColor: gcolor[2],
+                                        fill: false,
+                                        data: [30, 20, 80, 50, 64, 78, 100, 40, 50, 40, 75, 90],
+                                        spanGaps: false,
                                     }
-                                }
-                            };
-                            draw();
 
-                        }
-
-                        async function getUsageRecordData() {
-                           /* var jsonData;
-                            fetch('http://localhost:61970/api/getSonserJson/341')
-                                .then((response) => {
-                                    return response.json(); // or .text() or .blob() ...
-                                })
-                                .then((text) => {
-                                    jsonData = text
-                                    //console.log("text: ");
-                                    console.log(typeof (text));
-                                    console.log("stringify " + JSON.stringify(text));
-
-
-                                    // text is the response body
-                                })
-                                .catch((e) => {
-                                    console.log("error: " + e);
-
-                                    // error in e.message
-                                });*/
-
-                            charttitle = 'Devices Power Usage Record';
-
-                            chartID = 'UsageRecordChart';
-                            chartType = 'line';
-                            position = 'right';
-                            devices.push('deviceA');
-                            devices.push('deviceB');
-                            devices.push('deviceC');
-                            var day = [];
-                            var i;
-                            for (i = 0; i < 24; i++) {
-                                day.push(i);
-                            }
-                            devices.forEach(getRandomColor);
-
-                            //set chart data
-                            /**/
-                            dataop = {
-                                labels: day,
-                                datasets: [{
-                                    label: devices[0],
-                                    borderColor: gcolor[0],
-                                    fill: false,
-                                    data: [65, 59, 80, 81, 56, 55, 40, 50, 60, 55, 30, 78],
-                                }, {
-                                    label: devices[1],
-                                    borderColor: gcolor[1],
-                                    fill: false,
-                                    data: [10, 20, 60, 95, 64, 78, 90, 80, 70, 40, 70, 89],
-                                    spanGaps: false,
-                                }, {
-                                    label: devices[2],
-                                    borderColor: gcolor[2],
-                                    fill: false,
-                                    data: [30, 20, 80, 50, 64, 78, 100, 40, 50, 40, 75, 90],
-                                    spanGaps: false,
-                                }
-
-                                ]
-                            };
-                            //set chart option
-                            goption = {
-                                title: {
-                                    display: true,
-                                    text: charttitle,
-                                    fontSize: 25,
-                                },
-                                legend: {
-                                    display: true,
-                                    position: position,
-                                    labels: {
-                                        boxWidth: 20,
-                                        fontColor: '#111',
-                                        padding: 15
-                                    }
-                                },
-                                scales: {
-                                    yAxes: [
-                                        {
-                                            ticks: {
-                                                callback: function (label, index, labels) {
-                                                    return label + 'KWH';
-                                                }
-                                            },
-                                            scaleLabel: {
-                                                display: true,
-                                                labelString: 'POWER'
-                                            }
-                                        }
-                                    ],
-                                    xAxes: [
-                                        {
-                                            ticks: {
-                                                callback: function (label, index, labels) {
-                                                    return label + ':00';
-                                                }
-                                            },
-                                            scaleLabel: {
-                                                display: true,
-                                                labelString: 'TIME'
-                                            }
-                                        }
                                     ]
-                                }
-                            };
-                            draw();
-
-                        }
-
-                        //---------------------------------------------------------------------------------
-                        function getRandomColor() {
-                            var letters = '0123456789ABCDEF';
-                            var color = '#';
-                            for (var i = 0; i < 6; i++) {
-                                color += letters[Math.floor(Math.random() * 16)];
-                            }
-                            gcolor.push(color);
-                        }
-
-                        function draw() {
-
-                            let myChart = document.getElementById(chartID).getContext('2d');
-                            // Global Options
-                            Chart.defaults.global.defaultFontFamily = 'Lato';
-                            Chart.defaults.global.defaultFontSize = 18;
-                            Chart.defaults.global.defaultFontColor = '#777';
-
-
-                            let barChart = new Chart(myChart, {
-                                type: chartType,//bar,horizontalBar,pie,line,doughnut,radar,polarArea
-                                data: dataop,
-                                options: goption
-                            });
-                        }
-                        //--------------------------------------------------------------------------</script>
-                    <!--chart js-->
-
-                </div>
-            </div>
-
-        </div>
-        <!--room device analysis-->
-        <div class="card  mx-2 p-2">
-            <div class=" shadow-sm w-100 h-100 p-3 justify-content-center align-items-center">
-                <div class="container-fluid col-xs-12 col-md-8 pt-4 w-100 px-0">
-                    <canvas id="UsageRecordChart01"></canvas>
-                    <!--chart js-->
-                    <script>
-                        var chartID = '';
-                        var charttitle = '';
-                        var chartType = '';
-                        var position = '';
-                        var devices = [];
-                        var devicesData = [];
-                        var gcolor = [];
-                        var gdata;
-                        var goption;
-
-                        getUsageRecordData01();
-
-                        async function getUsageRecordData01() {
-
-                            charttitle = 'Temperature Sensors Record';
-
-                            chartID = 'UsageRecordChart01';
-                            chartType = 'line';
-                            position = 'right';
-                            devices.push('SensorA');
-                            devices.push('SensorB');
-                            devices.push('SensorC');
-                            var day = [];
-                            var i;
-                            for (i = 0; i < 24; i++) {
-
-                                day.push(i);
-                            }
-                            devices.forEach(getRandomColor);
-
-                            //set chart data
-                            dataop = {
-                                labels: day,
-                                datasets: [{
-                                    label: devices[0],
-                                    borderColor: gcolor[0],
-                                    fill: false,
-                                    data: [25, 29, 30, 31, 26, 25, 30, 30, 30, 25, 30, 28],
-                                }, {
-                                    label: devices[1],
-                                    borderColor: gcolor[1],
-                                    fill: false,
-                                    data: [20, 20, 20, 25, 24, 28, 30, 30, 30, 30, 30, 29],
-                                    spanGaps: false,
-                                }, {
-                                    label: devices[2],
-                                    borderColor: gcolor[2],
-                                    fill: false,
-                                    data: [30, 20, 30, 30, 24, 28, 20, 30, 30, 30, 29, 30],
-                                    spanGaps: false,
-                                }
-
-                                ]
-                            };
-                            //set chart option
-                            goption = {
-                                title: {
-                                    display: true,
-                                    text: charttitle,
-                                    fontSize: 25,
-                                },
-                                legend: {
-                                    display: true,
-                                    position: position,
-                                    labels: {
-                                        boxWidth: 20,
-                                        fontColor: '#111',
-                                        padding: 15
+                                };
+                                //set chart option
+                                goption = {
+                                    title: {
+                                        display: true,
+                                        text: charttitle,
+                                        fontSize: 25,
+                                    },
+                                    legend: {
+                                        display: true,
+                                        position: position,
+                                        labels: {
+                                            boxWidth: 20,
+                                            fontColor: '#111',
+                                            padding: 15
+                                        }
                                     }
-                                },
-                                scales: {
-                                    yAxes: [
-                                        {
-                                            ticks: {
-                                                callback: function (label, index, labels) {
-                                                    return label + ' ℃';
-                                                }
-                                            },
-                                            scaleLabel: {
-                                                display: true,
-                                                labelString: 'Temperature'
-                                            }
-                                        }
-                                    ],
-                                    xAxes: [
-                                        {
-                                            ticks: {
-                                                callback: function (label, index, labels) {
-                                                    return label + ':00';
-                                                }
-                                            },
-                                            scaleLabel: {
-                                                display: true,
-                                                labelString: 'TIME'
-                                            }
-                                        }
-                                    ]
-                                }
-                            };
-                            draw();
+                                };
+                                draw();
 
-                        }
-
-                        //---------------------------------------------------------------------------------
-                        function getRandomColor() {
-                            var letters = '0123456789ABCDEF';
-                            var color = '#';
-                            for (var i = 0; i < 6; i++) {
-                                color += letters[Math.floor(Math.random() * 16)];
                             }
-                            gcolor.push(color);
-                        }
 
-                        function draw() {
+                            async function getUsageRecordData() {
+                                /* var jsonData;
+                                 fetch('http://localhost:61970/api/getSonserJson/341')
+                                     .then((response) => {
+                                         return response.json(); // or .text() or .blob() ...
+                                     })
+                                     .then((text) => {
+                                         jsonData = text
+                                         //console.log("text: ");
+                                         console.log(typeof (text));
+                                         console.log("stringify " + JSON.stringify(text));
 
-                            let myChart = document.getElementById(chartID).getContext('2d');
-                            // Global Options
 
-                            Chart.defaults.global.defaultFontFamily = 'Lato';
-                            Chart.defaults.global.defaultFontSize = 18;
-                            Chart.defaults.global.defaultFontColor = '#777';
+                                         // text is the response body
+                                     })
+                                     .catch((e) => {
+                                         console.log("error: " + e);
+
+                                         // error in e.message
+                                     });*/
+
+                                charttitle = 'Devices Power Usage Record';
+
+                                chartID = 'UsageRecordChart';
+                                chartType = 'line';
+                                position = 'right';
+                                devices.push('deviceA');
+                                devices.push('deviceB');
+                                devices.push('deviceC');
+                                var day = [];
+                                var i;
+                                for (i = 0; i < 24; i++) {
+                                    day.push(i);
+                                }
+                                devices.forEach(getRandomColor);
+
+                                //set chart data
+                                /**/
+                                dataop = {
+                                    labels: day,
+                                    datasets: [{
+                                        label: devices[0],
+                                        borderColor: gcolor[0],
+                                        fill: false,
+                                        data: [65, 59, 80, 81, 56, 55, 40, 50, 60, 55, 30, 78],
+                                    }, {
+                                        label: devices[1],
+                                        borderColor: gcolor[1],
+                                        fill: false,
+                                        data: [10, 20, 60, 95, 64, 78, 90, 80, 70, 40, 70, 89],
+                                        spanGaps: false,
+                                    }, {
+                                        label: devices[2],
+                                        borderColor: gcolor[2],
+                                        fill: false,
+                                        data: [30, 20, 80, 50, 64, 78, 100, 40, 50, 40, 75, 90],
+                                        spanGaps: false,
+                                    }
+
+                                    ]
+                                };
+                                //set chart option
+                                goption = {
+                                    title: {
+                                        display: true,
+                                        text: charttitle,
+                                        fontSize: 25,
+                                    },
+                                    legend: {
+                                        display: true,
+                                        position: position,
+                                        labels: {
+                                            boxWidth: 20,
+                                            fontColor: '#111',
+                                            padding: 15
+                                        }
+                                    },
+                                    scales: {
+                                        yAxes: [
+                                            {
+                                                ticks: {
+                                                    callback: function (label, index, labels) {
+                                                        return label + 'KWH';
+                                                    }
+                                                },
+                                                scaleLabel: {
+                                                    display: true,
+                                                    labelString: 'POWER'
+                                                }
+                                            }
+                                        ],
+                                        xAxes: [
+                                            {
+                                                ticks: {
+                                                    callback: function (label, index, labels) {
+                                                        return label + ':00';
+                                                    }
+                                                },
+                                                scaleLabel: {
+                                                    display: true,
+                                                    labelString: 'TIME'
+                                                }
+                                            }
+                                        ]
+                                    }
+                                };
+                                draw();
+
+                            }
+
+                            //---------------------------------------------------------------------------------
+                            function getRandomColor() {
+                                var letters = '0123456789ABCDEF';
+                                var color = '#';
+                                for (var i = 0; i < 6; i++) {
+                                    color += letters[Math.floor(Math.random() * 16)];
+                                }
+                                gcolor.push(color);
+                            }
+
+                            function draw() {
+
+                                let myChart = document.getElementById(chartID).getContext('2d');
+                                // Global Options
+                                Chart.defaults.global.defaultFontFamily = 'Lato';
+                                Chart.defaults.global.defaultFontSize = 18;
+                                Chart.defaults.global.defaultFontColor = '#777';
 
 
-                            let barChart = new Chart(myChart, {
-                                type: chartType,//bar,horizontalBar,pie,line,doughnut,radar,polarArea
-                                data: dataop,
-                                options: goption
-                            });
-                        }
-                        //--------------------------------------------------------------------------</script>
-                    <!--chart js-->
+                                let barChart = new Chart(myChart, {
+                                    type: chartType,//bar,horizontalBar,pie,line,doughnut,radar,polarArea
+                                    data: dataop,
+                                    options: goption
+                                });
+                            }
+                            //--------------------------------------------------------------------------</script>
+                        <!--chart js-->
 
+                    </div>
+                </div>
+
+            </div>
+            <!--room device analysis-->
+            <div class="card  mx-2 p-2">
+                <div class=" shadow-sm w-100 h-100 p-3 justify-content-center align-items-center">
+                    <div class="container-fluid col-xs-12 col-md-8 pt-4 w-100 px-0">
+                        <canvas id="UsageRecordChart01"></canvas>
+                        <!--chart js-->
+                        <script>var chartID = '';
+                            var charttitle = '';
+                            var chartType = '';
+                            var position = '';
+                            var devices = [];
+                            var devicesData = [];
+                            var gcolor = [];
+                            var gdata;
+                            var goption;
+
+                            getUsageRecordData01();
+
+                            async function getUsageRecordData01() {
+
+                                charttitle = 'Temperature Sensors Record';
+
+                                chartID = 'UsageRecordChart01';
+                                chartType = 'line';
+                                position = 'right';
+                                devices.push('SensorA');
+                                devices.push('SensorB');
+                                devices.push('SensorC');
+                                var day = [];
+                                var i;
+                                for (i = 0; i < 24; i++) {
+
+                                    day.push(i);
+                                }
+                                devices.forEach(getRandomColor);
+
+                                //set chart data
+                                dataop = {
+                                    labels: day,
+                                    datasets: [{
+                                        label: devices[0],
+                                        borderColor: gcolor[0],
+                                        fill: false,
+                                        data: [25, 29, 30, 31, 26, 25, 30, 30, 30, 25, 30, 28],
+                                    }, {
+                                        label: devices[1],
+                                        borderColor: gcolor[1],
+                                        fill: false,
+                                        data: [20, 20, 20, 25, 24, 28, 30, 30, 30, 30, 30, 29],
+                                        spanGaps: false,
+                                    }, {
+                                        label: devices[2],
+                                        borderColor: gcolor[2],
+                                        fill: false,
+                                        data: [30, 20, 30, 30, 24, 28, 20, 30, 30, 30, 29, 30],
+                                        spanGaps: false,
+                                    }
+
+                                    ]
+                                };
+                                //set chart option
+                                goption = {
+                                    title: {
+                                        display: true,
+                                        text: charttitle,
+                                        fontSize: 25,
+                                    },
+                                    legend: {
+                                        display: true,
+                                        position: position,
+                                        labels: {
+                                            boxWidth: 20,
+                                            fontColor: '#111',
+                                            padding: 15
+                                        }
+                                    },
+                                    scales: {
+                                        yAxes: [
+                                            {
+                                                ticks: {
+                                                    callback: function (label, index, labels) {
+                                                        return label + ' ℃';
+                                                    }
+                                                },
+                                                scaleLabel: {
+                                                    display: true,
+                                                    labelString: 'Temperature'
+                                                }
+                                            }
+                                        ],
+                                        xAxes: [
+                                            {
+                                                ticks: {
+                                                    callback: function (label, index, labels) {
+                                                        return label + ':00';
+                                                    }
+                                                },
+                                                scaleLabel: {
+                                                    display: true,
+                                                    labelString: 'TIME'
+                                                }
+                                            }
+                                        ]
+                                    }
+                                };
+                                draw();
+
+                            }
+
+                            //---------------------------------------------------------------------------------
+                            function getRandomColor() {
+                                var letters = '0123456789ABCDEF';
+                                var color = '#';
+                                for (var i = 0; i < 6; i++) {
+                                    color += letters[Math.floor(Math.random() * 16)];
+                                }
+                                gcolor.push(color);
+                            }
+
+                            function draw() {
+
+                                let myChart = document.getElementById(chartID).getContext('2d');
+                                // Global Options
+
+                                Chart.defaults.global.defaultFontFamily = 'Lato';
+                                Chart.defaults.global.defaultFontSize = 18;
+                                Chart.defaults.global.defaultFontColor = '#777';
+
+
+                                let barChart = new Chart(myChart, {
+                                    type: chartType,//bar,horizontalBar,pie,line,doughnut,radar,polarArea
+                                    data: dataop,
+                                    options: goption
+                                });
+                            }
+                            //--------------------------------------------------------------------------</script>
+                        <!--chart js-->
+
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!--  chart end   -->
-        <!--   foolr plan     -->
-        <div class="card d-flex flex-column mb-2 mx-2 p-2 ">
+            <!--  chart end   -->
+            <!--   foolr plan     -->
+            <div class="card d-flex flex-column mb-2 mx-2 p-2 ">
 
-            <div class="row justify-content-between mb-2">
-                <div class="col">
-                    <h3>
-                        <b>Room Foolr Plan </b>
-                        <button class="btn btn-outline-secondary px-0 mr-1 ml-2 " type="button" data-toggle="modal" data-target="#roomSetting" style="width: 40px; height: 40px"><img src="https://www.hko.gov.hk/images/icon_setting.png" style="height: 24px;width:24px;"></button>
-                        <button class="btn btn-outline-secondary px-2" type="button" style="width: 40px; height: 40px;">&#xFF0B;</button>
-                    </h3>
+                <div class="row justify-content-between mb-2">
+                    <div class="col">
+                        <h3>
+                            <b>Room Foolr Plan </b>
+                            <button class="btn btn-outline-secondary px-0 mr-1 ml-2 " type="button" data-toggle="modal" data-target="#roomSetting" style="width: 40px; height: 40px"><img src="https://www.hko.gov.hk/images/icon_setting.png" style="height: 24px;width:24px;"></button>
+                            <button class="btn btn-outline-secondary px-2" type="button" style="width: 40px; height: 40px;">&#xFF0B;</button>
+                        </h3>
+                    </div>
+                    <div class="col-4 d-flex ">
+                    </div>
                 </div>
-                <div class="col-4 d-flex ">
-                </div>
-            </div>
-            <div class="row mb-2">
-                <div class="col col-lg-4 col-xl-6 col-md-12 ml-4 p-2" style="background-color: lightgrey;  max-width: 510px; max-height: 710px; min-width: 510px; min-height: 710px; overflow: hidden">
-                    <div id="heatmapCol" class="">
-                        <div id="wrapper" class="demo-wrapper" style="border-width:1px;">
-                            <div id="heatmapControl" class="heatmap" style="position: relative;">
-                                <div id="heatmap" class="heatmap">
-                                    <!--width="auto" height="1000px"-->
-                                    <img id="planImg" src="~/FoolrPlansImg/room348.png" width="500px" height="700px" style="background-color: black;">
-                                    <!--                                  <img id="planImg" src="img/floorPlan_1.png" class="h-100">-->
+                <div class="row mb-2">
+                    <div class="col col-lg-4 col-xl-6 col-md-12 ml-4 p-2" style="background-color: lightgrey;  max-width: 510px; max-height: 710px; min-width: 510px; min-height: 710px; overflow: hidden">
+                        <!--drag btn test-->
+                        <div class="draggable ui-widget-content">
+                            <p>Drag me</p>
+                            <br>
+                            <p id="posX"></p><br>
+                            <p id="posY"></p>
+                            <p id="posx"></p>
+                            <p id="posy"></p>
+                        </div>
+                        <div id="heatmapCol" class="">
+                            <div id="wrapper" class="demo-wrapper" style="border-width:1px;">
+                                <div id="heatmapControl" class="heatmap" style="position: relative;">
+                                    <div id="heatmap" class="heatmap">
+                                        <!--width="auto" height="1000px"-->
+                                        <img id="planImg" src="~/FoolrPlansImg/room348.png" width="500px" height="700px" style="background-color: black;">
+                                        <!--                                  <img id="planImg" src="img/floorPlan_1.png" class="h-100">-->
+                                    </div>
+                                    <canvas id="BlueCanvas" class="heatmap-canvas" style="position: absolute; left: 0px; top: 0px; ></canvas>
                                 </div>
-                                <canvas id="BlueCanvas" class="heatmap-canvas" style="position: absolute; left: 0px; top: 0px; ></canvas>
-                            </div>
-                            <div class="tooltips" style="display: none; transform: translate(39px, 352px);">593</div>
-                            <div id="legendArea" class="legend-area">
-                                <h4>Legend Title</h4>
-                                <span id="min">0</span>
-                                <span id="max">40</span>
-                                <img id="gradient" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAKCAYAAABCHPt+AAAAnklEQVRYR+2WQQqDQBAES5wB/f8/Y05RcMWwSu6JIT0Dm4WlH1DUdHew7/z6WYFhhnGRpnlhAEaQpi/ADbh/np0MiBhGhW+2ymFU+DZfg1EhaoB4jCFuMYYcQKZrXwPEVvm5Og0pcYakBvI35G1jNIZ4jCHexxjSpz9ZFUjAynLbpOvqteaODkm9sloz5JF+ZTVmSAWSu9Qb65AvgDwBQoLgVDlWfAQAAAAASUVORK5CYII=" style="width:100%">
+                                <div class="tooltips" style="display: none; transform: translate(39px, 352px);">593</div>
+                                <div id="legendArea" class="legend-area">
+                                    <h4>Legend Title</h4>
+                                    <span id="min">0</span>
+                                    <span id="max">40</span>
+                                    <img id="gradient" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAKCAYAAABCHPt+AAAAnklEQVRYR+2WQQqDQBAES5wB/f8/Y05RcMWwSu6JIT0Dm4WlH1DUdHew7/z6WYFhhnGRpnlhAEaQpi/ADbh/np0MiBhGhW+2ymFU+DZfg1EhaoB4jCFuMYYcQKZrXwPEVvm5Og0pcYakBvI35G1jNIZ4jCHexxjSpz9ZFUjAynLbpOvqteaODkm9sloz5JF+ZTVmSAWSu9Qb65AvgDwBQoLgVDlWfAQAAAAASUVORK5CYII=" style="width:100%">
+                                </div>
                             </div>
                         </div>
+                        <script>//var moveX = document.getElementById("wrapper").style.borderWidth;//this return value has "px"
+                            //var moveY = 100;
+
+                            var heatmapCol = document.getElementById('heatmapCol').offsetWidth;
+                            var floorPlanImgW = document.getElementById('planImg').offsetWidth;
+                            var floorPlanImgH = document.getElementById('planImg').offsetHeight;
+                            var wrapper = document.getElementById("wrapper");
+                            var heatmapControl = document.getElementById("heatmapControl");
+                            var heatmap = document.getElementById("heatmap");
+                            var BlueCanvas = document.getElementById("BlueCanvas");
+                            var legendArea = document.getElementById("legendArea");
+
+                            //floorPlanImgW += moveX;
+                            //floorPlanImgH += (moveY - parseInt(moveX));
+
+
+                            wrapper.style.width = floorPlanImgW + "px";
+                            wrapper.style.height = floorPlanImgH + "px";
+                            var x = moveY - parseInt(moveX) * 3;
+                            //legendArea.style.marginBottom="-"+x+"px";
+
+                            //floorPlanImgW -= moveX;
+                            BlueCanvas.style.width = floorPlanImgW + "px";
+                            BlueCanvas.style.height = floorPlanImgH + "px";
+
+                            //floorPlanImgH -= (moveY - parseInt(moveX));
+                            heatmapControl.style.width = floorPlanImgW + "px";
+                            heatmapControl.style.height = floorPlanImgH + "px";
+                            heatmap.style.width = floorPlanImgW + "px";
+                            heatmap.style.height = floorPlanImgH + "px";
+                            heatmapCol.style.width = floorPlanImgW + "px";
+                            heatmapCol.style.height = floorPlanImgH + "px";</script>
                     </div>
-                    <script>
-                        //var moveX = document.getElementById("wrapper").style.borderWidth;//this return value has "px"
-                        //var moveY = 100;
 
-                        var heatmapCol = document.getElementById('heatmapCol').offsetWidth;
-                        var floorPlanImgW = document.getElementById('planImg').offsetWidth;
-                        var floorPlanImgH = document.getElementById('planImg').offsetHeight;
-                        var wrapper = document.getElementById("wrapper");
-                        var heatmapControl = document.getElementById("heatmapControl");
-                        var heatmap = document.getElementById("heatmap");
-                        var BlueCanvas = document.getElementById("BlueCanvas");
-                        var legendArea = document.getElementById("legendArea");
+                    <!--           Detail     -->
+                    <div class="col-lg-6 col-xl-6 offset-xl-0 ml-4  py-0" style=" max-width: 700px">
+                        <div class="card text-white bg-dark mb-3" style="max-width: 30rem;">
+                            <div class="card-header">
+                                <h4>
+                                    <a class="text-white" href="#">
+                                        Air conditioner
+                                        <img class="float-right mt-1" style="width: 24px;" src="~/img/icon/power-button-on36.png" />
+                                    </a>
+                                </h4>
+                            </div>
+                            <div class="card-body" style="margin-top:-20px">
+                                <button class="btn btn-outline-secondary mt-0 px-0 mr-1 " type="button" data-toggle="modal" style="width: 80px; height: 40px">
+                                    <img src="~/img/icon/edit32_white.png" style="height: 24px;width:24px;">
+                                    <snap class="text-white">Edit</snap>
+                                </button>
+                                <p class="ard-text p-0 m-0">AC01 - 3100002a</p>
+                                <h3 class="card-title">
+                                    <img class="mr-2" style="width: 32px;" src="~/img/icon/air-conditioner32.png" />
+                                    25.5 C
+                                </h3>
+                                <p class="card-text">
+                                    <img style="width: 24px;" src="~/img/icon/lighting32.png" />90KW -
+                                    <snap class="card-text"><small> Avg: 9kw / dy</small></snap>
+                                </p>
+                                <a class="badge badge-pill badge-danger" href="#" style="font-size: 14px">Turning off</a>
+                                <p class="card-text"><small>updated 3 mins ago</small></p>
 
-                        //floorPlanImgW += moveX;
-                        //floorPlanImgH += (moveY - parseInt(moveX));
-
-
-                        wrapper.style.width = floorPlanImgW + "px";
-                        wrapper.style.height = floorPlanImgH + "px";
-                        var x = moveY - parseInt(moveX) * 3;
-                        //legendArea.style.marginBottom="-"+x+"px";
-
-                        //floorPlanImgW -= moveX;
-                        BlueCanvas.style.width = floorPlanImgW + "px";
-                        BlueCanvas.style.height = floorPlanImgH + "px";
-
-                        //floorPlanImgH -= (moveY - parseInt(moveX));
-                        heatmapControl.style.width = floorPlanImgW + "px";
-                        heatmapControl.style.height = floorPlanImgH + "px";
-                        heatmap.style.width = floorPlanImgW + "px";
-                        heatmap.style.height = floorPlanImgH + "px";
-                        heatmapCol.style.width = floorPlanImgW + "px";
-                        heatmapCol.style.height = floorPlanImgH + "px";</script>
-                </div>
-
-                <!--           Detail     -->
-                <div class="col-lg-6 col-xl-6 offset-xl-0 ml-4  py-0" style=" max-width: 700px">
-                    <div class="card text-white bg-dark mb-3" style="max-width: 30rem;">
-                        <div class="card-header">
-                            <h4>
-                                <a class="text-white" href="#">
-                                    Air conditioner
-                                    <img class="float-right mt-1" style="width: 24px;" src="~/img/icon/power-button-on36.png" />
-                                </a>
-                            </h4>
-                        </div>
-                        <div class="card-body" style="margin-top:-20px">
-                            <button class="btn btn-outline-secondary mt-0 px-0 mr-1 " type="button" data-toggle="modal" style="width: 80px; height: 40px">
-                                <img src="~/img/icon/edit32_white.png" style="height: 24px;width:24px;">
-                                <snap class="text-white">Edit</snap>
-                            </button>
-                            <p class="ard-text p-0 m-0">AC01 - 3100002a</p>
-                            <h3 class="card-title">
-                                <img class="mr-2" style="width: 32px;" src="~/img/icon/air-conditioner32.png" />
-                                25.5 C
-                            </h3>
-                            <p class="card-text">
-                                <img style="width: 24px;" src="~/img/icon/lighting32.png" />90KW -
-                                <snap class="card-text"><small> Avg: 9kw / dy</small></snap>
-                            </p>
-                            <a class="badge badge-pill badge-danger" href="#" style="font-size: 14px">Turning off</a>
-                            <p class="card-text"><small>updated 3 mins ago</small></p>
-
-                            <p class="card-text"><b>Log</b></p>
-                            <p class="card-text">01-02-2020 11:00:00 <b>25C</b></p>
-                            <p class="card-text"><small>Last modifly on 02-02-2020</small></p>
+                                <p class="card-text"><b>Log</b></p>
+                                <p class="card-text">01-02-2020 11:00:00 <b>25C</b></p>
+                                <p class="card-text"><small>Last modifly on 02-02-2020</small></p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!--heatmap js-->
-    <script>window.onload = function () {
+        <!--heatmap js-->
+        <script>window.onload = function () {
 
-            function generateRandomData(len) {
-                var floorPlanImgW = document.getElementById('planImg').offsetWidth;
-                var floorPlanImgH = document.getElementById('planImg').offsetHeight;
-
-
-                // generate some random data
-                var points = [];
-                var max = 0;
-                var min = 0;
-                var width = floorPlanImgW;
-                var height = floorPlanImgH;
-
-                var TData = [[137, 193, 18],
-                [162, 346, 31],
-                [292, 249, 31],
-                [354, 121, 23],
-                [198, 10, 15],
-                [197, 198, 24],
-                [296, 111, 24],
-                [185, 40, 20],
-                [237, 394, 19],
-                [105, 358, 18],
-                [251, 390, 29],
-                [265, 368, 21],
-                [187, 146, 17],
-                [168, 226, 17],
-                [324, 277, 33],
-                [341, 285, 30],
-                [182, 412, 24],
-                [228, 344, 16],
-                [206, 398, 29],
-                [377, 206, 30],
-                [371, 422, 20],
-                [263, 73, 15],
-                [253, 431, 30],
-                [183, 237, 19],
-                [319, 109, 27],
-                [365, 21, 27],
-                [97, 312, 26],
-                [354, 379, 15],
-                [149, 11, 17],
-                [284, 166, 31],
-                [370, 332, 31],
-                [307, 282, 28],
-                [85, 236, 26],
-                [172, 386, 19],
-                [324, 356, 17],
-                [142, 285, 27],
-                [183, 1, 25],
-                [304, 157, 20],
-                [183, 185, 16],
-                ];
-                for (let i = 0; i < TData.length; i++) {
-                    var val = TData[i][2];
-
-                    max = Math.max(max, val);
-                    min = Math.min(min, val);
-                    var x = TData[i][0];
-                    var y = TData[i][1];
-                    var point = {
-                        x: x,
-                        y: y,
-                        value: val
-                    };
-                    points.push(point);
-                }
+                function generateRandomData(len) {
+                    var floorPlanImgW = document.getElementById('planImg').offsetWidth;
+                    var floorPlanImgH = document.getElementById('planImg').offsetHeight;
 
 
-                var data = { max: max, min: min, data: points };
+                    // generate some random data
+                    var points = [];
+                    var max = 0;
+                    var min = 0;
+                    var width = floorPlanImgW;
+                    var height = floorPlanImgH;
 
-                return data;
-            };
+                    var TData = [[137, 193, 18],
+                    [162, 346, 31],
+                    [292, 249, 31],
+                    [354, 121, 23],
+                    [198, 10, 15],
+                    [197, 198, 24],
+                    [296, 111, 24],
+                    [185, 40, 20],
+                    [237, 394, 19],
+                    [105, 358, 18],
+                    [251, 390, 29],
+                    [265, 368, 21],
+                    [187, 146, 17],
+                    [168, 226, 17],
+                    [324, 277, 33],
+                    [341, 285, 30],
+                    [182, 412, 24],
+                    [228, 344, 16],
+                    [206, 398, 29],
+                    [377, 206, 30],
+                    [371, 422, 20],
+                    [263, 73, 15],
+                    [253, 431, 30],
+                    [183, 237, 19],
+                    [319, 109, 27],
+                    [365, 21, 27],
+                    [97, 312, 26],
+                    [354, 379, 15],
+                    [149, 11, 17],
+                    [284, 166, 31],
+                    [370, 332, 31],
+                    [307, 282, 28],
+                    [85, 236, 26],
+                    [172, 386, 19],
+                    [324, 356, 17],
+                    [142, 285, 27],
+                    [183, 1, 25],
+                    [304, 157, 20],
+                    [183, 185, 16],
+                    ];
+                    for (let i = 0; i < TData.length; i++) {
+                        var val = TData[i][2];
 
-
-            /*  legend code */
-            // we want to display the gradient, so we have to draw it
-            var legendCanvas = document.createElement('canvas');
-            legendCanvas.width = 100;
-            legendCanvas.height = 10;
-            var min = document.querySelector('#min');
-            var max = document.querySelector('#max');
-            var gradientImg = document.querySelector('#gradient');
-
-            var legendCtx = legendCanvas.getContext('2d');
-            var gradientCfg = {};
-
-            function updateLegend(data) {
-                // the onExtremaChange callback gives us min, max, and the gradientConfig
-                // so we can update the legend
-                min.innerHTML = data.min;
-                max.innerHTML = data.max;
-                // regenerate gradient image
-                if (data.gradient != gradientCfg) {
-                    gradientCfg = data.gradient;
-                    var gradient = legendCtx.createLinearGradient(0, 0, 100, 1);
-                    for (var key in gradientCfg) {
-                        gradient.addColorStop(key, gradientCfg[key]);
+                        max = Math.max(max, val);
+                        min = Math.min(min, val);
+                        var x = TData[i][0];
+                        var y = TData[i][1];
+                        var point = {
+                            x: x,
+                            y: y,
+                            value: val
+                        };
+                        points.push(point);
                     }
 
-                    legendCtx.fillStyle = gradient;
-                    legendCtx.fillRect(0, 0, 100, 10);
-                    gradientImg.src = legendCanvas.toDataURL();
-                }
-            };
-            /* legend code end */
 
-            var heatmapInstance = h337.create({
-                container: document.querySelector('.heatmap'),
-                onExtremaChange: function (data) {
-                    updateLegend(data);
-                }
-            });
+                    var data = { max: max, min: min, data: points };
 
-            // generate 200 random datapoints
-            var data = generateRandomData(200);
-            heatmapInstance.setData(data);
+                    return data;
+                };
 
-            var demoWrapper = document.querySelector('.demo-wrapper');
-            var tooltip = document.querySelector('.tooltips');
 
-            function updateTooltip(x, y, value) {
-                // + 15 for distance to cursor
-                var transform = 'translate(' + (x + 15) + 'px, ' + (y + 15) + 'px)';
-                tooltip.style.MozTransform = transform; /* Firefox */
-                tooltip.style.msTransform = transform; /* IE (9+) - note ms is lowercase */
-                tooltip.style.OTransform = transform; /* Opera */
-                tooltip.style.WebkitTransform = transform; /* Safari and Chrome */
-                tooltip.style.transform = transform; /* One day, my pretty */
-                tooltip.innerHTML = "x:" + x + ",y:" + y + ",value:" + value;
-            }
+                /*  legend code */
+                // we want to display the gradient, so we have to draw it
+                var legendCanvas = document.createElement('canvas');
+                legendCanvas.width = 100;
+                legendCanvas.height = 10;
+                var min = document.querySelector('#min');
+                var max = document.querySelector('#max');
+                var gradientImg = document.querySelector('#gradient');
 
-            demoWrapper.onmousemove = function (ev) {
-                var x = ev.layerX;
-                var y = ev.layerY;
-                var value = heatmapInstance.getValueAt({
-                    x: x,
-                    y: y
+                var legendCtx = legendCanvas.getContext('2d');
+                var gradientCfg = {};
+
+                function updateLegend(data) {
+                    // the onExtremaChange callback gives us min, max, and the gradientConfig
+                    // so we can update the legend
+                    min.innerHTML = data.min;
+                    max.innerHTML = data.max;
+                    // regenerate gradient image
+                    if (data.gradient != gradientCfg) {
+                        gradientCfg = data.gradient;
+                        var gradient = legendCtx.createLinearGradient(0, 0, 100, 1);
+                        for (var key in gradientCfg) {
+                            gradient.addColorStop(key, gradientCfg[key]);
+                        }
+
+                        legendCtx.fillStyle = gradient;
+                        legendCtx.fillRect(0, 0, 100, 10);
+                        gradientImg.src = legendCanvas.toDataURL();
+                    }
+                };
+                /* legend code end */
+
+                var heatmapInstance = h337.create({
+                    container: document.querySelector('.heatmap'),
+                    onExtremaChange: function (data) {
+                        updateLegend(data);
+                    }
                 });
 
-                tooltip.style.display = 'block';
+                // generate 200 random datapoints
+                var data = generateRandomData(200);
+                heatmapInstance.setData(data);
 
-                updateTooltip(x, y, value);
-            };
-            demoWrapper.onmouseout = function () {
-                tooltip.style.display = 'none';
-            };
+                var demoWrapper = document.querySelector('.demo-wrapper');
+                var tooltip = document.querySelector('.tooltips');
 
+                function updateTooltip(x, y, value) {
+                    // + 15 for distance to cursor
+                    var transform = 'translate(' + (x + 15) + 'px, ' + (y + 15) + 'px)';
+                    tooltip.style.MozTransform = transform; /* Firefox */
+                    tooltip.style.msTransform = transform; /* IE (9+) - note ms is lowercase */
+                    tooltip.style.OTransform = transform; /* Opera */
+                    tooltip.style.WebkitTransform = transform; /* Safari and Chrome */
+                    tooltip.style.transform = transform; /* One day, my pretty */
+                    tooltip.innerHTML = "x:" + x + ",y:" + y + ",value:" + value;
+                }
 
-            document.querySelector('.trigger-refresh').onclick = function () {
-                heatmapInstance.setData(generateRandomData(200));
-            };
+                demoWrapper.onmousemove = function (ev) {
+                    var x = ev.layerX;
+                    var y = ev.layerY;
+                    var value = heatmapInstance.getValueAt({
+                        x: x,
+                        y: y
+                    });
 
-            document.querySelector('.thankyou').onclick = function () {
-                ga('send', 'event', 'social', 'thanks');
-                document.querySelector('.thankyou').style.display = 'none';
-                document.querySelector('#share').style.display = 'block';
-            };
-            var btns = document.querySelectorAll('.symbol');
-            for (var i = 0; i < btns.length; i++) {
-                btns[i].onclick = function () {
-                    ga('send', 'event', 'social', 'share');
+                    tooltip.style.display = 'block';
+
+                    updateTooltip(x, y, value);
                 };
-            }
+                demoWrapper.onmouseout = function () {
+                    tooltip.style.display = 'none';
+                };
 
-        };</script>
-    <!--heatmap js-->
 
-</body>
+                document.querySelector('.trigger-refresh').onclick = function () {
+                    heatmapInstance.setData(generateRandomData(200));
+                };
 
-</html>
+                document.querySelector('.thankyou').onclick = function () {
+                    ga('send', 'event', 'social', 'thanks');
+                    document.querySelector('.thankyou').style.display = 'none';
+                    document.querySelector('#share').style.display = 'block';
+                };
+                var btns = document.querySelectorAll('.symbol');
+                for (var i = 0; i < btns.length; i++) {
+                    btns[i].onclick = function () {
+                        ga('send', 'event', 'social', 'share');
+                    };
+                }
+
+            };</script>
+        <!--heatmap js-->
+
+    </body>
+
