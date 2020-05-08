@@ -63,11 +63,13 @@ namespace FYP_WEB_APP.Controllers.API
                     {
                         var collection = database.GetCollection<BsonDocument>(dbname);
 
-                        var filter = Builders<BsonDocument>.Filter.Eq("sensorId", id);
+                        /*var filter = Builders<BsonDocument>.Filter.Eq("sensorId", id);
                         var up = Builders<BsonDocument>.Update.Set(valueNmae, Value);
                         var Updated = collection.UpdateOne(filter, up, updateOptions);
                          up = Builders<BsonDocument>.Update.Set("latest_checking_time", DateTime.UtcNow);
                          Updated = collection.UpdateOne(filter, up, updateOptions);
+                        */
+                        collection.InsertOne(new BsonDocument { { "sensorId", id }, { "valueNmae", Value }, { "latest_checking_time", utcNow } });
 
                         str += "{ sensorId , " + id + "},{ value," + Value + "},{ latest_checking_time," + utcNow + "}\n";
 
