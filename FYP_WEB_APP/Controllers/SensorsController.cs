@@ -527,6 +527,7 @@ namespace FYP_APP.Controllers
 			datas.Add(x4.ToJson());
 			datas.Add(x5.ToJson());
 			datas.Add(x6.ToJson());
+            //sensor log
 
 
 
