@@ -41,22 +41,27 @@ namespace FYP_APP.Controllers
 
 			return View();
 		}
-		[Route("Sensors/SensorsChartByRoomid/{id}")]
+		[Route("Sensors/SensorsChartByRoomid")]
 		public ActionResult chart()
 		{
+			string id ="";
+            id=Request.Query["roomID"];
+
 			getdb();
-			List<SensorsListModel> lists = GetSensorsData().Where(x => x.roomId.Contains("341")).ToList();
+			List<SensorsListModel> lists = GetSensorsData().Where(x => x.roomId.Contains(id)).ToList();
 
 			Debug.WriteLine(Setgroup(lists).ToJson().ToString());
 
 			chartData(lists);
 			return PartialView("_SensorsChart");
 		}
-		[Route("Sensors/SensorsListByRoomid/{id}")]
-		public ActionResult SearchSensorsByRoomid(string id) {
+		[Route("Sensors/SensorsListByRoomid")]
+		public ActionResult SearchSensorsByRoomid() {
 			ViewData["NotGroup"] = "true";
 			getdb();
-			List<SensorsListModel> lists = GetSensorsData().Where(x=>x.roomId.Contains("341")).ToList();
+			string id = "";
+            id= Request.Query["roomID"];
+			List<SensorsListModel>lists = GetSensorsData().Where(x => x.roomId.Contains("")).ToList();
 
 			Debug.WriteLine(Setgroup(lists).ToJson().ToString());
 			ViewData["SensorsListModel"] = Setgroup(lists);
@@ -317,7 +322,7 @@ namespace FYP_APP.Controllers
 
 				}
 			}
-				catch (NullReferenceException e)
+				catch (NullReferenceException )
 				{
 					SensorsDataList = SortList(SensorsDataList);
 
