@@ -483,7 +483,10 @@ namespace FYP_APP.Controllers
 			var json = collection.Find(filter).FirstOrDefault();
 			if (json != null)
 			{
-				if (type.Equals("value")) { 
+				if (type.Equals("value")) {
+					value = json["current"];
+					return value;
+					/*
 				switch (sensorId.Substring(0, 2))
 			{
 				case "TS":
@@ -499,7 +502,7 @@ namespace FYP_APP.Controllers
 						break;
 					}
 					return value;
-
+                    */
 				}
 				else if (type.Equals("datetime")) {
 					value = json["latest_checking_time"];

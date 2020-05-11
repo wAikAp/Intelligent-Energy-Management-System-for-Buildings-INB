@@ -1,0 +1,55 @@
+﻿
+<div class="modal fade" id="addDragButtonModal" tabindex="-1" role="dialog" aria-labelledby="addDragButtonModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Add Sensor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="~/RoomDetail/AddDragButton" method="post">
+                <div class="modal-body">
+
+                    <div class="form-check-inline">
+                        <label class="form-check-label">
+                            <input type="radio" class="form-check-input sensor_type" name="sensor_type" value="TS">Temperature Sensor
+                        </label>
+                    </div>
+                    <div class="form-check-inline">
+                        <label class="form-check-label">
+                            <input type="radio" class="form-check-input sensor_type" name="sensor_type" value="HS">Humidity Sensor
+                        </label>
+                    </div>
+                    <div class="form-check-inline">
+                        <label class="form-check-label">
+                            <input type="radio" class="form-check-input sensor_type" name="sensor_type" value="LS">Luminosity Sensor
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label for="typeTxt" class="col-form-label col-2" id="display_typeTxt">TS</label>
+                            <input class="form-control col-8" id="typeTxt" name="sensorNo"></input>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#addDragButtonModal').on('show.bs.modal', function (event) {
+        alert("come");
+    });
+
+    $(".sensor_type").click(function () {
+        
+        $("#display_typeTxt").text($(this).val());
+    });
+</script>

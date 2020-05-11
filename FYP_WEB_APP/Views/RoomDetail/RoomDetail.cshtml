@@ -3,6 +3,7 @@
 
     ViewData["Title"] = "Rooms Detail";
     Layout = "_Layout";
+    
 }
 
     <head>
@@ -38,6 +39,7 @@
 
 
     <body>
+        @Html.Partial("_addDragButton")
         <!--page title-->
         <div class="container-fluid p-4 ">
             <div class="d-flex">
@@ -75,7 +77,7 @@
             $(document).ready(function () {
                 $("#devicesView").load("@Url.Action("SearchDevicesByRoomid", "Devices", new { roomID = ViewData["roomID"] })", function () {});
                 $("#sensorView").load("@Url.Action("SearchSensorsByRoomid", "Sensors", new { roomID = ViewData["roomID"] })", function () {});
-                $("#sensorChartView").load("@Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"] })", function () {});
+                //$("#sensorChartView").load("@Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"] })", function () {});
             });
             </script>
             <!-- data end -->
@@ -446,15 +448,19 @@
             </div>
 
             <!--  chart end   -->
-            <!--   foolr plan     -->
+            <!--   floor plan     -->
             <div class="card d-flex flex-column mb-2 mx-2 p-2 ">
 
                 <div class="row justify-content-between mb-2">
                     <div class="col">
                         <h3>
-                            <b>Room Foolr Plan </b>
+                            <b>Room Floor Plan </b>
+
                             <button class="btn btn-outline-secondary px-0 mr-1 ml-2 " type="button" data-toggle="modal" data-target="#roomSetting" style="width: 40px; height: 40px"><img src="https://www.hko.gov.hk/images/icon_setting.png" style="height: 24px;width:24px;"></button>
-                            <button class="btn btn-outline-secondary px-2" type="button" style="width: 40px; height: 40px;">&#xFF0B;</button>
+                            <button type="button" class="btn btn-outline-secondary px-2" data-toggle="modal" data-target="#addDragButtonModal" style="width: 40px; height: 40px;">
+                                +
+                            </button>
+                            <!--<button class="btn btn-outline-secondary px-2" type="button"  datga-target="#addDragButtonModal">&#xFF0B;</button>-->
                         </h3>
                     </div>
                     <div class="col-4 d-flex ">
