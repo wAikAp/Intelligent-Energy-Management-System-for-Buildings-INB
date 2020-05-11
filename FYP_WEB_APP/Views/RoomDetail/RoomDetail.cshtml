@@ -77,7 +77,7 @@
             $(document).ready(function () {
                 $("#devicesView").load("@Url.Action("SearchDevicesByRoomid", "Devices", new { roomID = ViewData["roomID"] })", function () {});
                 $("#sensorView").load("@Url.Action("SearchSensorsByRoomid", "Sensors", new { roomID = ViewData["roomID"] })", function () {});
-                //$("#sensorChartView").load("@Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"] })", function () {});
+                $("#sensorChartView").load("@Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"] })", function () {});
             });
             </script>
             <!-- data end -->
@@ -453,7 +453,7 @@
 
                 <div class="row justify-content-between mb-2">
                     <div class="col">
-                        <h3>
+                        <h3 id="floorPlan">
                             <b>Room Floor Plan </b>
 
                             <button class="btn btn-outline-secondary px-0 mr-1 ml-2 " type="button" data-toggle="modal" data-target="#roomSetting" style="width: 40px; height: 40px"><img src="https://www.hko.gov.hk/images/icon_setting.png" style="height: 24px;width:24px;"></button>

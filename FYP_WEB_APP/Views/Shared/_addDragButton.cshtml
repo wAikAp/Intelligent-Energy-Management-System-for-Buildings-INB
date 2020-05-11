@@ -29,10 +29,11 @@
                     <div class="form-group">
                         <div class="row">
                             <label for="typeTxt" class="col-form-label col-2" id="display_typeTxt">TS</label>
-                            <input class="form-control col-8" id="typeTxt" name="sensorNo"></input>
+                            <input class="form-control col-8" id="typeTxt" name="sensorNo">
+                            <input type="hidden" name="roomID" value="@ViewData["roomID"]" />
                         </div>
                     </div>
-
+                        
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -44,12 +45,13 @@
 </div>
 
 <script>
+    
     $('#addDragButtonModal').on('show.bs.modal', function (event) {
         alert("come");
     });
 
     $(".sensor_type").click(function () {
-        
+
         $("#display_typeTxt").text($(this).val());
     });
 </script>

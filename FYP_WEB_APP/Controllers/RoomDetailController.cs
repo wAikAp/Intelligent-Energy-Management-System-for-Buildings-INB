@@ -16,15 +16,16 @@ namespace FYP_WEB_APP.Controllers
         {
             ViewData["roomID"] = roomID;
             this.roomID = roomID;
-            Debug.WriteLine("roomID = " + roomID);
+            //Debug.WriteLine("RoomDetail = " + this);
             return View();
         }
 
         [HttpPost]
         public IActionResult AddDragButton(IFormCollection post) {
             Debug.WriteLine("sensorID = " + post["sensor_type"] + post["sensorNo"]);
-            ViewData["roomID"] = this.roomID;
-            return RedirectToAction("RoomDetail");
+            ViewData["roomID"] = post["roomID"];
+            Debug.WriteLine("AddDragButton room id = " + ViewData["roomID"]);
+            return Redirect("RoomDetail?roomID="+ ViewData["roomID"]+"#floorPlan");
         }
 
     }
