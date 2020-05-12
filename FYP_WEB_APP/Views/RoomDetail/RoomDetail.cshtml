@@ -70,16 +70,22 @@
             <div id="sensorView"></div>
             <!-- <h3><b>Devices</b></h3>data -->
             <div id="devicesView"></div>
-            <div id="sensorChartView"></div>
-
-
-            <script>
-            $(document).ready(function () {
-                $("#devicesView").load("@Url.Action("SearchDevicesByRoomid", "Devices", new { roomID = ViewData["roomID"] })", function () {});
+            <div class="d-flex bd-highlight flex-wrap flex-column">
+                <div id="sensorChartTS" class="flex-fill bd-highlight col-12 h-100"></div>
+                <div id="sensorChartHS" class="flex-fill bd-highlight  col-12 h-100"></div>
+                <div id="sensorChartLS" class="flex-fill bd-highlight  col-12 h-100"></div>
+                <script>
+                $(document).ready(function () {
+                $("#devicesView").load("@Url.Action("SearchDevicesByRoomid", "Devices", new { roomID = ViewData["roomID"] })", function () { });
                 $("#sensorView").load("@Url.Action("SearchSensorsByRoomid", "Sensors", new { roomID = ViewData["roomID"] })", function () {});
-                $("#sensorChartView").load("@Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"] })", function () {});
-            });
-            </script>
+                $("#sensorChartTS").load("@Html.Raw(Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"], title = "Temperature Sensor Log Record", chartType = "line", position = "top", sensorType = "TS" , download=false}))", function () {});
+                $("#sensorChartHS").load("@Html.Raw(Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"], title = "Humidity Sensor Log Record", chartType = "line", position = "top", sensorType = "HS", download = false }))", function () {});
+                $("#sensorChartLS").load("@Html.Raw(Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"], title = "Luminosity Sensor Log Record", chartType = "line", position = "top", sensorType = "LS", download = false }))", function () {});
+
+                });
+
+                </script>
+            </div>
             <!-- data end -->
 
             <div class="card">
@@ -88,7 +94,8 @@
 
                         <canvas id="UsageRecordChart"></canvas>
                         <!--chart js-->
-                        <script>var chartID = '';
+                        <script>
+    var chartID = '';
                             var charttitle = '';
                             var chartType = '';
                             var position = '';
@@ -311,7 +318,8 @@
                     <div class="container-fluid col-xs-12 col-md-8 pt-4 w-100 px-0">
                         <canvas id="UsageRecordChart01"></canvas>
                         <!--chart js-->
-                        <script>var chartID = '';
+                        <script>
+    var chartID = '';
                             var charttitle = '';
                             var chartType = '';
                             var position = '';
@@ -496,7 +504,8 @@
                                 </div>
                             </div>
                         </div>
-                        <script>//var moveX = document.getElementById("wrapper").style.borderWidth;//this return value has "px"
+                        <script>
+    //var moveX = document.getElementById("wrapper").style.borderWidth;//this return value has "px"
                             //var moveY = 100;
 
                             var heatmapCol = document.getElementById('heatmapCol').offsetWidth;
