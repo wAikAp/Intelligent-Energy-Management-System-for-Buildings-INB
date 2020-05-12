@@ -61,9 +61,42 @@ namespace FYP_APP.Controllers
 
 			return View();
 		}
-		[Route("Devices/SearchDevicesByRoomid/{id}")]
-		public IActionResult SearchDevicesByRoomid(string id)
+
+		
+		[Route("Devices/DevicesChartByRoomid")]
+		public ActionResult DevicesChartByRoomid()
 		{
+			/*string id = "";
+			id = Request.Query["roomID"];
+			//  $("#sensorChartHS").load("@Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"], title = "Humidity Sensor Log Record", chartType = "line", position = "top", sensorType = "HS" })", function () {});
+			//$("#sensorChartLS").load("@Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"], title = "Luminosity Sensor Log Record", chartType = "line", position = "top", sensorType = "LS" })", function () {});
+
+			getdb();
+			List<SensorsListModel> lists = GetSensorsData().Where(x => x.roomId.Contains(id)).ToList();
+			Debug.WriteLine("list: " + lists.ToJson().ToString());
+			Debug.WriteLine("list: " + Request.QueryString);
+			Debug.WriteLine("roomID: " + Request.Query["roomID"]);
+			Debug.WriteLine("title: " + Request.Query["title"]);
+			Debug.WriteLine("chartType: " + Request.Query["chartType"]);
+			Debug.WriteLine("position: " + Request.Query["position"]);
+			Debug.WriteLine("sensorType: " + Request.Query["sensorType"]);
+			//Debug.WriteLine(Setgroup(lists).ToJson().ToString());
+			ViewBag.charttitle = Request.Query["title"];
+			ViewBag.chartType = Request.Query["chartType"];
+			ViewBag.position = Request.Query["position"];
+			ViewBag.download = Request.Query["download"];
+
+			ViewBag.day = getChartTime();
+			ViewBag.datasets = chartData(lists, Request.Query["sensorType"]);
+			ViewBag.divId = getRandomDivId();
+			*/
+			return PartialView("_DevicesChart");
+		}
+		[Route("Devices/SearchDevicesByRoomid")]
+		public IActionResult SearchDevicesByRoomid()
+		{
+			string id = Request.Query["roomID"];
+
 			ViewData["MongoDevicesListModel"] = getAllDevices().Where(x => x.roomId == id).ToList();
 			ViewData["RoomListModel"] = GetRoomData();
 			//getAllDevices().Where(x => x.roomId == id).ToList().ToJson().ToString()

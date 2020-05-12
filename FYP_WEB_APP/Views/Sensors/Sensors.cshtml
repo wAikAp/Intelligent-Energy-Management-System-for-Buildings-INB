@@ -145,8 +145,19 @@
 
                         </div>
                     </div>
-                    @Html.Partial("_SensorsChart")                  
-              
+                    //@Html.Partial("_SensorsChart", new { roomID = 348, title = "Temperature Sensor Log Record", chartType = "line", position = "top", sensorType = "TS" })
+                    <div id="sensorChartTS" class="flex-fill bd-highlight col-12 h-100"></div>
+                    <div id="sensorChartHS" class="flex-fill bd-highlight  col-12 h-100"></div>
+                    <div id="sensorChartLS" class="flex-fill bd-highlight  col-12 h-100"></div>
+                    <script>
+                $(document).ready(function () {
+                $("#sensorChartTS").load("@Html.Raw(Url.Action("SensorsChart", "Sensors", new { roomID = ViewData["roomID"], title = "Temperature Sensor Log Record", chartType = "line", position = "top", sensorType = "TS" , download=false}))", function () {});
+                $("#sensorChartHS").load("@Html.Raw(Url.Action("SensorsChart", "Sensors", new { roomID = ViewData["roomID"], title = "Humidity Sensor Log Record", chartType = "line", position = "top", sensorType = "HS", download = false }))", function () {});
+                $("#sensorChartLS").load("@Html.Raw(Url.Action("SensorsChart", "Sensors", new { roomID = ViewData["roomID"], title = "Luminosity Sensor Log Record", chartType = "line", position = "top", sensorType = "LS", download = false }))", function () {});
+
+                });
+
+                    </script>
                 }
             </div>
 

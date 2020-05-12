@@ -141,8 +141,8 @@
                             </div>
                         </div>
                     </form>
-            @Html.Partial("_DevicesList")
-                    @if (ViewData["isnull"]!="true")
+                    @Html.Partial("_DevicesList")
+                    @if (ViewData["isnull"] != "true")
                     {
                         <div class="card d-flex flex-row mb-2 mx-2 p-2 ">
                             <button class="p-3 mx-2 btn btn-outline-secondary"> power report</button>
@@ -150,120 +150,9 @@
                             <button class="p-3 mx-2 btn btn-outline-secondary">maintain report</button>
                             <button class="p-3 mx-2 btn btn-outline-secondary">money report</button>
                         </div>
-                        <div class="card  mx-2 p-2">
-                            <div class=" shadow-sm w-100 h-100 p-3 justify-content-center align-items-center">
-                                <div class="container-fluid col-xs-12 col-md-8 pt-4 w-100 px-0">
+                        //chart
+                        @Html.Partial("_DevicesChart")
 
-                                    <canvas id="UsageRecordChart"></canvas>
-                                </div>
-                            </div>
-                            <button class="p-3 mx-2 btn btn-outline-secondary">Download the report</button>
-
-                        </div>
-                        <script>
-
-                            var chartID = '';
-                            var charttitle = '';
-                            var chartType = '';
-                            var position = '';
-                            var devices = [];
-                            var devicesData = [];
-                            var gcolor = [];
-                            var gdata;
-                            var goption;
-
-                            getUsageRecordData();
-
-                            async function getUsageRecordData() {
-
-                                charttitle = 'Devices Power Usage Record';
-
-                                chartID = 'UsageRecordChart';
-                                chartType = 'line';
-                                position = 'right';
-                                devices.push('deviceA');
-                                devices.push('deviceB');
-                                devices.push('deviceC');
-                                var day = [];
-                                var i;
-                                for (i = 0; i < 30; i++) {
-                                    day.push(i);
-                                }
-                                devices.forEach(getRandomColor);
-
-                                //set chart data
-                                dataop = {
-                                    labels: day,
-                                    datasets: [{
-                                        label: devices[0],
-                                        borderColor: gcolor[0],
-                                        fill: false,
-                                        data: [65, 59, 80, 81, 56, 55, 40, 50, 60, 55, 30, 78],
-                                    }, {
-                                        label: devices[1],
-                                        borderColor: gcolor[1],
-                                        fill: false,
-                                        data: [10, 20, 60, 95, 64, 78, 90, 80, 70, 40, 70, 89],
-                                        spanGaps: false,
-                                    }, {
-                                        label: devices[2],
-                                        borderColor: gcolor[2],
-                                        fill: false,
-                                        data: [30, 20, 80, 50, 64, 78, 100, 40, 50, 40, 75, 90],
-                                        spanGaps: false,
-                                    }
-
-                                    ]
-                                };
-                                //set chart option
-                                goption = {
-                                    title: {
-                                        display: true,
-                                        text: charttitle,
-                                        fontSize: 25,
-                                    },
-                                    legend: {
-                                        display: true,
-                                        position: position,
-                                        labels: {
-                                            boxWidth: 20,
-                                            fontColor: '#111',
-                                            padding: 15
-                                        }
-                                    }
-                                };
-                                draw();
-
-                            }
-
-                            //---------------------------------------------------------------------------------
-                            function getRandomColor() {
-                                var letters = '0123456789ABCDEF';
-                                var color = '#';
-                                for (var i = 0; i < 6; i++) {
-                                    color += letters[Math.floor(Math.random() * 16)];
-                                }
-                                gcolor.push(color);
-                            }
-
-                            function draw() {
-
-                                let myChart = document.getElementById(chartID).getContext('2d');
-                                // Global Options
-                                Chart.defaults.global.defaultFontFamily = 'Lato';
-                                Chart.defaults.global.defaultFontSize = 18;
-                                Chart.defaults.global.defaultFontColor = '#777';
-
-
-                                let barChart = new Chart(myChart, {
-                                    type: chartType,//bar,horizontalBar,pie,line,doughnut,radar,polarArea
-                                    data: dataop,
-                                    options: goption
-                                });
-                            }
-                                                                                                                    //--------------------------------------------------------------------------
-
-                        </script>
                     }
                 </div>
             </div>

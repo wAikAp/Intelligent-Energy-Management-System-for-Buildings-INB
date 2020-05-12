@@ -64,14 +64,27 @@
             <div class="row ">
                 <div class=" col-xl-4 col-sm">
                     <div class="card mb-3 shadow-sm h-100 p-3 justify-content-center align-items-center  ">
-                        <canvas id="PowerUsageChart" class=""></canvas>
+                        <div id="PowerUsageChart" class="flex-fill bd-highlight col-12 h-100"></div>
+                        <script>
+                        $(document).ready(function () {
+                         $("#PowerUsageChart").load("@Html.Raw(Url.Action("DoughnutChart", "Home", new { title = "Power Usage", chartType = "doughnut", position = "right"}))", function () {});
 
+                                    });
+
+                        </script>
                     </div>
                 </div>
 
                 <div class=" col-xl-4 col-sm">
                     <div class="card mb-3 shadow-sm h-100 p-3 justify-content-center align-items-center">
-                        <canvas id="UsageTimeChart" class=""></canvas>
+                        <div id="DoughnutChart" class="flex-fill bd-highlight col-12 h-100"></div>
+                        <script>
+                        $(document).ready(function () {
+                            $("#DoughnutChart").load("@Html.Raw(Url.Action("DoughnutChart", "Home", new { title = "Usage Time", chartType = "doughnut", position = "right"}))", function () {});
+
+                                    });
+
+                        </script>
                     </div>
                 </div>
 
@@ -240,120 +253,6 @@
 
     }
     //--------------------------------------------------------------------------------------------
-    async function getUsageTimeData() {
-
-        charttitle = 'Usage Time';
-
-        chartID = 'UsageTimeChart';
-        chartType = 'doughnut';
-        position = 'right';
-        devices.push('Light');
-        devices.push('Other');
-        devices.push('Air conditioning');
-        devices.push('off');
-        devicesData.push(30);
-        devicesData.push(20);
-        devicesData.push(50);
-        devicesData.push(50);
-
-        devices.forEach(getRandomColor);
-        //set chart data
-
-        dataop = {
-            labels: devices,
-            datasets: [{
-                label: devices,
-                data: devicesData,
-                backgroundColor: gcolor,
-                borderWidth: 1,
-                borderColor: '#777',
-                hoverBorderWidth: 3,
-                hoverBorderColor: '#000'
-
-            }]
-        };
-        //set chart option
-
-        goption = {
-            responsive: true,
-
-            title: {
-                display: true,
-                text: charttitle,
-                fontSize: 25
-            },
-            legend: {
-                display: true,
-                position: position,
-                labels: {
-                    boxWidth: 20,
-                    fontColor: '#111',
-                    padding: 15
-                }
-            }
-
-
-        };
-        draw();
-
-    }
-
-    async function getPowerUsageDate() {
-
-        chartID = 'PowerUsageChart';
-        charttitle = 'Power Usage';
-        chartType = 'doughnut';
-        position = 'right';
-
-        devices.push('Light');
-        devices.push('Other');
-        devices.push('Air conditioning');
-        devicesData.push(30);
-        devicesData.push(20);
-        devicesData.push(50);
-        devices.forEach(getRandomColor);
-        //set chart data
-
-        dataop = {
-            labels: devices,
-            datasets: [{
-                label: devices,
-                data: devicesData,
-                backgroundColor: gcolor,
-                borderWidth: 1,
-                borderColor: '#777',
-                hoverBorderWidth: 3,
-                hoverBorderColor: '#000'
-
-            }]
-        };
-        //set chart option
-
-        goption = {
-            responsive: true,
-
-            title: {
-                display: true,
-                text: charttitle,
-                fontSize: 25
-            },
-            legend: {
-                display: true,
-                position: position,
-                labels: {
-                    boxWidth: 20,
-                    fontColor: '#111',
-                    padding: 15
-                }
-            }
-
-
-        };
-
-
-        draw();
-
-    }
     async function getNumberOfDevicesData() {
 
         chartID = 'NumberOfDevicesChart';

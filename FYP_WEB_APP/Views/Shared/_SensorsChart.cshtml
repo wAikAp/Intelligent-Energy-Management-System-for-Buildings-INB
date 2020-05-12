@@ -1,16 +1,15 @@
 ﻿
         <script src="~/js/Chart/Chart.min.js"></script>
-        <div class="p-2 bd-highlight">
-            <div class="card  mx-2 p-2">
-                <div class=" shadow-sm w-100 h-100 p-3 justify-content-center align-items-center">
-                    <div class="container-fluid col-xs-12 col-md-8 pt-4 w-100 px-0">
+        <div class="p-2 bd-highlight ">
+                <div class=" shadow-sm w-100 h-100 justify-content-center align-items-center">
+                    <div class="container-fluid col-xs-12 col-md-8 w-100 px-0">
 
-                        <canvas id="UsageRecordChart"></canvas>
+                        <canvas id="@ViewBag.divId"></canvas>
                     </div>
                 </div>
+               @if(ViewBag.download== "true"){
                 <button class="p-3 mx-2 btn btn-outline-secondary">Download the report</button>
-
-            </div>
+               }
         </div>
         <script>
             var chartID = '';
@@ -25,23 +24,20 @@
 
             async function getUsageRecordData() {
 
-                charttitle = 'Sensor Log Record';
 
-                chartID = 'UsageRecordChart';
-                chartType = 'line';
-                position = 'right';
+                chartID = '@ViewBag.divId';
 
-                var day = [];
-                var i;
-                for (i = 0; i < 30; i++) {
-                    day.push(i);
-                }
+                charttitle = '@ViewBag.charttitle';
+                chartType = '@ViewBag.chartType';
+                position ='@ViewBag.position';
+
+                var time =@Html.Raw(ViewBag.day);
 
                 var jdatasets =@Html.Raw(ViewBag.datasets);
                 console.log("type of" + JSON.stringify(jdatasets));
                 //set chart data
                 dataop = {
-                    labels: day,
+                    labels: time,
                     datasets: jdatasets
                 };
                 //set chart option
@@ -59,6 +55,34 @@
                             fontColor: '#111',
                             padding: 15
                         }
+                    },
+                    scales: {
+                        yAxes: [
+                            {
+                                ticks: {
+                                    callback: function (label, index, labels) {
+                                        return label + '@ViewBag.unit';
+                                    }
+                                },
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: '@ViewBag.unitName'
+                                }
+                            }
+                        ],
+                        xAxes: [
+                            {
+                                ticks: {
+                                    callback: function (label, index, labels) {
+                                        return label + ':00';
+                                    }
+                                },
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'TIME'
+                                }
+                            }
+                        ]
                     }
                 };
                 draw();

@@ -39,7 +39,7 @@
     @if (DevicesList.Count() == 0)
     {
         <div class="alert alert-warning text-center font-weight-bold" role="alert">
-            <h3>TryAgin, No more Devices record in Your condition.  </h3>
+            <h3>TryAgin, No more Devices record in Your conditions.  </h3>
         </div>}
     else
     {
@@ -60,12 +60,9 @@
                             ViewData["text"] = "text-dark ";
                             ViewData["backimg"] = "filter: invert(100%);";
                             ViewData["devicesType"] = "Light conditioner";
-
                             break;
                         case "HD":
                             ViewData["devicesType"] = "Humidifier";
-                            
-
                             break;
                         case "EF":
                             ViewData["devicesType"] = "Extemal conditioner";
