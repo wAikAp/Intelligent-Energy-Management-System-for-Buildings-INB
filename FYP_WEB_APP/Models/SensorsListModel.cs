@@ -12,7 +12,9 @@ namespace FYP_WEB_APP.Models
 
         public string roomId { get; set; }
         public string sensorId { get; set; }
-        public string location { get; set; }
+        public double pos_x { get; set; }
+        public double pos_y { get; set; }
+        
         public string desc { get; set; }
         public DateTime latest_checking_time { get; set; }
         public int total_run_time { get; set; }

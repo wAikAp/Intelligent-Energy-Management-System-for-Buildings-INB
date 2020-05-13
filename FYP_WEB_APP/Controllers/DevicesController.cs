@@ -462,12 +462,9 @@ namespace FYP_APP.Controllers
 							break;
 				}
 
-
-
-
 			}
-			else { 
-						value = 0;
+			else {
+				value = 0;
 			}
 			Debug.WriteLine("\n geting current data value ==>"+value+"\n");
 			return value;
