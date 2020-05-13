@@ -8,8 +8,11 @@
                 $("#sensorView").load("@Url.Action("SearchSensorsByRoomid", "Sensors", new { id = "341" })", function () {});
             });
     </script>
+
 *@
-@{
+@{    string returnUrl = Context.Request.Path + Context.Request.QueryString;
+    Context.Response.Cookies.Append("returnUrl", returnUrl);
+
     List<List<FYP_WEB_APP.Models.SensorsListModel>> Sensors = ViewData["SensorsListModel"] as List<List<FYP_WEB_APP.Models.SensorsListModel>>;
 
     List<FYP_WEB_APP.Models.RoomsListModel> Rooms = ViewData["RoomListModel"] as List<FYP_WEB_APP.Models.RoomsListModel>;

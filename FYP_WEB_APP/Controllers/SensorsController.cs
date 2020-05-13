@@ -9,11 +9,13 @@ using FYP_WEB_APP.Controllers;
 using FYP_WEB_APP.Controllers.Mongodb;
 using FYP_WEB_APP.Models;
 using FYP_WEB_APP.Models.MongoModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
 
 namespace FYP_APP.Controllers
 {
@@ -40,6 +42,20 @@ namespace FYP_APP.Controllers
 			ViewData["RoomListModel"] = GetRoomData();
 
 			return View();
+		}
+		public ActionResult returnUrl()
+		{
+			string url;
+			if (Request.Cookies.TryGetValue("returnUrl", out url))
+			{
+				Response.Cookies.Delete("returnUrl");
+				return Redirect(url);
+
+			}
+			else
+			{
+				return RedirectToAction("Sensors");
+			}
 		}
 		[Route("Sensors/SensorsChart")]
 		public ActionResult SensorsChart()
@@ -104,20 +120,20 @@ namespace FYP_APP.Controllers
 
 		}
 		[Route("Sensors/SensorsListByRoomid")]
-		public ActionResult SearchSensorsByRoomid()
+		public ActionResult SensorsListByRoomid()
 		{
 			ViewData["NotGroup"] = "true";
 			getdb();
 			string id = "";
 			id = Request.Query["roomID"];
 			List<SensorsListModel> lists = GetSensorsData().Where(x => x.roomId.Contains(id)).ToList();
-
-			//Debug.WriteLine(Setgroup(lists).ToJson().ToString());
+			var xc = Request.Headers["Referer"].ToString();
+			Debug.WriteLine("====>"+xc);
 			ViewData["SensorsListModel"] = Setgroup(lists);
 
 			return PartialView("_SensorsList");
 		}
-		[Route("Sensors/SensorsListByRoomid")]
+		[Route("Sensors/getSensorsListByRoomid")]
 		public List<SensorsListModel> getSensorsListByRoomid()
 		{
 			getdb();
@@ -152,7 +168,7 @@ namespace FYP_APP.Controllers
 		}
 		[Route("Sensors/UpdateSensors")]
 		[HttpPost]
-		public ActionResult UpdateSensors(MongoSensorsListModel postData)
+		public ActionResult UpdateSensors(MongoSensorsListModel postData )
 		{
 
 			getdb();
@@ -186,10 +202,9 @@ namespace FYP_APP.Controllers
 				}
 			}
 
-
-
-			return RedirectToAction("Sensors");
+			return returnUrl();
 		}
+		
 		[Route("Sensors/AddSensors")]
 		public ActionResult AddSensors()//display add sensors form
 		{
@@ -224,7 +239,7 @@ namespace FYP_APP.Controllers
 			insertList.total_run_time = 0;
 
 			collection.InsertOneAsync(insertList);
-			return RedirectToAction("Sensors");
+			return returnUrl();
 		}
 		[Route("Sensors/DropSensorsData")]
 		[HttpPost]
@@ -235,7 +250,7 @@ namespace FYP_APP.Controllers
 
 			var DeleteResult = collection.DeleteOne(Builders<MongoSensorsListModel>.Filter.Eq("sensorId", postData.sensorId));
 
-			return RedirectToAction("Sensors");
+			return returnUrl();
 		}
 		[Route("Sensors/DropSensors/{id}")]
 		public ActionResult DropSensors(string id)//display Drop sensors form

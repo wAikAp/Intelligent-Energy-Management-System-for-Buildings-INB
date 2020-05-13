@@ -3,8 +3,11 @@
     ViewData["Title"] = "Devices";
     Layout = "_Layout";
 
-    List<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel> 
-    DevicesList = ViewData["MongoDevicesListModel"] as List<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>;
+    string returnUrl = Context.Request.Path + Context.Request.QueryString;
+    Context.Response.Cookies.Append("returnUrl", returnUrl);
+
+    List<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>
+DevicesList = ViewData["MongoDevicesListModel"] as List<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>;
 
     List<FYP_WEB_APP.Models.RoomsListModel>
     Rooms= ViewData["RoomListModel"] as List<FYP_WEB_APP.Models.RoomsListModel>;

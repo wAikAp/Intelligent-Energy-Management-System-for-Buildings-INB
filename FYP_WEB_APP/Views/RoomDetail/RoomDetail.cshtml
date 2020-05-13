@@ -3,7 +3,8 @@
 
     ViewData["Title"] = "Rooms Detail";
     Layout = "_Layout";
-    
+    string returnUrl = Context.Request.Path+Context.Request.QueryString;
+    Context.Response.Cookies.Append("returnUrl", returnUrl);
 }
 
     <head>
@@ -77,7 +78,7 @@
                 <script>
                 $(document).ready(function () {
                 $("#devicesView").load("@Url.Action("SearchDevicesByRoomid", "Devices", new { roomID = ViewData["roomID"] })", function () { });
-                $("#sensorView").load("@Url.Action("SearchSensorsByRoomid", "Sensors", new { roomID = ViewData["roomID"] })", function () {});
+                $("#sensorView").load("@Url.Action("SensorsListByRoomid", "Sensors", new { roomID = ViewData["roomID"] })", function () {});
                 $("#sensorChartTS").load("@Html.Raw(Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"], title = "Temperature Sensor Log Record", chartType = "line", position = "top", sensorType = "TS" , download=false}))", function () {});
                 $("#sensorChartHS").load("@Html.Raw(Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"], title = "Humidity Sensor Log Record", chartType = "line", position = "top", sensorType = "HS", download = false }))", function () {});
                 $("#sensorChartLS").load("@Html.Raw(Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"], title = "Luminosity Sensor Log Record", chartType = "line", position = "top", sensorType = "LS", download = false }))", function () {});

@@ -54,6 +54,20 @@ namespace FYP_APP.Controllers
 
 			return View();
 		}
+		public ActionResult returnUrl()
+		{
+			string url;
+			if (Request.Cookies.TryGetValue("returnUrl", out url))
+			{
+				Response.Cookies.Delete("returnUrl");
+				return Redirect(url);
+
+			}
+			else
+			{
+				return RedirectToAction("Devices");
+			}
+		}
 		[Route("Devices/Devices/{id}")]
 		public IActionResult Devices(string id) {
 			ViewData["MongoDevicesListModel"] = getAllDevices().Where(x=>x.roomId==id).ToList();
@@ -213,7 +227,7 @@ namespace FYP_APP.Controllers
 			insertList.power = 0;
 
 			getMDLMconn().InsertOneAsync(insertList);
-			return RedirectToAction("Devices");
+			return returnUrl();
 		}
 		[Route("Devices/DropDevicesData")]
 		[HttpPost]
@@ -221,14 +235,14 @@ namespace FYP_APP.Controllers
 		{
 			var DeleteResult = getMDLMconn().DeleteOne(de => de.devicesId==postData.devicesId & de.roomId == postData.roomId);
 
-			return RedirectToAction("Devices");
+			return returnUrl();
 		}
 		[Route("Devices/UpdateDevicesData")]
 		[HttpPost]
 		public ActionResult UpdateDevicesData(MongoDevicesListModel postData)
 		{
+			Debug.WriteLine(postData.ToJson().ToList());
 			var filter = Builders<DevicesListModel>.Filter.Eq("devicesId", postData.devicesId);
-			filter = filter & Builders<DevicesListModel>.Filter.Eq("roomId", postData.roomId);
 			var type = postData.GetType();
 			var props = type.GetProperties();
 			foreach (var property in props)
@@ -252,7 +266,7 @@ namespace FYP_APP.Controllers
 					}
 				}
 			}
-			return RedirectToAction("Devices");
+			return returnUrl();
 		}
 
 
