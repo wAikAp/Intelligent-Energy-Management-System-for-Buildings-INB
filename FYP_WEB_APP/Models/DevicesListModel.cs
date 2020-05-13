@@ -16,7 +16,8 @@ namespace FYP_WEB_APP.Models
         public int power { get; set; }
         public DateTime lastest_checking_time { get; set; }
         public DateTime total_run_time { get; set; }
-        public string location { get; set; }
+        public double pos_x { get; set; }
+        public double pos_y { get; set; }
         public string desc { get; set; }
         public double current { get; set; }
         public bool powerOnOff { get; set; }
