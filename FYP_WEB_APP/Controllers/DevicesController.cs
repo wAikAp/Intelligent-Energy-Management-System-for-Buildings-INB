@@ -173,7 +173,7 @@ namespace FYP_APP.Controllers
 		public ActionResult EditDevices(string id)
 		{
 			ViewData["EditDevicesListModel"] = getAllDevices().Where(t => t.devicesId == id).ToList();
-
+			Debug.WriteLine(getAllDevices().Where(t => t.devicesId == id).ToList().ToJson().ToString());
 			ViewBag.viewType = "Edit";
 			ViewBag.action = "UpdateDevicesData";
 
@@ -205,7 +205,8 @@ namespace FYP_APP.Controllers
 			insertList.roomId = postData.roomId;
 			insertList.devicesId = postData.devicesId + count;
 			insertList.devices_Name = postData.devices_Name;
-			insertList.location = postData.location;
+			insertList.pos_x = postData.pos_x;
+			insertList.pos_y = postData.pos_y;
 			insertList.desc = postData.desc;
 			insertList.lastest_checking_time = DateTime.UtcNow;
 			insertList.total_run_time = nowData;
@@ -279,7 +280,8 @@ namespace FYP_APP.Controllers
 					power= get.power,
 					lastest_checking_time = get.lastest_checking_time,
 					total_run_time = get.total_run_time,
-					location= get.location,
+					pos_x=get.pos_x,
+					pos_y=get.pos_y,
 					desc = get.desc,
 					current= currentValue,
 					powerOnOff = false,
