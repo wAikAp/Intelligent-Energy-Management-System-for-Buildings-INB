@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Threading.Tasks;
+using FYP_WEB_APP.Controllers;
 using FYP_WEB_APP.Controllers.Mongodb;
 using FYP_WEB_APP.Models;
 using FYP_WEB_APP.Models.MongoModels;
@@ -59,9 +60,12 @@ namespace FYP_APP.Controllers
 			ViewBag.position = Request.Query["position"];
 			ViewBag.download = Request.Query["download"];
 
-			ViewBag.day = getChartTime();
 			ViewBag.datasets = chartData(lists, Request.Query["sensorType"]);
-			ViewBag.divId = getRandomDivId();
+
+			ChartController chart = new ChartController();
+
+			ViewBag.day = chart.getChartTime();
+			ViewBag.divId = chart.getRandomDivId();
 
 			return PartialView("_SensorsChart");
 		}
@@ -88,10 +92,13 @@ namespace FYP_APP.Controllers
 			ViewBag.chartType = Request.Query["chartType"];
 			ViewBag.position = Request.Query["position"];
 			ViewBag.download = Request.Query["download"];
-
-			ViewBag.day = getChartTime();
+			
 			ViewBag.datasets = chartData(lists, Request.Query["sensorType"]);
-			ViewBag.divId = getRandomDivId();
+
+			ChartController chart = new ChartController();
+
+			ViewBag.day = chart.getChartTime();
+			ViewBag.divId = chart.getRandomDivId();
 
 			return PartialView("_SensorsChart");
 
@@ -109,6 +116,16 @@ namespace FYP_APP.Controllers
 			ViewData["SensorsListModel"] = Setgroup(lists);
 
 			return PartialView("_SensorsList");
+		}
+		[Route("Sensors/SensorsListByRoomid")]
+		public List<SensorsListModel> getSensorsListByRoomid()
+		{
+			getdb();
+			string id = "";
+			id = Request.Query["roomID"];
+			List<SensorsListModel> lists = GetSensorsData().Where(x => x.roomId.Contains(id)).ToList();
+
+			return lists;
 		}
 
 		[Route("Sensors/Sensors/{id}")]
@@ -199,11 +216,12 @@ namespace FYP_APP.Controllers
 
 			insertList.roomId = postData.roomId;
 			insertList.sensorId = postData.Sensortype + count;
-			insertList.location = postData.location;
+			//insertList.location = postData.location;
+			insertList.pos_x = postData.pos_x;
+			insertList.pos_y = postData.pos_y;
 			insertList.desc = postData.desc;
 			insertList.latest_checking_time = DateTime.UtcNow;
 			insertList.total_run_time = 0;
-
 
 			collection.InsertOneAsync(insertList);
 			return RedirectToAction("Sensors");
@@ -336,7 +354,8 @@ namespace FYP_APP.Controllers
 				{
 					roomId = set.roomId,
 					sensorId = set.sensorId,
-					location = set.location,
+					pos_x=set.pos_x,
+					pos_y=set.pos_y,
 					desc = set.desc,
 					latest_checking_time = set.latest_checking_time,
 					total_run_time = set.total_run_time,
@@ -642,9 +661,13 @@ namespace FYP_APP.Controllers
 
 		public string getChartData(List<SensorsListModel> SensorsDataList)
 		{
+			ChartController chart = new ChartController();
+
 			//chart color
 			List<string> Color = new List<string>();
 			//sensor log
+
+
 			List<CurrentDataModel> SensorsCurrentList = new List<CurrentDataModel>();
 			//only ts
 
@@ -660,7 +683,7 @@ namespace FYP_APP.Controllers
 
 			foreach (SensorsListModel get in SensorsDataList)
 			{
-				Color.Add(getRandomColor());
+				Color.Add(chart.getRandomColor());
 				labelss.Add(get.sensorId);
 				SensorsCurrentList = getSensorIDCurrentList(get.sensorId).Where(x => x.latest_checking_time > today.AddDays(-1)).OrderBy(x => x.latest_checking_time).ToList();
 				bool countfirst = true;
@@ -682,22 +705,17 @@ namespace FYP_APP.Controllers
 				{
 					foreach (CurrentDataModel getCurrent in SensorsCurrentList)
 					{
-						//Debug.WriteLine("668 line: "+getCurrent.latest_checking_time);
 						var value = Convert.ToDouble(Convert.ToDouble(getCurrent.current).ToString("0.00"));
-						//data.Add(value);
+						
 						ca = DateTime.Now.AddDays(-1);
 
 						for (int x = 0; x <= counttime; x++)
 						{
 							var bo = getCurrent.latest_checking_time >= ca && getCurrent.latest_checking_time <= ca.AddMinutes(5);
-							//Debug.WriteLine("bo: " + getCurrent.latest_checking_time+" > " +ca+" < "+ ca.AddMinutes(5));
-							//Debug.WriteLine("bo: " + bo);
+
 							ca = ca.AddMinutes(5);
 							if (getCurrent.latest_checking_time > ca && getCurrent.latest_checking_time < ca.AddMinutes(5))
 							{
-
-								//Debug.WriteLine("CA: " + ca);
-
 								data[x] = value;
 							}
 						}
@@ -710,97 +728,13 @@ namespace FYP_APP.Controllers
 				datas.Add(data.ToArray());
 			}
 
-			ArrayList day = new ArrayList();
-
-			for (int i = 0; i < 30; i++)
-			{
-				day.Add(i + 1);
-			}
-
 			for (int i = 0; i < SensorsDataList.Count; i++)
 			{
-				getRandomColor();
-
-
 				labelss.Add(SensorsDataList[i].sensorId);
 			}
 
-
-			for (int i = 0; i < SensorsDataList.Count; i++)
-			{
-
-				var chartdata = new chartModel()
-				{
-					fill = false,
-					spanGaps = false,
-					label = labelss[i],
-					borderColor = Color[i],
-					data = datas[i]
-				};
-
-				datasets.Add(chartdata);
-			}
-
-			return JsonConvert.SerializeObject(datasets);
+			return chart.Chart(SensorsDataList.Count, labelss, datas );
 		}
-		public string getRandomColor()
-		{
-			var random = new Random();
-			var rmcolor = String.Format("#{0:X6}", random.Next(0x1000000));
-			return rmcolor;
-		}
-		public string getRandomDivId()
-		{
-			var random = new Random();
-			const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-			return new string(Enumerable.Repeat(chars, 10)
-			  .Select(s => s[random.Next(s.Length)]).ToArray());
-			//return rmcolor;
-		}
-		public string getChartTime()
-		{
-			DateTime today = DateTime.Now;
-			int hour = today.Hour;
-			int Minute = today.Minute;
-
-			int oMinute = today.Minute;
-			//set time
-			int ix = 0;
-			List<string> time = new List<string>();
-			for (int i = hour; i < 24; i++)
-			{
-				for (ix = Minute; ix < 60; ix += 5)
-				{
-					time.Add(i.ToString() + ":" + ix.ToString());
-					if (ix > 55)
-					{
-						Minute = ix + 5;
-						Minute %= 60;
-					}
-					else if (ix == 55)
-					{
-						Minute = 0;
-					}
-				}
-			}
-
-			for (int i = 0; i < hour + 1; i++)
-			{
-				for (int ixx = Minute; ixx < 60; ixx += 5)
-				{
-					if (i == hour && ixx > oMinute)
-					{
-
-					}
-					else
-					{
-						time.Add(i.ToString() + ":" + ixx.ToString());
-
-					}
-				}
-			}
-			return time.ToJson();
-
-		}
+	
 	}
 }
