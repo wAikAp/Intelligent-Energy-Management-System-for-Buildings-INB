@@ -69,7 +69,7 @@ namespace FYP_WEB_APP.Controllers.API
                          up = Builders<BsonDocument>.Update.Set("latest_checking_time", DateTime.UtcNow);
                          Updated = collection.UpdateOne(filter, up, updateOptions);
                         */
-                        collection.InsertOne(new BsonDocument { { "sensorId", id }, { "valueNmae", Value }, { "latest_checking_time", utcNow } });
+                        collection.InsertOne(new BsonDocument { { "sensorId", id }, { "current", Convert.ToDouble(Value)  }, { "latest_checking_time", utcNow } });
 
                         str += "{ sensorId , " + id + "},{ value," + Value + "},{ latest_checking_time," + utcNow + "}\n";
 
