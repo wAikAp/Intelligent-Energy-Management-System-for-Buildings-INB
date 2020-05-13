@@ -236,7 +236,7 @@ namespace FYP_APP.Controllers
 			insertList.pos_y = postData.pos_y;
 			insertList.desc = postData.desc;
 			insertList.latest_checking_time = DateTime.UtcNow;
-			insertList.total_run_time = 0;
+			insertList.total_run_time = DateTime.UtcNow;
 
 			collection.InsertOneAsync(insertList);
 			return returnUrl();
@@ -361,10 +361,8 @@ namespace FYP_APP.Controllers
 				query = from c in collection.AsQueryable<SensorsListModel>() where c.roomId.Contains(PageRoomId) select c;
 
 			}
-
 			foreach (SensorsListModel set in query)
 			{
-
 				var data = new SensorsListModel()
 				{
 					roomId = set.roomId,

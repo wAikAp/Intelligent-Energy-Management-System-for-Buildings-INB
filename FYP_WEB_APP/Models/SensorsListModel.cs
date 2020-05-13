@@ -17,7 +17,7 @@ namespace FYP_WEB_APP.Models
         
         public string desc { get; set; }
         public DateTime latest_checking_time { get; set; }
-        public int total_run_time { get; set; }
+        public DateTime total_run_time { get; set; }
         public string typeImg { get; set; }
         public string typeUnit { get; set; }
         public string Sensortype { get; set; }

@@ -114,7 +114,7 @@
                         <label class="col h5" for="power">Power:</label>
                         <div class="col">
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control bg-white" id="power" name="power" value="@Devices.First().power" required readonly>
+                                <input type="datetime" class="form-control bg-white" id="power" name="power" value="@Devices.First().power" required readonly>
                                 <div class="input-group-append">
                                     <span class="input-group-text" id="resetPower"><img src="https://cdn.onlinewebfonts.com/svg/img_260976.png" width="25" height="25" /></span>
                                 </div>
@@ -131,7 +131,7 @@
                         <label class="col h5" for="total_run_time">total run time:</label>
                         <div class="col">
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control bg-white" id="total_run_time" name="total_run_time" value="@Devices.First().total_run_time" required readonly>
+                                <input type="datetime" class="form-control bg-white" id="total_run_time" name="total_run_time" value="@Devices.First().total_run_time" required readonly>
                                 <div class="input-group-append">
                                     <span class="input-group-text" id="resetRunTime"><img src="https://cdn.onlinewebfonts.com/svg/img_260976.png" width="25" height="25" /></span>
                                 </div>
@@ -159,7 +159,7 @@ else
 }
 <script>
     $("#resetRunTime").click(function () {
-        var today = Date.now();
+        var today = Date(Date.now()).toString();
         if (confirm("is reset the Time Count ?")) {
             $("#total_run_time").val(today);
         } else {
