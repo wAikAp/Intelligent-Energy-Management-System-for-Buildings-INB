@@ -30,6 +30,7 @@
         devices.forEach(getRandomColor);*/
         //set chart data
         var jdatasets =@Html.Raw(ViewBag.datasets);
+        var devices =@Html.Raw(ViewData["devices"]);
 
         dataop = {
             labels: devices,

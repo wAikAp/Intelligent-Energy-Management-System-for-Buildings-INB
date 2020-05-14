@@ -12,7 +12,7 @@ namespace FYP_WEB_APP.Controllers
 {
     public class ChartController : Controller
     {
-		public string doughnutChart( List<string> label, List<double> data)
+		public string doughnutChart(List<string> label, List<double> data)
 		{
 			if (label.Count()<1 &  data.Count() < 1)
 			{
@@ -41,8 +41,7 @@ namespace FYP_WEB_APP.Controllers
 						hoverBorderColor= "#000"
 					};
 
-					datasets.Add(chartdata);
-				
+					datasets.Add(chartdata);			
 
 				return JsonConvert.SerializeObject(datasets);
 			}

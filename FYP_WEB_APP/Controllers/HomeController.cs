@@ -11,6 +11,7 @@ using FYP_APP.Extensions;
 using System.Linq;
 using FYP_WEB_APP.Controllers;
 using System.IO;
+using MongoDB.Bson;
 
 namespace FYP_APP.Controllers
 {
@@ -53,6 +54,40 @@ namespace FYP_APP.Controllers
 
 		public IActionResult dashboard()
 		{
+			DevicesController devices =new DevicesController();
+			var list = devices.getAllDevices();
+
+			double TotalSavings = 0;
+			double TotalUsage = 0;
+			double ACpower = 0;
+			double LTpower = 0;
+			double HDpower = 0;
+			double EFpower = 0;
+			foreach (var get in list) {
+				switch (get.devicesId.Substring(0,2))
+				{
+					case "AC":
+						ACpower += get.power;
+						break;
+					case "LT":
+						LTpower += get.power;
+						break;
+					case "HD":
+						LTpower += get.power;
+						break;
+					case "EF":
+						LTpower += get.power;
+						break;
+				}
+				TotalUsage += get.power;
+			}
+			ViewBag.TotalUsage = TotalUsage;
+			ViewBag.TotalSavings = TotalSavings;
+			ViewBag.ACpower =  ACpower ;
+			ViewBag.LTpower =  LTpower ;
+			ViewBag.HDpower =  HDpower ;
+			ViewBag.EFpower =  EFpower ;
+
 			//MongoUserModel user = HttpContext.Session.Get<MongoUserModel>("user");
 			return View();
 		}
@@ -89,7 +124,7 @@ namespace FYP_APP.Controllers
 			ViewBag.divId = getRandomDivId();
 			ChartController chart = new ChartController();
 			ViewBag.datasets = chart.doughnutChart(label, data);
-
+			ViewData["devices"] = label.ToJson();
 
 			return PartialView("_DoughnutChart");
 		}

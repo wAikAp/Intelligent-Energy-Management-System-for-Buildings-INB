@@ -67,7 +67,7 @@
                         <div id="PowerUsageChart" class="flex-fill bd-highlight col-12 h-100"></div>
                         <script>
                         $(document).ready(function () {
-                         $("#PowerUsageChart").load("@Html.Raw(Url.Action("DoughnutChart", "Home", new { title = "Power Usage", chartType = "doughnut", position = "right"}))", function () {});
+                         $("#PowerUsageChart").load("@Html.Raw(Url.Action("DoughnutChart", "Home", new { title = "Power Usage", chartType = "doughnut", position = "right" }))", function () {});
 
                                     });
 
@@ -80,7 +80,7 @@
                         <div id="DoughnutChart" class="flex-fill bd-highlight col-12 h-100"></div>
                         <script>
                         $(document).ready(function () {
-                            $("#DoughnutChart").load("@Html.Raw(Url.Action("DoughnutChart", "Home", new { title = "Usage Time", chartType = "doughnut", position = "right"}))", function () {});
+                            $("#DoughnutChart").load("@Html.Raw(Url.Action("DoughnutChart", "Home", new { title = "Usage Time", chartType = "doughnut", position = "right" }))", function () {});
 
                                     });
 
@@ -94,7 +94,7 @@
                             Total Savings
 
                             <div class="text-right h2">
-                                2000 KW-h
+                                @ViewBag.TotalSavings
                             </div>
 
                         </div>
@@ -104,7 +104,8 @@
                             Total Usage
 
                             <div class="text-right h2">
-                                2000 KW-h
+                                @ViewBag.TotalUsage
+                                 KW-h
                             </div>
                         </div>
                     </div>
@@ -115,7 +116,9 @@
                                     <div class=" mb-4  w-50 ">
                                         Air Conditioning
                                     </div>
-                                    <div class=" mb-4  w-25 text-right">1,000,000 </div>
+                                    <div class=" mb-4  w-25 text-right">
+                                        @ViewBag.ACpower
+                                    </div>
                                     <div class=" mb-4  w-25 text-right">KW-h</div>
                                 </div>
                             </div>
@@ -124,16 +127,31 @@
                                     <div class=" mb-4  w-50 ">
                                         Light
                                     </div>
-                                    <div class=" mb-4  w-25 text-right">500,000 </div>
+                                    <div class=" mb-4  w-25 text-right">
+                                        @ViewBag.LTpower
+                                    </div>
                                     <div class=" mb-4  w-25 text-right">KW-h</div>
                                 </div>
                             </div>
                             <div class="">
                                 <div class=" d-flex flex-row">
                                     <div class=" mb-4  w-50 ">
-                                        Other
+                                        Humidifier
                                     </div>
-                                    <div class=" mb-4  w-25 text-right">500,000 </div>
+                                    <div class=" mb-4  w-25 text-right">
+                                        @ViewBag.HDpower
+                                    </div>
+                                    <div class=" mb-4  w-25 text-right">KW-h</div>
+                                </div>
+                            </div>                                        
+                            <div class="">
+                                <div class=" d-flex flex-row">
+                                    <div class=" mb-4  w-50 ">
+                                        EXH_FAN
+                                    </div>
+                                    <div class=" mb-4  w-25 text-right">
+                                        @ViewBag.EFpower
+                                    </div>
                                     <div class=" mb-4  w-25 text-right">KW-h</div>
                                 </div>
                             </div>
