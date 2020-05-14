@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using FYP_APP.Controllers;
+using FYP_WEB_APP.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,14 +12,15 @@ namespace FYP_WEB_APP.Controllers
 {
     public class RoomDetailController : Controller
     {
-
-        public String roomID;
         //[Route("RoomDetail/RoomDetail/{roomID}")]
         public IActionResult RoomDetail(String roomID)
         {
             ViewData["roomID"] = roomID;
-            this.roomID = roomID;
-            //Debug.WriteLine("RoomDetail = " + this);
+            SensorsController sensorsController = new SensorsController();
+            List<SensorsListModel> sensorsList = sensorsController.getSensorsListByRoomid(roomID);
+            
+            Debug.WriteLine("sensor list = "+sensorsList);
+            
             return View();
         }
 

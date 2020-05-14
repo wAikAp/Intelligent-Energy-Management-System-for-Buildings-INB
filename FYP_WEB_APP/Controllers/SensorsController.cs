@@ -121,12 +121,10 @@ namespace FYP_APP.Controllers
 			return PartialView("_SensorsList");
 		}
 		[Route("Sensors/getSensorsListByRoomid")]
-		public List<SensorsListModel> getSensorsListByRoomid()
+		public List<SensorsListModel> getSensorsListByRoomid(String roomID)
 		{
 			getdb();
-			string id = "";
-			id = Request.Query["roomID"];
-			List<SensorsListModel> lists = GetSensorsData().Where(x => x.roomId.Contains(id)).ToList();
+			List<SensorsListModel> lists = GetSensorsData().Where(x => x.roomId.Contains(roomID)).ToList();
 
 			return lists;
 		}
@@ -300,7 +298,7 @@ namespace FYP_APP.Controllers
 		}
 		public List<SensorsListModel> SortList(List<SensorsListModel> DataList)
 		{
-			string sortOrder = Request.Query["sortOrder"];
+            string sortOrder = Request.Query["sortOrder"];
 			sortOrder = ChangeSortLink(sortOrder);
 
 			if (String.IsNullOrEmpty(sortOrder))
