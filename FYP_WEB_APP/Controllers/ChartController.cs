@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FYP_WEB_APP.Models;
+using FYP_WEB_APP.Models.chart;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using Newtonsoft.Json;
@@ -11,9 +12,44 @@ namespace FYP_WEB_APP.Controllers
 {
     public class ChartController : Controller
     {
-        public string Chart(int count, List<string> labelss, List<object> data)
+		public string doughnutChart( List<string> label, List<double> data)
+		{
+			if (label.Count()<1 &  data.Count() < 1)
+			{
+				throw new System.InvalidOperationException("The List and labels and data .count Not match !! ");
+			}
+			else
+			{
+				List<string> Color = new List<string>();
+
+				List<object> datasets = new List<object>();
+
+				for (int i = 0; i < label.Count(); i++)
+				{
+					Color.Add(getRandomColor());
+				}
+
+
+					var chartdata = new doughnutChartModel()
+					{
+						label= label.ToArray(),
+						data= data.ToArray(),
+						backgroundColor= Color.ToArray(),
+						borderWidth= 1,
+						borderColor= "#777",
+						hoverBorderWidth= 3,
+						hoverBorderColor= "#000"
+					};
+
+					datasets.Add(chartdata);
+				
+
+				return JsonConvert.SerializeObject(datasets);
+			}
+		}
+		public string LineChart(int count, List<string> label, List<object> data)
         {
-			if (count != labelss.Count() & count != data.Count())
+			if (count != label.Count() & count != data.Count())
 			{
 				throw new System.InvalidOperationException("The List and labels and data .count Not match !! ");
 			}
@@ -29,11 +65,11 @@ namespace FYP_WEB_APP.Controllers
 			for (int i = 0; i < count; i++)
 			{
 
-				var chartdata = new chartModel()
+				var chartdata = new LineChartModel()
 				{
 					fill = false,
 					spanGaps = false,
-					label = labelss[i],
+					label = label[i],
 					borderColor = Color[i],
 					data = data[i]
 				};

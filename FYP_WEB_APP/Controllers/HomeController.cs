@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using FYP_APP.Extensions;
 using System.Linq;
+using FYP_WEB_APP.Controllers;
 
 namespace FYP_APP.Controllers
 {
@@ -76,8 +77,19 @@ namespace FYP_APP.Controllers
 
 			//ViewBag.day = getChartTime();
 			//ViewBag.datasets = chartData(lists, Request.Query["sensorType"]);
+			List<string> label = new List<string>();
+			label.Add("Light");
+			label.Add("Other");
+			label.Add("Air conditioning");
+			List<double> data = new List<double>();
+			data.Add(30);
+			data.Add(20);
+			data.Add(50);
 			ViewBag.divId = getRandomDivId();
-			
+			ChartController chart = new ChartController();
+			ViewBag.datasets = chart.doughnutChart(label, data);
+
+
 			return PartialView("_DoughnutChart");
 		}
 		public string getRandomColor()

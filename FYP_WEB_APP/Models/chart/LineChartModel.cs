@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace FYP_WEB_APP.Models
 {
-    public class chartModel
+    public class LineChartModel
     {
         public string label { get; set; }
         public string borderColor { get; set; }
