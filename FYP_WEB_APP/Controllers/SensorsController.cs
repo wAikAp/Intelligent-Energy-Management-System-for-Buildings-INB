@@ -121,43 +121,8 @@ namespace FYP_APP.Controllers
 			return PartialView("_SensorsList");
 		}
 		public List<SensorsListModel> getSensorsListByRoomid(string id)
-		{
-			getdb();
-			List<SensorsListModel> SensorsDataList = new List<SensorsListModel> { };
-			IMongoCollection<SensorsListModel> collection;
-
-			//db collection
-			collection = database.GetCollection<SensorsListModel>("SENSOR_LIST");
-			IQueryable<SensorsListModel> query;
-			if (PageRoomId.Length == 0)
-			{
-				query = from c in collection.AsQueryable<SensorsListModel>() select c;
-			}
-			else
-			{//Sensors/{id}
-				query = from c in collection.AsQueryable<SensorsListModel>() where c.roomId.Contains(PageRoomId) select c;
-
-			}
-			foreach (SensorsListModel set in query)
-			{
-				var data = new SensorsListModel()
-				{
-					roomId = set.roomId,
-					sensorId = set.sensorId,
-					pos_x = set.pos_x,
-					pos_y = set.pos_y,
-					desc = set.desc,
-					latest_checking_time = set.latest_checking_time,
-					total_run_time = set.total_run_time,
-					current_Value = Convert.ToDouble(getSensorCurrentValue(set.sensorId)),
-					current_Time = Convert.ToDateTime(getSensorCurrentDate(set.sensorId)),
-					typeImg = getType(set.sensorId),
-					typeUnit = getunit(set.sensorId)
-				};
-				SensorsDataList.Add(data);
-			}
-			SensorsDataList = SensorsDataList.Where(x => x.roomId.Contains(id)).ToList();
-			return SensorsDataList;
+		{	
+			return getAllSensors().Where(x => x.roomId.Contains(id)).ToList();
 		}
 
 		[Route("Sensors/Sensors/{id}")]
@@ -358,9 +323,8 @@ namespace FYP_APP.Controllers
 				.ToList();
 			return groupedList;
 		}
-		public List<SensorsListModel> GetSensorsData()
+		public List<SensorsListModel> getAllSensors()
 		{
-
 			List<SensorsListModel> SensorsDataList = new List<SensorsListModel> { };
 			IMongoCollection<SensorsListModel> collection;
 
@@ -382,8 +346,8 @@ namespace FYP_APP.Controllers
 				{
 					roomId = set.roomId,
 					sensorId = set.sensorId,
-					pos_x=set.pos_x,
-					pos_y=set.pos_y,
+					pos_x = set.pos_x,
+					pos_y = set.pos_y,
 					desc = set.desc,
 					latest_checking_time = set.latest_checking_time,
 					total_run_time = set.total_run_time,
@@ -394,7 +358,11 @@ namespace FYP_APP.Controllers
 				};
 				SensorsDataList.Add(data);
 			}
-
+			return SensorsDataList;
+		}
+		public List<SensorsListModel> GetSensorsData()
+		{
+			List<SensorsListModel> SensorsDataList = getAllSensors();
 			try
 			{
 				int count = Request.Query.Count;
