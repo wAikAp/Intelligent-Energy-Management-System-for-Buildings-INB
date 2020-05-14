@@ -3,8 +3,11 @@
     ViewData["Title"] = "Devices";
     Layout = "_Layout";
 
-    List<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel> 
-    DevicesList = ViewData["MongoDevicesListModel"] as List<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>;
+    string returnUrl = Context.Request.Path + Context.Request.QueryString;
+    Context.Response.Cookies.Append("returnUrl", returnUrl);
+
+    List<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>
+DevicesList = ViewData["MongoDevicesListModel"] as List<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>;
 
     List<FYP_WEB_APP.Models.RoomsListModel>
     Rooms= ViewData["RoomListModel"] as List<FYP_WEB_APP.Models.RoomsListModel>;
@@ -141,7 +144,7 @@
                             </div>
                         </div>
                     </form>
-                    @Html.Partial("_DevicesList")
+                    <partial name="_DevicesList" />
                     @if (ViewData["isnull"] != "true")
                     {
                         <div class="card d-flex flex-row mb-2 mx-2 p-2 ">
@@ -150,8 +153,7 @@
                             <button class="p-3 mx-2 btn btn-outline-secondary">maintain report</button>
                             <button class="p-3 mx-2 btn btn-outline-secondary">money report</button>
                         </div>
-                        //chart
-                        @Html.Partial("_DevicesChart")
+                        <partial name="_DevicesChart" />
 
                     }
                 </div>

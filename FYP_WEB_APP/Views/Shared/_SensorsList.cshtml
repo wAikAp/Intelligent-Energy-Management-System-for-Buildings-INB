@@ -2,7 +2,7 @@
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    List<List<FYP_WEB_APP.Models.SensorsListModel>> Sensors = ViewData["SensorsListModel"] as List<List<FYP_WEB_APP.Models.SensorsListModel>>;
+    List<List<FYP_WEB_APP.Models.SensorsListModel>> SensorsByroomList = ViewData["SensorsListModel"] as List<List<FYP_WEB_APP.Models.SensorsListModel>>;
 
 }
 
@@ -43,30 +43,30 @@
                     </a>
                 </div>
             </div>
-        @if (Sensors.Count == 0)
+        @if (SensorsByroomList.Count == 0)
         {<div class="alert alert-warning text-center font-weight-bold" role="alert">
                 <h3>TryAgin, No more record in Your conditions.  </h3>
             </div>}
         else
         {
-            @foreach (var Sensor in Sensors)
+            @foreach (var getSensorsByroom in SensorsByroomList)
             {
     <div class="card m-2">
         @if (!ViewData["NotGroup"].Equals("true")) { 
-        <div class="card-header p-0" id="heading_@Sensor.First().roomId">
+        <div class="card-header p-0" id="heading_@getSensorsByroom.First().roomId">
             <h3 class="mb-0">
-                <button class="btn btn-outline-secondary w-100 border-0" data-toggle="collapse" data-target="#collapse_@Sensor.First().roomId" aria-expanded="true" aria-controls="collapse_@Sensor.First().roomId">
-                    @Sensor.First().roomId
+                <button class="btn btn-outline-secondary w-100 border-0" data-toggle="collapse" data-target="#collapse_@getSensorsByroom.First().roomId" aria-expanded="true" aria-controls="collapse_@getSensorsByroom.First().roomId">
+                    @getSensorsByroom.First().roomId
                 </button>
             </h3>
         </div> 
         }
-        <div id="collapse_@Sensor.First().roomId" class="collapse show" aria-labelledby="heading_@Sensor.First().roomId">
+        <div id="collapse_@getSensorsByroom.First().roomId" class="collapse show" aria-labelledby="heading_@getSensorsByroom.First().roomId">
             <div class="card-body d-flex flex-wrap">
 
-                @foreach (var Sensorss in Sensor)
+                @foreach (var get in getSensorsByroom)
                 {
-                    switch (Sensorss.sensorId.Substring(0, 2))
+                    switch (get.sensorId.Substring(0, 2))
                     {
                         case "TS":
                             ViewData["devicesType"] = "Temperature";
@@ -96,9 +96,9 @@
                                         <img class=" mt-1" style="width: 16px;@ViewData["backimg"]" src="~/img/icon/rightArrow.png" />
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton0">
-                                        <a href="#" class="btn text-success mx-2" onclick="EditSensors('@Sensorss.sensorId')">edit </a>
+                                        <a href="#" class="btn text-success mx-2" onclick="EditSensors('@get.sensorId')">edit </a>
 
-                                        <a href="#" class="btn text-danger mx-2" onclick="DropSensors('@Sensorss.sensorId')">Delete </a>
+                                        <a href="#" class="btn text-danger mx-2" onclick="DropSensors('@get.sensorId')">Delete </a>
                                     </div>
                                 </div>
                             </div>
@@ -106,17 +106,17 @@
 
                         </div>
                         <div class="card-body">
-                            <p class="ard-text p-0 m-0">@Sensorss.roomId @Sensorss.sensorId</p>
+                            <p class="ard-text p-0 m-0">@get.roomId @get.sensorId</p>
 
                             <h4 class="card-title">
-                                <img src="~/img/icon/@Sensorss.typeImg" height="50px" style="filter: invert(100%);">
-                                @Sensorss.current_Value @Sensorss.typeUnit
+                                <img src="~/img/icon/@get.typeImg" height="50" style="filter: invert(100%);">
+                                @get.current_Value @get.typeUnit
                             </h4>
                             <p class="card-text my-1">
                                 updated
-                                @if (Sensorss.current_Time != DateTime.MinValue)
+                                @if (get.current_Time != DateTime.MinValue)
                                 {<b>
-                                        @Sensorss.current_Time
+                                        @get.current_Time
                                     </b>
                                 }
                                 else
@@ -139,6 +139,7 @@
 </div>
 
 <script>
+
     var EditSensors = function (sensorId) {
 
         var url = "/Sensors/EditSensors/" + sensorId;

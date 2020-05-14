@@ -21,27 +21,19 @@
     getPowerUsageDate();
     function getPowerUsageDate() {
 
-        devices.push('Light');
+      /*  devices.push('Light');
         devices.push('Other');
         devices.push('Air conditioning');
         devicesData.push(30);
         devicesData.push(20);
         devicesData.push(50);
-        devices.forEach(getRandomColor);
+        devices.forEach(getRandomColor);*/
         //set chart data
+        var jdatasets =@Html.Raw(ViewBag.datasets);
 
         dataop = {
             labels: devices,
-            datasets: [{
-                label: devices,
-                data: devicesData,
-                backgroundColor: gcolor,
-                borderWidth: 1,
-                borderColor: '#777',
-                hoverBorderWidth: 3,
-                hoverBorderColor: '#000'
-
-            }]
+            datasets: jdatasets
         };
         //set chart option
 

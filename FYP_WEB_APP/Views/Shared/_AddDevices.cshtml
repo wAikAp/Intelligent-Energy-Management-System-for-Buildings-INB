@@ -2,11 +2,12 @@
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    List<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel> Devices = null;
+    List<FYP_WEB_APP.Models.DevicesListModel> Devices = null;
     List<FYP_WEB_APP.Models.RoomsListModel> Rooms = null;
     if (ViewBag.viewType.Equals("Edit") || ViewBag.viewType.Equals("Drop"))
     {
-        Devices = ViewData["EditDevicesListModel"] as List<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>;
+        Devices = ViewData["EditDevicesListModel"] as List<FYP_WEB_APP.Models.DevicesListModel>;
+        
     }
     else if (ViewBag.viewType.Equals("Add"))
     {
@@ -15,8 +16,8 @@
 }
 @if ((!ViewBag.viewType.Equals("Add") && Devices.Count > 0) || ViewBag.viewType.Equals("Add"))
 {
-
-    <form action="@ViewBag.action" method="post">
+    string url = ViewBag.action;
+    <form action="@Url.Action(url,"Devices")" method="post">
 
         <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">@ViewBag.viewType Devices </h5>
@@ -113,7 +114,7 @@
                         <label class="col h5" for="power">Power:</label>
                         <div class="col">
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control bg-white" id="power" name="power" value="@Devices.First().power" required readonly>
+                                <input type="datetime" class="form-control bg-white" id="power" name="power" value="@Devices.First().power" required readonly>
                                 <div class="input-group-append">
                                     <span class="input-group-text" id="resetPower"><img src="https://cdn.onlinewebfonts.com/svg/img_260976.png" width="25" height="25" /></span>
                                 </div>
@@ -130,7 +131,7 @@
                         <label class="col h5" for="total_run_time">total run time:</label>
                         <div class="col">
                             <div class="input-group mb-3">
-                                <input type="number" class="form-control bg-white" id="total_run_time" name="total_run_time" value="@Devices.First().total_run_time" required readonly>
+                                <input type="datetime" class="form-control bg-white" id="total_run_time" name="total_run_time" value="@Devices.First().total_run_time" required readonly>
                                 <div class="input-group-append">
                                     <span class="input-group-text" id="resetRunTime"><img src="https://cdn.onlinewebfonts.com/svg/img_260976.png" width="25" height="25" /></span>
                                 </div>
@@ -158,8 +159,9 @@ else
 }
 <script>
     $("#resetRunTime").click(function () {
+        var today = Date(Date.now()).toString();
         if (confirm("is reset the Time Count ?")) {
-            $("#total_run_time").val("0");
+            $("#total_run_time").val(today);
         } else {
         }
     });
