@@ -559,51 +559,27 @@ namespace FYP_APP.Controllers
 		}
 		public double getSensorCurrentValue(string sensorId)
 		{
-			double value = 0;
-
-			IMongoCollection<BsonDocument> collection;
-			FilterDefinition<BsonDocument> filter;
-			var dbStr = "";
-			switch (sensorId.Substring(0, 2))
-			{
-				case "TS":
-					dbStr = "TMP_SENSOR";
-					value = getCurrentValueByidBytable(sensorId);
-					break;
-				case "LS":
-					dbStr = "LIGHT_SENSOR";
-					value = getCurrentValueByidBytable(sensorId);
-					break;
-				case "HS":
-					dbStr = "HUM_SENSOR";
-					value = getCurrentValueByidBytable(sensorId);
-					break;
-				default:
-					break;
-			}
+			double value = getCurrentValueByidBytable(sensorId);
+				
 			return value;
-
 		}
 
 		public DateTime getSensorCurrentDate(string sensorId)
 		{
 			DateTime value = new DateTime();
 
-			IMongoCollection<BsonDocument> collection;
-			FilterDefinition<BsonDocument> filter;
-			var dbStr = "";
 			switch (sensorId.Substring(0, 2))
 			{
 				case "TS":
-					value = getCurrentDateeByidBytable(sensorId);
+					value = getCurrentDateByidBytable(sensorId);
 
 					break;
 				case "LS":
-					value = getCurrentDateeByidBytable(sensorId);
+					value = getCurrentDateByidBytable(sensorId);
 
 					break;
 				case "HS":
-					value = getCurrentDateeByidBytable(sensorId);
+					value = getCurrentDateByidBytable(sensorId);
 
 					break;
 				default:
@@ -627,24 +603,11 @@ namespace FYP_APP.Controllers
 				return 0;
 			}
 		}
-		public DateTime getCurrentDateeByidBytable(string sensorId)
+		public DateTime getCurrentDateByidBytable(string sensorId)
 		{
-			DateTime value = DateTime.Now;
+			List<CurrentDataModel> SensorsDataList = getSensorIDCurrentList(sensorId);
 
-			List<CurrentDataModel> SensorsDataList = new List<CurrentDataModel>();
-			IMongoCollection<CurrentDataModel> collection;
-
-			SensorsDataList = getSensorIDCurrentList(sensorId);
-			//Debug.WriteLine(SensorsDataList.ToJson().ToString());
-			if (SensorsDataList.Count > 1)
-			{
-				return Convert.ToDateTime(SensorsDataList.First().latest_checking_time);
-			}
-			else
-			{
-				return value;
-			}
-
+			return Convert.ToDateTime(SensorsDataList.First().latest_checking_time);
 		}
 		public string chartData(List<SensorsListModel> SensorsDataList, string type)
 		{
@@ -699,13 +662,10 @@ namespace FYP_APP.Controllers
 				Color.Add(chart.getRandomColor());
 				labelss.Add(get.sensorId);
 				SensorsCurrentList = getSensorIDCurrentList(get.sensorId).Where(x => x.latest_checking_time > today.AddDays(-1)).OrderBy(x => x.latest_checking_time).ToList();
-				bool countfirst = true;
-				//Debug.WriteLine("Line 641:" + SensorsCurrentList.ToJson().ToString());
-				//var first = SensorsCurrentList[0];
+
 				DateTime ca = today;
 				TimeSpan catime = ca - ca.AddDays(-1);
 
-				//int counttime = Convert.ToInt32(catime.TotalMinutes / 5) -1- SensorsCurrentList.Count();
 				int counttime = Convert.ToInt32(catime.TotalMinutes / 5);
 
 

@@ -14,9 +14,6 @@ namespace FYP_APP.Controllers
 {
 	public class HomeController : Controller
 	{
-
-
-
 		[HttpGet]
 		public IActionResult Index()
 		{
