@@ -65,12 +65,7 @@ namespace FYP_APP.Controllers
 
 			getdb();
 			List<SensorsListModel> lists = GetSensorsData();
-			Debug.WriteLine(lists.ToJson().ToString());
-			Debug.WriteLine(Request.Query["title"]);
-			Debug.WriteLine(Request.Query["chartType"]);
-			Debug.WriteLine(Request.Query["position"]);
-			Debug.WriteLine(Request.Query["sensorType"]);
-			//Debug.WriteLine(Setgroup(lists).ToJson().ToString());
+
 			ViewBag.charttitle = Request.Query["title"];
 			ViewBag.chartType = Request.Query["chartType"];
 			ViewBag.position = Request.Query["position"];
@@ -96,14 +91,7 @@ namespace FYP_APP.Controllers
 
 			getdb();
 			List<SensorsListModel> lists = GetSensorsData().Where(x => x.roomId.Contains(id)).ToList();
-			Debug.WriteLine("list: " + lists.ToJson().ToString());
-			Debug.WriteLine("list: " + Request.QueryString);
-			Debug.WriteLine("roomID: " + Request.Query["roomID"]);
-			Debug.WriteLine("title: " + Request.Query["title"]);
-			Debug.WriteLine("chartType: " + Request.Query["chartType"]);
-			Debug.WriteLine("position: " + Request.Query["position"]);
-			Debug.WriteLine("sensorType: " + Request.Query["sensorType"]);
-			//Debug.WriteLine(Setgroup(lists).ToJson().ToString());
+		
 			ViewBag.charttitle = Request.Query["title"];
 			ViewBag.chartType = Request.Query["chartType"];
 			ViewBag.position = Request.Query["position"];
@@ -128,7 +116,6 @@ namespace FYP_APP.Controllers
 			id = Request.Query["roomID"];
 			List<SensorsListModel> lists = GetSensorsData().Where(x => x.roomId.Contains(id)).ToList();
 			var xc = Request.Headers["Referer"].ToString();
-			Debug.WriteLine("====>"+xc);
 			ViewData["SensorsListModel"] = Setgroup(lists);
 
 			return PartialView("_SensorsList");
@@ -189,7 +176,6 @@ namespace FYP_APP.Controllers
 						if (property.Name == "latest_checking_time")
 						{
 							up = Builders<MongoSensorsListModel>.Update.Set(property.Name.ToString(), DateTime.UtcNow);
-							//Debug.WriteLine(DateTime.UtcNow);
 						}
 						else
 						{
@@ -554,7 +540,6 @@ namespace FYP_APP.Controllers
 			collection = database.GetCollection<CurrentDataModel>(tableName);
 			IQueryable<CurrentDataModel> query;
 			query = from c in collection.AsQueryable<CurrentDataModel>() orderby c.latest_checking_time descending where c.sensorId.Contains(sensorId) select c;
-
 			return query.ToList();
 		}
 		public double getSensorCurrentValue(string sensorId)
@@ -593,7 +578,6 @@ namespace FYP_APP.Controllers
 
 			List<CurrentDataModel> SensorsDataList = new List<CurrentDataModel>();
 			SensorsDataList = getSensorIDCurrentList(sensorId);
-			//Debug.WriteLine(SensorsDataList.ToJson().ToString());
 			if (SensorsDataList.Count > 1)
 			{
 				return Convert.ToDouble(SensorsDataList.First().current);
@@ -606,15 +590,19 @@ namespace FYP_APP.Controllers
 		public DateTime getCurrentDateByidBytable(string sensorId)
 		{
 			List<CurrentDataModel> SensorsDataList = getSensorIDCurrentList(sensorId);
-
+			if (SensorsDataList.Count < 1)
+			{
+				return default;
+			}
+			else { 
 			return Convert.ToDateTime(SensorsDataList.First().latest_checking_time);
+			}
 		}
 		public string chartData(List<SensorsListModel> SensorsDataList, string type)
 		{
 			switch (type)
 			{
 				case "TS":
-					Debug.WriteLine("type TS");
 					SensorsDataList = SensorsDataList.Where(x => x.sensorId.Contains("TS")).ToList();
 					ViewBag.unit = " ";
 					ViewBag.unitName = "Temperature";
@@ -696,7 +684,6 @@ namespace FYP_APP.Controllers
 				}
 				else
 				{
-					Debug.WriteLine("chart current null");
 				}
 				datas.Add(data.ToArray());
 			}
@@ -706,7 +693,7 @@ namespace FYP_APP.Controllers
 				labelss.Add(SensorsDataList[i].sensorId);
 			}
 
-			return chart.Chart(SensorsDataList.Count, labelss, datas );
+			return chart.LineChart(SensorsDataList.Count, labelss, datas );
 		}
 	
 	}
