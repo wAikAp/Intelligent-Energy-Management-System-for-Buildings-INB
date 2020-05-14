@@ -120,15 +120,44 @@ namespace FYP_APP.Controllers
 
 			return PartialView("_SensorsList");
 		}
-		[Route("Sensors/getSensorsListByRoomid")]
-		public List<SensorsListModel> getSensorsListByRoomid()
+		public List<SensorsListModel> getSensorsListByRoomid(string id)
 		{
 			getdb();
-			string id = "";
-			id = Request.Query["roomID"];
-			List<SensorsListModel> lists = GetSensorsData().Where(x => x.roomId.Contains(id)).ToList();
+			List<SensorsListModel> SensorsDataList = new List<SensorsListModel> { };
+			IMongoCollection<SensorsListModel> collection;
 
-			return lists;
+			//db collection
+			collection = database.GetCollection<SensorsListModel>("SENSOR_LIST");
+			IQueryable<SensorsListModel> query;
+			if (PageRoomId.Length == 0)
+			{
+				query = from c in collection.AsQueryable<SensorsListModel>() select c;
+			}
+			else
+			{//Sensors/{id}
+				query = from c in collection.AsQueryable<SensorsListModel>() where c.roomId.Contains(PageRoomId) select c;
+
+			}
+			foreach (SensorsListModel set in query)
+			{
+				var data = new SensorsListModel()
+				{
+					roomId = set.roomId,
+					sensorId = set.sensorId,
+					pos_x = set.pos_x,
+					pos_y = set.pos_y,
+					desc = set.desc,
+					latest_checking_time = set.latest_checking_time,
+					total_run_time = set.total_run_time,
+					current_Value = Convert.ToDouble(getSensorCurrentValue(set.sensorId)),
+					current_Time = Convert.ToDateTime(getSensorCurrentDate(set.sensorId)),
+					typeImg = getType(set.sensorId),
+					typeUnit = getunit(set.sensorId)
+				};
+				SensorsDataList.Add(data);
+			}
+			SensorsDataList = SensorsDataList.Where(x => x.roomId.Contains(id)).ToList();
+			return SensorsDataList;
 		}
 
 		[Route("Sensors/Sensors/{id}")]
