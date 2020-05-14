@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using FYP_APP.Extensions;
 using System.Linq;
 using FYP_WEB_APP.Controllers;
+using System.IO;
 
 namespace FYP_APP.Controllers
 {
@@ -109,6 +110,24 @@ namespace FYP_APP.Controllers
 		public IActionResult UserSetting()
 		{
 			MongoUserModel user = HttpContext.Session.Get<MongoUserModel>("user");
+
+			try
+			{
+				//
+				//EPPlusSamples.FileOutputUtil.OutputDir = new DirectoryInfo(@"c:\TestingDirForEx");
+				Debug.WriteLine("Running sample 8");
+				var output = SalesReportFromDatabase.Run("ss");
+				Debug.WriteLine("Sample 8 created: {0}", output);
+				Debug.WriteLine("");
+
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("Error: {0}", ex.Message);
+			}
+			
+
+
 
 			return View();
 		}
