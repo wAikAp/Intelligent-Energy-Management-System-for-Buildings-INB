@@ -21,22 +21,19 @@ namespace FYP_APP.Controllers
 {
 	public class SensorsController : Controller
 	{
-		private IMongoDatabase database;
+		private IMongoDatabase database = new DBManger().DataBase;
+		private IMongoCollection<MongoSensorsListModel> SensorsCollection = new DBManger().DataBase.GetCollection<MongoSensorsListModel>("SENSOR_LIST");
+		private IMongoCollection<RoomsListModel> RoomCollection = new DBManger().DataBase.GetCollection<RoomsListModel>("ROOM");
+
 		private string PageRoomId = "";
 		private bool isUpdated;
 
-		public void getdb()
-		{
-			ConnectDB conn = new ConnectDB();
-			this.database = conn.Conn();
-		}
 		[Route("Sensors/")]
 		[Route("Sensors/Sensors")]
 		public ActionResult Sensors()
 		{
 			ViewData["NotGroup"] = "false";
 			ViewBag.SearchRoomIdENorDisable = "";
-			getdb();
 			ViewData["SensorsListModel"] = Setgroup(GetSensorsData());
 
 			ViewData["RoomListModel"] = GetRoomData();
@@ -50,7 +47,6 @@ namespace FYP_APP.Controllers
 			{
 				Response.Cookies.Delete("returnUrl");
 				return Redirect(url);
-
 			}
 			else
 			{
@@ -63,7 +59,6 @@ namespace FYP_APP.Controllers
 			string id = "";
 			id = Request.Query["roomID"];
 
-			getdb();
 			List<SensorsListModel> lists = GetSensorsData();
 
 			ViewBag.charttitle = Request.Query["title"];
@@ -85,11 +80,7 @@ namespace FYP_APP.Controllers
 		{
 			string id = "";
 			id = Request.Query["roomID"];
-			//  $("#sensorChartHS").load("@Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"], title = "Humidity Sensor Log Record", chartType = "line", position = "top", sensorType = "HS" })", function () {});
-			//$("#sensorChartLS").load("@Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"], title = "Luminosity Sensor Log Record", chartType = "line", position = "top", sensorType = "LS" })", function () {});
 
-
-			getdb();
 			List<SensorsListModel> lists = GetSensorsData().Where(x => x.roomId.Contains(id)).ToList();
 		
 			ViewBag.charttitle = Request.Query["title"];
@@ -111,11 +102,11 @@ namespace FYP_APP.Controllers
 		public ActionResult SensorsListByRoomid()
 		{
 			ViewData["NotGroup"] = "true";
-			getdb();
+			//getdb();
 			string id = "";
 			id = Request.Query["roomID"];
 			List<SensorsListModel> lists = GetSensorsData().Where(x => x.roomId.Contains(id)).ToList();
-			var xc = Request.Headers["Referer"].ToString();
+
 			ViewData["SensorsListModel"] = Setgroup(lists);
 
 			return PartialView("_SensorsList");
@@ -132,15 +123,16 @@ namespace FYP_APP.Controllers
 			ViewData["NotGroup"] = "true";
 			ViewBag.roomID = this.PageRoomId = id;
 			ViewBag.SearchRoomIdENorDisable = "disabled";
-			getdb();
+			//getdb();
 
 
 			return View();
 		}
+		//form
 		[Route("Sensors/EditSensors/{id}")]
 		public ActionResult EditSensors(string id)
 		{
-			getdb();
+			//getdb();
 			List<SensorsListModel> list = GetSensorsData();
 			list = list.Where(x => x.sensorId.Contains(id)).ToList();
 			ViewData["EditSensorsListModel"] = list;
@@ -153,9 +145,9 @@ namespace FYP_APP.Controllers
 		public ActionResult UpdateSensors(MongoSensorsListModel postData )
 		{
 
-			getdb();
+			//getdb();
 
-			var collection = database.GetCollection<MongoSensorsListModel>("SENSOR_LIST");
+			//var collection = database.GetCollection<MongoSensorsListModel>("SENSOR_LIST");
 			var filter = Builders<MongoSensorsListModel>.Filter.Eq("sensorId", postData.sensorId);
 
 			var type = postData.GetType();
@@ -177,7 +169,7 @@ namespace FYP_APP.Controllers
 							up = Builders<MongoSensorsListModel>.Update.Set(property.Name.ToString(), property.GetValue(postData).ToString());
 
 						}
-						var Updated = collection.UpdateOne(filter, up);
+						var Updated = SensorsCollection.UpdateOne(filter, up);
 						this.isUpdated = Updated.IsAcknowledged;
 					}
 				}
@@ -200,8 +192,8 @@ namespace FYP_APP.Controllers
 		[HttpPost]
 		public ActionResult AddSensorsData(SensorsListModel postData)//post
 		{
-			getdb();
-			var collection = database.GetCollection<MongoSensorsListModel>("SENSOR_LIST");
+			//getdb();
+			//var collection = database.GetCollection<MongoSensorsListModel>("SENSOR_LIST");
 
 			MongoSensorsListModel insertList = new MongoSensorsListModel { };
 
@@ -219,24 +211,21 @@ namespace FYP_APP.Controllers
 			insertList.latest_checking_time = DateTime.UtcNow;
 			insertList.total_run_time = DateTime.UtcNow;
 
-			collection.InsertOneAsync(insertList);
+			SensorsCollection.InsertOneAsync(insertList);
 			return returnUrl();
 		}
 		[Route("Sensors/DropSensorsData")]
 		[HttpPost]
 		public ActionResult DropSensorsData(SensorsListModel postData)//post
 		{
-			getdb();
-			var collection = database.GetCollection<MongoSensorsListModel>("SENSOR_LIST");
-
-			var DeleteResult = collection.DeleteOne(Builders<MongoSensorsListModel>.Filter.Eq("sensorId", postData.sensorId));
+			var DeleteResult = SensorsCollection.DeleteOne(Builders<MongoSensorsListModel>.Filter.Eq("sensorId", postData.sensorId));
 
 			return returnUrl();
 		}
 		[Route("Sensors/DropSensors/{id}")]
 		public ActionResult DropSensors(string id)//display Drop sensors form
 		{
-			getdb();
+			//getdb();
 			List<SensorsListModel> list = GetSensorsData();
 			list = list.Where(x => x.sensorId.Contains(id)).ToList();
 
@@ -246,6 +235,7 @@ namespace FYP_APP.Controllers
 
 			return PartialView("_AddSensors", list);
 		}
+		//form
 		public List<SensorsListModel> FindSensors(List<SensorsListModel> SensorsDataList)
 		{
 			List<SensorsListModel> EndDataList = new List<SensorsListModel> { };
@@ -326,21 +316,16 @@ namespace FYP_APP.Controllers
 		}
 		public List<SensorsListModel> getAllSensors()
 		{
-			getdb();
 			List<SensorsListModel> SensorsDataList = new List<SensorsListModel> { };
-			List<MongoSensorsListModel> MongodbSensorsDataList = new List<MongoSensorsListModel> { };
 
-			IMongoCollection<MongoSensorsListModel> collection = database.GetCollection<MongoSensorsListModel>("SENSOR_LIST");
-			Debug.WriteLine(collection.ToJson().ToString());
-
-			IQueryable<MongoSensorsListModel>query= from c in collection.AsQueryable<MongoSensorsListModel>() select c;
+			IQueryable<MongoSensorsListModel> query= from c in SensorsCollection.AsQueryable<MongoSensorsListModel>() select c;
 			if (PageRoomId.Length == 0)
 			{
-				query = from c in collection.AsQueryable<MongoSensorsListModel>() select c;
+				query = from c in SensorsCollection.AsQueryable<MongoSensorsListModel>() select c;
 			}
 			else
 			{//Sensors/{id}
-				query = from c in collection.AsQueryable<MongoSensorsListModel>() where c.roomId.Contains(PageRoomId) select c;
+				query = from c in SensorsCollection.AsQueryable<MongoSensorsListModel>() where c.roomId.Contains(PageRoomId) select c;
 
 			}
 			foreach (var set in query.ToList())
@@ -373,7 +358,6 @@ namespace FYP_APP.Controllers
 				{
 					SensorsDataList = FindSensors(SensorsDataList);
 					SensorsDataList = SortList(SensorsDataList);
-
 				}
 				else
 				{
@@ -392,9 +376,9 @@ namespace FYP_APP.Controllers
 		}
 		public List<RoomsListModel> GetRoomData()
 		{
-			getdb();
+			//getdb();
 			var RoomDataList = new List<RoomsListModel> { };
-			IMongoCollection<RoomsListModel> collection = database.GetCollection<RoomsListModel>("ROOM");
+			//IMongoCollection<RoomsListModel> collection = database.GetCollection<RoomsListModel>("ROOM");
 
 			// sorting
 
@@ -402,7 +386,7 @@ namespace FYP_APP.Controllers
 
 			//end sorting
 
-			var RoomsDocuments = collection.Find(new BsonDocument()).Sort(sort);
+			var RoomsDocuments = RoomCollection.Find(new BsonDocument()).Sort(sort);
 
 			foreach (RoomsListModel set in RoomsDocuments.ToList())
 			{
@@ -415,19 +399,7 @@ namespace FYP_APP.Controllers
 
 			return RoomDataList;
 		}
-		public List<RoomsListModel> GetRoomData(string id)
-		{
-			var RoomDataList = new List<RoomsListModel> { };
-
-			var data = new RoomsListModel()
-			{
-				roomId = id,
-			};
-			RoomDataList.Add(data);
-
-
-			return RoomDataList;
-		}
+		
 		public string ChangeSortLink(string sortOrder)
 		{
 			int count = Request.Query.Keys.Count;
