@@ -21,9 +21,9 @@ namespace FYP_APP.Controllers
 {
 	public class SensorsController : Controller
 	{
-		private IMongoDatabase database = new DBManger().DataBase;
-		private IMongoCollection<MongoSensorsListModel> SensorsCollection = new DBManger().DataBase.GetCollection<MongoSensorsListModel>("SENSOR_LIST");
-		private IMongoCollection<RoomsListModel> RoomCollection = new DBManger().DataBase.GetCollection<RoomsListModel>("ROOM");
+		private readonly IMongoDatabase database = new DBManger().DataBase;
+		private readonly IMongoCollection<MongoSensorsListModel> SensorsCollection = new DBManger().DataBase.GetCollection<MongoSensorsListModel>("SENSOR_LIST");
+		private readonly IMongoCollection<RoomsListModel> RoomCollection = new DBManger().DataBase.GetCollection<RoomsListModel>("ROOM");
 
 		private string PageRoomId = "";
 		private bool isUpdated;
@@ -40,10 +40,9 @@ namespace FYP_APP.Controllers
 
 			return View();
 		}
-		public ActionResult returnUrl()
+		public ActionResult ReturnUrl()
 		{
-			string url;
-			if (Request.Cookies.TryGetValue("returnUrl", out url))
+			if (Request.Cookies.TryGetValue("returnUrl", out string url))
 			{
 				Response.Cookies.Delete("returnUrl");
 				return Redirect(url);
@@ -56,8 +55,7 @@ namespace FYP_APP.Controllers
 		[Route("Sensors/SensorsChart")]
 		public ActionResult SensorsChart()
 		{
-			string id = "";
-			id = Request.Query["roomID"];
+			//string id  = Request.Query["roomID"];
 
 			List<SensorsListModel> lists = GetSensorsData();
 
@@ -66,12 +64,12 @@ namespace FYP_APP.Controllers
 			ViewBag.position = Request.Query["position"];
 			ViewBag.download = Request.Query["download"];
 
-			ViewBag.datasets = chartData(lists, Request.Query["sensorType"]);
+			ViewBag.datasets = ChartData(lists, Request.Query["sensorType"]);
 
 			ChartController chart = new ChartController();
 
-			ViewBag.day = chart.getChartTime();
-			ViewBag.divId = chart.getRandomDivId();
+			ViewBag.day = chart.GetChartTime();
+			ViewBag.divId = chart.GetRandomDivId();
 
 			return PartialView("_SensorsChart");
 		}
@@ -88,12 +86,12 @@ namespace FYP_APP.Controllers
 			ViewBag.position = Request.Query["position"];
 			ViewBag.download = Request.Query["download"];
 			
-			ViewBag.datasets = chartData(lists, Request.Query["sensorType"]);
+			ViewBag.datasets = ChartData(lists, Request.Query["sensorType"]);
 
 			ChartController chart = new ChartController();
 
-			ViewBag.day = chart.getChartTime();
-			ViewBag.divId = chart.getRandomDivId();
+			ViewBag.day = chart.GetChartTime();
+			ViewBag.divId = chart.GetRandomDivId();
 
 			return PartialView("_SensorsChart");
 
@@ -111,9 +109,9 @@ namespace FYP_APP.Controllers
 
 			return PartialView("_SensorsList");
 		}
-		public List<SensorsListModel> getSensorsListByRoomid(string id)
+		public List<SensorsListModel> GetSensorsListByRoomid(string id)
 		{
-			List<SensorsListModel> list = getAllSensors().Where(x => x.roomId.Contains(id)).ToList();
+			List<SensorsListModel> list = GetAllSensors().Where(x => x.roomId.Contains(id)).ToList();
 			return list;
 		}
 
@@ -175,7 +173,7 @@ namespace FYP_APP.Controllers
 				}
 			}
 
-			return returnUrl();
+			return ReturnUrl();
 		}
 		
 		[Route("Sensors/AddSensors")]
@@ -212,15 +210,24 @@ namespace FYP_APP.Controllers
 			insertList.total_run_time = DateTime.UtcNow;
 
 			SensorsCollection.InsertOneAsync(insertList);
-			return returnUrl();
+			return ReturnUrl();
 		}
 		[Route("Sensors/DropSensorsData")]
 		[HttpPost]
 		public ActionResult DropSensorsData(SensorsListModel postData)//post
 		{
 			var DeleteResult = SensorsCollection.DeleteOne(Builders<MongoSensorsListModel>.Filter.Eq("sensorId", postData.sensorId));
-
-			return returnUrl();
+			if (DeleteResult.IsAcknowledged)
+			{
+				if (DeleteResult.DeletedCount != 1)
+				{
+					throw new Exception(string.Format("Count [value:{0}] after delete is invalid", DeleteResult.DeletedCount));
+				}
+			}
+			else { 
+				throw new Exception(string.Format("Delete for [_id:{0}] was not acknowledged", postData.sensorId.ToString()));
+			}
+			return ReturnUrl();
 		}
 		[Route("Sensors/DropSensors/{id}")]
 		public ActionResult DropSensors(string id)//display Drop sensors form
@@ -314,7 +321,7 @@ namespace FYP_APP.Controllers
 				.ToList();
 			return groupedList;
 		}
-		public List<SensorsListModel> getAllSensors()
+		public List<SensorsListModel> GetAllSensors()
 		{
 			List<SensorsListModel> SensorsDataList = new List<SensorsListModel> { };
 
@@ -328,29 +335,31 @@ namespace FYP_APP.Controllers
 				query = from c in SensorsCollection.AsQueryable<MongoSensorsListModel>() where c.roomId.Contains(PageRoomId) select c;
 
 			}
-			foreach (var set in query.ToList())
-			{
-				var data = new SensorsListModel()
+			if (query.Count()>0) { 
+				foreach (var set in query.ToList())
 				{
-					roomId = set.roomId,
-					sensorId = set.sensorId,
-					pos_x = set.pos_x,
-					pos_y = set.pos_y,
-					desc = set.desc,
-					latest_checking_time = set.latest_checking_time,
-					total_run_time = set.total_run_time,
-					current_Value = Convert.ToDouble(getSensorCurrentValue(set.sensorId)),
-					current_Time = Convert.ToDateTime(getSensorCurrentDate(set.sensorId)),
-					typeImg = getType(set.sensorId),
-					typeUnit = getunit(set.sensorId)
-				};
-				SensorsDataList.Add(data);
+					var data = new SensorsListModel()
+					{
+						roomId = set.roomId,
+						sensorId = set.sensorId,
+						pos_x = set.pos_x,
+						pos_y = set.pos_y,
+						desc = set.desc,
+						latest_checking_time = set.latest_checking_time,
+						total_run_time = set.total_run_time,
+						current_Value = Convert.ToDouble(GetSensorCurrentValue(set.sensorId)),
+						current_Time = Convert.ToDateTime(GetSensorCurrentDate(set.sensorId)),
+						typeImg = GetType(set.sensorId),
+						typeUnit = Getunit(set.sensorId)
+					};
+					SensorsDataList.Add(data);
+				}
 			}
 			return SensorsDataList;
 		}
 		public List<SensorsListModel> GetSensorsData()
 		{
-			List<SensorsListModel> SensorsDataList = getAllSensors();
+			List<SensorsListModel> SensorsDataList = GetAllSensors();
 			try
 			{
 				int count = Request.Query.Count;
@@ -451,7 +460,7 @@ namespace FYP_APP.Controllers
 
 			return sortOrder;
 		}
-		public string getunit(string sensorId)
+		public string Getunit(string sensorId)
 		{
 			string type = "";
 			switch (sensorId.Substring(0, 2))
@@ -470,7 +479,7 @@ namespace FYP_APP.Controllers
 			}
 			return type;
 		}
-		public string getType(string sensorId)
+		public string GetType(string sensorId)
 		{
 			string type = "";
 			switch (sensorId.Substring(0, 2))
@@ -489,7 +498,7 @@ namespace FYP_APP.Controllers
 			}
 			return type;
 		}
-		public List<CurrentDataModel> getSensorIDCurrentList(string sensorId)
+		public List<CurrentDataModel> GetSensorIDCurrentList(string sensorId)
 		{
 			string tableName = "";
 			List<CurrentDataModel> List = new List<CurrentDataModel>();
@@ -514,29 +523,29 @@ namespace FYP_APP.Controllers
 			query = from c in collection.AsQueryable<CurrentDataModel>() orderby c.latest_checking_time descending where c.sensorId.Contains(sensorId) select c;
 			return query.ToList();
 		}
-		public double getSensorCurrentValue(string sensorId)
+		public double GetSensorCurrentValue(string sensorId)
 		{
-			double value = getCurrentValueByidBytable(sensorId);
+			double value = GetCurrentValueByidBytable(sensorId);
 				
 			return value;
 		}
 
-		public DateTime getSensorCurrentDate(string sensorId)
+		public DateTime GetSensorCurrentDate(string sensorId)
 		{
 			DateTime value = new DateTime();
 
 			switch (sensorId.Substring(0, 2))
 			{
 				case "TS":
-					value = getCurrentDateByidBytable(sensorId);
+					value = GetCurrentDateByidBytable(sensorId);
 
 					break;
 				case "LS":
-					value = getCurrentDateByidBytable(sensorId);
+					value = GetCurrentDateByidBytable(sensorId);
 
 					break;
 				case "HS":
-					value = getCurrentDateByidBytable(sensorId);
+					value = GetCurrentDateByidBytable(sensorId);
 
 					break;
 				default:
@@ -545,11 +554,10 @@ namespace FYP_APP.Controllers
 			return value;
 
 		}
-		public double getCurrentValueByidBytable(string sensorId)
+		public double GetCurrentValueByidBytable(string sensorId)
 		{
 
-			List<CurrentDataModel> SensorsDataList = new List<CurrentDataModel>();
-			SensorsDataList = getSensorIDCurrentList(sensorId);
+			List<CurrentDataModel> SensorsDataList = GetSensorIDCurrentList(sensorId);
 			if (SensorsDataList.Count > 1)
 			{
 				return Convert.ToDouble(SensorsDataList.First().current);
@@ -559,9 +567,9 @@ namespace FYP_APP.Controllers
 				return 0;
 			}
 		}
-		public DateTime getCurrentDateByidBytable(string sensorId)
+		public DateTime GetCurrentDateByidBytable(string sensorId)
 		{
-			List<CurrentDataModel> SensorsDataList = getSensorIDCurrentList(sensorId);
+			List<CurrentDataModel> SensorsDataList = GetSensorIDCurrentList(sensorId);
 			if (SensorsDataList.Count < 1)
 			{
 				return default;
@@ -570,7 +578,7 @@ namespace FYP_APP.Controllers
 			return Convert.ToDateTime(SensorsDataList.First().latest_checking_time);
 			}
 		}
-		public string chartData(List<SensorsListModel> SensorsDataList, string type)
+		public string ChartData(List<SensorsListModel> SensorsDataList, string type)
 		{
 			switch (type)
 			{
@@ -592,10 +600,10 @@ namespace FYP_APP.Controllers
 				default:
 					break;
 			}
-			return getChartData(SensorsDataList);
+			return GetChartData(SensorsDataList);
 		}
 
-		public string getChartData(List<SensorsListModel> SensorsDataList)
+		public string GetChartData(List<SensorsListModel> SensorsDataList)
 		{
 			ChartController chart = new ChartController();
 
@@ -619,9 +627,9 @@ namespace FYP_APP.Controllers
 
 			foreach (SensorsListModel get in SensorsDataList)
 			{
-				Color.Add(chart.getRandomColor());
+				Color.Add(chart.GetRandomColor());
 				labelss.Add(get.sensorId);
-				SensorsCurrentList = getSensorIDCurrentList(get.sensorId).Where(x => x.latest_checking_time > today.AddDays(-1)).OrderBy(x => x.latest_checking_time).ToList();
+				SensorsCurrentList = GetSensorIDCurrentList(get.sensorId).Where(x => x.latest_checking_time > today.AddDays(-1)).OrderBy(x => x.latest_checking_time).ToList();
 
 				DateTime ca = today;
 				TimeSpan catime = ca - ca.AddDays(-1);

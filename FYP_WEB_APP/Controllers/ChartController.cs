@@ -12,7 +12,7 @@ namespace FYP_WEB_APP.Controllers
 {
     public class ChartController : Controller
     {
-		public string doughnutChart(List<string> label, List<double> data)
+		public string DoughnutChart(List<string> label, List<double> data)
 		{
 			if (label.Count()<1 &  data.Count() < 1)
 			{
@@ -26,11 +26,11 @@ namespace FYP_WEB_APP.Controllers
 
 				for (int i = 0; i < label.Count(); i++)
 				{
-					Color.Add(getRandomColor());
+					Color.Add(GetRandomColor());
 				}
 
 
-					var chartdata = new doughnutChartModel()
+					var chartdata = new DoughnutChartModel()
 					{
 						label= label.ToArray(),
 						data= data.ToArray(),
@@ -59,7 +59,7 @@ namespace FYP_WEB_APP.Controllers
 
 			for (int i = 0; i < count; i++)
 			{
-				Color.Add(getRandomColor());
+				Color.Add(GetRandomColor());
 			}
 			for (int i = 0; i < count; i++)
 			{
@@ -80,13 +80,13 @@ namespace FYP_WEB_APP.Controllers
 			}
 		}
 
-		public string getRandomColor()
+		public string GetRandomColor()
 		{
 			var random = new Random();
 			var rmcolor = String.Format("#{0:X6}", random.Next(0x1000000));
 			return rmcolor;
 		}
-		public string getRandomDivId()
+		public string GetRandomDivId()
 		{
 			var random = new Random();
 			const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -94,7 +94,7 @@ namespace FYP_WEB_APP.Controllers
 			  .Select(s => s[random.Next(s.Length)]).ToArray());
 			//return rmcolor;
 		}
-		public string getChartTime()
+		public string GetChartTime()
 		{
 			DateTime today = DateTime.Now;
 			int hour = today.Hour;

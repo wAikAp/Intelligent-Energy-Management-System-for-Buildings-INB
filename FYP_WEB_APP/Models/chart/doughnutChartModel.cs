@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace FYP_WEB_APP.Models.chart
 {
-    public class doughnutChartModel
+    public class DoughnutChartModel
     {
 
         public Array label { get; set; }

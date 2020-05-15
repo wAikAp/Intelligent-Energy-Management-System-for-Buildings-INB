@@ -15,7 +15,7 @@ namespace FYP_APP.Controllers
 	public class DevicesController : Controller
 	{
 		public List<DevicesListModel> MongoDevicesList = new List<DevicesListModel> { };
-		public IMongoCollection<DevicesListModel> getconn()
+		public IMongoCollection<DevicesListModel> Getconn()
 		{
 			ConnectDB conn = new ConnectDB();
 			var database = conn.Conn();
@@ -30,7 +30,7 @@ namespace FYP_APP.Controllers
 			//Request.Query["sortOrder"] check 
 			if (Request.Query.ContainsKey("sortOrder"))
 			{
-				this.MongoDevicesList = getDevicesbyid();
+				this.MongoDevicesList = GetDevicesbyid();
 				ViewData["MongoDevicesListModel"] = this.MongoDevicesList;
 				ViewData["RoomListModel"] = GetRoomData();
 
@@ -43,7 +43,7 @@ namespace FYP_APP.Controllers
 			else
 			{
 
-				this.MongoDevicesList = getAllDevices();
+				this.MongoDevicesList = GetAllDevices();
 				ViewBag.roomIdSortParm = "?sortOrder=roomId";
 				ViewData["MongoDevicesListModel"] = this.MongoDevicesList;
 				ViewData["RoomListModel"] = GetRoomData();
@@ -54,10 +54,9 @@ namespace FYP_APP.Controllers
 
 			return View();
 		}
-		public ActionResult returnUrl()
+		public ActionResult ReturnUrl()
 		{
-			string url;
-			if (Request.Cookies.TryGetValue("returnUrl", out url))
+			if (Request.Cookies.TryGetValue("returnUrl", out string url))
 			{
 				Response.Cookies.Delete("returnUrl");
 				return Redirect(url);
@@ -70,7 +69,7 @@ namespace FYP_APP.Controllers
 		}
 		[Route("Devices/Devices/{id}")]
 		public IActionResult Devices(string id) {
-			ViewData["MongoDevicesListModel"] = getAllDevices().Where(x=>x.roomId==id).ToList();
+			ViewData["MongoDevicesListModel"] = GetAllDevices().Where(x=>x.roomId==id).ToList();
 			ViewData["RoomListModel"] = GetRoomData();
 
 			return View();
@@ -111,7 +110,7 @@ namespace FYP_APP.Controllers
 		{
 			string id = Request.Query["roomID"];
 
-			ViewData["MongoDevicesListModel"] = getAllDevices().Where(x => x.roomId == id).ToList();
+			ViewData["MongoDevicesListModel"] = GetAllDevices().Where(x => x.roomId == id).ToList();
 			ViewData["RoomListModel"] = GetRoomData();
 			//getAllDevices().Where(x => x.roomId == id).ToList().ToJson().ToString()
 			return PartialView("_DevicesList");
@@ -121,7 +120,7 @@ namespace FYP_APP.Controllers
 		{
 
 			ViewData["Title"] = "Search Devices";
-			var list = getAllDevices();
+			var list = GetAllDevices();
 			List<DevicesListModel> sum = new List<DevicesListModel> { };
 
 			List<DevicesListModel> get=new List<DevicesListModel> { };
@@ -186,8 +185,8 @@ namespace FYP_APP.Controllers
 		[Route("Devices/EditDevices/{id}")]
 		public ActionResult EditDevices(string id)
 		{
-			ViewData["EditDevicesListModel"] = getAllDevices().Where(t => t.devicesId == id).ToList();
-			Debug.WriteLine(getAllDevices().Where(t => t.devicesId == id).ToList().ToJson().ToString());
+			ViewData["EditDevicesListModel"] = GetAllDevices().Where(t => t.devicesId == id).ToList();
+			Debug.WriteLine(GetAllDevices().Where(t => t.devicesId == id).ToList().ToJson().ToString());
 			ViewBag.viewType = "Edit";
 			ViewBag.action = "UpdateDevicesData";
 
@@ -196,7 +195,7 @@ namespace FYP_APP.Controllers
 		[Route("Devices/DropDevices/{id}")]
 		public ActionResult DropDevices(string id)//display Drop sensors form
 		{
-			ViewData["EditDevicesListModel"] = getAllDevices().Where(t => t.devicesId == id).ToList();
+			ViewData["EditDevicesListModel"] = GetAllDevices().Where(t => t.devicesId == id).ToList();
 
 			ViewBag.viewType = "Drop";
 			ViewBag.action = "DropDevicesData";
@@ -209,7 +208,7 @@ namespace FYP_APP.Controllers
 		{
 			DevicesListModel insertList = new DevicesListModel { };
 
-			var all = getAllDevices();
+			var all = GetAllDevices();
 			string count = "";
 			if (all.Count < 10) { count = "00" + (all.Count+1).ToString(); }
 			else if (all.Count < 100) { count = "0" + (all.Count + 1).ToString(); }
@@ -226,16 +225,16 @@ namespace FYP_APP.Controllers
 			insertList.total_run_time = nowData;
 			insertList.power = 0;
 
-			getconn().InsertOneAsync(insertList);
-			return returnUrl();
+			Getconn().InsertOneAsync(insertList);
+			return ReturnUrl();
 		}
 		[Route("Devices/DropDevicesData")]
 		[HttpPost]
 		public ActionResult DropDevicesData(MongoDevicesListModel postData)//post
 		{
-			var DeleteResult = getconn().DeleteOne(de => de.devicesId==postData.devicesId & de.roomId == postData.roomId);
+			var DeleteResult = Getconn().DeleteOne(de => de.devicesId==postData.devicesId & de.roomId == postData.roomId);
 
-			return returnUrl();
+			return ReturnUrl();
 		}
 		[Route("Devices/UpdateDevicesData")]
 		[HttpPost]
@@ -261,17 +260,28 @@ namespace FYP_APP.Controllers
 							up = Builders<DevicesListModel>.Update.Set(property.Name.ToString(), property.GetValue(postData).ToString());
 
 						}
-						var Updated = getconn().UpdateOne(filter, up);
+						var UpdateResult = Getconn().UpdateOne(filter, up);
+						if (UpdateResult.IsAcknowledged)
+						{
+							if (UpdateResult.ModifiedCount != 1)
+							{
+								throw new Exception(string.Format("Count [value:{0}] after Modifi is invalid", UpdateResult.ModifiedCount));
+							}
+						}
+						else
+						{
+							throw new Exception(string.Format("Delete for [_id:{0}] was not acknowledged", postData.devicesId.ToString()+"."+property.Name.ToString()));
+						}
 						//this.isUpdated = Updated.IsAcknowledged;
 					}
 				}
 			}
-			return returnUrl();
+			return ReturnUrl();
 		}
 
 
-		public List<DevicesListModel> getAllDevices() {			
-			var collection = getconn();
+		public List<DevicesListModel> GetAllDevices() {			
+			var collection = Getconn();
 			IQueryable<DevicesListModel> query = from d in collection.AsQueryable<DevicesListModel>() select d;
 			List<DevicesListModel> list=new List<DevicesListModel>();
 			foreach (var get in query.ToList()) {
@@ -280,7 +290,7 @@ namespace FYP_APP.Controllers
 				DateTime runtime = get.total_run_time;
 				TimeSpan count = new TimeSpan(nowData.Ticks - runtime.Ticks);
 
-				double currentValue = getCurrentValue(get.devicesId);
+				double currentValue = GetCurrentValue(get.devicesId);
 				double avgPowers = get.power/ count.TotalDays;
 				avgPowers = Convert.ToDouble(avgPowers.ToString("0.00"));
 
@@ -308,12 +318,12 @@ namespace FYP_APP.Controllers
 			MongoDevicesList = query.ToList();
 			return list.ToList();
 		}
-		public List<DevicesListModel> getDevicesListByRoomid(string id)
+		public List<DevicesListModel> GetDevicesListByRoomid(string id)
 		{
-			Debug.WriteLine(getAllDevices().Where(d => d.roomId.Contains(id)).ToList().ToJson().ToString());
-			return getAllDevices().Where(d => d.roomId.Contains(id)).ToList();
+			Debug.WriteLine(GetAllDevices().Where(d => d.roomId.Contains(id)).ToList().ToJson().ToString());
+			return GetAllDevices().Where(d => d.roomId.Contains(id)).ToList();
 		}
-		public List<DevicesListModel> getDevicesbyid() {
+		public List<DevicesListModel> GetDevicesbyid() {
 			List<DevicesListModel> list = null;
 			string sortOrder = Request.Query["sortOrder"];
 			sortOrder=ChangeSortLink(sortOrder);
@@ -325,7 +335,7 @@ namespace FYP_APP.Controllers
 			}
 			else if (sortOrder.Contains("Desc"))
 			{
-				list = getAllDevices().OrderByDescending(item => item.roomId).ToList();
+				list = GetAllDevices().OrderByDescending(item => item.roomId).ToList();
 				//.Sort.Descending(sortOrder[0..^5]);
 				ViewBag.sortIMG = "sort_desc.png";
 
@@ -335,14 +345,14 @@ namespace FYP_APP.Controllers
 
 				ViewBag.sortIMG = "sort.png";
 
-				list = getAllDevices().OrderBy(item => item.roomId).ToList();
+				list = GetAllDevices().OrderBy(item => item.roomId).ToList();
 
 			}
 			return list;
 		}
 		public string ChangeSortLink(string sortOrder)
 		{
-			int count = Request.Query.Keys.Count;
+			//int count = Request.Query.Keys.Count;
 			var rs = "";
 			bool isfirst = true;
 			foreach (String key in Request.Query.Keys)
@@ -431,15 +441,22 @@ namespace FYP_APP.Controllers
 
 			return RoomDataList;
 		}
-		public double getCurrentValue(string Id)
+		public double GetCurrentValue(string Id)
 		{
 			ConnectDB conn = new ConnectDB();
 			var database = conn.Conn();
-			double value = 0;
 
 			IMongoCollection<BsonDocument> collection;
 			FilterDefinition<BsonDocument> filter;
-			var dbStr = "";
+			var dbStr =  Id.Substring(0, 2) switch
+			{
+				"EF" => "EXH_FAN",
+				"AC" => "AC",
+				"LT" => "LIGHT",
+				"HD" => "HUM",
+				_ => ""
+			};
+			/*
 			switch (Id.Substring(0, 2))
 			{				
 				case "EF":
@@ -456,40 +473,44 @@ namespace FYP_APP.Controllers
 					break;
 				default:
 					break;
-			}
+			}*/
 			collection = database.GetCollection<BsonDocument>(dbStr);
 			filter = Builders<BsonDocument>.Filter.Eq("devicesId", Id);
 
 			var json = collection.Find(filter).FirstOrDefault();
 			if (json != null)
 			{
-
-				switch (Id.Substring(0, 2))
+				 double value = Id.Substring(0, 2) switch
 				{
-					case "EF":
-						value = Convert.ToDouble(json["current_rmp"].ToString());
-						break;
-					case "AC":
-						value = Convert.ToDouble(json["current_tmp"].ToString());
-						break;
-					case "LT":
-						value = Convert.ToDouble(json["current_lum"].ToString());
-						break;
-					case "HD":
-						value = Convert.ToDouble(json["current_hum"].ToString());
-						break;
-					default:
-						value = 0;
-							break;
-				}
-
+					"EF" => Convert.ToDouble(json["current_rmp"].ToString()),
+					"AC" => Convert.ToDouble(json["current_tmp"].ToString()),
+					"LT" => Convert.ToDouble(json["current_lum"].ToString()),
+					"HD" => Convert.ToDouble(json["current_hum"].ToString()),
+					_ => 0
+				};
+				return value;
+				/*		switch (Id.Substring(0, 2))
+						{
+							case "EF":
+								value = Convert.ToDouble(json["current_rmp"].ToString());
+								break;
+							case "AC":
+								value = Convert.ToDouble(json["current_tmp"].ToString());
+								break;
+							case "LT":
+								value = Convert.ToDouble(json["current_lum"].ToString());
+								break;
+							case "HD":
+								value = Convert.ToDouble(json["current_hum"].ToString());
+								break;
+							default:
+								value = 0;
+									break;
+						}*/
 			}
 			else {
-				value = 0;
+				return 0;
 			}
-			Debug.WriteLine("\n geting current data value ==>"+value+"\n");
-			return value;
-
 		}
 
 	}

@@ -52,10 +52,10 @@ namespace FYP_APP.Controllers
 		}
 
 
-		public IActionResult dashboard()
+		public IActionResult Dashboard()
 		{
 			DevicesController devices =new DevicesController();
-			var list = devices.getAllDevices();
+			var list = devices.GetAllDevices();
 
 			double TotalSavings = 0;
 			double TotalUsage = 0;
@@ -121,20 +121,20 @@ namespace FYP_APP.Controllers
 			data.Add(30);
 			data.Add(20);
 			data.Add(50);
-			ViewBag.divId = getRandomDivId();
+			ViewBag.divId = GetRandomDivId();
 			ChartController chart = new ChartController();
-			ViewBag.datasets = chart.doughnutChart(label, data);
+			ViewBag.datasets = chart.DoughnutChart(label, data);
 			ViewData["devices"] = label.ToJson();
 
 			return PartialView("_DoughnutChart");
 		}
-		public string getRandomColor()
+		public string GetRandomColor()
 		{
 			var random = new Random();
 			var rmcolor = String.Format("#{0:X6}", random.Next(0x1000000));
 			return rmcolor;
 		}
-		public string getRandomDivId()
+		public string GetRandomDivId()
 		{
 			var random = new Random();
 			const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

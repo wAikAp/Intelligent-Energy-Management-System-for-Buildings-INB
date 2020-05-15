@@ -18,9 +18,12 @@ namespace FYP_WEB_APP.Controllers
         {
             ViewData["roomID"] = roomID;
             SensorsController sensorsController = new SensorsController();
-            List<SensorsListModel> sensorsList = sensorsController.getSensorsListByRoomid(roomID);
-            
+            List<SensorsListModel> sensorsList = sensorsController.GetSensorsListByRoomid(roomID);
+            DevicesController DevicesController = new DevicesController();
+            List<DevicesListModel> Deviceslist = DevicesController.GetDevicesListByRoomid(roomID);
+
             Debug.WriteLine("sensor list = "+sensorsList.ToJson().ToString());
+            Debug.WriteLine("Devices list = " + Deviceslist.ToJson().ToString());
             
             return View();
         }
