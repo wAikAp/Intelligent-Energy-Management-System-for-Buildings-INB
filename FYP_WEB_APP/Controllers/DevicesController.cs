@@ -15,7 +15,7 @@ namespace FYP_APP.Controllers
 	public class DevicesController : Controller
 	{
 		public List<DevicesListModel> MongoDevicesList = new List<DevicesListModel> { };
-		public IMongoCollection<DevicesListModel> getMDLMconn()
+		public IMongoCollection<DevicesListModel> getconn()
 		{
 			ConnectDB conn = new ConnectDB();
 			var database = conn.Conn();
@@ -226,14 +226,14 @@ namespace FYP_APP.Controllers
 			insertList.total_run_time = nowData;
 			insertList.power = 0;
 
-			getMDLMconn().InsertOneAsync(insertList);
+			getconn().InsertOneAsync(insertList);
 			return returnUrl();
 		}
 		[Route("Devices/DropDevicesData")]
 		[HttpPost]
 		public ActionResult DropDevicesData(MongoDevicesListModel postData)//post
 		{
-			var DeleteResult = getMDLMconn().DeleteOne(de => de.devicesId==postData.devicesId & de.roomId == postData.roomId);
+			var DeleteResult = getconn().DeleteOne(de => de.devicesId==postData.devicesId & de.roomId == postData.roomId);
 
 			return returnUrl();
 		}
@@ -261,7 +261,7 @@ namespace FYP_APP.Controllers
 							up = Builders<DevicesListModel>.Update.Set(property.Name.ToString(), property.GetValue(postData).ToString());
 
 						}
-						var Updated = getMDLMconn().UpdateOne(filter, up);
+						var Updated = getconn().UpdateOne(filter, up);
 						//this.isUpdated = Updated.IsAcknowledged;
 					}
 				}
@@ -271,7 +271,7 @@ namespace FYP_APP.Controllers
 
 
 		public List<DevicesListModel> getAllDevices() {			
-			var collection = getMDLMconn();
+			var collection = getconn();
 			IQueryable<DevicesListModel> query = from d in collection.AsQueryable<DevicesListModel>() select d;
 			List<DevicesListModel> list=new List<DevicesListModel>();
 			foreach (var get in query.ToList()) {
@@ -301,12 +301,17 @@ namespace FYP_APP.Controllers
 					powerOnOff = false,
 					avgPower= avgPowers
 				};
-				Debug.WriteLine(data.current);
+				//Debug.WriteLine(data.current);
 				list.Add(data);
 			}
 
 			MongoDevicesList = query.ToList();
 			return list.ToList();
+		}
+		public List<DevicesListModel> getDevicesListByRoomid(string id)
+		{
+			Debug.WriteLine(getAllDevices().Where(d => d.roomId.Contains(id)).ToList().ToJson().ToString());
+			return getAllDevices().Where(d => d.roomId.Contains(id)).ToList();
 		}
 		public List<DevicesListModel> getDevicesbyid() {
 			List<DevicesListModel> list = null;
