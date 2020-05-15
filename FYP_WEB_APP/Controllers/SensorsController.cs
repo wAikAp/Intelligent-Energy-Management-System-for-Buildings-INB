@@ -121,8 +121,9 @@ namespace FYP_APP.Controllers
 			return PartialView("_SensorsList");
 		}
 		public List<SensorsListModel> getSensorsListByRoomid(string id)
-		{	
-			return getAllSensors().Where(x => x.roomId.Contains(id)).ToList();
+		{
+			List<SensorsListModel> list = getAllSensors().Where(x => x.roomId.Contains(id)).ToList();
+			return list;
 		}
 
 		[Route("Sensors/Sensors/{id}")]
@@ -325,22 +326,24 @@ namespace FYP_APP.Controllers
 		}
 		public List<SensorsListModel> getAllSensors()
 		{
+			getdb();
 			List<SensorsListModel> SensorsDataList = new List<SensorsListModel> { };
-			IMongoCollection<SensorsListModel> collection;
+			List<MongoSensorsListModel> MongodbSensorsDataList = new List<MongoSensorsListModel> { };
 
-			//db collection
-			collection = database.GetCollection<SensorsListModel>("SENSOR_LIST");
-			IQueryable<SensorsListModel> query;
+			IMongoCollection<MongoSensorsListModel> collection = database.GetCollection<MongoSensorsListModel>("SENSOR_LIST");
+			Debug.WriteLine(collection.ToJson().ToString());
+
+			IQueryable<MongoSensorsListModel>query= from c in collection.AsQueryable<MongoSensorsListModel>() select c;
 			if (PageRoomId.Length == 0)
 			{
-				query = from c in collection.AsQueryable<SensorsListModel>() select c;
+				query = from c in collection.AsQueryable<MongoSensorsListModel>() select c;
 			}
 			else
 			{//Sensors/{id}
-				query = from c in collection.AsQueryable<SensorsListModel>() where c.roomId.Contains(PageRoomId) select c;
+				query = from c in collection.AsQueryable<MongoSensorsListModel>() where c.roomId.Contains(PageRoomId) select c;
 
 			}
-			foreach (SensorsListModel set in query)
+			foreach (var set in query.ToList())
 			{
 				var data = new SensorsListModel()
 				{

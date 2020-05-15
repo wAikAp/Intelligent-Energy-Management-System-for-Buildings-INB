@@ -5,6 +5,7 @@ using FYP_APP.Controllers;
 using FYP_WEB_APP.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -19,7 +20,7 @@ namespace FYP_WEB_APP.Controllers
             SensorsController sensorsController = new SensorsController();
             List<SensorsListModel> sensorsList = sensorsController.getSensorsListByRoomid(roomID);
             
-            Debug.WriteLine("sensor list = "+sensorsList);
+            Debug.WriteLine("sensor list = "+sensorsList.ToJson().ToString());
             
             return View();
         }
