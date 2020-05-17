@@ -29,9 +29,19 @@
             *@
             <div class="d-flex">
 
-                <a href="#" class="btn btn-outline-success px-2 mr-3" onclick="AddtDevices()">
-                    &#43; Add
-                </a>
+
+                @if (ViewData["roomID"] != null)
+                {
+                    <a href="#" class="btn btn-outline-success px-2 mr-3" onclick="AddtDevices(@ViewData["roomID"])">
+                        &#43; Add
+                    </a>
+                }
+                else
+                { <a href="#" class="btn btn-outline-success px-2 mr-3" onclick="AddtDevices()">
+                        &#43; Add
+                    </a>
+
+                }
             </div>
         </div>
     </div>
@@ -202,4 +212,15 @@
         })
 
     }
+    var AddtDevices = function (roomid) {
+
+        var url = "/Devices/AddDevices/" + roomid;
+
+        $("#DevicesFormBody").load(url, function () {
+            $("#DevicesForm").modal("show");
+
+        })
+
+    }
+   
 </script>

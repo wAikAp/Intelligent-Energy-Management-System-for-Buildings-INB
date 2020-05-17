@@ -112,6 +112,7 @@ namespace FYP_APP.Controllers
 
 			ViewData["MongoDevicesListModel"] = GetAllDevices().Where(x => x.roomId == id).ToList();
 			ViewData["RoomListModel"] = GetRoomData();
+			ViewData["roomID"] = id;
 			//getAllDevices().Where(x => x.roomId == id).ToList().ToJson().ToString()
 			return PartialView("_DevicesList");
 
@@ -179,6 +180,16 @@ namespace FYP_APP.Controllers
 			ViewBag.viewType = "Add";
 			ViewData["RoomListModel"] = GetRoomData();
 			ViewBag.action = "AddDevicesData";
+
+			return PartialView("_AddDevices");
+		}
+		[Route("Devices/AddDevices/{id}")]
+		public ActionResult AddDevices(string id)//display add sensors form
+		{
+			ViewBag.viewType = "Add";
+			ViewData["RoomListModel"] = GetRoomData();
+			ViewBag.action = "AddDevicesData";
+			ViewBag.CheckRoomid = id;
 
 			return PartialView("_AddDevices");
 		}

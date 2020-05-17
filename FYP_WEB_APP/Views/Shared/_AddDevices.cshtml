@@ -62,16 +62,28 @@
                     }
                     else if (ViewBag.viewType.Equals("Add"))
                     {
-                        <select id="roomId" name="roomId" class="form-control bg-white">
-                            <option value="">Room.No</option>
-                            @foreach (var Room in Rooms)
-                            {
+                        string chid = ViewBag.CheckRoomid;
 
-                                <option value="@Room.roomId">@Room.roomId</option>
+                        if (chid == "undefined" || chid==null)
+                        {
 
-                            }
+                            <select id="roomId" name="roomId" class="form-control bg-white">
+                                <option value="">Room.No</option>
+                                @foreach (var Room in Rooms)
+                                {
 
-                        </select>}
+                                    <option value="@Room.roomId">@Room.roomId</option>
+
+                                }
+
+                            </select>
+                        }
+                        else
+                        {
+
+                            <input type="text" class="form-control bg-white" id="roomId" name="roomId" value="@ViewBag.CheckRoomid" required readonly>
+                        }
+                    }
                 </div>
             </div>
             @if (ViewBag.viewType.Equals("Edit") || ViewBag.viewType.Equals("Add"))

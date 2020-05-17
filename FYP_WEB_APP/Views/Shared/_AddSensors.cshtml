@@ -46,12 +46,12 @@
                             {@Sensors.First().roomId}" readonly>
                             <input type="text" class="form-control bg-white" id="roomId" name="roomId" placeholder="roomid" value="" required>
                         }
-                }
-                else if (ViewBag.viewType.Equals("Add"))
-                {
-                    string chid = ViewBag.CheckRoomid;
+                    }
+                    else if (ViewBag.viewType.Equals("Add"))
+                    {
+                        string chid = ViewBag.CheckRoomid;
 
-                        if (chid=="undefined")
+                        if (chid=="undefined" || chid == null)
                         {
 
                         <select id="roomId" name="roomId" class="form-control bg-white">
