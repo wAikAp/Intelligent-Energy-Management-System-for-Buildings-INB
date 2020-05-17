@@ -11,6 +11,8 @@ namespace FYP_WEB_APP.Models.MongoModels
         public ObjectId _id { get; set; }
         public string roomId { get; set; }
         public string sensorId { get; set; }
+        public string sensor_name { get; set; }
+
         public double pos_x { get; set; }
         public double pos_y { get; set; }
         public string desc { get; set; }
