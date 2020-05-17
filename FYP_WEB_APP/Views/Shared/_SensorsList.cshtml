@@ -63,10 +63,11 @@
 
         </div>
         </div>
-        @if (SensorsByroomList.Count == 0)
-        {<div class="alert alert-warning text-center font-weight-bold" role="alert">
-                <h3>TryAgin, No more record in Your conditions.  </h3>
-            </div>}
+        @if (SensorsByroomList.Count == 0){
+            <div class="alert alert-warning text-center font-weight-bold" role="alert">
+                <h3>Please try again, no corresponding conditions.  </h3>
+            </div>
+            }
         else
         {
             @foreach (var getSensorsByroom in SensorsByroomList)
@@ -128,7 +129,7 @@
                                     </div>
                                     <div class="card-body">
                                         <p class="ard-text p-0 m-0">@get.roomId @get.sensorId</p>
-
+                                        <input id="dropSensorID" type="hidden" value="@get.sensorId" />
                                         <h4 class="card-title">
                                             <img src="~/img/icon/@get.typeImg" height="50" style="filter: invert(100%);">
                                             @get.current_Value @get.typeUnit
@@ -177,7 +178,6 @@
 
         $("#EditSensorsBody").load(url, function () {
             $("#EditSensors").modal("show");
-
         })
 
     }
