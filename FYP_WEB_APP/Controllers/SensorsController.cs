@@ -202,7 +202,6 @@ namespace FYP_APP.Controllers
 			ViewBag.ChangeType = "readonly";
 			ViewData["RoomListModel"] = GetRoomData();
 			ViewBag.action = "AddSensorsData";
-			ViewBag.CheckRoomid = null;
 
 			return PartialView("_AddSensors");
 		}
