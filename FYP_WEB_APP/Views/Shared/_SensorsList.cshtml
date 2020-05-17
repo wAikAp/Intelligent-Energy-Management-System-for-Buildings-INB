@@ -36,13 +36,33 @@
                     </a>
                 </div>
             }
-                <div class="d-flex justify-content-end">
+        <div class="d-flex justify-content-end">
+            @try
+            {
 
-                    <a href="#" class="btn btn-outline-success px-2 mr-3" onclick="AddtSensors()">
-                        &#43; Add
-                    </a>
-                </div>
-            </div>
+
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.ToString());
+            }
+            @if (ViewData["roomID"] != null)
+            {
+                <a href="#" class="btn btn-outline-success px-2 mr-3" onclick="AddtSensors(@ViewData["roomID"])">
+                    &#43; Add
+                </a>
+            }
+            else
+            { <a href="#" class="btn btn-outline-success px-2 mr-3" onclick="AddtSensors()">
+                    &#43; Add
+                </a>
+
+            }
+
+
+
+        </div>
+        </div>
         @if (SensorsByroomList.Count == 0)
         {<div class="alert alert-warning text-center font-weight-bold" role="alert">
                 <h3>TryAgin, No more record in Your conditions.  </h3>
@@ -51,88 +71,89 @@
         {
             @foreach (var getSensorsByroom in SensorsByroomList)
             {
-    <div class="card m-2">
-        @if (!ViewData["NotGroup"].Equals("true")) { 
-        <div class="card-header p-0" id="heading_@getSensorsByroom.First().roomId">
-            <h3 class="mb-0">
-                <button class="btn btn-outline-secondary w-100 border-0" data-toggle="collapse" data-target="#collapse_@getSensorsByroom.First().roomId" aria-expanded="true" aria-controls="collapse_@getSensorsByroom.First().roomId">
-                    @getSensorsByroom.First().roomId
-                </button>
-            </h3>
-        </div> 
-        }
-        <div id="collapse_@getSensorsByroom.First().roomId" class="collapse show" aria-labelledby="heading_@getSensorsByroom.First().roomId">
-            <div class="card-body d-flex flex-wrap">
-
-                @foreach (var get in getSensorsByroom)
-                {
-                    switch (get.sensorId.Substring(0, 2))
+                <div class="card m-2">
+                    @if (!ViewData["NotGroup"].Equals("true"))
                     {
-                        case "TS":
-                            ViewData["devicesType"] = "Temperature";
-                            ViewData["TypeColor"] = "bg-primary";
-                            break;
-                        case "LS":
-                            ViewData["devicesType"] = "Luminosity";
-                            ViewData["TypeColor"] = "bg-warning";
-                            break;
-                        case "HS":
-                            ViewData["devicesType"]= "Humidity";
-                            ViewData["TypeColor"]= "bg-info";
-                            break;
-
+                        <div class="card-header p-0" id="heading_@getSensorsByroom.First().roomId">
+                            <h3 class="mb-0">
+                                <button class="btn btn-outline-secondary w-100 border-0" data-toggle="collapse" data-target="#collapse_@getSensorsByroom.First().roomId" aria-expanded="true" aria-controls="collapse_@getSensorsByroom.First().roomId">
+                                    @getSensorsByroom.First().roomId
+                                </button>
+                            </h3>
+                        </div>
                     }
-                    <div class="card text-white @ViewData["TypeColor"] mb-3 mx-3" style="max-width: 13rem;">
-                        <div class="card-header">
-                            <div class="d-flex bd-highlight align-items-center">
-                                <div class="mr-auto text-white bd-highlight">
-                                    <a class="  align-middle text-white h-100" href="#">
-                                        @ViewData["devicesType"]
-                                    </a>
-                                </div>
-                                <div class="dropdown  bd-highlight">
+                    <div id="collapse_@getSensorsByroom.First().roomId" class="collapse show" aria-labelledby="heading_@getSensorsByroom.First().roomId">
+                        <div class="card-body d-flex flex-wrap">
 
-                                    <button role="button" class="btn  float-right mt-1 ml-2" type="button" id="dropdownMenuButton0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <img class=" mt-1" style="width: 16px;@ViewData["backimg"]" src="~/img/icon/rightArrow.png" />
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton0">
-                                        <a href="#" class="btn text-success mx-2" onclick="EditSensors('@get.sensorId')">edit </a>
+                            @foreach (var get in getSensorsByroom)
+                            {
+                                switch (get.sensorId.Substring(0, 2))
+                                {
+                                    case "TS":
+                                        ViewData["devicesType"] = "Temperature";
+                                        ViewData["TypeColor"] = "bg-primary";
+                                        break;
+                                    case "LS":
+                                        ViewData["devicesType"] = "Luminosity";
+                                        ViewData["TypeColor"] = "bg-warning";
+                                        break;
+                                    case "HS":
+                                        ViewData["devicesType"] = "Humidity";
+                                        ViewData["TypeColor"] = "bg-info";
+                                        break;
 
-                                        <a href="#" class="btn text-danger mx-2" onclick="DropSensors('@get.sensorId')">Delete </a>
+                                }
+                                <div class="card text-white @ViewData["TypeColor"] mb-3 mx-3" style="max-width: 13rem;">
+                                    <div class="card-header">
+                                        <div class="d-flex bd-highlight align-items-center">
+                                            <div class="mr-auto text-white bd-highlight">
+                                                <a class="  align-middle text-white h-100" href="#">
+                                                    @ViewData["devicesType"]
+                                                </a>
+                                            </div>
+                                            <div class="dropdown  bd-highlight">
+
+                                                <button role="button" class="btn  float-right mt-1 ml-2" type="button" id="dropdownMenuButton0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <img class=" mt-1" style="width: 16px;@ViewData["backimg"]" src="~/img/icon/rightArrow.png" />
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton0">
+                                                    <a href="#" class="btn text-success mx-2" onclick="EditSensors('@get.sensorId')">edit </a>
+
+                                                    <a href="#" class="btn text-danger mx-2" onclick="DropSensors('@get.sensorId')">Delete </a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="ard-text p-0 m-0">@get.roomId @get.sensorId</p>
+
+                                        <h4 class="card-title">
+                                            <img src="~/img/icon/@get.typeImg" height="50" style="filter: invert(100%);">
+                                            @get.current_Value @get.typeUnit
+                                        </h4>
+                                        <p class="card-text my-1">
+                                            updated
+                                            @if (get.current_Time != DateTime.MinValue)
+                                            {<b>
+                                                    @get.current_Time
+                                                </b>
+                                            }
+                                            else
+                                            {
+                                                <b> N/A </b>
+                                            }
+                                        </p>
                                     </div>
                                 </div>
-                            </div>
 
 
-                        </div>
-                        <div class="card-body">
-                            <p class="ard-text p-0 m-0">@get.roomId @get.sensorId</p>
+                            }
 
-                            <h4 class="card-title">
-                                <img src="~/img/icon/@get.typeImg" height="50" style="filter: invert(100%);">
-                                @get.current_Value @get.typeUnit
-                            </h4>
-                            <p class="card-text my-1">
-                                updated
-                                @if (get.current_Time != DateTime.MinValue)
-                                {<b>
-                                        @get.current_Time
-                                    </b>
-                                }
-                                else
-                                {
-                                    <b> N/A </b>
-                                }
-                            </p>
                         </div>
                     </div>
-
-
-                }
-
-            </div>
-        </div>
-    </div>
+                </div>
             }}
 
     </div>
@@ -163,6 +184,16 @@
     var AddtSensors = function () {
 
         var url = "/Sensors/AddSensors";
+
+        $("#EditSensorsBody").load(url, function () {
+            $("#EditSensors").modal("show");
+
+        })
+
+    }
+    var AddtSensors = function (roomid) {
+
+        var url = "/Sensors/AddSensors/" + roomid;
 
         $("#EditSensorsBody").load(url, function () {
             $("#EditSensors").modal("show");

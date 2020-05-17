@@ -21,7 +21,7 @@
 
         <div class="modal-header">
 
-            <h5 class="modal-title" id="exampleModalLabel"> @ViewBag.viewType Sensors </h5>
+            <h5 class="modal-title" id="exampleModalLabel"> @ViewBag.viewType Sensor </h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 
                 <span aria-hidden="true">&times;</span>
@@ -46,19 +46,30 @@
                             {@Sensors.First().roomId}" readonly>
                             <input type="text" class="form-control bg-white" id="roomId" name="roomId" placeholder="roomid" value="" required>
                         }
-                }
-                else if (ViewBag.viewType.Equals("Add"))
-                {
-                    <select id="roomId" name="roomId" class="form-control bg-white">
-                        <option value="">Room.No</option>
-                        @foreach (var Room in Rooms)
+                    }
+                    else if (ViewBag.viewType.Equals("Add"))
+                    {
+                        System.Diagnostics.Debug.WriteLine(ViewBag.CheckRoomid);
+                        if (ViewBag.CheckRoomid == null)
+
                         {
 
-                            <option value="@Room.roomId">@Room.roomId</option>
+                        <select id="roomId" name="roomId" class="form-control bg-white">
+                            <option value="">Room.No</option>
+                            @foreach (var Room in Rooms)
+                            {
 
+                                <option value="@Room.roomId">@Room.roomId</option>
+
+                            }
+
+                        </select>
+                    }
+                    else
+                    {            
+                       <input type="text" class="form-control bg-white" id="roomId" name="roomId" value="@ViewBag.CheckRoomid" required readonly>
                         }
-
-                    </select>}
+                }
                 </div>
             </div>
             @if (ViewBag.viewType.Equals("Edit") || ViewBag.viewType.Equals("Drop"))
@@ -90,7 +101,7 @@
 
                 <div class="row mx-3 justify-content-center align-items-center pb-2">
 
-                    <label class="col h5" for="Sensortype">Sensors type:</label>
+                    <label class="col h5" for="Sensortype">Sensor type:</label>
                     <div class="col">
                         @{
                             string str = "";}
@@ -124,8 +135,8 @@
 
 
                             <select class="form-control bg-white" id="Sensortype" name="Sensortype" placeholder="type" required>
-                                <option value="TS">tempperature</option>
-                                <option value="HS">humidity</option>
+                                <option value="TS">Tempperature</option>
+                                <option value="HS">Humidity</option>
                                 <option value="LS">Luminosity</option>
                             </select>}
                     </div>
@@ -139,10 +150,12 @@
 
                         <input type="text" class="form-control bg-white" id="pos_x" name="pos_x" placeholder="pos_x" value="@if (Sensors != null)
                         {@Sensors.First().pos_x}" required>
-                    </div>
+ </div>
 
-                </div>
-                <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+</div>
+
+<div class="row mx-3 justify-content-center align-items-center pb-2">
 
                     <label class="col h5" for="pos_y"> Position Y:</label>
                     <div class="col">
@@ -158,7 +171,7 @@
                     <div class="col">
 
                         <input type="text" class="form-control bg-white" id="desc" name="desc" placeholder=" Description of Sensor" value="@if (Sensors != null)
-                        {@Sensors.First().desc}" required>
+                        {@Sensors.First().desc}" >
 
                     </div>
 

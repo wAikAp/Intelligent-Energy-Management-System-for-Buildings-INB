@@ -32,6 +32,7 @@ namespace FYP_APP.Controllers
 		[Route("Sensors/Sensors")]
 		public ActionResult Sensors()
 		{
+
 			ViewData["NotGroup"] = "false";
 			ViewBag.SearchRoomIdENorDisable = "";
 			ViewData["SensorsListModel"] = Setgroup(GetSensorsData());
@@ -102,10 +103,17 @@ namespace FYP_APP.Controllers
 			ViewData["NotGroup"] = "true";
 			//getdb();
 			string id = "";
-			id = Request.Query["roomID"];
-			List<SensorsListModel> lists = GetSensorsData().Where(x => x.roomId.Contains(id)).ToList();
-
-			ViewData["SensorsListModel"] = Setgroup(lists);
+			if (Convert.ToInt32(Request.Query["roomID"]) > 0)
+			{
+				id = Request.Query["roomID"];
+				//ViewData["roomID"] 
+				ViewBag.roomid	= id;
+				List<SensorsListModel> lists = GetSensorsData().Where(x => x.roomId.Contains(id)).ToList();
+				ViewData["SensorsListModel"] = Setgroup(lists);
+			}
+			else {
+				id = "";
+			}
 
 			return PartialView("_SensorsList");
 		}
@@ -176,6 +184,17 @@ namespace FYP_APP.Controllers
 			return ReturnUrl();
 		}
 		
+		[Route("Sensors/AddSensors/{id}")]
+		public ActionResult AddSensors(string id)//display add sensors form
+		{
+			ViewBag.viewType = "Add";
+			ViewBag.ChangeType = "readonly";
+			ViewData["RoomListModel"] = GetRoomData();
+			ViewBag.action = "AddSensorsData";
+			ViewBag.CheckRoomid = id;
+
+			return PartialView("_AddSensors");
+		}
 		[Route("Sensors/AddSensors")]
 		public ActionResult AddSensors()//display add sensors form
 		{
@@ -183,6 +202,7 @@ namespace FYP_APP.Controllers
 			ViewBag.ChangeType = "readonly";
 			ViewData["RoomListModel"] = GetRoomData();
 			ViewBag.action = "AddSensorsData";
+			ViewBag.CheckRoomid = null;
 
 			return PartialView("_AddSensors");
 		}
