@@ -8,6 +8,11 @@
     color: white;
     font-weight:bold;
     font-size:12px;
+    padding-top:10px;
+}
+
+.draggable:hover {
+    cursor: all-scroll;
 }
 
 .TSensor {

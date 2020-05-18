@@ -6,7 +6,36 @@
 @model FYP_WEB_APP.Models.SensorsListModel
 
 <link rel="stylesheet" href="~/css/dragButton.css">
-<script>$(function () {
+
+@{
+    String sensorClassType = "";
+    String sensorUnit = "";
+    switch (Model.sensorId.Substring(0, 2))
+    {
+        case "TS":
+            sensorClassType = "TSensor";
+            sensorUnit = " C";
+            break;
+        case "LS":
+            sensorClassType = "LSensor";
+            sensorUnit = " lm";
+            break;
+        case "HS":
+            sensorClassType = "HSensor";
+            sensorUnit = " %";
+            break;
+    }
+}
+<div class="draggable @sensorClassType" id="@Model.sensorId">
+
+
+    <p>@Model.sensorId</p>
+    <p>@Model.current_Value @sensorUnit</p>
+</div>
+
+
+<script>
+    $(function () {
         $(".draggable").draggable({
 
             drag: function () {
@@ -16,9 +45,7 @@
 
             }
         });
-    });</script>
+    });
+    $("#@Model.sensorId").css({ top: @Model.pos_x +'px', left:  @Model.pos_y +'px' });
 
-<div class="draggable ui-widget-content TSensor">
-    <p>@Model.sensorId<snap> - @Model.sensor_name</snap></p>
-    <p>@Model.current_Value</p>
-</div>
+</script>
