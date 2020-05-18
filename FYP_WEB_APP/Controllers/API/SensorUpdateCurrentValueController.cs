@@ -43,15 +43,15 @@ namespace FYP_WEB_APP.Controllers.API
                     DateTime utcNow = DateTime.UtcNow;
                     switch (id.Substring(0, 2)) {
                         case "TS":
-                            valueNmae = "current_tmp";
+                            valueNmae = "current";
                             dbname = "TMP_SENSOR";
                             break;
                         case "HS":
-                            valueNmae = "current_hum";
+                            valueNmae = "current";
                             dbname = "HUM_SENSOR";
                             break;
                         case "LS":
-                            valueNmae = "current_lum";
+                            valueNmae = "current";
                             dbname = "LIGHT_SENSOR";
                             break;
                         default:
@@ -69,7 +69,7 @@ namespace FYP_WEB_APP.Controllers.API
                          up = Builders<BsonDocument>.Update.Set("latest_checking_time", DateTime.UtcNow);
                          Updated = collection.UpdateOne(filter, up, updateOptions);
                         */
-                        collection.InsertOne(new BsonDocument { { "sensorId", id }, { "current", Convert.ToDouble(Value)  }, { "latest_checking_time", utcNow } });
+                        collection.InsertOne(new BsonDocument { { "sensorId", id }, { "current", Convert.ToDouble(Value)  }, { "latest_checking_time", utcNow.AddHours(8) } });
 
                         str += "{ sensorId , " + id + "},{ value," + Value + "},{ latest_checking_time," + utcNow + "}\n";
 

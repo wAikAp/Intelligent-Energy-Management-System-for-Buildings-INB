@@ -114,13 +114,12 @@ namespace FYP_APP.Controllers
 			//ViewBag.day = getChartTime();
 			//ViewBag.datasets = chartData(lists, Request.Query["sensorType"]);
 			List<string> label = new List<string>();
-			label.Add("Light");
-			label.Add("Other");
-			label.Add("Air conditioning");
+			DevicesController device = new DevicesController();
 			List<double> data = new List<double>();
-			data.Add(30);
-			data.Add(20);
-			data.Add(50);
+			foreach (string getDeviceTypeName in device.typeName) {
+				label.Add(getDeviceTypeName);
+				data.Add(device.GetDeviceCount(getDeviceTypeName));
+			}
 			ViewBag.divId = GetRandomDivId();
 			ChartController chart = new ChartController();
 			ViewBag.datasets = chart.DoughnutChart(label, data);

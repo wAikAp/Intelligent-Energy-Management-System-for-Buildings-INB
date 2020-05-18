@@ -8,10 +8,12 @@
     <div class=" shadow-sm w-100 h-100 p-3 justify-content-center align-items-center">
         <div class="container-fluid col-xs-12 col-md-8 pt-4 w-100 px-0">
 
-            <canvas id="UsageRecordChart"></canvas>
+            <canvas id="@ViewBag.divId"></canvas>
         </div>
     </div>
+    @if(ViewBag.download== "true"){
     <button class="p-3 mx-2 btn btn-outline-secondary">Download the report</button>
+    }
 
 </div>
 <script>
@@ -29,63 +31,66 @@
     getUsageRecordData();
 
     async function getUsageRecordData() {
+           chartID = '@ViewBag.divId';
 
-        charttitle = 'Devices Power Usage Record';
+            charttitle = '@ViewBag.charttitle';
+            chartType = '@ViewBag.chartType';
+            position ='@ViewBag.position';
 
-        chartID = 'UsageRecordChart';
-        chartType = 'line';
-        position = 'right';
-        devices.push('deviceA');
-        devices.push('deviceB');
-        devices.push('deviceC');
-        var day = [];
-        var i;
-        for (i = 0; i < 30; i++) {
-            day.push(i);
-        }
-        devices.forEach(getRandomColor);
+            var time =@Html.Raw(ViewBag.day);
+
+            var jdatasets =@Html.Raw(ViewBag.datasets);
 
         //set chart data
         dataop = {
-            labels: day,
-            datasets: [{
-                label: devices[0],
-                borderColor: gcolor[0],
-                fill: false,
-                data: [65, 59, 80, 81, 56, 55, 40, 50, 60, 55, 30, 78],
-            }, {
-                label: devices[1],
-                borderColor: gcolor[1],
-                fill: false,
-                data: [10, 20, 60, 95, 64, 78, 90, 80, 70, 40, 70, 89],
-                spanGaps: false,
-            }, {
-                label: devices[2],
-                borderColor: gcolor[2],
-                fill: false,
-                data: [30, 20, 80, 50, 64, 78, 100, 40, 50, 40, 75, 90],
-                spanGaps: false,
-            }
-
-            ]
+            labels: time,
+            datasets: jdatasets
         };
         //set chart option
-        goption = {
-            title: {
-                display: true,
-                text: charttitle,
-                fontSize: 25,
-            },
-            legend: {
-                display: true,
-                position: position,
-                labels: {
-                    boxWidth: 20,
-                    fontColor: '#111',
-                    padding: 15
-                }
-            }
-        };
+goption = {
+                    title: {
+                        display: true,
+                        text: charttitle,
+                        fontSize: 25,
+                    },
+                    legend: {
+                        display: true,
+                        position: position,
+                        labels: {
+                            boxWidth: 20,
+                            fontColor: '#111',
+                            padding: 15
+                        }
+                    },
+                    scales: {
+                        yAxes: [
+                            {
+                                ticks: {
+                                    callback: function (label, index, labels) {
+                                        return label + '@ViewBag.unit';
+                                    }
+                                },
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: '@ViewBag.unitName'
+                                }
+                            }
+                        ],
+                        xAxes: [
+                            {
+                                ticks: {
+                                    callback: function (label, index, labels) {
+                                        return label + ':00';
+                                    }
+                                },
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'TIME'
+                                }
+                            }
+                        ]
+                    }
+                };
         draw();
 
     }
