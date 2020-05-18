@@ -46,13 +46,24 @@
 <script>
     $("#@Model.sensorId").click(function () {
         //the id from _SensorDeviceDetail to change those UI
+
+        $("#editBtn").attr("onclick", "EditSensors('@Model.sensorId')");
+
         $("#typeName").text("@displayType");
-        $("#typeImg").attr('src', '~/img/icon/@sensorImg');
+        $("#sdid").text("@Model.sensorId");
+        $("#typeImg").attr('src', '/img/icon/@sensorImg');
         $("#current_value").text('@Model.current_Value  @sensorUnit');
         $("#totalPower").text("N/A");
         $("#avgPower").text("N/A");
         $("#lastUpdateTimes").text('@Model.latest_checking_time');
-        $("#detailDiv").toggleClass('@sensorClassType');
+        $("#detailDiv").removeClass('HSensor');
+        $("#detailDiv").removeClass('TSensor');
+        $("#detailDiv").removeClass('LSensor');
+        $("#detailDiv").removeClass('bg-dark');
+        $("#detailDiv").removeClass('device_on');
+        $("#detailDiv").removeClass('device_off');
+        $("#detailDiv").addClass('@sensorClassType');
+        $("#turnOnOff").text("N/A");
     });
     $(function () {
         $(".draggable").draggable({

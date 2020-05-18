@@ -8,22 +8,26 @@
 <link rel="stylesheet" href="~/css/dragButton.css">
 
 @{
-    String deviceClass = "device_off";
+
     String deviceImg = "";
+    String displayType = "";
     switch (Model.devicesId.Substring(0, 2))
     {
         case "AC":
             deviceImg = "air-conditioner32.png";
+            displayType = "Air Conditioner";
             break;
         case "LT":
             deviceImg = "light-on32.png";
+            displayType = "Light";
             break;
         case "EF":
             deviceImg = "fan32.png";
+            displayType = "Fan";
             break;
     }
 
-
+    String deviceClass = "device_off";
     if (Model.powerOnOff)
     {
         deviceClass = "device_on";
@@ -37,6 +41,30 @@
 
 
 <script>
+    $("#@Model.devicesId").click(function () {
+        //the id from _SensorDeviceDetail to change those UI
+
+        $("#editBtn").attr("onclick", "EditDevices('@Model.devicesId')");
+
+        $("#typeName").text("@displayType");
+        $("#sdid").text("@Model.devicesId");
+        $("#typeImg").attr('src', '/img/icon/@deviceImg');
+        $("#current_value").text('@Model.current');
+        $("#totalPower").text("@Model.power");
+        $("#avgPower").text("@Model.avgPower");
+        $("#lastUpdateTimes").text('@Model.lastest_checking_time');
+        $("#detailDiv").removeClass('HSensor');
+        $("#detailDiv").removeClass('TSensor');
+        $("#detailDiv").removeClass('LSensor');
+        $("#detailDiv").removeClass('bg-dark');
+        $("#detailDiv").removeClass('device_on');
+        $("#detailDiv").removeClass('device_off');
+        $("#detailDiv").addClass('@deviceClass');
+        $("#turnOnOff").text("Turning off");
+    });
+
+
+
     $(function () {
         $(".draggable").draggable({
 
