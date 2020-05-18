@@ -20,11 +20,13 @@ namespace FYP_WEB_APP.Controllers
             SensorsController sensorsController = new SensorsController();
             List<SensorsListModel> sensorsList = sensorsController.GetSensorsListByRoomid(roomID);
             DevicesController DevicesController = new DevicesController();
-            List<DevicesListModel> Deviceslist = DevicesController.GetDevicesListByRoomid(roomID);
+            List<DevicesListModel> deviceslist = DevicesController.GetDevicesListByRoomid(roomID);
 
-            Debug.WriteLine("sensor list = "+sensorsList.ToJson().ToString());
-            Debug.WriteLine("Devices list = " + Deviceslist.ToJson().ToString());
-            
+            //Debug.WriteLine("sensor list = "+sensorsList.ToJson().ToString());
+            //Debug.WriteLine("Devices list = " + deviceslist.ToJson().ToString());
+            ViewData["sensorsList"] = sensorsList;
+            ViewData["deviceslist"] = deviceslist;
+
             return View();
         }
 

@@ -1,0 +1,39 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<script>$(function () {
+        $(".draggable").draggable({
+
+            drag: function () {
+                var position = $(this).position();
+                $('#posx').text('px: ' + position.left);
+                $('#posy').text('py: ' + position.top);
+
+            }
+        });
+    });
+    $(document).ready(function () {
+        //top:y; left:x;
+        $(".draggable").css({ top: '1px', left: '200px' });
+    });</script>
+<style>
+
+
+    .draggable {
+        background-color: aqua;
+        width: 80px;
+        z-index: 99;
+        position: absolute;
+    }
+</style>
+
+<div class="draggable ui-widget-content">
+    <p>Drag me</p>
+    <br>
+    <p id="posX"></p><br>
+    <p id="posY"></p>
+    <p id="posx"></p>
+    <p id="posy"></p>
+</div>
