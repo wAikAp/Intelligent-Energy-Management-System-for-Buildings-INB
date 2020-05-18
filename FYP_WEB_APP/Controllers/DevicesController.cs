@@ -102,29 +102,21 @@ namespace FYP_APP.Controllers
 		{
 			string id = "";
 			id = Request.Query["roomID"];
-			//  $("#sensorChartHS").load("@Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"], title = "Humidity Sensor Log Record", chartType = "line", position = "top", sensorType = "HS" })", function () {});
-			//$("#sensorChartLS").load("@Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"], title = "Luminosity Sensor Log Record", chartType = "line", position = "top", sensorType = "LS" })", function () {});
 
 			List<DevicesListModel> lists = GetAllDevices().Where(x => x.roomId.Contains(id)).ToList();
-			Debug.WriteLine("list: " + lists.ToJson().ToString());
-			Debug.WriteLine("list: " + Request.QueryString);
-			Debug.WriteLine("roomID: " + Request.Query["roomID"]);
-			Debug.WriteLine("title: " + Request.Query["title"]);
-			Debug.WriteLine("chartType: " + Request.Query["chartType"]);
-			Debug.WriteLine("position: " + Request.Query["position"]);
-			Debug.WriteLine("sensorType: " + Request.Query["sensorType"]);
-			//Debug.WriteLine(Setgroup(lists).ToJson().ToString());
+
 			ViewBag.charttitle = Request.Query["title"];
 			ViewBag.chartType = Request.Query["chartType"];
 			ViewBag.position = Request.Query["position"];
 			ViewBag.download = Request.Query["download"];
 
+			ViewBag.datasets = ChartData(lists, Request.Query["sensorType"]);
+
 			ChartController chart = new ChartController();
 
 			ViewBag.day = chart.GetChartTime();
-			ViewBag.datasets = ChartData(lists, Request.Query["sensorType"]);
 			ViewBag.divId = chart.GetRandomDivId();
-			
+
 			return PartialView("_DevicesChart");
 		}
 		[Route("Devices/SearchDevicesByRoomid")]
