@@ -88,7 +88,7 @@ DevicesList = ViewData["MongoDevicesListModel"] as List<FYP_WEB_APP.Models.Mongo
                                             </div>
                                             <div class="d-flex px-3 align-items-center">
                                                 <input type="checkbox" id="AC" name="AC" value="true" />
-                                                Air Conditioning
+                                                Air Conditioner
                                             </div>
                                             <div class="d-flex px-3 align-items-center">
                                                 <input type="checkbox" id="LT" name="LT" value="true" />
@@ -160,10 +160,10 @@ DevicesList = ViewData["MongoDevicesListModel"] as List<FYP_WEB_APP.Models.Mongo
                         <div id="DevicesChartEF" class="flex-fill bd-highlight col-12 h-100"></div>
                         <script>
                 $(document).ready(function () {
-                    $("#DevicesChartAC").load("@Html.Raw(Url.Action("DevicesChart", "Devices", new { title = "Air Conditioning Log Record", chartType = "line", position = "top", sensorType = "AC" , download=false}))", function () {});
-                    $("#DevicesChartLT").load("@Html.Raw(Url.Action("DevicesChart", "Devices", new { title = "Light Log Record", chartType = "line", position = "top", sensorType = "LT", download=false}))", function () {});
-                    $("#DevicesChartHD").load("@Html.Raw(Url.Action("DevicesChart", "Devices", new { title = "Humidifier Log Record", chartType = "line", position = "top", sensorType = "HD", download=false}))", function () {});
-                    $("#DevicesChartEF").load("@Html.Raw(Url.Action("DevicesChart", "Devices", new { title = "FAN Log Record", chartType = "line", position = "top", sensorType = "EF", download=false}))", function () {});
+                    $("#DevicesChartAC").load("@Html.Raw(Url.Action("DevicesChart", "Devices", new { title = "Air Conditioner Log Record", chartType = "line", position = "top", sensorType = "AC" , download= true}))", function () {});
+                    $("#DevicesChartLT").load("@Html.Raw(Url.Action("DevicesChart", "Devices", new { title = "Light Log Record", chartType = "line", position = "top", sensorType = "LT", download= true }))", function () {});
+                    $("#DevicesChartHD").load("@Html.Raw(Url.Action("DevicesChart", "Devices", new { title = "Humidifier Log Record", chartType = "line", position = "top", sensorType = "HD", download= true }))", function () {});
+                    $("#DevicesChartEF").load("@Html.Raw(Url.Action("DevicesChart", "Devices", new { title = "FAN Log Record", chartType = "line", position = "top", sensorType = "EF", download= true }))", function () {});
 
                 });
 

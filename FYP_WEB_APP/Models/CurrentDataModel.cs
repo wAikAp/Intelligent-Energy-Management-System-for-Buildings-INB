@@ -10,6 +10,7 @@ namespace FYP_WEB_APP.Models
     {
         public ObjectId _id { get; set; }
         public string sensorId { get; set; }
+        public string devicesId { get; set; }
         public double current { get; set; }
         public DateTime latest_checking_time { get; set; }
         

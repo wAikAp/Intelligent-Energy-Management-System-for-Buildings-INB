@@ -570,7 +570,7 @@ namespace FYP_APP.Controllers
 					//sensor log
 
 
-					List<CurrentDataModel> SensorsCurrentList = new List<CurrentDataModel>();
+					List<CurrentDataModel> DevicesCurrentList = new List<CurrentDataModel>();
 					//only ts
 
 					DateTime today = DateTime.Now;
@@ -587,10 +587,10 @@ namespace FYP_APP.Controllers
 					{
 						Color.Add(chart.GetRandomColor());
 						labelss.Add(get.devicesId);
-						SensorsCurrentList = GetChartDataList(get.devicesId).Where(x => x.latest_checking_time > today.AddDays(-1)).OrderBy(x => x.latest_checking_time).ToList();
-				Debug.WriteLine("line 596 :" + DevicesDataList.ToJson().ToString());
+						DevicesCurrentList = GetChartDataList(get.devicesId).Where(x => x.latest_checking_time > today.AddDays(-1)).OrderBy(x => x.latest_checking_time).ToList();
+						Debug.WriteLine(get.devicesId+" line 596 :" + DevicesCurrentList.ToJson().ToString());
 
-				DateTime ca = today;
+						DateTime ca = today;
 						TimeSpan catime = ca - ca.AddDays(-1);
 
 						int counttime = Convert.ToInt32(catime.TotalMinutes / 5);
@@ -600,11 +600,13 @@ namespace FYP_APP.Controllers
 							data.Add(0);
 
 						}
-						if (SensorsCurrentList.Count() != 0)
+				Debug.WriteLine("line 603 : " + DevicesCurrentList.Count());
+
+				if (DevicesCurrentList.Count() != 0)
 						{
-							foreach (CurrentDataModel getCurrent in SensorsCurrentList)
+					foreach (CurrentDataModel getCurrent in DevicesCurrentList)
 							{
-						Debug.WriteLine("line 615 : "+SensorsCurrentList.ToJson().ToString());
+						Debug.WriteLine("line 615 : "+ DevicesCurrentList.ToJson().ToString());
 
 						var value = Convert.ToDouble(Convert.ToDouble(getCurrent.current).ToString("0.00"));
 
@@ -633,7 +635,11 @@ namespace FYP_APP.Controllers
 						labelss.Add(DevicesDataList[i].devicesId);
 					}
 
-					return chart.LineChart(DevicesDataList.Count, labelss, datas);
+					foreach (var get in datas) {
+						Debug.WriteLine(get.ToJson());
+
+					}
+			return chart.LineChart(DevicesDataList.Count, labelss, datas);
 			
 		}
 		public List<CurrentDataModel> GetChartDataList(string id)
@@ -654,7 +660,7 @@ namespace FYP_APP.Controllers
 			};
 			collection = new DBManger().DataBase.GetCollection<CurrentDataModel>(tableName);
 					IQueryable<CurrentDataModel> query;
-					query = from c in collection.AsQueryable<CurrentDataModel>() orderby c.latest_checking_time descending where c.sensorId.Contains(id) select c;
+					query = from c in collection.AsQueryable<CurrentDataModel>() orderby c.latest_checking_time descending where c.devicesId.Contains(id) select c;
 					return query.ToList();	
 		}
 		public string[] typeName= { "Air Conditioning", "Light", "Humidifier", "EXH_FAN" };
