@@ -9,30 +9,30 @@
     <title>Multisection events and Recurrings</title>
     <link rel="stylesheet" href="~/css/style.css">
 
-    <script src="~/js/Chart.min.js"></script>
+    <script src="~/js/chart/Chart.min.js"></script>
     <!--https://www.chartjs.org/-->
     <link rel="stylesheet" href="~/css/bootstrap.min.css">
-    <script src="~/js/jquery.min.js"></script>
-    <script src="~/js/popper.min.js"></script>
-    <script src="~/s/bootstrap.min.js"></script>
-    <script src="~/js/heatmap.js"></script>
-    <script src="~/js/heatmap.min.js"></script>
+    <script src="~/js/jquery/jquery-3.5.1.min.js"></script>
+    <script src="~/js/bootstrap/popper.min.js"></script>
+    <script src="~/js/bootstrap/bootstrap.min.js"></script>
+    <script src="~/js/heatmap/heatmap.js"></script>
+    <script src="~/js/heatmap/heatmap.min.js"></script>
     <script src="~/js/prism.js"></script>
     <!--loading js-->
     <script src="~/js/modernizr.js"></script>
-    <script src="~/js/jquery-2.2.4.min.js"></script>
+
     <!--loading js-->
 
-    <script src="~/lib/codebase/dhtmlxscheduler.js?v=5.3.5" type="text/javascript" charset="utf-8"></script>
-    <script src="~/lib/codebase/ext/dhtmlxscheduler_multisection.js?v=5.3.5" type="text/javascript" charset="utf-8"></script>
+    <script src="~/lib/codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+    <script src="~/lib/codebase/ext/dhtmlxscheduler_multisection.js" type="text/javascript" charset="utf-8"></script>
 
-    <link rel="stylesheet" href="~/lib/codebase/dhtmlxscheduler_material.css?v=5.3.5" type="text/css" charset="utf-8">
+    <link rel="stylesheet" href="~/lib/codebase/dhtmlxscheduler_material.css" type="text/css" charset="utf-8">
 
-    <script src="~/lib/codebase/ext/dhtmlxscheduler_limit.js?v=5.3.5" type="text/javascript" charset="utf-8"></script>
-    <script src='~/lib/codebase/ext/dhtmlxscheduler_timeline.js?v=5.3.5' type="text/javascript" charset="utf-8"></script>
-    <script src="~/lib/codebase/ext/dhtmlxscheduler_units.js?v=5.3.5" type="text/javascript" charset="utf-8"></script>
-    <script src="~/lib/codebase/ext/dhtmlxscheduler_multiselect.js?v=5.3.5" type="text/javascript" charset="utf-8"></script>
-    <script src="~/lib/codebase/ext/dhtmlxscheduler_recurring.js?v=5.3.5" type="text/javascript" charset="utf-8"></script>
+    <script src="~/lib/codebase/ext/dhtmlxscheduler_limit.js" type="text/javascript" charset="utf-8"></script>
+    <script src='~/lib/codebase/ext/dhtmlxscheduler_timeline.js' type="text/javascript" charset="utf-8"></script>
+    <script src="~/lib/codebase/ext/dhtmlxscheduler_units.js" type="text/javascript" charset="utf-8"></script>
+    <script src="~/lib/codebase/ext/dhtmlxscheduler_multiselect.js" type="text/javascript" charset="utf-8"></script>
+    <script src="~/lib/codebase/ext/dhtmlxscheduler_recurring.js" type="text/javascript" charset="utf-8"></script>
     <script src="~/lib/codebase/ext/dhtmlxscheduler_collision.js" type="text/javascript" charset="utf-8"></script>
 
     <style>
@@ -103,8 +103,8 @@
 			});
 
 			scheduler.addMarkedTimespan({
-				start_date:new Date(2017,5,30,15),
-				end_date: new Date(2017, 5,30, 19),
+				start_date:new Date(2020,5,30,15),
+				end_date: new Date(2020, 5,30, 19),
 				html:"<div class='justify-content-center align-items-center' style='  font-size: 25px;  font-weight: bold;'><div>Blocked<div></div>",
 				css:   "gray_section",
 				type:  "dhx_time_block" ,//the hardcoded value
@@ -137,13 +137,13 @@
 				{ name: "time", height: 72, type: "time", map_to: "auto" }
 			];
 
-			scheduler.init('scheduler_here', new Date(2017, 5, 30), "timeline");
+			scheduler.init('scheduler_here', new Date(2020, 5, 30), "timeline");
 
 			scheduler.parse([
-				{ start_date: "2017-06-30 09:00", end_date: "2017-06-30 12:00", text: "Task A-12458", section_id: '309', user: "ricky...", powerPlan: "1", unit_id: "309" },
-				{ start_date: "2017-06-30 10:00", end_date: "2017-06-30 16:00", text: "Task A-89411", section_id: '308', user: "ricky...", powerPlan: "1", unit_id: "308" },
-				{ start_date: "2017-06-30 4:00", end_date: "2017-06-30 15:00", text: "Sections 1,3", section_id: '348', user: "ricky...", powerPlan: "1", unit_id: "348" },
-				{ start_date: "2017-06-30 16:00", end_date: "2017-06-30 17:00", text: "Task A-46598", section_id: '350', user: "ricky...", powerPlan: "1", unit_id: "350" },
+				{ start_date: "2020-06-30 09:00", end_date: "2020-06-30 12:00", text: "Task A-12458", section_id: '309', user: "ricky...", powerPlan: "1", unit_id: "309" },
+				{ start_date: "2020-06-30 10:00", end_date: "2020-06-30 16:00", text: "Task A-89411", section_id: '308', user: "ricky...", powerPlan: "1", unit_id: "308" },
+				{ start_date: "2020-06-30 4:00", end_date: "2020-06-30 15:00", text: "Sections 1,3", section_id: '348', user: "ricky...", powerPlan: "1", unit_id: "348" },
+				{ start_date: "2020-06-30 16:00", end_date: "2020-06-30 17:00", text: "Task A-46598", section_id: '350', user: "ricky...", powerPlan: "1", unit_id: "350" },
 			]);
 		}
     </script>
@@ -152,11 +152,6 @@
           //navbar ui
           $('.navbar-nav .nav-link').removeClass('active');
           $("#schedule").addClass('active');
-
-          //<!--loading js-->
-          $(function() {
-              $('img').imgPreload()
-          });
       });
 
     $(window).load(function() {
@@ -178,11 +173,6 @@
     <!--loading page graphic-->
     <div class="se-pre-con"></div>
     <!--loading page graphic-->
-    <!--header-->
-    <div id="header">
-        <script src="header.js"></script>
-    </div>
-    <!--header-->
     <!--body-->
     <div class="main">
         <div class=" bg-light p-3">
@@ -270,8 +260,8 @@
                             <div class="pick_up_filter">
                                 <span class="search_title">Pick Up Date:</span>
                                 <div class="date_time_selector">
-                                    <img src="img/calendar.svg" class="date_calendar" id="minicalIconTo" onclick="show_minical(this, 'dateFrom')">
-                                    <input class="date" id="dateFrom" name="dateFrom" type="text" value="" placeholder="22/05/2017" onclick="show_minical(this, 'dateFrom')">
+                                    <!--<img src="~/img/calendar.svg" class="date_calendar" id="minicalIconTo" onclick="show_minical(this, 'dateFrom')">-->
+                                    <input class="date" id="dateFrom" name="dateFrom" type="text" value="" placeholder="22/05/2020" onclick="show_minical(this, 'dateFrom')">
                                     <div class="select">
                                         <select id="timeFrom" name="timeFrom" onchange="updateSections()"><option value="1">00:00</option><option value="2">01:00</option><option value="3">02:00</option><option value="4">03:00</option><option value="5">04:00</option><option value="6">05:00</option><option value="7">06:00</option><option value="8">07:00</option><option value="9">08:00</option><option value="10">09:00</option><option value="11">10:00</option><option value="12">11:00</option><option value="13">12:00</option><option value="14">13:00</option><option value="15">14:00</option><option value="16">15:00</option><option value="17">16:00</option><option value="18">17:00</option><option value="19">18:00</option><option value="20">19:00</option><option value="21">20:00</option><option value="22">21:00</option><option value="23">22:00</option><option value="24">23:00</option></select>
                                         <span class="select_layout"></span>
@@ -281,8 +271,8 @@
                             <div class="drop_off_filter">
                                 <span class="search_title">Drop Off Date:</span>
                                 <div class=".form-control date_time_selector">
-                                    <img src="img/calendar.svg" class="date_calendar" id="minicalIconFrom" onclick="show_minical(this, 'dateTo')">
-                                    <input class="date" id="dateTo" name="dateTo" type="text" value="" placeholder="24/05/2017" onclick="show_minical(this, 'dateTo')">
+                                    <img src="~/img/calendar.svg" class="date_calendar" id="minicalIconFrom" onclick="show_minical(this, 'dateTo')">
+                                    <input class="date" id="dateTo" name="dateTo" type="text" value="" placeholder="24/05/2020" onclick="show_minical(this, 'dateTo')">
                                     <div class="select">
                                         <select id="timeTo" name="timeTo" onchange="updateSections()"><option value="1">00:00</option><option value="2">01:00</option><option value="3">02:00</option><option value="4">03:00</option><option value="5">04:00</option><option value="6">05:00</option><option value="7">06:00</option><option value="8">07:00</option><option value="9">08:00</option><option value="10">09:00</option><option value="11">10:00</option><option value="12">11:00</option><option value="13">12:00</option><option value="14">13:00</option><option value="15">14:00</option><option value="16">15:00</option><option value="17">16:00</option><option value="18">17:00</option><option value="19">18:00</option><option value="20">19:00</option><option value="21">20:00</option><option value="22">21:00</option><option value="23">22:00</option><option value="24">23:00</option></select>
                                         <span class="select_layout"></span>
@@ -305,7 +295,7 @@
                 </form>
             </div>
             <!--body-->
-            <div id="scheduler_here" class="col-10 m-0 border-left dhx_cal_container" style='width:100%; height:100%;margin:10px;'>
+            <div id="scheduler_here" class="col-10 m-0 border-left dhx_cal_container" style='width:100%; height:700px; margin:10px;'>
                 <div class="dhx_cal_navline">
                     <div class="dhx_cal_prev_button">&nbsp;</div>
                     <div class="dhx_cal_next_button">&nbsp;</div>
