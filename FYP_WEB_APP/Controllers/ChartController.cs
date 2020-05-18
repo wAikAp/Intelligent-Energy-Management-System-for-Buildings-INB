@@ -104,34 +104,104 @@ namespace FYP_WEB_APP.Controllers
 			//set time
 			int ix = 0;
 			List<string> time = new List<string>();
-			for (int i = hour; i < 24; i++)
-			{
-				for (ix = Minute; ix < 60; ix += 5)
+			/**	for (int i = hour; i < 24; i++)
 				{
-					time.Add(i.ToString() + ":" + ix.ToString());
-					if (ix > 55)
+					for (ix = Minute; ix < 60; ix += 5)
 					{
-						Minute = ix + 5;
-						Minute %= 60;
+						time.Add(i.ToString() + ":" + ix.ToString());
+						if (ix > 55)
+						{
+							Minute = ix + 5;
+							Minute %= 60;
+						}
+						else if (ix == 55)
+						{
+							Minute = 0;
+						}
 					}
-					else if (ix == 55)
+				}
+
+				for (int i = 0; i < hour + 1; i++)
+				{
+					for (int ixx = Minute; ixx < 60; ixx += 5)
 					{
-						Minute = 0;
+						if (i == hour && ixx > oMinute)
+						{
+
+						}
+						else
+						{
+							time.Add(i.ToString() + ":" + ixx.ToString());
+
+						}
+					}
+				}*/
+			if (hour - 6 > 0)
+			{
+				for (int i = hour - 6; i <= today.Hour; i++)
+				{
+					for (ix = Minute; ix < 60; ix += 5)
+					{
+						if (i == today.Hour && ix > today.Minute)
+						{
+
+						}
+						else
+						{
+							time.Add(i.ToString() + ":" + ix.ToString());
+						}
+						if (ix > 55)
+						{
+							Minute = ix + 5;
+							Minute %= 60;
+						}
+						else if (ix == 55)
+						{
+							Minute = 0;
+						}
+
 					}
 				}
 			}
-
-			for (int i = 0; i < hour + 1; i++)
-			{
-				for (int ixx = Minute; ixx < 60; ixx += 5)
+			else {
+				for (int i =24+(hour - 6); i <24; i++)
 				{
-					if (i == hour && ixx > oMinute)
-					{
+					for (ix = Minute; ix < 60; ix += 5)
+					{						
+							time.Add(i.ToString() + ":" + ix.ToString());
+						if (ix > 55)
+						{
+							Minute = ix + 5;
+							Minute %= 60;
+						}
+						else if (ix == 55)
+						{
+							Minute = 0;
+						}
 
 					}
-					else
+				}
+				for (int i = 0; i <= today.Hour; i++)
+				{
+					for (ix = Minute; ix < 60; ix += 5)
 					{
-						time.Add(i.ToString() + ":" + ixx.ToString());
+						if (i == today.Hour && ix > today.Minute)
+						{
+
+						}
+						else
+						{
+							time.Add(i.ToString() + ":" + ix.ToString());
+						}
+						if (ix > 55)
+						{
+							Minute = ix + 5;
+							Minute %= 60;
+						}
+						else if (ix == 55)
+						{
+							Minute = 0;
+						}
 
 					}
 				}

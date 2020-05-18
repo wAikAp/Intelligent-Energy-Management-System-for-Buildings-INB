@@ -18,10 +18,8 @@ namespace FYP_APP.Controllers
 		public List<DevicesListModel> MongoDevicesList = new List<DevicesListModel> { };
 		public IMongoCollection<DevicesListModel> Getconn()
 		{
-			ConnectDB conn = new ConnectDB();
-			var database = conn.Conn();
-			var collection = database.GetCollection<DevicesListModel>("DEVICES_LIST");
-			return collection;
+
+			return new DBManger().DataBase.GetCollection<DevicesListModel>("DEVICES_LIST");
 		}
 		[Route("Devices/Devices")]
 		public IActionResult Devices()
@@ -231,72 +229,109 @@ namespace FYP_APP.Controllers
 		[HttpPost]
 		public ActionResult AddDevicesData(MongoDevicesListModel postData)//post
 		{
-			DevicesListModel insertList = new DevicesListModel { };
+			MongoDevicesListModel insertList = new MongoDevicesListModel { };
 
-			var all = GetAllDevices();
-			string count = "";
-			if (all.Count < 10) { count = "00" + (all.Count+1).ToString(); }
-			else if (all.Count < 100) { count = "0" + (all.Count + 1).ToString(); }
-			DateTime nowData = new DateTime();
+			var all = GetAllDevices().Where(d => d.devicesId.Contains(postData.devicesId));
 
-			//sensortype = postData.Sensortype;
-			insertList.roomId = postData.roomId;
-			insertList.devicesId = postData.devicesId + count;
-			insertList.devices_Name = postData.devices_Name;
-			insertList.pos_x = postData.pos_x;
-			insertList.pos_y = postData.pos_y;
-			insertList.desc = postData.desc;
-			insertList.lastest_checking_time = DateTime.UtcNow;
-			insertList.total_run_time = nowData;
-			insertList.power = 0;
 
-			Getconn().InsertOneAsync(insertList);
+			int count = all.Count();
+			string id = postData.devicesId + count;
+			all = GetAllDevices().Where(c => c.devicesId == (id));
+
+
+
+			while (all.Count() != 0)
+			{
+				count += 1;
+				id = postData.devicesId + count;
+				all = GetAllDevices().Where(c => c.devicesId == (id));
+
+				// code block to be executed
+			}
+							//sensortype = postData.Sensortype;
+				insertList.roomId = postData.roomId;
+				insertList.devicesId = postData.devicesId + count;
+				insertList.devices_Name = postData.devices_Name;
+				insertList.pos_x = postData.pos_x;
+				insertList.pos_y = postData.pos_y;
+				insertList.desc = postData.desc;
+				insertList.lastest_checking_time = DateTime.UtcNow;
+				insertList.total_run_time = DateTime.UtcNow;
+				insertList.power = 0;
+			
+			
+			try
+			{
+				new DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").InsertOneAsync(insertList);
+			}
+			catch (Exception e)
+			{
+				Debug.WriteLine("line 262 error ");
+
+				return ReturnUrl();
+			};
 			return ReturnUrl();
 		}
 		[Route("Devices/DropDevicesData")]
 		[HttpPost]
 		public ActionResult DropDevicesData(MongoDevicesListModel postData)//post
 		{
-			var DeleteResult = Getconn().DeleteOne(de => de.devicesId==postData.devicesId & de.roomId == postData.roomId);
+			var DeleteResult = new DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").DeleteOne(de => de.devicesId==postData.devicesId & de.roomId == postData.roomId);
+			if (DeleteResult.IsAcknowledged)
+			{
+				if (DeleteResult.DeletedCount != 1)
+				{
+					return ReturnUrl();
 
+					throw new Exception(string.Format("Count [value:{0}] after delete is invalid", DeleteResult.DeletedCount));
+
+				}
+			}
+			else
+			{
+				return ReturnUrl();
+
+				throw new Exception(string.Format("Delete for [_id:{0}] was not acknowledged", postData.devicesId.ToString()));
+
+			}
 			return ReturnUrl();
 		}
 		[Route("Devices/UpdateDevicesData")]
 		[HttpPost]
 		public ActionResult UpdateDevicesData(MongoDevicesListModel postData)
 		{
-			Debug.WriteLine(postData.ToJson().ToList());
-			var filter = Builders<DevicesListModel>.Filter.Eq("devicesId", postData.devicesId);
+			Debug.WriteLine("postData :==>>" + postData.ToJson().ToString());
+			var filter = Builders<MongoDevicesListModel>.Filter.Eq(d=>d.devicesId, postData.devicesId);
 			var type = postData.GetType();
 			var props = type.GetProperties();
 			foreach (var property in props)
 			{
+
 				if (!property.Name.Equals("_id"))
 				{
 					if (property.GetValue(postData) != null)
 					{
-						UpdateDefinition<DevicesListModel> up;
+						UpdateDefinition<MongoDevicesListModel> up;
 						if (property.Name == "latest_checking_time")
 						{
-							up = Builders<DevicesListModel>.Update.Set(property.Name.ToString(), DateTime.UtcNow);
+							up = Builders<MongoDevicesListModel>.Update.Set(property.Name.ToString(), DateTime.UtcNow);
 						}
 						else
 						{
-							up = Builders<DevicesListModel>.Update.Set(property.Name.ToString(), property.GetValue(postData).ToString());
+							up = Builders<MongoDevicesListModel>.Update.Set(property.Name.ToString(), property.GetValue(postData).ToString());
 
 						}
-						var UpdateResult = Getconn().UpdateOne(filter, up);
-						if (UpdateResult.IsAcknowledged)
+						Debug.WriteLine("error: line 303 =>> " + property.Name + ":" + property.GetValue(postData));
+
+						var UpdateResult = new DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").FindOneAndUpdateAsync(u => u.devicesId== postData.devicesId, up);
+						if (UpdateResult == null)
 						{
-							if (UpdateResult.ModifiedCount != 1)
-							{
-								throw new Exception(string.Format("Count [value:{0}] after Modifi is invalid", UpdateResult.ModifiedCount));
-							}
+							return ReturnUrl();
+
+							//Debug.WriteLine("error: line 306 =>> "+ property.Name);
+								//throw new Exception(string.Format("Count [value:{0}] after Modifi is invalid"));							
 						}
-						else
-						{
-							throw new Exception(string.Format("Delete for [_id:{0}] was not acknowledged", postData.devicesId.ToString()+"."+property.Name.ToString()));
-						}
+						
 						//this.isUpdated = Updated.IsAcknowledged;
 					}
 				}
@@ -322,7 +357,6 @@ namespace FYP_APP.Controllers
 				var data = new DevicesListModel()
 				{
 					_id = get._id,
-					listId = get.listId,
 					roomId = get.roomId,
 					devicesId = get.devicesId,
 					devices_Name= get.devices_Name,
@@ -591,9 +625,11 @@ namespace FYP_APP.Controllers
 						Debug.WriteLine(get.devicesId+" line 596 :" + DevicesCurrentList.ToJson().ToString());
 
 						DateTime ca = today;
-						TimeSpan catime = ca - ca.AddDays(-1);
+				//TimeSpan catime = ca - ca.AddDays(-1);
+				TimeSpan catime = ca - ca.AddHours(-6);
 
-						int counttime = Convert.ToInt32(catime.TotalMinutes / 5);
+
+				int counttime = Convert.ToInt32(catime.TotalMinutes / 5);
 
 						for (int x = 0; x <= counttime; x++)
 						{
@@ -610,7 +646,7 @@ namespace FYP_APP.Controllers
 
 						var value = Convert.ToDouble(Convert.ToDouble(getCurrent.current).ToString("0.00"));
 
-								ca = DateTime.Now.AddDays(-1);
+								ca = today.AddHours(-6);
 
 								for (int x = 0; x <= counttime; x++)
 								{

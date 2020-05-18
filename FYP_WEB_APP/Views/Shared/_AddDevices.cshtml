@@ -7,168 +7,220 @@
     if (ViewBag.viewType.Equals("Edit") || ViewBag.viewType.Equals("Drop"))
     {
         Devices = ViewData["EditDevicesListModel"] as List<FYP_WEB_APP.Models.DevicesListModel>;
-        
+
     }
     else if (ViewBag.viewType.Equals("Add"))
     {
         Rooms = ViewData["RoomListModel"] as List<FYP_WEB_APP.Models.RoomsListModel>;
     }
 }
-@if ((!ViewBag.viewType.Equals("Add") && Devices.Count > 0) || ViewBag.viewType.Equals("Add"))
-{
-    string url = ViewBag.action;
+@if(ViewBag.viewType.Equals("Add") ||ViewBag.viewType.Equals("Edit")||ViewBag.viewType.Equals("Drop") ){
+   string url = ViewBag.action;
     <form action="@Url.Action(url,"Devices")" method="post">
 
-        <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">@ViewBag.viewType Devices </h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body p-2">
-            @if (!ViewBag.viewType.Equals("Add"))
-            {
-                <div class="row mx-3 justify-content-center align-items-center pb-2">
-                    <label class="col h5" for="devicesId">Devices Id:</label>
-                    <div class="col">
-                        @if (ViewBag.viewType.Equals("Drop"))
-                        {
-                            <input type="text" class="form-control bg-white d-none" id="CdevicesId" value="@Devices.First().roomId" required readonly>
-                            <input type="text" class="form-control bg-white" id="devicesId" name="devicesId" placeholder="id" value="" required>
-
-                        }
-                        @if (ViewBag.viewType.Equals("Edit"))
-                        {
-                            <input type="text" class="form-control bg-white" id="devicesId" name="devicesId" placeholder="id" value="@Devices.First().devicesId" required readonly>
-                        }
-
-                    </div>
-                </div>}
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">@ViewBag.viewType Devices </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body p-2">
+        @if (ViewBag.viewType.Equals("Add"))
+        {
             <div class="row mx-3 justify-content-center align-items-center pb-2">
                 <label class="col h5" for="roomId">roomId :</label>
                 <div class="col">
-                    @if (ViewBag.viewType.Equals("Edit"))
-                    {
-                        <input type="text" class="form-control bg-white" id="roomId" name="roomId" placeholder="id" value="@Devices.First().roomId" required readonly>
-                    }
-
-
-                    else if (ViewBag.viewType.Equals("Drop"))
-                    {
-
-                        <input type="text" class="form-control bg-white d-none" id="CroomId" value="@Devices.First().roomId" required readonly>
-
-                        <input type="text" class="form-control bg-white" id="roomId" name="roomId" placeholder="roomid" value="" required>
-                    }
-                    else if (ViewBag.viewType.Equals("Add"))
-                    {
-                        string chid = ViewBag.CheckRoomid;
-
-                        if (chid == "undefined" || chid==null)
+                    <select id="roomId" name="roomId" class="form-control bg-white">
+                        <option value="">Room.No</option>
+                        @foreach (var Room in Rooms)
                         {
-
-                            <select id="roomId" name="roomId" class="form-control bg-white">
-                                <option value="">Room.No</option>
-                                @foreach (var Room in Rooms)
-                                {
-
-                                    <option value="@Room.roomId">@Room.roomId</option>
-
-                                }
-
-                            </select>
+                            <option value="@Room.roomId">@Room.roomId</option>
                         }
-                        else
-                        {
-
-                            <input type="text" class="form-control bg-white" id="roomId" name="roomId" value="@ViewBag.CheckRoomid" required readonly>
-                        }
-                    }
+                    </select>
                 </div>
             </div>
-            @if (ViewBag.viewType.Equals("Edit") || ViewBag.viewType.Equals("Add"))
-            {
-                <div class="row mx-3 justify-content-center align-items-center pb-2">
-                    <label class="col h5" for="devices_Name">Devices Name:</label>
-                    <div class="col">
-                        <input type="text" class="form-control bg-white" id="devices_Name" name="devices_Name" value="@if (ViewBag.viewType.Equals("Edit"))
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+                <label class="col h5" for="devices_Name">Devices Name:</label>
+                <div class="col">
+                    <input type="text" class="form-control bg-white" id="devices_Name" name="devices_Name" value="@if (ViewBag.viewType.Equals("Edit"))
                             {@Devices.First().devices_Name }" placeholder="Name" required>
-                    </div>
+                </div>
+            </div>
+
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+                <label class="col h5" for="devicesId">Devices type:</label>
+                <div class="col">
+                    <select class="form-control bg-white" id="type" name="devicesId" placeholder="type" required>
+                        <option value="LT">light</option>
+                        <option value="AC">Air Conditioning</option>
+                        <option value="HD">Humidifier</option>
+                        <option value="EF">EXH_FAN</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                <label class="col h5" for="desc">Description</label>
+                <div class="col">
+
+                    <input type="text" class="form-control bg-white" id="desc" name="desc" placeholder=" Description of Devices" value=" ">
+
                 </div>
 
-                <div class="row mx-3 justify-content-center align-items-center pb-2">
-                    <label class="col h5" for="devicesId">Devices type:</label>
-                    <div class="col">
-                        @if (ViewBag.viewType.Equals("Add"))
-                        {<select class="form-control bg-white" id="type" name="devicesId" placeholder="type" required>
-                                <option value="LT">light</option>
-                                <option value="AC">Air Conditioning</option>
-                                <option value="HD">Humidifier</option>
-                                <option value="EF">EXH_FAN</option>
-                            </select>
-                        }
-                        else
-                        {<select class="form-control bg-white" id="type" name="type" placeholder="type" required disabled>
+            </div>
+            <!--end modal body-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" id="setDevices" class="btn btn-primary">Submit</button>
+            </div>
+        }
+        else if (ViewBag.viewType.Equals("Edit"))
+        {
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
 
-                                <option value="@if (ViewBag.viewType.Equals("Edit"))
+                <label class="col h5" for="devicesId">Devices Id:</label>
+                <div class="col">
+                    <input type="text" class="form-control bg-white" id="devicesId" name="devicesId" placeholder="id" value="@Devices.First().devicesId" required readonly>
+                </div>
+
+
+
+            </div>
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+                <label class="col h5" for="roomId">roomId :</label>
+                <div class="col">
+                    <input type="text" class="form-control bg-white" id="roomId" name="roomId" placeholder="id" value="@Devices.First().roomId" required readonly>
+
+                </div>
+            </div>
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+                <label class="col h5" for="devices_Name">Devices Name:</label>
+                <div class="col">
+                    <input type="text" class="form-control bg-white" id="devices_Name" name="devices_Name" value="@if (ViewBag.viewType.Equals("Edit"))
+                            {@Devices.First().devices_Name }" placeholder="Name" required>
+                </div>
+            </div>
+
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+                <label class="col h5" for="devicesId">Devices type:</label>
+                <div class="col">
+                    <select class="form-control bg-white" id="type" name="type" placeholder="type" required disabled>
+                        <option value="@if (ViewBag.viewType.Equals("Edit"))
                                     {@Devices.First().devicesId.Substring(0, 2) }">
-                                    light
-                                </option>
+                            @{
+                                string str = "";}
+                            @switch (Devices.First().devicesId.Substring(0, 2))
+                            {
+                                case "AC":
+                                    str = "Air Conditioner";
+                                    break;
+                                case "LT":
+                                    str = "Light";
+                                    break;
+                                case "HD":
+                                    str = "Humidifier";
+                                    break;
+                                case "EF":
+                                    str = "FAN";
+                                    break;
+                                default:
+                                    break;
+                            }
+                            @str
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
 
-                            </select>
-                        }
+                <label class="col h5" for="pos_x">Position X</label>
+                <div class="col">
 
+                    <input type="text" class="form-control bg-white" id="pos_x" name="pos_x" placeholder="pos_x" value="@if (Devices != null)
+                        {@Devices.First().pos_x}" required>
+                </div>
+
+
+            </div>
+
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                <label class="col h5" for="pos_y"> Position Y</label>
+                <div class="col">
+                    <input type="text" class="form-control bg-white" id="pos_y" name="pos_y" placeholder="pos_y" value="@if (Devices != null)
+                        {@Devices.First().pos_y}" required>
+                </div>
+
+            </div>
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+                <label class="col h5" for="power">Power:</label>
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <input type="number" class="form-control bg-white" id="power" name="power" value="@Devices.First().power" required readonly>
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="resetPower"><img src="https://cdn.onlinewebfonts.com/svg/img_260976.png" width="25" height="25" /></span>
+                        </div>
                     </div>
                 </div>
-                @if (ViewBag.viewType.Equals("Edit"))
-                {
-                    <div class="row mx-3 justify-content-center align-items-center pb-2">
-                        <label class="col h5" for="power">Power:</label>
-                        <div class="col">
-                            <div class="input-group mb-3">
-                                <input type="datetime" class="form-control bg-white" id="power" name="power" value="@Devices.First().power" required readonly>
-                                <div class="input-group-append">
-                                    <span class="input-group-text" id="resetPower"><img src="https://cdn.onlinewebfonts.com/svg/img_260976.png" width="25" height="25" /></span>
-                                </div>
-                            </div>
+            </div>
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+                <label class="col h5" for="lastest_checking_time">Lastest checking time:</label>
+                <div class="col">
+                    <input type="text" class="form-control bg-white" id="lastest_checking_time" name="lastest_checking_time" value="@Devices.First().lastest_checking_time" required readonly>
+                </div>
+            </div>
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+                <label class="col h5" for="total_run_time">total run time:</label>
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <input type="datetime" class="form-control bg-white" id="total_run_time" name="total_run_time" value="@Devices.First().total_run_time" required readonly>
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="resetRunTime"><img src="https://cdn.onlinewebfonts.com/svg/img_260976.png" width="25" height="25" /></span>
                         </div>
                     </div>
-                    <div class="row mx-3 justify-content-center align-items-center pb-2">
-                        <label class="col h5" for="lastest_checking_time">Lastest checking time:</label>
-                        <div class="col">
-                            <input type="text" class="form-control bg-white" id="lastest_checking_time" name="lastest_checking_time" value="@Devices.First().lastest_checking_time" required readonly>
-                        </div>
-                    </div>
-                    <div class="row mx-3 justify-content-center align-items-center pb-2">
-                        <label class="col h5" for="total_run_time">total run time:</label>
-                        <div class="col">
-                            <div class="input-group mb-3">
-                                <input type="datetime" class="form-control bg-white" id="total_run_time" name="total_run_time" value="@Devices.First().total_run_time" required readonly>
-                                <div class="input-group-append">
-                                    <span class="input-group-text" id="resetRunTime"><img src="https://cdn.onlinewebfonts.com/svg/img_260976.png" width="25" height="25" /></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                }}
+                </div>
+            </div>
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                <label class="col h5" for="desc">Description</label>
+                <div class="col">
+
+                    <input type="text" class="form-control bg-white" id="desc" name="desc" placeholder=" Description of Devices" value="@if (Devices != null)
+                        {@Devices.First().desc}">
+
+                </div>
+
+            </div>
 
             <!--end modal body-->
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="submit" id="setDevices" class="btn btn-primary">Save changes</button>
             </div>
-        </div>
+        }
+        else if (ViewBag.viewType.Equals("Drop"))
+        {
+            <input type="text" class="form-control bg-white d-none" id="devicesId" name="devicesId" placeholder="id" value="@Devices.First().devicesId" required>
+            <input type="text" class="form-control bg-white d-none" id="roomId" name="roomId" placeholder="roomid" value="@Devices.First().roomId" required readonly>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" id="setDevices" class="btn btn-primary">Dorp</button>
+            </div>
+        }
 
-    </form>
-}
-else 
-{
-    <div class="alert alert-warning text-center font-weight-bold" role="alert">
-        <h3>
-            Error View, @Html.ActionLink("Refresh Page", "Devices", "Devices") .
-        </h3>
     </div>
+
+</form>
 }
+else
+{
+<div class="alert alert-warning text-center font-weight-bold" role="alert">
+    <h3>
+        Error View, @Html.ActionLink("Refresh Page", "Devices", "Devices") .
+    </h3>
+</div>
+}
+
 <script>
     $("#resetRunTime").click(function () {
         var today = Date(Date.now()).toString();
@@ -192,15 +244,12 @@ else
         var match = ($("#CDevicesId").val() == $("#DevicesId").val() && $("#CroomId").val() == $("#roomId").val());
         var vi ="@ViewBag.viewType" ;
             if (vi == "Drop") {
-                if (match) {
                     if (confirm("Please confirm the data !! ")) {
                         form.submit();
                         alert("Successful Your Submition !!");
                     } else {
                     }
-                } else {
-                    alert("You select the item and input form is NOT MATCH!! \n Please tryAgain");
-                        }
+
             } else {
                 if (confirm("Please confirm the data !! ")) {
                     form.submit();

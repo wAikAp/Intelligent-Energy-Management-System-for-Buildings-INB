@@ -213,11 +213,24 @@ namespace FYP_APP.Controllers
 			//var collection = database.GetCollection<MongoSensorsListModel>("SENSOR_LIST");
 
 			MongoSensorsListModel insertList = new MongoSensorsListModel { };
+			
+			
+			var all = GetSensorsData().Where(c=>c.sensorId.Contains(postData.Sensortype));
+			int count = all.Count();
+			string id = postData.Sensortype + count;
+			all = GetSensorsData().Where(c => c.sensorId == (id));
 
-			var all = GetSensorsData();
-			string count = "";
-			if (all.Count < 10) { count = "00" + (all.Count + 1).ToString(); }
-			else if (all.Count < 100) { count = "0" + (all.Count + 1).ToString(); }
+
+
+			while (all.Count()!=0)
+				{
+				count += 1;
+				id = postData.Sensortype + count;
+				all = GetSensorsData().Where(c => c.sensorId == (id));
+				
+				// code block to be executed
+			}
+
 
 			insertList.roomId = postData.roomId;
 			insertList.sensorId = postData.Sensortype + count;
@@ -227,24 +240,39 @@ namespace FYP_APP.Controllers
 			insertList.desc = postData.desc;
 			insertList.latest_checking_time = DateTime.UtcNow;
 			insertList.total_run_time = DateTime.UtcNow;
+			try
+			{
+				new DBManger().DataBase.GetCollection<MongoSensorsListModel>("SENSOR_LIST").InsertOneAsync(insertList);
+			}
+			catch (Exception e)
+			{
+				Debug.WriteLine("line 262 error ");
 
-			SensorsCollection.InsertOneAsync(insertList);
+				return ReturnUrl();
+			};
+
 			return ReturnUrl();
 		}
 		[Route("Sensors/DropSensorsData")]
 		[HttpPost]
-		public ActionResult DropSensorsData(SensorsListModel postData)//post
+		public ActionResult DropSensorsData(MongoSensorsListModel postData)//post
 		{
 			var DeleteResult = SensorsCollection.DeleteOne(Builders<MongoSensorsListModel>.Filter.Eq("sensorId", postData.sensorId));
 			if (DeleteResult.IsAcknowledged)
 			{
 				if (DeleteResult.DeletedCount != 1)
 				{
+					return ReturnUrl();
+
 					throw new Exception(string.Format("Count [value:{0}] after delete is invalid", DeleteResult.DeletedCount));
+				
 				}
 			}
-			else { 
+			else {
+				return ReturnUrl();
+
 				throw new Exception(string.Format("Delete for [_id:{0}] was not acknowledged", postData.sensorId.ToString()));
+
 			}
 			return ReturnUrl();
 		}
@@ -651,7 +679,7 @@ namespace FYP_APP.Controllers
 				SensorsCurrentList = GetSensorIDCurrentList(get.sensorId).Where(x => x.latest_checking_time > today.AddDays(-1)).OrderBy(x => x.latest_checking_time).ToList();
 
 				DateTime ca = today;
-				TimeSpan catime = ca - ca.AddDays(-1);
+				TimeSpan catime = ca - ca.AddHours(-6);
 
 				int counttime = Convert.ToInt32(catime.TotalMinutes / 5);
 
@@ -667,7 +695,7 @@ namespace FYP_APP.Controllers
 					{
 						var value = Convert.ToDouble(Convert.ToDouble(getCurrent.current).ToString("0.00"));
 						
-						ca = DateTime.Now.AddDays(-1);
+						ca = DateTime.Now.AddHours(-6);
 
 						for (int x = 0; x <= counttime; x++)
 						{
