@@ -76,7 +76,27 @@ namespace FYP_APP.Controllers
 			return View();
 		}
 
-		
+		[Route("Devices/DevicesChart")]
+		public ActionResult DevicesChart()
+		{
+			//string id  = Request.Query["roomID"];
+
+			List<DevicesListModel> lists = GetAllDevices();
+
+			ViewBag.charttitle = Request.Query["title"];
+			ViewBag.chartType = Request.Query["chartType"];
+			ViewBag.position = Request.Query["position"];
+			ViewBag.download = Request.Query["download"];
+
+			ViewBag.datasets = ChartData(lists, Request.Query["sensorType"]);
+
+			ChartController chart = new ChartController();
+
+			ViewBag.day = chart.GetChartTime();
+			ViewBag.divId = chart.GetRandomDivId();
+
+			return PartialView("_DevicesChart");
+		}
 		[Route("Devices/DevicesChartByRoomid")]
 		public ActionResult DevicesChartByRoomid()
 		{
@@ -493,14 +513,7 @@ namespace FYP_APP.Controllers
 			var json = collection.Find(filter).FirstOrDefault();
 			if (json != null)
 			{
-				 double value = Id.Substring(0, 2) switch
-				{
-					"EF" => Convert.ToDouble(json["current_rmp"].ToString()),
-					"AC" => Convert.ToDouble(json["current_tmp"].ToString()),
-					"LT" => Convert.ToDouble(json["current_lum"].ToString()),
-					"HD" => Convert.ToDouble(json["current_hum"].ToString()),
-					_ => 0
-				};
+				 double value =  Convert.ToDouble(json["current"].ToString());
 				return value;
 				/*		switch (Id.Substring(0, 2))
 						{
@@ -525,40 +538,40 @@ namespace FYP_APP.Controllers
 				return 0;
 			}
 		}
-		public string ChartData(List<DevicesListModel> SensorsDataList, string type)
+		public string ChartData(List<DevicesListModel> DevicesDataList, string type)
 		{
 			switch (type)
 			{
 				case "AC":
-					SensorsDataList = SensorsDataList.Where(x => x.devicesId.Contains("TS")).ToList();
+					DevicesDataList = DevicesDataList.Where(x => x.devicesId.Contains("AC")).ToList();
 					ViewBag.unit = " ";
 					ViewBag.unitName = "Air Conditioning";
 					break;
 				case "LT":
-					SensorsDataList = SensorsDataList.Where(x => x.devicesId.Contains("LS")).ToList();
+					DevicesDataList = DevicesDataList.Where(x => x.devicesId.Contains("LT")).ToList();
 					ViewBag.unit = " lm";
 					ViewBag.unitName = "Light";
 					break;
 				case "HD":
-					SensorsDataList = SensorsDataList.Where(x => x.devicesId.Contains("HS")).ToList();
+					DevicesDataList = DevicesDataList.Where(x => x.devicesId.Contains("HD")).ToList();
 					ViewBag.unit = " %";
 					ViewBag.unitName = "Humidifier";
 					break;
 				case "EF":
-					SensorsDataList = SensorsDataList.Where(x => x.devicesId.Contains("HS")).ToList();
-					ViewBag.unit = " %";
+					DevicesDataList = DevicesDataList.Where(x => x.devicesId.Contains("EF")).ToList();
+					ViewBag.unit = " rpm";
 					ViewBag.unitName = "FAN";
 					break;
 				default:
 					
 					break;
 			}
-			return GetChartData(SensorsDataList);
+			return GetChartData(DevicesDataList);
 		}
 
-		public string GetChartData(List<DevicesListModel> SensorsDataList)
+		public string GetChartData(List<DevicesListModel> DevicesDataList)
 		{
-			/*	ChartController chart = new ChartController();
+				ChartController chart = new ChartController();
 
 					//chart color
 					List<string> Color = new List<string>();
@@ -578,17 +591,16 @@ namespace FYP_APP.Controllers
 					List<object> datasets = new List<object>();
 					List<object> datas = new List<object>();
 
-					foreach (SensorsListModel get in SensorsDataList)
+					foreach (DevicesListModel get in DevicesDataList)
 					{
 						Color.Add(chart.GetRandomColor());
-						labelss.Add(get.sensorId);
-						SensorsCurrentList = GetSensorIDCurrentList(get.sensorId).Where(x => x.latest_checking_time > today.AddDays(-1)).OrderBy(x => x.latest_checking_time).ToList();
+						labelss.Add(get.devicesId);
+						SensorsCurrentList = GetChartDataList(get.devicesId).Where(x => x.latest_checking_time > today.AddDays(-1)).OrderBy(x => x.latest_checking_time).ToList();
 
 						DateTime ca = today;
 						TimeSpan catime = ca - ca.AddDays(-1);
 
 						int counttime = Convert.ToInt32(catime.TotalMinutes / 5);
-
 
 						for (int x = 0; x <= counttime; x++)
 						{
@@ -621,41 +633,57 @@ namespace FYP_APP.Controllers
 						datas.Add(data.ToArray());
 					}
 
-					for (int i = 0; i < SensorsDataList.Count; i++)
+					for (int i = 0; i < DevicesDataList.Count; i++)
 					{
-						labelss.Add(SensorsDataList[i].devicesId);
+						labelss.Add(DevicesDataList[i].devicesId);
 					}
 
-					return chart.LineChart(SensorsDataList.Count, labelss, datas);
-					*/
-			return null;
+					return chart.LineChart(DevicesDataList.Count, labelss, datas);
+			
 		}
-		public List<DevicesListModel> GetChartData(string id)
+		public List<CurrentDataModel> GetChartDataList(string id)
 		{
-			/*
+
 					string tableName = "";
 					List<CurrentDataModel> List = new List<CurrentDataModel>();
 					IMongoCollection<CurrentDataModel> collection;
-					switch (id.Substring(0, 2))
-					{
-						case "TS":
-							tableName = "TMP_SENSOR";
-							break;
-						case "LS":
-							tableName = "LIGHT_SENSOR";
-							break;
-						case "HS":
-							tableName = "HUM_SENSOR";
-							break;
-						default:
-							break;
-					}
-					//db collection
-					collection = database.GetCollection<CurrentDataModel>(tableName);
+					
+			//db collection
+			tableName = id.Substring(0, 2) switch
+			{
+				"EF" => "EXH_FAN",
+				"AC" => "AC",
+				"LT" => "LIGHT",
+				"HD" => "HUM",
+				_ => ""
+			};
+			collection = new DBManger().DataBase.GetCollection<CurrentDataModel>(tableName);
 					IQueryable<CurrentDataModel> query;
-					query = from c in collection.AsQueryable<CurrentDataModel>() orderby c.latest_checking_time descending where c.sensorId.Contains(sensorId) select c;
-					return query.ToList();*/
-			return null;
+					query = from c in collection.AsQueryable<CurrentDataModel>() orderby c.latest_checking_time descending where c.sensorId.Contains(id) select c;
+					return query.ToList();	
+		}
+		public string[] typeName= { "Air Conditioning", "Light", "Humidifier", "EXH_FAN" };
+
+		public int GetDeviceCount(string TypeName) {
+			string shortName="";
+			switch (TypeName)
+			{
+				case "Air Conditioning":
+					shortName = "AC";
+					break;
+				case "Light":
+					shortName = "LT";
+					break;
+				case "Humidifier":
+					shortName = "HD";
+					break;
+				case "EXH_FAN":
+					shortName = "EF";
+					break;
+				default:
+					break;
+			}
+			return GetAllDevices().Where(c => c.devicesId.Contains(shortName)).Count();
 			
 		}
 	}
