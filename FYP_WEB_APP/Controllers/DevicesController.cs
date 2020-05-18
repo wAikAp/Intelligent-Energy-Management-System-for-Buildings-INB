@@ -558,102 +558,103 @@ namespace FYP_APP.Controllers
 
 		public string GetChartData(List<DevicesListModel> SensorsDataList)
 		{
-			ChartController chart = new ChartController();
+			/*	ChartController chart = new ChartController();
 
-				//chart color
-				List<string> Color = new List<string>();
-				//sensor log
-
-
-				List<CurrentDataModel> SensorsCurrentList = new List<CurrentDataModel>();
-				//only ts
-
-				DateTime today = DateTime.Now;
+					//chart color
+					List<string> Color = new List<string>();
+					//sensor log
 
 
-				//end set time
-				List<string> labelss = new List<string>();
-				List<double> data = new List<double>();
+					List<CurrentDataModel> SensorsCurrentList = new List<CurrentDataModel>();
+					//only ts
 
-				List<object> datasets = new List<object>();
-				List<object> datas = new List<object>();
-
-				foreach (SensorsListModel get in SensorsDataList)
-				{
-					Color.Add(chart.GetRandomColor());
-					labelss.Add(get.sensorId);
-					SensorsCurrentList = GetSensorIDCurrentList(get.sensorId).Where(x => x.latest_checking_time > today.AddDays(-1)).OrderBy(x => x.latest_checking_time).ToList();
-
-					DateTime ca = today;
-					TimeSpan catime = ca - ca.AddDays(-1);
-
-					int counttime = Convert.ToInt32(catime.TotalMinutes / 5);
+					DateTime today = DateTime.Now;
 
 
-					for (int x = 0; x <= counttime; x++)
+					//end set time
+					List<string> labelss = new List<string>();
+					List<double> data = new List<double>();
+
+					List<object> datasets = new List<object>();
+					List<object> datas = new List<object>();
+
+					foreach (SensorsListModel get in SensorsDataList)
 					{
-						data.Add(0);
+						Color.Add(chart.GetRandomColor());
+						labelss.Add(get.sensorId);
+						SensorsCurrentList = GetSensorIDCurrentList(get.sensorId).Where(x => x.latest_checking_time > today.AddDays(-1)).OrderBy(x => x.latest_checking_time).ToList();
 
-					}
-					if (SensorsCurrentList.Count() != 0)
-					{
-						foreach (CurrentDataModel getCurrent in SensorsCurrentList)
+						DateTime ca = today;
+						TimeSpan catime = ca - ca.AddDays(-1);
+
+						int counttime = Convert.ToInt32(catime.TotalMinutes / 5);
+
+
+						for (int x = 0; x <= counttime; x++)
 						{
-							var value = Convert.ToDouble(Convert.ToDouble(getCurrent.current).ToString("0.00"));
+							data.Add(0);
 
-							ca = DateTime.Now.AddDays(-1);
-
-							for (int x = 0; x <= counttime; x++)
+						}
+						if (SensorsCurrentList.Count() != 0)
+						{
+							foreach (CurrentDataModel getCurrent in SensorsCurrentList)
 							{
-								var bo = getCurrent.latest_checking_time >= ca && getCurrent.latest_checking_time <= ca.AddMinutes(5);
+								var value = Convert.ToDouble(Convert.ToDouble(getCurrent.current).ToString("0.00"));
 
-								ca = ca.AddMinutes(5);
-								if (getCurrent.latest_checking_time > ca && getCurrent.latest_checking_time < ca.AddMinutes(5))
+								ca = DateTime.Now.AddDays(-1);
+
+								for (int x = 0; x <= counttime; x++)
 								{
-									data[x] = value;
+									var bo = getCurrent.latest_checking_time >= ca && getCurrent.latest_checking_time <= ca.AddMinutes(5);
+
+									ca = ca.AddMinutes(5);
+									if (getCurrent.latest_checking_time > ca && getCurrent.latest_checking_time < ca.AddMinutes(5))
+									{
+										data[x] = value;
+									}
 								}
 							}
 						}
+						else
+						{
+						}
+						datas.Add(data.ToArray());
 					}
-					else
+
+					for (int i = 0; i < SensorsDataList.Count; i++)
 					{
+						labelss.Add(SensorsDataList[i].devicesId);
 					}
-					datas.Add(data.ToArray());
-				}
 
-				for (int i = 0; i < SensorsDataList.Count; i++)
-				{
-					labelss.Add(SensorsDataList[i].devicesId);
-				}
-
-				return chart.LineChart(SensorsDataList.Count, labelss, datas);
-
+					return chart.LineChart(SensorsDataList.Count, labelss, datas);
+					*/
+			return null;
 		}
 		public List<DevicesListModel> GetChartData(string id)
 		{
-		
-				string tableName = "";
-				List<CurrentDataModel> List = new List<CurrentDataModel>();
-				IMongoCollection<CurrentDataModel> collection;
-				switch (id.Substring(0, 2))
-				{
-					case "TS":
-						tableName = "TMP_SENSOR";
-						break;
-					case "LS":
-						tableName = "LIGHT_SENSOR";
-						break;
-					case "HS":
-						tableName = "HUM_SENSOR";
-						break;
-					default:
-						break;
-				}
-				//db collection
-			/*	collection = database.GetCollection<CurrentDataModel>(tableName);
-				IQueryable<CurrentDataModel> query;
-				query = from c in collection.AsQueryable<CurrentDataModel>() orderby c.latest_checking_time descending where c.sensorId.Contains(sensorId) select c;
-				return query.ToList();*/
+			/*
+					string tableName = "";
+					List<CurrentDataModel> List = new List<CurrentDataModel>();
+					IMongoCollection<CurrentDataModel> collection;
+					switch (id.Substring(0, 2))
+					{
+						case "TS":
+							tableName = "TMP_SENSOR";
+							break;
+						case "LS":
+							tableName = "LIGHT_SENSOR";
+							break;
+						case "HS":
+							tableName = "HUM_SENSOR";
+							break;
+						default:
+							break;
+					}
+					//db collection
+					collection = database.GetCollection<CurrentDataModel>(tableName);
+					IQueryable<CurrentDataModel> query;
+					query = from c in collection.AsQueryable<CurrentDataModel>() orderby c.latest_checking_time descending where c.sensorId.Contains(sensorId) select c;
+					return query.ToList();*/
 			return null;
 			
 		}
