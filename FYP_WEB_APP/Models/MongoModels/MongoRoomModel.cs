@@ -11,7 +11,7 @@ namespace FYP_APP.Models.MongoModels
         public String roomId { get; set; }
         public String type { get; set; }
         public String desc { get; set; }
-        public String power { get; set; }
+        public double power { get; set; }
         public String temp { get; set; }
         public String hum { get; set; }
         public String lig { get; set; }

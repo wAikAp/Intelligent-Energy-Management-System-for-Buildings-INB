@@ -1,0 +1,37 @@
+﻿.draggable {
+    text-align:center;
+    width: 80px;
+    height: 80px;
+    border-radius: 40px;
+    z-index: 99;
+    position: absolute;
+    color: white;
+    font-weight:bold;
+    font-size:12px;
+}
+
+.TSensor {
+    background-color: #159bfb;
+
+}
+
+.HSensor {
+    background-color: #fdbf2f;
+}
+
+.LSensor {
+    background-color: #1ab8a3;
+}
+
+.ACDevice_off {
+    background-color: #343a40;
+}
+.ACDevice_on {
+    background-color: #f0f0f0;
+} 
+
+.LightDevice_off {
+
+}
+.LightDevice_on {
+}

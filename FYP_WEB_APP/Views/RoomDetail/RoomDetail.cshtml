@@ -1,54 +1,58 @@
 ﻿
 @{
-
+    @using FYP_WEB_APP.Models
     ViewData["Title"] = "Rooms Detail";
     Layout = "_Layout";
-    string returnUrl = Context.Request.Path+Context.Request.QueryString;
+
+    string returnUrl = Context.Request.Path + Context.Request.QueryString;
     Context.Response.Cookies.Append("returnUrl", returnUrl);
 
+
+    List<SensorsListModel> sensorsList = ViewData["sensorsList"] as List<SensorsListModel>;
+    List<DevicesListModel> devicesLists = ViewData["devicesList"] as List<DevicesListModel>;
 }
 
-    <head>
-        <title>@ViewData["Title"]</title>
-    </head>
+<head>
+    <title>@ViewData["Title"]</title>
+</head>
 
 
-    <body>
-        @Html.Partial("_addDragButton")
-        <!--page title-->
-        <div class="container-fluid p-4 ">
-            <div class="d-flex">
-                <h1 class="display-4">
-                    <strong>Room @ViewData["roomID"]</strong>
-                    <span class="badge badge-pill badge-success" style="font-size: 14px">Online</span>
-                </h1>
-                <!-- power -->
-                <div class="bd-callout bd-callout-warning py-2 shadow-sm m-0 ml-sm-4 " style="max-width: 30rem; max-height: 100px;">
-                    <h4>
-                        <b style="font-size: .6em;"><img src="~/img/icon/lighting32.png" />Power Usage</b>
-                    </h4>
-                    <h3><strong class="pl-sm-2">9000KW</strong><snap class="text-black" style="font-size: .6em;">/ pre month</snap></h3>
-                </div>
+<body>
+    @Html.Partial("_addDragButton")
+    <!--page title-->
+    <div class="container-fluid p-4 ">
+        <div class="d-flex">
+            <h1 class="display-4">
+                <strong>Room @ViewData["roomID"]</strong>
+                <span class="badge badge-pill badge-success" style="font-size: 14px">Online</span>
+            </h1>
+            <!-- power -->
+            <div class="bd-callout bd-callout-warning py-2 shadow-sm m-0 ml-sm-4 " style="max-width: 30rem; max-height: 100px;">
+                <h4>
+                    <b style="font-size: .6em;"><img src="~/img/icon/lighting32.png" />Power Usage</b>
+                </h4>
+                <h3><strong class="pl-sm-2">9000KW</strong><snap class="text-black" style="font-size: .6em;">/ pre month</snap></h3>
             </div>
-            <!-- tag -->
-            <div class="d-flex">
-                <a href="#" class="badge badge-primary mx-0">Lab</a>
-                <a href="#" class="badge badge-warning mx-1">3 / f</a>
-            </div>
+        </div>
+        <!-- tag -->
+        <div class="d-flex">
+            <a href="#" class="badge badge-primary mx-0">Lab</a>
+            <a href="#" class="badge badge-warning mx-1">3 / f</a>
+        </div>
 
-            <nav class="col-sm-4 my-2 " aria-label="breadcrumb" style="margin-left: -20px;">
-                <ol class="breadcrumb ">
-                    <li class="breadcrumb-item"><a href="~/Rooms/Rooms">Rooms List</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Room detail</li>
-                </ol>
-            </nav>
-            <div id="sensorView"></div>
-            <div id="devicesView"></div>
-            <div class="d-flex bd-highlight flex-wrap flex-column">
-                <div id="sensorChartTS" class="flex-fill bd-highlight col-12 h-100"></div>
-                <div id="sensorChartHS" class="flex-fill bd-highlight  col-12 h-100"></div>
-                <div id="sensorChartLS" class="flex-fill bd-highlight  col-12 h-100"></div>
-                <script>
+        <nav class="col-sm-4 my-2 " aria-label="breadcrumb" style="margin-left: -20px;">
+            <ol class="breadcrumb ">
+                <li class="breadcrumb-item"><a href="~/Rooms/Rooms">Rooms List</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Room detail</li>
+            </ol>
+        </nav>
+        <div id="sensorView"></div>
+        <div id="devicesView"></div>
+        <div class="d-flex bd-highlight flex-wrap flex-column">
+            <div id="sensorChartTS" class="flex-fill bd-highlight col-12 h-100"></div>
+            <div id="sensorChartHS" class="flex-fill bd-highlight  col-12 h-100"></div>
+            <div id="sensorChartLS" class="flex-fill bd-highlight  col-12 h-100"></div>
+            <script>
                 $(document).ready(function () {
                 $("#devicesView").load("@Url.Action("SearchDevicesByRoomid", "Devices", new { roomID = ViewData["roomID"] })", function () { });
                 $("#sensorView").load("@Url.Action("SensorsListByRoomid", "Sensors", new { roomID = ViewData["roomID"] })", function () {});
@@ -58,296 +62,299 @@
 
                 });
 
-                </script>
-            </div>
-            <!-- data end -->
+            </script>
+        </div>
+        <!-- data end -->
+        <!--  chart end   -->
+        <!--   floor plan     -->
+        <div class="card d-flex flex-column mb-2 mx-2 p-2 ">
 
-           
-            <!--  chart end   -->
-            <!--   floor plan     -->
-            <div class="card d-flex flex-column mb-2 mx-2 p-2 ">
+            <div class="row justify-content-between mb-2">
+                <div class="col">
+                    <h3 id="floorPlan">
+                        <b>Room Floor Plan </b>
 
-                <div class="row justify-content-between mb-2">
-                    <div class="col">
-                        <h3 id="floorPlan">
-                            <b>Room Floor Plan </b>
-
-                            <button class="btn btn-outline-secondary px-0 mr-1 ml-2 " type="button" data-toggle="modal" data-target="#roomSetting" style="width: 40px; height: 40px"><img src="https://www.hko.gov.hk/images/icon_setting.png" style="height: 24px;width:24px;"></button>
-                            <button type="button" class="btn btn-outline-secondary px-2" data-toggle="modal" data-target="#addDragButtonModal" style="width: 40px; height: 40px;">
-                                +
-                            </button>
-                            <!--<button class="btn btn-outline-secondary px-2" type="button"  datga-target="#addDragButtonModal">&#xFF0B;</button>-->
-                        </h3>
-                    </div>
-                    <div class="col-4 d-flex ">
-                    </div>
+                        <button class="btn btn-outline-secondary px-0 mr-1 ml-2 " type="button" data-toggle="modal" data-target="#roomSetting" style="width: 40px; height: 40px"><img src="https://www.hko.gov.hk/images/icon_setting.png" style="height: 24px;width:24px;"></button>
+                        <button type="button" class="btn btn-outline-secondary px-2" data-toggle="modal" data-target="#addDragButtonModal" style="width: 40px; height: 40px;">
+                            +
+                        </button>
+                        <!--<button class="btn btn-outline-secondary px-2" type="button"  datga-target="#addDragButtonModal">&#xFF0B;</button>-->
+                    </h3>
                 </div>
-                <div class="row mb-2">
-                    <div class="col col-lg-4 col-xl-6 col-md-12 ml-4 p-2" style="background-color: lightgrey;  max-width: 510px; max-height: 710px; min-width: 510px; min-height: 710px; overflow: hidden">
-                        @Html.Partial("_dragButton")
-                        <div id="heatmapCol" class="">
-                            <div id="wrapper" class="demo-wrapper" style="border-width:1px;">
-                                <div id="heatmapControl" class="heatmap" style="position: relative;">
-                                    <div id="heatmap" class="heatmap">
+                <div class="col-4 d-flex ">
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col col-lg-4 col-xl-6 col-md-12 ml-4 p-2" style="background-color: lightgrey;  max-width: 510px; max-height: 710px; min-width: 510px; min-height: 710px; overflow: hidden">
+                    @{
+                        
+                        foreach (SensorsListModel sensorModel in sensorsList)
+                        {
+                            @Html.Partial("_dragButton",sensorModel)
+                        }
+                    }
 
-                                        <img id="planImg" src="~/FloorPlansImg/room348.png" width="500px" height="700px" style="background-color: black;">
+                    <div id="heatmapCol" class="">
+                        <div id="wrapper" class="demo-wrapper" style="border-width:1px;">
+                            <div id="heatmapControl" class="heatmap" style="position: relative;">
+                                <div id="heatmap" class="heatmap">
 
-                                    </div>
-                                    <canvas id="BlueCanvas" class="heatmap-canvas" style="position: absolute; left: 0px; top: 0px; ></canvas>
+                                    <img id="planImg" src="~/FloorPlansImg/room348.png" width="500px" height="700px" style="background-color: black;">
+
                                 </div>
-                                <div class="tooltips" style="display: none; transform: translate(39px, 352px);">593</div>
-                                <div id="legendArea" class="legend-area">
-                                    <h4>Legend Title</h4>
-                                    <span id="min">0</span>
-                                    <span id="max">40</span>
-                                    <img id="gradient" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAKCAYAAABCHPt+AAAAnklEQVRYR+2WQQqDQBAES5wB/f8/Y05RcMWwSu6JIT0Dm4WlH1DUdHew7/z6WYFhhnGRpnlhAEaQpi/ADbh/np0MiBhGhW+2ymFU+DZfg1EhaoB4jCFuMYYcQKZrXwPEVvm5Og0pcYakBvI35G1jNIZ4jCHexxjSpz9ZFUjAynLbpOvqteaODkm9sloz5JF+ZTVmSAWSu9Qb65AvgDwBQoLgVDlWfAQAAAAASUVORK5CYII=" style="width:100%">
-                                </div>
+                                <canvas id="BlueCanvas" class="heatmap-canvas" style="position: absolute; left: 0px; top: 0px; ></canvas>
+                            </div>
+                            <div class="tooltips" style="display: none; transform: translate(39px, 352px);">593</div>
+                            <div id="legendArea" class="legend-area">
+                                <h4>Legend Title</h4>
+                                <span id="min">0</span>
+                                <span id="max">40</span>
+                                <img id="gradient" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAKCAYAAABCHPt+AAAAnklEQVRYR+2WQQqDQBAES5wB/f8/Y05RcMWwSu6JIT0Dm4WlH1DUdHew7/z6WYFhhnGRpnlhAEaQpi/ADbh/np0MiBhGhW+2ymFU+DZfg1EhaoB4jCFuMYYcQKZrXwPEVvm5Og0pcYakBvI35G1jNIZ4jCHexxjSpz9ZFUjAynLbpOvqteaODkm9sloz5JF+ZTVmSAWSu9Qb65AvgDwBQoLgVDlWfAQAAAAASUVORK5CYII=" style="width:100%">
                             </div>
                         </div>
-                        <script>//this return value has "px"
-                            //var moveX = document.getElementById("wrapper").style.borderWidth;
-                            //var moveY = 100;
-
-                            var heatmapCol = document.getElementById('heatmapCol').offsetWidth;
-                            var floorPlanImgW = document.getElementById('planImg').offsetWidth;
-                            var floorPlanImgH = document.getElementById('planImg').offsetHeight;
-                            var wrapper = document.getElementById("wrapper");
-                            var heatmapControl = document.getElementById("heatmapControl");
-                            var heatmap = document.getElementById("heatmap");
-                            var BlueCanvas = document.getElementById("BlueCanvas");
-                            var legendArea = document.getElementById("legendArea");
-
-                            //floorPlanImgW += moveX;
-                            //floorPlanImgH += (moveY - parseInt(moveX));
-
-
-                            wrapper.style.width = floorPlanImgW + "px";
-                            wrapper.style.height = floorPlanImgH + "px";
-                            var x = moveY - parseInt(moveX) * 3;
-                            //legendArea.style.marginBottom="-"+x+"px";
-
-                            //floorPlanImgW -= moveX;
-                            BlueCanvas.style.width = floorPlanImgW + "px";
-                            BlueCanvas.style.height = floorPlanImgH + "px";
-
-                            //floorPlanImgH -= (moveY - parseInt(moveX));
-                            heatmapControl.style.width = floorPlanImgW + "px";
-                            heatmapControl.style.height = floorPlanImgH + "px";
-                            heatmap.style.width = floorPlanImgW + "px";
-                            heatmap.style.height = floorPlanImgH + "px";
-                            heatmapCol.style.width = floorPlanImgW + "px";
-                            heatmapCol.style.height = floorPlanImgH + "px";</script>
                     </div>
+                    <script>//this return value has "px"
+                        //var moveX = document.getElementById("wrapper").style.borderWidth;
+                        //var moveY = 100;
 
-                    <!--           Detail     -->
-                    <div class="col-lg-6 col-xl-6 offset-xl-0 ml-4  py-0" style=" max-width: 700px">
-                        <div class="card text-white bg-dark mb-3" style="max-width: 30rem;">
-                            <div class="card-header">
-                                <h4>
-                                    <a class="text-white" href="#">
-                                        Air conditioner
-                                        <img class="float-right mt-1" style="width: 24px;" src="~/img/icon/power-button-on36.png" />
-                                    </a>
-                                </h4>
-                            </div>
-                            <div class="card-body" style="margin-top:-20px">
-                                <button class="btn btn-outline-secondary mt-0 px-0 mr-1 " type="button" data-toggle="modal" style="width: 80px; height: 40px">
-                                    <img src="~/img/icon/edit32_white.png" style="height: 24px;width:24px;">
-                                    <snap class="text-white">Edit</snap>
-                                </button>
-                                <p class="ard-text p-0 m-0">AC01 - 3100002a</p>
-                                <h3 class="card-title">
-                                    <img class="mr-2" style="width: 32px;" src="~/img/icon/air-conditioner32.png" />
-                                    25.5 C
-                                </h3>
-                                <p class="card-text">
-                                    <img style="width: 24px;" src="~/img/icon/lighting32.png" />90KW -
-                                    <snap class="card-text"><small> Avg: 9kw / dy</small></snap>
-                                </p>
-                                <a class="badge badge-pill badge-danger" href="#" style="font-size: 14px">Turning off</a>
-                                <p class="card-text"><small>updated 3 mins ago</small></p>
+                        var heatmapCol = document.getElementById('heatmapCol').offsetWidth;
+                        var floorPlanImgW = document.getElementById('planImg').offsetWidth;
+                        var floorPlanImgH = document.getElementById('planImg').offsetHeight;
+                        var wrapper = document.getElementById("wrapper");
+                        var heatmapControl = document.getElementById("heatmapControl");
+                        var heatmap = document.getElementById("heatmap");
+                        var BlueCanvas = document.getElementById("BlueCanvas");
+                        var legendArea = document.getElementById("legendArea");
 
-                                <p class="card-text"><b>Log</b></p>
-                                <p class="card-text">01-02-2020 11:00:00 <b>25C</b></p>
-                                <p class="card-text"><small>Last modifly on 02-02-2020</small></p>
-                            </div>
+                        //floorPlanImgW += moveX;
+                        //floorPlanImgH += (moveY - parseInt(moveX));
+
+
+                        wrapper.style.width = floorPlanImgW + "px";
+                        wrapper.style.height = floorPlanImgH + "px";
+                        var x = moveY - parseInt(moveX) * 3;
+                        //legendArea.style.marginBottom="-"+x+"px";
+
+                        //floorPlanImgW -= moveX;
+                        BlueCanvas.style.width = floorPlanImgW + "px";
+                        BlueCanvas.style.height = floorPlanImgH + "px";
+
+                        //floorPlanImgH -= (moveY - parseInt(moveX));
+                        heatmapControl.style.width = floorPlanImgW + "px";
+                        heatmapControl.style.height = floorPlanImgH + "px";
+                        heatmap.style.width = floorPlanImgW + "px";
+                        heatmap.style.height = floorPlanImgH + "px";
+                        heatmapCol.style.width = floorPlanImgW + "px";
+                        heatmapCol.style.height = floorPlanImgH + "px";</script>
+                </div>
+
+                <!--           Detail     -->
+                <div class="col-lg-6 col-xl-6 offset-xl-0 ml-4  py-0" style=" max-width: 700px">
+                    <div class="card text-white bg-dark mb-3" style="max-width: 30rem;">
+                        <div class="card-header">
+                            <h4>
+                                <a class="text-white" href="#">
+                                    Air conditioner
+                                    <img class="float-right mt-1" style="width: 24px;" src="~/img/icon/power-button-on36.png" />
+                                </a>
+                            </h4>
+                        </div>
+                        <div class="card-body" style="margin-top:-20px">
+                            <button class="btn btn-outline-secondary mt-0 px-0 mr-1 " type="button" data-toggle="modal" style="width: 80px; height: 40px">
+                                <img src="~/img/icon/edit32_white.png" style="height: 24px;width:24px;">
+                                <snap class="text-white">Edit</snap>
+                            </button>
+                            <p class="ard-text p-0 m-0">AC01 - 3100002a</p>
+                            <h3 class="card-title">
+                                <img class="mr-2" style="width: 32px;" src="~/img/icon/air-conditioner32.png" />
+                                25.5 C
+                            </h3>
+                            <p class="card-text">
+                                <img style="width: 24px;" src="~/img/icon/lighting32.png" />90KW -
+                                <snap class="card-text"><small> Avg: 9kw / dy</small></snap>
+                            </p>
+                            <a class="badge badge-pill badge-danger" href="#" style="font-size: 14px">Turning off</a>
+                            <p class="card-text"><small>updated 3 mins ago</small></p>
+
+                            <p class="card-text"><b>Log</b></p>
+                            <p class="card-text">01-02-2020 11:00:00 <b>25C</b></p>
+                            <p class="card-text"><small>Last modifly on 02-02-2020</small></p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!--heatmap js-->
-        <script>
-            window.onload = function () {
+    <!--heatmap js-->
+    <script>window.onload = function () {
 
-                function generateRandomData(len) {
-                    var floorPlanImgW = document.getElementById('planImg').offsetWidth;
-                    var floorPlanImgH = document.getElementById('planImg').offsetHeight;
+            function generateRandomData(len) {
+                var floorPlanImgW = document.getElementById('planImg').offsetWidth;
+                var floorPlanImgH = document.getElementById('planImg').offsetHeight;
 
 
-                    // generate some random data
-                    var points = [];
-                    var max = 0;
-                    var min = 0;
-                    var width = floorPlanImgW;
-                    var height = floorPlanImgH;
+                // generate some random data
+                var points = [];
+                var max = 0;
+                var min = 0;
+                var width = floorPlanImgW;
+                var height = floorPlanImgH;
 
-                    var TData = [[137, 193, 18],
-                    [162, 346, 31],
-                    [292, 249, 31],
-                    [354, 121, 23],
-                    [198, 10, 15],
-                    [197, 198, 24],
-                    [296, 111, 24],
-                    [185, 40, 20],
-                    [237, 394, 19],
-                    [105, 358, 18],
-                    [251, 390, 29],
-                    [265, 368, 21],
-                    [187, 146, 17],
-                    [168, 226, 17],
-                    [324, 277, 33],
-                    [341, 285, 30],
-                    [182, 412, 24],
-                    [228, 344, 16],
-                    [206, 398, 29],
-                    [377, 206, 30],
-                    [371, 422, 20],
-                    [263, 73, 15],
-                    [253, 431, 30],
-                    [183, 237, 19],
-                    [319, 109, 27],
-                    [365, 21, 27],
-                    [97, 312, 26],
-                    [354, 379, 15],
-                    [149, 11, 17],
-                    [284, 166, 31],
-                    [370, 332, 31],
-                    [307, 282, 28],
-                    [85, 236, 26],
-                    [172, 386, 19],
-                    [324, 356, 17],
-                    [142, 285, 27],
-                    [183, 1, 25],
-                    [304, 157, 20],
-                    [183, 185, 16],
-                    ];
-                    for (let i = 0; i < TData.length; i++) {
-                        var val = TData[i][2];
+                var TData = [[137, 193, 18],
+                [162, 346, 31],
+                [292, 249, 31],
+                [354, 121, 23],
+                [198, 10, 15],
+                [197, 198, 24],
+                [296, 111, 24],
+                [185, 40, 20],
+                [237, 394, 19],
+                [105, 358, 18],
+                [251, 390, 29],
+                [265, 368, 21],
+                [187, 146, 17],
+                [168, 226, 17],
+                [324, 277, 33],
+                [341, 285, 30],
+                [182, 412, 24],
+                [228, 344, 16],
+                [206, 398, 29],
+                [377, 206, 30],
+                [371, 422, 20],
+                [263, 73, 15],
+                [253, 431, 30],
+                [183, 237, 19],
+                [319, 109, 27],
+                [365, 21, 27],
+                [97, 312, 26],
+                [354, 379, 15],
+                [149, 11, 17],
+                [284, 166, 31],
+                [370, 332, 31],
+                [307, 282, 28],
+                [85, 236, 26],
+                [172, 386, 19],
+                [324, 356, 17],
+                [142, 285, 27],
+                [183, 1, 25],
+                [304, 157, 20],
+                [183, 185, 16],
+                ];
+                for (let i = 0; i < TData.length; i++) {
+                    var val = TData[i][2];
 
-                        max = Math.max(max, val);
-                        min = Math.min(min, val);
-                        var x = TData[i][0];
-                        var y = TData[i][1];
-                        var point = {
-                            x: x,
-                            y: y,
-                            value: val
-                        };
-                        points.push(point);
+                    max = Math.max(max, val);
+                    min = Math.min(min, val);
+                    var x = TData[i][0];
+                    var y = TData[i][1];
+                    var point = {
+                        x: x,
+                        y: y,
+                        value: val
+                    };
+                    points.push(point);
+                }
+
+
+                var data = { max: max, min: min, data: points };
+
+                return data;
+            };
+
+
+            /*  legend code */
+            // we want to display the gradient, so we have to draw it
+            var legendCanvas = document.createElement('canvas');
+            legendCanvas.width = 100;
+            legendCanvas.height = 10;
+            var min = document.querySelector('#min');
+            var max = document.querySelector('#max');
+            var gradientImg = document.querySelector('#gradient');
+
+            var legendCtx = legendCanvas.getContext('2d');
+            var gradientCfg = {};
+
+            function updateLegend(data) {
+                // the onExtremaChange callback gives us min, max, and the gradientConfig
+                // so we can update the legend
+                min.innerHTML = data.min;
+                max.innerHTML = data.max;
+                // regenerate gradient image
+                if (data.gradient != gradientCfg) {
+                    gradientCfg = data.gradient;
+                    var gradient = legendCtx.createLinearGradient(0, 0, 100, 1);
+                    for (var key in gradientCfg) {
+                        gradient.addColorStop(key, gradientCfg[key]);
                     }
 
+                    legendCtx.fillStyle = gradient;
+                    legendCtx.fillRect(0, 0, 100, 10);
+                    gradientImg.src = legendCanvas.toDataURL();
+                }
+            };
+            /* legend code end */
 
-                    var data = { max: max, min: min, data: points };
+            var heatmapInstance = h337.create({
+                container: document.querySelector('.heatmap'),
+                onExtremaChange: function (data) {
+                    updateLegend(data);
+                }
+            });
 
-                    return data;
-                };
+            // generate 200 random datapoints
+            var data = generateRandomData(200);
+            heatmapInstance.setData(data);
 
+            var demoWrapper = document.querySelector('.demo-wrapper');
+            var tooltip = document.querySelector('.tooltips');
 
-                /*  legend code */
-                // we want to display the gradient, so we have to draw it
-                var legendCanvas = document.createElement('canvas');
-                legendCanvas.width = 100;
-                legendCanvas.height = 10;
-                var min = document.querySelector('#min');
-                var max = document.querySelector('#max');
-                var gradientImg = document.querySelector('#gradient');
+            function updateTooltip(x, y, value) {
+                // + 15 for distance to cursor
+                var transform = 'translate(' + (x + 15) + 'px, ' + (y + 15) + 'px)';
+                tooltip.style.MozTransform = transform; /* Firefox */
+                tooltip.style.msTransform = transform; /* IE (9+) - note ms is lowercase */
+                tooltip.style.OTransform = transform; /* Opera */
+                tooltip.style.WebkitTransform = transform; /* Safari and Chrome */
+                tooltip.style.transform = transform; /* One day, my pretty */
+                tooltip.innerHTML = "x:" + x + ",y:" + y + ",value:" + value;
+            }
 
-                var legendCtx = legendCanvas.getContext('2d');
-                var gradientCfg = {};
-
-                function updateLegend(data) {
-                    // the onExtremaChange callback gives us min, max, and the gradientConfig
-                    // so we can update the legend
-                    min.innerHTML = data.min;
-                    max.innerHTML = data.max;
-                    // regenerate gradient image
-                    if (data.gradient != gradientCfg) {
-                        gradientCfg = data.gradient;
-                        var gradient = legendCtx.createLinearGradient(0, 0, 100, 1);
-                        for (var key in gradientCfg) {
-                            gradient.addColorStop(key, gradientCfg[key]);
-                        }
-
-                        legendCtx.fillStyle = gradient;
-                        legendCtx.fillRect(0, 0, 100, 10);
-                        gradientImg.src = legendCanvas.toDataURL();
-                    }
-                };
-                /* legend code end */
-
-                var heatmapInstance = h337.create({
-                    container: document.querySelector('.heatmap'),
-                    onExtremaChange: function (data) {
-                        updateLegend(data);
-                    }
+            demoWrapper.onmousemove = function (ev) {
+                var x = ev.layerX;
+                var y = ev.layerY;
+                var value = heatmapInstance.getValueAt({
+                    x: x,
+                    y: y
                 });
 
-                // generate 200 random datapoints
-                var data = generateRandomData(200);
-                heatmapInstance.setData(data);
+                tooltip.style.display = 'block';
 
-                var demoWrapper = document.querySelector('.demo-wrapper');
-                var tooltip = document.querySelector('.tooltips');
-
-                function updateTooltip(x, y, value) {
-                    // + 15 for distance to cursor
-                    var transform = 'translate(' + (x + 15) + 'px, ' + (y + 15) + 'px)';
-                    tooltip.style.MozTransform = transform; /* Firefox */
-                    tooltip.style.msTransform = transform; /* IE (9+) - note ms is lowercase */
-                    tooltip.style.OTransform = transform; /* Opera */
-                    tooltip.style.WebkitTransform = transform; /* Safari and Chrome */
-                    tooltip.style.transform = transform; /* One day, my pretty */
-                    tooltip.innerHTML = "x:" + x + ",y:" + y + ",value:" + value;
-                }
-
-                demoWrapper.onmousemove = function (ev) {
-                    var x = ev.layerX;
-                    var y = ev.layerY;
-                    var value = heatmapInstance.getValueAt({
-                        x: x,
-                        y: y
-                    });
-
-                    tooltip.style.display = 'block';
-
-                    updateTooltip(x, y, value);
-                };
-                demoWrapper.onmouseout = function () {
-                    tooltip.style.display = 'none';
-                };
-
-
-                document.querySelector('.trigger-refresh').onclick = function () {
-                    heatmapInstance.setData(generateRandomData(200));
-                };
-
-                document.querySelector('.thankyou').onclick = function () {
-                    ga('send', 'event', 'social', 'thanks');
-                    document.querySelector('.thankyou').style.display = 'none';
-                    document.querySelector('#share').style.display = 'block';
-                };
-                var btns = document.querySelectorAll('.symbol');
-                for (var i = 0; i < btns.length; i++) {
-                    btns[i].onclick = function () {
-                        ga('send', 'event', 'social', 'share');
-                    };
-                }
-
+                updateTooltip(x, y, value);
             };
-        </script>
-        <!--heatmap js-->
+            demoWrapper.onmouseout = function () {
+                tooltip.style.display = 'none';
+            };
 
-    </body>
+
+            document.querySelector('.trigger-refresh').onclick = function () {
+                heatmapInstance.setData(generateRandomData(200));
+            };
+
+            document.querySelector('.thankyou').onclick = function () {
+                ga('send', 'event', 'social', 'thanks');
+                document.querySelector('.thankyou').style.display = 'none';
+                document.querySelector('#share').style.display = 'block';
+            };
+            var btns = document.querySelectorAll('.symbol');
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].onclick = function () {
+                    ga('send', 'event', 'social', 'share');
+                };
+            }
+
+        };</script>
+    <!--heatmap js-->
+
+</body>
 

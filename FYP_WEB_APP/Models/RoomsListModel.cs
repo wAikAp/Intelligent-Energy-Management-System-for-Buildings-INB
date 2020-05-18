@@ -16,7 +16,7 @@ namespace FYP_WEB_APP.Models
         public string temp { get; set; }
         public string hum { get; set; }
         public string lig { get; set; }
-        public string power { get; set; }
+        public double power { get; set; }
         public string lightListId { get; set; }
         public string acListId { get; set; }
         public string humListId { get; set; }
