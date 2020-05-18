@@ -1,0 +1,53 @@
+﻿@*
+    drag button with sensor and device
+*@
+@{
+}
+@model FYP_WEB_APP.Models.DevicesListModel
+
+<link rel="stylesheet" href="~/css/dragButton.css">
+
+@{
+    String deviceClass = "device_off";
+    String deviceImg = "";
+    switch (Model.devicesId.Substring(0, 2))
+    {
+        case "AC":
+            deviceImg = "air-conditioner32.png";
+            break;
+        case "LT":
+            deviceImg = "light-on32.png";
+            break;
+        case "EF":
+            deviceImg = "fan32.png";
+            break;
+    }
+
+
+    if (Model.powerOnOff)
+    {
+        deviceClass = "device_on";
+    }
+}
+<div class="draggable @deviceClass" id="@Model.devicesId">
+    <p style="margin:0; padding:0;">@Model.devicesId</p>
+    <img src="~/img/icon/@deviceImg" height="24px" />
+    <p>@Model.current</p>
+</div>
+
+
+<script>
+    $(function () {
+        $(".draggable").draggable({
+
+            drag: function () {
+                //var position = $(this).position();
+                //$('#posx').text('px: ' + position.left);
+                //$('#posy').text('py: ' + position.top);
+
+            }
+        });
+    });
+    $("#@Model.devicesId").css({ top: @Model.pos_x +'px', left:  @Model.pos_y +'px' });
+
+</script>

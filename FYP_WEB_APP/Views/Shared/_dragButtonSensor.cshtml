@@ -10,26 +10,32 @@
 @{
     String sensorClassType = "";
     String sensorUnit = "";
+    String sensorImg = "";
+
     switch (Model.sensorId.Substring(0, 2))
     {
         case "TS":
             sensorClassType = "TSensor";
             sensorUnit = " C";
+            sensorImg = "weather24.png";
             break;
         case "LS":
             sensorClassType = "LSensor";
             sensorUnit = " lm";
+            sensorImg = "light-off32.png";
             break;
         case "HS":
             sensorClassType = "HSensor";
             sensorUnit = " %";
+            sensorImg = "humidity24.png";
             break;
     }
 }
 <div class="draggable @sensorClassType" id="@Model.sensorId">
 
 
-    <p>@Model.sensorId</p>
+    <p style="margin:0; padding:0;">@Model.sensorId</p>
+    <img src="~/img/icon/@sensorImg" height="24px" />
     <p>@Model.current_Value @sensorUnit</p>
 </div>
 
