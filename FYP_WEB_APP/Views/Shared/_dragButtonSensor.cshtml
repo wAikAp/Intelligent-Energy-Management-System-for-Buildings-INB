@@ -11,23 +11,26 @@
     String sensorClassType = "";
     String sensorUnit = "";
     String sensorImg = "";
-
+    String displayType = "";
     switch (Model.sensorId.Substring(0, 2))
     {
         case "TS":
             sensorClassType = "TSensor";
             sensorUnit = " C";
             sensorImg = "weather24.png";
+            displayType = "Temperature Sensor";
             break;
         case "LS":
             sensorClassType = "LSensor";
             sensorUnit = " lm";
             sensorImg = "light-off32.png";
+            displayType = "Luminosity Sensor";
             break;
         case "HS":
             sensorClassType = "HSensor";
             sensorUnit = " %";
             sensorImg = "humidity24.png";
+            displayType = "Humidity Sensor";
             break;
     }
 }
@@ -41,6 +44,16 @@
 
 
 <script>
+    $("#@Model.sensorId").click(function () {
+        //the id from _SensorDeviceDetail to change those UI
+        $("#typeName").text("@displayType");
+        $("#typeImg").attr('src', '~/img/icon/@sensorImg');
+        $("#current_value").text('@Model.current_Value  @sensorUnit');
+        $("#totalPower").text("N/A");
+        $("#avgPower").text("N/A");
+        $("#lastUpdateTimes").text('@Model.latest_checking_time');
+        $("#detailDiv").toggleClass('@sensorClassType');
+    });
     $(function () {
         $(".draggable").draggable({
 
