@@ -43,15 +43,15 @@ namespace FYP_WEB_APP.Controllers.API
                     DateTime utcNow = DateTime.UtcNow;
                     switch (id.Substring(0, 2)) {
                         case "TS":
-                            valueNmae = "current_tmp";
+                            valueNmae = "current";
                             dbname = "TMP_SENSOR";
                             break;
                         case "HS":
-                            valueNmae = "current_hum";
+                            valueNmae = "current";
                             dbname = "HUM_SENSOR";
                             break;
                         case "LS":
-                            valueNmae = "current_lum";
+                            valueNmae = "current";
                             dbname = "LIGHT_SENSOR";
                             break;
                         default:

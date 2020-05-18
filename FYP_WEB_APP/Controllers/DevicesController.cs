@@ -596,8 +596,9 @@ namespace FYP_APP.Controllers
 						Color.Add(chart.GetRandomColor());
 						labelss.Add(get.devicesId);
 						SensorsCurrentList = GetChartDataList(get.devicesId).Where(x => x.latest_checking_time > today.AddDays(-1)).OrderBy(x => x.latest_checking_time).ToList();
+				Debug.WriteLine("line 596 :" + DevicesDataList.ToJson().ToString());
 
-						DateTime ca = today;
+				DateTime ca = today;
 						TimeSpan catime = ca - ca.AddDays(-1);
 
 						int counttime = Convert.ToInt32(catime.TotalMinutes / 5);
@@ -611,7 +612,9 @@ namespace FYP_APP.Controllers
 						{
 							foreach (CurrentDataModel getCurrent in SensorsCurrentList)
 							{
-								var value = Convert.ToDouble(Convert.ToDouble(getCurrent.current).ToString("0.00"));
+						Debug.WriteLine("line 615 : "+SensorsCurrentList.ToJson().ToString());
+
+						var value = Convert.ToDouble(Convert.ToDouble(getCurrent.current).ToString("0.00"));
 
 								ca = DateTime.Now.AddDays(-1);
 
