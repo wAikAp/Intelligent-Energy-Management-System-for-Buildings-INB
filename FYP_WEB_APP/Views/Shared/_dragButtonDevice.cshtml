@@ -9,13 +9,29 @@
 
 @{
     String deviceClass = "device_off";
-    if(Model.powerOnOff)
+    String deviceImg = "";
+    switch (Model.devicesId.Substring(0, 2))
+    {
+        case "AC":
+            deviceImg = "air-conditioner32.png";
+            break;
+        case "LT":
+            deviceImg = "light-on32.png";
+            break;
+        case "EF":
+            deviceImg = "fan32.png";
+            break;
+    }
+
+
+    if (Model.powerOnOff)
     {
         deviceClass = "device_on";
     }
 }
 <div class="draggable @deviceClass" id="@Model.devicesId">
-    <p>@Model.devicesId</p>
+    <p style="margin:0; padding:0;">@Model.devicesId</p>
+    <img src="~/img/icon/@deviceImg" height="24px" />
     <p>@Model.current</p>
 </div>
 

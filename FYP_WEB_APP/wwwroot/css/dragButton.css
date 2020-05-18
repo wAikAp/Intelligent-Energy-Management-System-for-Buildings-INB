@@ -1,14 +1,17 @@
 ﻿.draggable {
-    text-align:center;
+    text-align: center;
     width: 80px;
     height: 80px;
     border-radius: 40px;
     z-index: 99;
     position: absolute;
     color: white;
-    font-weight:bold;
-    font-size:12px;
-    padding-top:10px;
+    font-weight: bold;
+    font-size: 12px;
+    padding-top: 10px;
+    -webkit-box-shadow: 5px 6px 10px 4px rgba(0,0,0,0.19);
+    -moz-box-shadow: 5px 6px 10px 4px rgba(0,0,0,0.19);
+    box-shadow: 5px 6px 10px 4px rgba(0,0,0,0.19);
 }
 
 .draggable:hover {
