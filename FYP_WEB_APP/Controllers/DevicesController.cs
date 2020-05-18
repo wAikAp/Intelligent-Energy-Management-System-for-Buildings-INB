@@ -9,6 +9,7 @@ using FYP_WEB_APP.Models.MongoModels;
 using FYP_WEB_APP.Models;
 using System;
 using System.Diagnostics;
+using FYP_WEB_APP.Controllers;
 
 namespace FYP_APP.Controllers
 {
@@ -79,13 +80,12 @@ namespace FYP_APP.Controllers
 		[Route("Devices/DevicesChartByRoomid")]
 		public ActionResult DevicesChartByRoomid()
 		{
-			/*string id = "";
+			string id = "";
 			id = Request.Query["roomID"];
 			//  $("#sensorChartHS").load("@Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"], title = "Humidity Sensor Log Record", chartType = "line", position = "top", sensorType = "HS" })", function () {});
 			//$("#sensorChartLS").load("@Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"], title = "Luminosity Sensor Log Record", chartType = "line", position = "top", sensorType = "LS" })", function () {});
 
-			getdb();
-			List<SensorsListModel> lists = GetSensorsData().Where(x => x.roomId.Contains(id)).ToList();
+			List<DevicesListModel> lists = GetAllDevices().Where(x => x.roomId.Contains(id)).ToList();
 			Debug.WriteLine("list: " + lists.ToJson().ToString());
 			Debug.WriteLine("list: " + Request.QueryString);
 			Debug.WriteLine("roomID: " + Request.Query["roomID"]);
@@ -99,10 +99,12 @@ namespace FYP_APP.Controllers
 			ViewBag.position = Request.Query["position"];
 			ViewBag.download = Request.Query["download"];
 
-			ViewBag.day = getChartTime();
-			ViewBag.datasets = chartData(lists, Request.Query["sensorType"]);
-			ViewBag.divId = getRandomDivId();
-			*/
+			ChartController chart = new ChartController();
+
+			ViewBag.day = chart.GetChartTime();
+			ViewBag.datasets = ChartData(lists, Request.Query["sensorType"]);
+			ViewBag.divId = chart.GetRandomDivId();
+			
 			return PartialView("_DevicesChart");
 		}
 		[Route("Devices/SearchDevicesByRoomid")]
@@ -523,6 +525,137 @@ namespace FYP_APP.Controllers
 				return 0;
 			}
 		}
+		public string ChartData(List<DevicesListModel> SensorsDataList, string type)
+		{
+			switch (type)
+			{
+				case "AC":
+					SensorsDataList = SensorsDataList.Where(x => x.devicesId.Contains("TS")).ToList();
+					ViewBag.unit = " ";
+					ViewBag.unitName = "Air Conditioning";
+					break;
+				case "LT":
+					SensorsDataList = SensorsDataList.Where(x => x.devicesId.Contains("LS")).ToList();
+					ViewBag.unit = " lm";
+					ViewBag.unitName = "Light";
+					break;
+				case "HD":
+					SensorsDataList = SensorsDataList.Where(x => x.devicesId.Contains("HS")).ToList();
+					ViewBag.unit = " %";
+					ViewBag.unitName = "Humidifier";
+					break;
+				case "EF":
+					SensorsDataList = SensorsDataList.Where(x => x.devicesId.Contains("HS")).ToList();
+					ViewBag.unit = " %";
+					ViewBag.unitName = "FAN";
+					break;
+				default:
+					
+					break;
+			}
+			return GetChartData(SensorsDataList);
+		}
 
+		public string GetChartData(List<DevicesListModel> SensorsDataList)
+		{
+			ChartController chart = new ChartController();
+
+				//chart color
+				List<string> Color = new List<string>();
+				//sensor log
+
+
+				List<CurrentDataModel> SensorsCurrentList = new List<CurrentDataModel>();
+				//only ts
+
+				DateTime today = DateTime.Now;
+
+
+				//end set time
+				List<string> labelss = new List<string>();
+				List<double> data = new List<double>();
+
+				List<object> datasets = new List<object>();
+				List<object> datas = new List<object>();
+
+				foreach (SensorsListModel get in SensorsDataList)
+				{
+					Color.Add(chart.GetRandomColor());
+					labelss.Add(get.sensorId);
+					SensorsCurrentList = GetSensorIDCurrentList(get.sensorId).Where(x => x.latest_checking_time > today.AddDays(-1)).OrderBy(x => x.latest_checking_time).ToList();
+
+					DateTime ca = today;
+					TimeSpan catime = ca - ca.AddDays(-1);
+
+					int counttime = Convert.ToInt32(catime.TotalMinutes / 5);
+
+
+					for (int x = 0; x <= counttime; x++)
+					{
+						data.Add(0);
+
+					}
+					if (SensorsCurrentList.Count() != 0)
+					{
+						foreach (CurrentDataModel getCurrent in SensorsCurrentList)
+						{
+							var value = Convert.ToDouble(Convert.ToDouble(getCurrent.current).ToString("0.00"));
+
+							ca = DateTime.Now.AddDays(-1);
+
+							for (int x = 0; x <= counttime; x++)
+							{
+								var bo = getCurrent.latest_checking_time >= ca && getCurrent.latest_checking_time <= ca.AddMinutes(5);
+
+								ca = ca.AddMinutes(5);
+								if (getCurrent.latest_checking_time > ca && getCurrent.latest_checking_time < ca.AddMinutes(5))
+								{
+									data[x] = value;
+								}
+							}
+						}
+					}
+					else
+					{
+					}
+					datas.Add(data.ToArray());
+				}
+
+				for (int i = 0; i < SensorsDataList.Count; i++)
+				{
+					labelss.Add(SensorsDataList[i].devicesId);
+				}
+
+				return chart.LineChart(SensorsDataList.Count, labelss, datas);
+
+		}
+		public List<DevicesListModel> GetChartData(string id)
+		{
+		
+				string tableName = "";
+				List<CurrentDataModel> List = new List<CurrentDataModel>();
+				IMongoCollection<CurrentDataModel> collection;
+				switch (id.Substring(0, 2))
+				{
+					case "TS":
+						tableName = "TMP_SENSOR";
+						break;
+					case "LS":
+						tableName = "LIGHT_SENSOR";
+						break;
+					case "HS":
+						tableName = "HUM_SENSOR";
+						break;
+					default:
+						break;
+				}
+				//db collection
+			/*	collection = database.GetCollection<CurrentDataModel>(tableName);
+				IQueryable<CurrentDataModel> query;
+				query = from c in collection.AsQueryable<CurrentDataModel>() orderby c.latest_checking_time descending where c.sensorId.Contains(sensorId) select c;
+				return query.ToList();*/
+			return null;
+			
+		}
 	}
 }
