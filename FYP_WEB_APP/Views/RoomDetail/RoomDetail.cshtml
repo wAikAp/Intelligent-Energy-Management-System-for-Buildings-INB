@@ -118,9 +118,9 @@
                 $(document).ready(function () {
                 $("#devicesView").load("@Url.Action("SearchDevicesByRoomid", "Devices", new { roomID = ViewData["roomID"] })", function () { });
                 $("#sensorView").load("@Url.Action("SensorsListByRoomid", "Sensors", new { roomID = ViewData["roomID"] })", function () {});
-                $("#sensorChartTS").load("@Html.Raw(Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"], title = "Temperature Sensor Log Record", chartType = "line", position = "top", sensorType = "TS" , download=false}))", function () {});
-                $("#sensorChartHS").load("@Html.Raw(Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"], title = "Humidity Sensor Log Record", chartType = "line", position = "top", sensorType = "HS", download = false }))", function () {});
-                $("#sensorChartLS").load("@Html.Raw(Url.Action("SensorsChartByRoomid", "Sensors", new { roomID = ViewData["roomID"], title = "Luminosity Sensor Log Record", chartType = "line", position = "top", sensorType = "LS", download = false }))", function () {});
+                $("#sensorChartTS").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Temperature Sensor Log Record", chartType = "line" ,position ="top" , download = false , time = 6 , timeSpacing = 1 , type = "TS" }))", function () {});
+                $("#sensorChartHS").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Humidity Sensor Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "HS" }))", function () {});
+                $("#sensorChartLS").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Luminosity Sensor Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "LS" }))", function () {});
 
                 });
 
@@ -131,10 +131,10 @@
                 <div id="DevicesChartEF" class="flex-fill bd-highlight col-12 h-100"></div>
                 <script>
                 $(document).ready(function () {
-                    $("#DevicesChartAC").load("@Html.Raw(Url.Action("DevicesChartByRoomid", "Devices", new { roomID = ViewData["roomID"], title = "Air Conditioning Log Record", chartType = "line", position = "top", sensorType = "AC" , download=false}))", function () {});
-                    $("#DevicesChartLT").load("@Html.Raw(Url.Action("DevicesChartByRoomid", "Devices", new { roomID = ViewData["roomID"], title = "Light Log Record", chartType = "line", position = "top", sensorType = "LT", download=false}))", function () {});
-                    $("#DevicesChartHD").load("@Html.Raw(Url.Action("DevicesChartByRoomid", "Devices", new { roomID = ViewData["roomID"], title = "Humidifier Log Record", chartType = "line", position = "top", sensorType = "HD", download=false}))", function () {});
-                    $("#DevicesChartEF").load("@Html.Raw(Url.Action("DevicesChartByRoomid", "Devices", new { roomID = ViewData["roomID"], title = "FAN Log Record", chartType = "line", position = "top", sensorType = "EF", download=false}))", function () {});
+                     $("#DevicesChartAC").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Air Conditioning Log Record", chartType = "line" ,position ="top" , download = false , time = 6 , timeSpacing = 1 , type = "AC" }))", function () {});
+                    $("#DevicesChartLT").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Light Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "LT" }))", function () {});
+                    $("#DevicesChartHD").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Humidifier Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "HD" }))", function () {});
+                    $("#DevicesChartEF").load("@Html.Raw(Url.Action("chart", "chart", new { title = "FAN Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "EF" }))", function () {});
 
                 });
 
