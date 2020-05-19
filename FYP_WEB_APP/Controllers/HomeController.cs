@@ -12,6 +12,7 @@ using System.Linq;
 using FYP_WEB_APP.Controllers;
 using System.IO;
 using MongoDB.Bson;
+using FYP_WEB_APP.Models.LogicModels;
 
 namespace FYP_APP.Controllers
 {
@@ -150,9 +151,12 @@ namespace FYP_APP.Controllers
 				//
 				//EPPlusSamples.FileOutputUtil.OutputDir = new DirectoryInfo(@"c:\TestingDirForEx");
 				Debug.WriteLine("Running sample 8");
-				var output = SalesReportFromDatabase.Run("ss");
+				var output = PrintOutInExcel.Run("ss");
 				Debug.WriteLine("Sample 8 created: {0}", output);
 				Debug.WriteLine("");
+
+				/*DevicesPowerUseOutputUtil du = new DevicesPowerUseOutputUtil();
+				du.Dailyusage();*/
 
 			}
 			catch (Exception ex)

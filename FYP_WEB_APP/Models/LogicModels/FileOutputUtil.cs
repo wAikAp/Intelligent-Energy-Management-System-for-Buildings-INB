@@ -50,6 +50,7 @@ namespace FYP_APP.Models.LogicModels
         public static FileInfo GetFileInfo(DirectoryInfo altOutputDir, string file, bool deleteIfExists = true)
         {
             var fi = new FileInfo(altOutputDir.FullName + Path.DirectorySeparatorChar + file);
+            Debug.WriteLine("Delete Dir : " + OutputDir.FullName + Path.DirectorySeparatorChar + file);
             if (deleteIfExists && fi.Exists)
             {
                 fi.Delete();  // ensures we create a new workbook
