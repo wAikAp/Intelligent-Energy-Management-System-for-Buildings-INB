@@ -607,6 +607,7 @@ namespace FYP_APP.Controllers
 		{
 
 			List<CurrentDataModel> SensorsDataList = GetSensorIDCurrentList(sensorId);
+			Debug.WriteLine("line get list "+SensorsDataList.ToJson().ToString());
 			if (SensorsDataList.Count > 1)
 			{
 				return Convert.ToDouble(SensorsDataList.First().current);

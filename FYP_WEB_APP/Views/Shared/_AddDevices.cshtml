@@ -15,7 +15,7 @@
     }
 }
 @if(ViewBag.viewType.Equals("Add") ||ViewBag.viewType.Equals("Edit")||ViewBag.viewType.Equals("Drop") ){
-   @string url = ViewBag.action;
+   string url = ViewBag.action;
     <form action="@Url.Action(url,"Devices")" method="post">
 
     <div class="modal-header">
@@ -30,13 +30,30 @@
         <div class="row mx-3 justify-content-center align-items-center pb-2">
             <label class="col h5" for="roomId">roomId :</label>
             <div class="col">
-                <select id="roomId" name="roomId" class="form-control bg-white">
-                    <option value="">Room.No</option>
-                    @foreach (var Room in Rooms)
+                @{
+                    string chid = ViewBag.CheckRoomid;}
+
+                @if (chid == "undefined" || chid == null)
+                {
+
+                    <select id="roomId" name="roomId" class="form-control bg-white">
+                        <option value="">Room.No</option>
+                        @foreach (var Room in Rooms)
                         {
-                    <option value="@Room.roomId">@Room.roomId</option>
+
+                            <option value="@Room.roomId">@Room.roomId</option>
+
                         }
-                </select>
+
+                    </select>
+                }
+                else
+                {
+
+                    <input type="text" class="form-control bg-white" id="roomId" name="roomId" value="@ViewBag.CheckRoomid" required readonly>
+                }
+
+
             </div>
         </div>
         <div class="row mx-3 justify-content-center align-items-center pb-2">

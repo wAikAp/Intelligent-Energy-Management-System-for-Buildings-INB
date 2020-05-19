@@ -88,7 +88,7 @@ namespace FYP_WEB_APP.Controllers.API
                                     break;
                         case "LS":
                             dbname = "LIGHT_SENSOR";
-                                    if (Convert.ToDouble(S.value) == 0) {
+                                    if (Convert.ToDouble(S.value) < 0) {
                                         isErrorData = true;
 
                                         doException(S.sensorId, false, "The Sensor is disConnnection");
