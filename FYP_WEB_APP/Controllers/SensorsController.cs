@@ -35,6 +35,7 @@ namespace FYP_APP.Controllers
 
 			ViewData["NotGroup"] = "false";
 			ViewBag.SearchRoomIdENorDisable = "";
+			Debug.WriteLine("\n\n sensor Page Start");
 			ViewData["SensorsListModel"] = Setgroup(GetSensorsData());
 
 			ViewData["RoomListModel"] = GetRoomData();
@@ -103,7 +104,7 @@ namespace FYP_APP.Controllers
 			ViewData["NotGroup"] = "true";
 			//getdb();
 			string id = "";
-			if (Request.Query["roomID"].Count > 0)
+			if (!String.IsNullOrEmpty(Request.Query["roomID"]))
 			{
 				id = Request.Query["roomID"];
 				//ViewData["roomID"] 
@@ -246,7 +247,6 @@ namespace FYP_APP.Controllers
 			}
 			catch (Exception e)
 			{
-				Debug.WriteLine("line 262 error ");
 
 				return ReturnUrl();
 			};
@@ -295,9 +295,9 @@ namespace FYP_APP.Controllers
 			List<SensorsListModel> EndDataList = new List<SensorsListModel> { };
 			List<SensorsListModel> FDataList = new List<SensorsListModel> { };
 			List<SensorsListModel> roomSensorsDataList = new List<SensorsListModel> { };
+			if (HttpContext != null) { 
 
-
-			foreach (String key in Request.Query.Keys)
+				foreach (String key in Request.Query.Keys)
 			{
 				string skey = key;
 				string keyValue = Request.Query[key];
@@ -323,7 +323,7 @@ namespace FYP_APP.Controllers
 
 				}
 			}
-
+			}
 			//get B & A list Intersect data
 			if (roomSensorsDataList.Count > 0)
 			{
@@ -339,6 +339,7 @@ namespace FYP_APP.Controllers
 		}
 		public List<SensorsListModel> SortList(List<SensorsListModel> DataList)
 		{
+			if (HttpContext!=null) { 
 			string sortOrder = Request.Query["sortOrder"];
 			sortOrder = ChangeSortLink(sortOrder);
 
@@ -358,6 +359,7 @@ namespace FYP_APP.Controllers
 				ViewBag.sortIMG = "sort.png";
 
 				DataList = DataList.OrderBy(item => item.roomId).ToList();
+			}
 			}
 			return DataList;
 		}
@@ -409,26 +411,13 @@ namespace FYP_APP.Controllers
 		public List<SensorsListModel> GetSensorsData()
 		{
 			List<SensorsListModel> SensorsDataList = GetAllSensors();
-			try
-			{
-				int count = Request.Query.Count;
-				if (count != 0)
-				{
-					SensorsDataList = FindSensors(SensorsDataList);
-					SensorsDataList = SortList(SensorsDataList);
-				}
-				else
-				{
-					SensorsDataList = SortList(SensorsDataList);
 
-				}
-			}
-			catch (NullReferenceException)
-			{
+				SensorsDataList = FindSensors(SensorsDataList);
 				SensorsDataList = SortList(SensorsDataList);
 
-			}
 
+			Debug.WriteLine("\n\n     last list ");
+			Debug.WriteLine(SensorsDataList.ToJson().ToString()+" \n\n");
 
 			return SensorsDataList;
 		}
@@ -607,7 +596,6 @@ namespace FYP_APP.Controllers
 		{
 
 			List<CurrentDataModel> SensorsDataList = GetSensorIDCurrentList(sensorId);
-			Debug.WriteLine("line get list "+SensorsDataList.ToJson().ToString());
 			if (SensorsDataList.Count > 1)
 			{
 				return Convert.ToDouble(SensorsDataList.First().current);
