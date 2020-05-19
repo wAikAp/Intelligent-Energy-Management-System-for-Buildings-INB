@@ -11,6 +11,7 @@ using FYP_WEB_APP.Models.API;
 using Newtonsoft.Json;
 using FYP_WEB_APP.Controllers.Mongodb;
 using MongoDB.Driver;
+using FYP_WEB_APP.Models;
 
 namespace FYP_WEB_APP.Controllers.API
 {
@@ -20,65 +21,100 @@ namespace FYP_WEB_APP.Controllers.API
     {[HttpPost]
         public string Post(object SensorJson)
         {
-            var json = System.Text.Json.JsonSerializer.Serialize(SensorJson);
-
+            try
+            {
+                var json = System.Text.Json.JsonSerializer.Serialize(SensorJson);
+          
             var data = JsonConvert.DeserializeObject<List<SensorUpdateCurrentValueModel>> (json);
             
             var str = "";
-            ConnectDB conn = new ConnectDB();
-            IMongoDatabase database = conn.Conn();
-            bool isdone=true;
-            var updateOptions = new UpdateOptions { IsUpsert = true };
+           bool isdone=true;
 
             if (SensorJson != null)
             {
 
                 foreach (var S in data)
                 {
+                        if (string.IsNullOrEmpty(S.sensorId) || string.IsNullOrEmpty(S.value))
+                        {
+                            throw new System.ArgumentException("Parameter error", "original");
 
-                    string id = S.sensorId;
-                    string Value = S.value;
-                    string valueNmae="";
+                        }
+                        else { 
+                        //  string id = S.sensorId;
+                        //  string Value = S.value;
+                        string valueNmae="";
                     string dbname = "";
+                    bool isErrorData = false;
                     DateTime utcNow = DateTime.UtcNow;
-                    switch (id.Substring(0, 2)) {
+                    switch (S.sensorId.Substring(0, 2)) {
                         case "TS":
-                            valueNmae = "current";
                             dbname = "TMP_SENSOR";
-                            break;
+                                    if (Convert.ToDouble(S.value) <=-120) {
+                                        throw new System.ArgumentException("Sensor error", "The Sensor disConnnection");
+
+                                    }
+                                    else if (Convert.ToDouble(S.value) < 0) {
+                                        throw new System.ArgumentException("Sensor value error", "value < 0");
+
+                                    }
+                                    else if( Convert.ToDouble(S.value) > 50) {
+                                        throw new System.ArgumentException("Sensor value error", "value >50");
+                                    }
+                                    break;
                         case "HS":
-                            valueNmae = "current";
                             dbname = "HUM_SENSOR";
-                            break;
+                                    if (Convert.ToDouble(S.value) == -999) {
+                                        throw new System.ArgumentException("Sensor error", "The Sensor disConnnection");
+                                    }
+                                    else if (Convert.ToDouble(S.value) < 0) {
+                                        throw new System.ArgumentException("Sensor value error", "value < 0");
+
+                                    }
+                                    else if (Convert.ToDouble(S.value) > 100)
+                                    {
+                                        throw new System.ArgumentException("Sensor value error", "value >100");
+                                    }
+                                    break;
                         case "LS":
-                            valueNmae = "current";
                             dbname = "LIGHT_SENSOR";
-                            break;
+                                    if (Convert.ToDouble(S.value) == 0) {
+                                        throw new System.ArgumentException("Sensor error", "The Sensor disConnnection");
+
+                                    }
+                                    else if (Convert.ToDouble(S.value) < 0) {
+                                        throw new System.ArgumentException("Sensor value error", "value < 0");
+
+                                    }
+                                    else if (Convert.ToDouble(S.value) > 999)
+                                    {
+                                        throw new System.ArgumentException("Sensor value error", "value >999");
+
+                                    }
+                                    break;
                         default:
                             isdone = false;
                             str = isdone+": sensorId type not found!";
                             break;
                     }
-                    if (isdone != false)
+                        FYP_APP.Controllers.SensorsController sensorC = new FYP_APP.Controllers.SensorsController();
+                        var hasSensorInList=sensorC.GetAllSensors().Where(s => s.sensorId.Contains(S.sensorId));
+
+                    if (isdone != false && isErrorData!=true && hasSensorInList.Count()!=0)
                     {
-                        var collection = database.GetCollection<BsonDocument>(dbname);
 
-                        /*var filter = Builders<BsonDocument>.Filter.Eq("sensorId", id);
-                        var up = Builders<BsonDocument>.Update.Set(valueNmae, Value);
-                        var Updated = collection.UpdateOne(filter, up, updateOptions);
-                         up = Builders<BsonDocument>.Update.Set("latest_checking_time", DateTime.UtcNow);
-                         Updated = collection.UpdateOne(filter, up, updateOptions);
-                        */
-                        collection.InsertOne(new BsonDocument { { "sensorId", id }, { "current", Convert.ToDouble(Value)  }, { "latest_checking_time", utcNow.AddHours(8) } });
+                        new DBManger().DataBase.GetCollection<BsonDocument>(dbname).InsertOne(new BsonDocument { { "sensorId", S.sensorId }, { "current", Convert.ToDouble(S.value)  }, { "latest_checking_time", utcNow.AddHours(8) } });
 
-                        str += "{ sensorId , " + id + "},{ value," + Value + "},{ latest_checking_time," + utcNow + "}\n";
+                        str += "{ sensorId , " + S.sensorId + "},{ value," + S.value + "},{ latest_checking_time," + utcNow + "}\n";
 
                     }
                     else {
-                        return str;
+                        return S.sensorId + " update false";
+                            throw new System.ArgumentException("Parameter value error", "original");
 
+                        }
+                        }
                     }
-                }
 
             }
             else
@@ -86,10 +122,12 @@ namespace FYP_WEB_APP.Controllers.API
                 isdone = false;
 
                 str = isdone+": Parameter cannot be null ";
-                return str;
 
+                    throw new System.ArgumentException("Parameter cannot be null", "original");
+                }
+                return isdone+": "+str;
             }
-            return isdone+": "+str;
+            catch (Exception e) { return e.ToString(); }
         }
     }
 }
