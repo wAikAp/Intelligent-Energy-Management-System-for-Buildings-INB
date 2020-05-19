@@ -397,8 +397,10 @@ namespace FYP_APP.Controllers
 						current_Value = Convert.ToDouble(GetSensorCurrentValue(set.sensorId)),
 						current_Time = Convert.ToDateTime(GetSensorCurrentDate(set.sensorId)),
 						typeImg = GetType(set.sensorId),
-						typeUnit = Getunit(set.sensorId)
-					};
+						typeUnit = Getunit(set.sensorId),
+						Exception = set.Exception,
+						status=set.status
+	};
 					SensorsDataList.Add(data);
 				}
 			}

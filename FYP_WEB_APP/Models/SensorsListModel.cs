@@ -25,6 +25,8 @@ namespace FYP_WEB_APP.Models
         public string Sensortype { get; set; }
         public double current_Value { get; set; }
         public DateTime current_Time { get; set; }
+        public string Exception { get; set; }
+        public bool status { get; set; }
 
     }
 }
