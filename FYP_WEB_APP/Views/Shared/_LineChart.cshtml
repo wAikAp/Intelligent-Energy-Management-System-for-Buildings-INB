@@ -1,0 +1,126 @@
+﻿
+@{
+    ViewData["Title"] = "_DevicesChart";
+}
+<script src="~/js/Chart/Chart.min.js"></script>
+
+<div class="card  mx-2 p-2">
+    <div class=" shadow-sm w-100 h-100 p-3 justify-content-center align-items-center">
+        <div class="container-fluid col-xs-12 col-md-8 pt-4 w-100 px-0">
+
+            <canvas id="@ViewBag.divId"></canvas>
+        </div>
+    </div>
+    @if(ViewBag.download){
+    <button class="p-3 mx-2 btn btn-outline-secondary">Download the report</button>
+    }
+
+</div>
+<script>
+
+    var chartID = '';
+    var charttitle = '';
+    var chartType = '';
+    var position = '';
+    var devices = [];
+    var devicesData = [];
+    var gcolor = [];
+    var gdata;
+    var goption;
+
+    getUsageRecordData();
+
+    async function getUsageRecordData() {
+           chartID = '@ViewBag.divId';
+
+            charttitle = '@ViewBag.charttitle';
+            chartType = '@ViewBag.chartType';
+            position ='@ViewBag.position';
+
+            var time =@Html.Raw(ViewBag.day);
+
+            var jdatasets =@Html.Raw(ViewBag.datasets);
+
+        //set chart data
+        dataop = {
+            labels: time,
+            datasets: jdatasets
+        };
+        //set chart option
+goption = {
+                    title: {
+                        display: true,
+                        text: charttitle,
+                        fontSize: 25,
+                    },
+                    legend: {
+                        display: true,
+                        position: position,
+                        labels: {
+                            boxWidth: 20,
+                            fontColor: '#111',
+                            padding: 15
+                        }
+                    },
+                    scales: {
+                        yAxes: [
+                            {
+                                ticks: {
+                                    callback: function (label, index, labels) {
+                                        return label + '@ViewBag.unit';
+                                    }
+                                },
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: '@ViewBag.unitName'
+                                }
+                            }
+                        ],
+                        xAxes: [
+                            {
+                                ticks: {
+                                    callback: function (label, index, labels) {
+                                        return label + ':00';
+                                    }
+                                },
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'TIME'
+                                }
+                            }
+                        ]
+                    }
+                };
+        draw();
+
+    }
+
+    //---------------------------------------------------------------------------------
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        gcolor.push(color);
+    }
+
+    function draw() {
+
+        let myChart = document.getElementById(chartID).getContext('2d');
+        // Global Options
+        Chart.defaults.global.defaultFontFamily = 'Lato';
+        Chart.defaults.global.defaultFontSize = 18;
+        Chart.defaults.global.defaultFontColor = '#777';
+
+
+        let barChart = new Chart(myChart, {
+            type: chartType,//bar,horizontalBar,pie,line,doughnut,radar,polarArea
+            data: dataop,
+            options: goption
+        });
+    }
+                                                                                                                    //--------------------------------------------------------------------------
+
+</script>
+
