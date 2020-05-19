@@ -45,21 +45,30 @@
                 }
 
                 var sPositionList = JSON.stringify(JSSensorList);
-                //alert(sPositionList);
                 var dPositionList = JSON.stringify(JSDeviceList);
-                //alert(dPositionList);
-                var roomid = @ViewData["roomID"];
-                ///RoomDetail/RoomDetail/UpdateSensorDevicePosition
-                //Url.Action("UpdateSensorDevicePosition", "RoomDetail")
 
+                var formData = new FormData();
+                formData.append("sPositionList", sPositionList);
+                formData.append("dPositionList", dPositionList);
+                formData.append("roomID", '@ViewData["roomID"]');
+                //{ 'sPositionList': sPositionList, 'dPositionList': dPositionList, 'roomID':@ViewData["roomID"] }
+                
                 $.ajax({
-                    url: 'RoomDetail/UpdateSensorDevicePosition',
+                    url: '@Url.Action("UpdateSensorDevicePosition", "RoomDetail")',
                     type: "POST",
-                    dataType: "JSON",
-                    data: { 'roomID': roomid, 'sPositionList': sPositionList, 'dPositionList': dPositionList },
-                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    data: formData,
                     success: function (response) {
-                        alert("Success");
+                        alert("Saved");
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert('Cannot save, please try again!');
+                        console.log(XMLHttpRequest);
+                        console.log(textStatus);
+                        console.log(errorThrown);
+
                     }
                 });
             }
@@ -142,10 +151,10 @@
                             <b>Room Floor Plan </b>
 
                             <button class="btn btn-outline-secondary px-0 mr-1 ml-2 " type="button" data-toggle="modal" data-target="#roomSetting" style="width: 40px; height: 40px"><img src="https://www.hko.gov.hk/images/icon_setting.png" style="height: 24px;width:24px;"></button>
-                            <button type="button" class="btn btn-outline-secondary px-2" style="width: 40px; height: 40px;" onclick="AddtSensors(@ViewData["roomID"])">
+                            <button type="button" class="btn btn-outline-secondary px-2" style="width: 40px; height: 40px;" onclick='AddtSensors("@ViewData["roomID"]")'>
                                 <img src="~/img/icon/temp.png" width="24px">
                             </button>
-                            <button type="button" class="btn btn-outline-secondary px-2" style="width: 40px; height: 40px;" onclick="AddtDevices(@ViewData["roomID"])">
+                            <button type="button" class="btn btn-outline-secondary px-2" style="width: 40px; height: 40px;" onclick='AddtDevices("@ViewData["roomID"]")'>
                                 <img src="~/img/icon/ACBlack32.png" width="24px">
                             </button>
                             <button id="positionSaveBtn" type="button" class="btn btn-outline-secondary px-2" style="width: 40px; height: 40px;" onclick="savePosition()">

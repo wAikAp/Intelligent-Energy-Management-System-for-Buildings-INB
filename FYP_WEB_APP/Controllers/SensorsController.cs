@@ -103,7 +103,7 @@ namespace FYP_APP.Controllers
 			ViewData["NotGroup"] = "true";
 			//getdb();
 			string id = "";
-			if (Convert.ToInt32(Request.Query["roomID"]) > 0)
+			if (Request.Query["roomID"].Count > 0)
 			{
 				id = Request.Query["roomID"];
 				//ViewData["roomID"] 
