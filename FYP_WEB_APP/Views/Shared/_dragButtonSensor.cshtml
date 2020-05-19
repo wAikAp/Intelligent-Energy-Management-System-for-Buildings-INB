@@ -6,7 +6,7 @@
 @model FYP_WEB_APP.Models.SensorsListModel
 
 <link rel="stylesheet" href="~/css/dragButton.css">
-
+<script src="~/js/DragSensorDeviceButtonJSModel.js"></script>
 @{
     String sensorClassType = "";
     String sensorUnit = "";
@@ -65,17 +65,43 @@
         $("#detailDiv").addClass('@sensorClassType');
         $("#turnOnOff").text("N/A");
     });
+
+    $("#@Model.sensorId").css({ top: @Model.pos_x +'px', left:  @Model.pos_y +'px' });
+       
     $(function () {
-        $(".draggable").draggable({
+        $("#@Model.sensorId").draggable({
+            
+            stop: function () {
+                var position = $(this).position();
+                //since the Model.pos_x is the server side c# cannot direct change it.
+                //so need a js model first, then use to save on cookie 
+                //change to js model
+                
+                //var jsSDmodel = new DragSensorDeviceButtonJSModel('Model.sensorId', position.left, position.top);
+                
+                //var JSSensorsList = JSON.parse(Cookies.get('JSSensorsList'));
+                
+                //for (var sensorBtnObj of JSSensorsList) {
+                //    console.log(sensorBtnObj.id);
+                //    if (sensorBtnObj.id == 'Model.sensorId') {
+                //        sensorBtnObj.pos_x = jsSDmodel.left;
+                //        sensorBtnObj.pos_y = jsSDmodel.top;
+                //    } else {
+                //        JSSensorsList.push(jsSDmodel);
+                //    }
+                //}
+                //JSSensorsList.push(jsSDmodel);
+                //save again to cookie
+                //Cookies.set('JSSensorsList', JSON.stringify(JSSensorsList));
+                
+                
+                
+                
 
-            drag: function () {
-                //var position = $(this).position();
-                //$('#posx').text('px: ' + position.left);
-                //$('#posy').text('py: ' + position.top);
-
+                
             }
         });
     });
-    $("#@Model.sensorId").css({ top: @Model.pos_x +'px', left:  @Model.pos_y +'px' });
+
 
 </script>

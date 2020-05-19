@@ -1,8 +1,7 @@
 ﻿@*
     drag button with sensor and device
 *@
-@{
-}
+
 @model FYP_WEB_APP.Models.DevicesListModel
 
 <link rel="stylesheet" href="~/css/dragButton.css">
@@ -63,19 +62,18 @@
         $("#turnOnOff").text("Turning off");
     });
 
-
-
+    $("#@Model.devicesId").css({ top: @Model.pos_x +'px', left:  @Model.pos_y +'px' });
+    //var JSdeviceList = [];
     $(function () {
-        $(".draggable").draggable({
+        $("#@Model.devicesId").draggable({
 
-            drag: function () {
-                //var position = $(this).position();
-                //$('#posx').text('px: ' + position.left);
-                //$('#posy').text('py: ' + position.top);
-
+            stop: function () {
+                var position = $(this).position();
+                var jsSDmodel = new DragSensorDeviceButtonJSModel('@Model.devicesId', position.left, position.top);
+                //JSdeviceList.push(jsSDmodel);
             }
         });
     });
-    $("#@Model.devicesId").css({ top: @Model.pos_x +'px', left:  @Model.pos_y +'px' });
+
 
 </script>
