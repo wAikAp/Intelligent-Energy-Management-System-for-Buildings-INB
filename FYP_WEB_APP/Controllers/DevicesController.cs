@@ -699,7 +699,7 @@ namespace FYP_APP.Controllers
 					query = from c in collection.AsQueryable<CurrentDataModel>() orderby c.latest_checking_time descending where c.devicesId.Contains(id) select c;
 					return query.ToList();	
 		}
-		public string[] typeName= { "Air Conditioning", "Light", "Humidifier", "EXH_FAN" };
+		public string[] typeName= { "Air Conditioning", "Light", "Humidifier", "Exhaust Fan" };
 
 		public int GetDeviceCount(string TypeName) {
 			string shortName="";

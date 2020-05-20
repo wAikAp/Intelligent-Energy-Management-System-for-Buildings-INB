@@ -75,20 +75,18 @@
                         <div id="PowerUsageChart" class="flex-fill bd-highlight col-12 h-100"></div>
                         <script>
                         $(document).ready(function () {
-                         $("#PowerUsageChart").load("@Html.Raw(Url.Action("DoughnutChart", "Home", new { title = "Power Usage", chartType = "doughnut", position = "right" }))", function () {});
+                         $("#PowerUsageChart").load("@Html.Raw(Url.Action("DoughnutChart", "Home", new { title = "Power Usage(kWh)", chartType = "doughnut", position = "right" }))", function () {});
 
                                     });
-
                         </script>
                     </div>
                 </div>
-
                 <div class=" col-xl-4 col-sm">
                     <div class="card mb-3 shadow-sm h-100 p-3 justify-content-center align-items-center">
                         <div id="DoughnutChart" class="flex-fill bd-highlight col-12 h-100"></div>
                         <script>
                         $(document).ready(function () {
-                            $("#DoughnutChart").load("@Html.Raw(Url.Action("DoughnutChart", "Home", new { title = "Use Time", chartType = "doughnut", position = "right" }))", function () {});
+                            $("#DoughnutChart").load("@Html.Raw(Url.Action("DoughnutUseTimeChart", "Home", new { title = "Use Time(hrs)", chartType = "doughnut", position = "right" }))", function () {});
 
                                     });
 
@@ -113,7 +111,7 @@
 
                             <div class="text-right h2">
                                 @ViewBag.TotalUsage
-                                KW-h
+                                kWh
                             </div>
                         </div>
                     </div>
@@ -127,7 +125,7 @@
                                     <div class=" mb-4  w-25 text-right">
                                         @ViewBag.ACpower
                                     </div>
-                                    <div class=" mb-4  w-25 text-right">KW-h</div>
+                                    <div class=" mb-4  w-25 text-right">kWh</div>
                                 </div>
                             </div>
                             <div class="">
@@ -138,7 +136,7 @@
                                     <div class=" mb-4  w-25 text-right">
                                         @ViewBag.LTpower
                                     </div>
-                                    <div class=" mb-4  w-25 text-right">KW-h</div>
+                                    <div class=" mb-4  w-25 text-right">kWh</div>
                                 </div>
                             </div>
                             <div class="">
@@ -149,28 +147,24 @@
                                     <div class=" mb-4  w-25 text-right">
                                         @ViewBag.HDpower
                                     </div>
-                                    <div class=" mb-4  w-25 text-right">KW-h</div>
+                                    <div class=" mb-4  w-25 text-right">kWh</div>
                                 </div>
                             </div>
                             <div class="">
                                 <div class=" d-flex flex-row">
                                     <div class=" mb-4  w-50 ">
-                                        EXH_FAN
+                                        Exhaust Fan
                                     </div>
                                     <div class=" mb-4  w-25 text-right">
                                         @ViewBag.EFpower
                                     </div>
-                                    <div class=" mb-4  w-25 text-right">KW-h</div>
+                                    <div class=" mb-4  w-25 text-right">kWh</div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-
-
             </div>
-
         </div>
 
     </div>
@@ -178,18 +172,15 @@
 
         <div class="col-md ">
             <div class="card shadow-sm w-100 h-100 p-3 justify-content-center align-items-center flex-row flex-wrap">
-
                 <div style="width:75%;">
                     <canvas id="canvas"></canvas>
                 </div>
                 <br>
                 <br>
                 <script>
-                   // var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-                    //
                     // record current 8 hours trend
                     //
-                    var today = new Date();  
+                    var today = new Date();
                     var time = today.getHours();
                     var config = {
                         type: 'line',
@@ -198,25 +189,24 @@
                             labels: [(time - 7) + ':00', (time - 6) + ':00', (time - 5) + ':00', (time - 4) + ':00', (time - 3) + ':00', (time - 2) + ':00', (time - 1) + ':00', time + ':00'],
                             datasets: [
                                 {
-                                label: 'Room 348',
-                                backgroundColor: 'red',
-                                borderColor: 'red',
+                                    label: 'Room 348',
+                                    backgroundColor: 'red',
+                                    borderColor: 'red',
                                     data: [
-                                    // data value
-                                    12.30,11.30,10.20,12.30,11.00,10.40,10.20,10.40
-                                ],
-                                fill: false,
+                                        // data value
+                                        12.30, 11.30, 10.20, 12.30, 11.00, 10.40, 10.20, 10.40
+                                    ],
+                                    fill: false,
                                 },
                                 {
-                                label: 'Room 350',
-                                fill: false,
-                                backgroundColor: window.chartColors.blue,
-                                borderColor: window.chartColors.blue,
+                                    label: 'Room 350',
+                                    fill: false,
+                                    backgroundColor: window.chartColors.blue,
+                                    borderColor: window.chartColors.blue,
                                     data: [
-                                    // data value
-                                    
-                                ],
-                            }]
+                                        // data value
+                                    ],
+                                }]
                         },
                         options: {
                             responsive: true,
@@ -258,183 +248,14 @@
                         window.myLine = new Chart(ctx, config);
                     };
                 </script>
+                <br />
+                
+                <a class="nav-link" href="~/Home/MonthlyReport">
+                    <button class="p-3 mx-2 btn btn-outline-secondary">Download the report</button>
+                </a>
 
                 <!---->
             </div>
         </div>
     </div>
 </div>
-<!--chart js-->
-<!--
-<script>
-    var chartID = '';
-    var charttitle = '';
-    var chartType = '';
-    var position = '';
-    var devices = [];
-    var devicesData = [];
-    var gcolor = [];
-    var gdata;
-    var goption;
-
-    getPowerUsageDate();
-    var devices = [];
-    var devicesData = [];
-    var gcolor = [];
-    getUsageTimeData();
-    var devices = [];
-    var devicesData = [];
-    var gcolor = [];
-    getUsageRecordData();
-    var devices = [];
-    var devicesData = [];
-    getNumberOfDevicesData();
-
-
-    async function getUsageRecordData() {
-
-        charttitle = 'Devices Power Usage Record';
-
-        chartID = 'UsageRecordChart';
-        chartType = 'line';
-        position = 'bottom';
-        devices.push('deviceA');
-        devices.push('deviceB');
-        devices.push('deviceC');
-        var day = [];
-        var i;
-        for (i = 0; i < 30; i++) {
-            day.push(i);
-        }
-
-        devices.forEach(getRandomColor);
-        //set chart data
-        dataop = {
-            labels: day,
-            datasets: [{
-                label: devices[0],
-                borderColor: gcolor[0],
-                fill: false,
-                data: [65, 59, 80, 81, 56, 55, 40, 50, 60, 55, 30, 78],
-            }, {
-                label: devices[1],
-                borderColor: gcolor[1],
-                fill: false,
-                data: [10, 20, 60, 95, 64, 78, 90, 80, 70, 40, 70, 89],
-                spanGaps: false,
-            }, {
-                label: devices[2],
-                borderColor: gcolor[2],
-                fill: false,
-                data: [30, 20, 80, 50, 64, 78, 100, 40, 50, 40, 75, 90],
-                spanGaps: false,
-            }
-
-            ]
-        };
-        //set chart option
-        goption = {
-            title: {
-                display: true,
-                text: charttitle,
-                fontSize: 25
-            },
-            legend: {
-                display: true,
-                position: position,
-                labels: {
-                    boxWidth: 20,
-                    fontColor: '#111',
-                    padding: 15
-                }
-            }
-        };
-        draw();
-
-    }
-    //--------------------------------------------------------------------------------------------
-    async function getNumberOfDevicesData() {
-
-        chartID = 'NumberOfDevicesChart';
-        charttitle = 'Number Of Devices';
-        chartType = 'horizontalBar';
-        position = 'top';
-
-        devices.push('deviceA');
-        devices.push('deviceB');
-        devices.push('deviceC');
-        devicesData.push(10);
-        devicesData.push(20);
-        devicesData.push(25);
-        devices.forEach(getRandomColor);
-        //set chart data
-
-        dataop = {
-            labels: devices,
-            datasets: [{
-                data: devicesData,
-                backgroundColor: gcolor,
-                borderWidth: 1,
-                borderColor: '#777',
-                hoverBorderWidth: 3,
-                hoverBorderColor: '#000',
-                spanGaps: false
-
-            }
-
-
-            ]
-        };
-        //set chart option
-
-        goption = {
-            responsive: true,
-
-            title: {
-                display: true,
-                text: charttitle,
-                fontSize: 25
-            },
-            legend: {
-                display: false
-            }, scales: {
-                yAxes: [{
-                    display: false
-                }]
-            }
-
-
-        };
-
-        draw();
-
-    }
-    //---------------------------------------------------------------------------------
-    function getRandomColor() {
-        var letters = '0123456789ABCDEF';
-        var color = '#';
-        for (var i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        gcolor.push(color);
-    }
-
-    function draw() {
-
-        let myChart = document.getElementById(chartID).getContext('2d');
-        // Global Options
-        Chart.defaults.global.defaultFontFamily = 'Lato';
-        Chart.defaults.global.defaultFontSize = 18;
-        Chart.defaults.global.defaultFontColor = '#777';
-
-
-        let barChart = new Chart(myChart, {
-            type: chartType,//bar,horizontalBar,pie,line,doughnut,radar,polarArea
-            data: dataop,
-            options: goption
-        });
-    }
-            //--------------------------------------------------------------------------
-
-</script>-->
-<!--chart js-->
