@@ -41,24 +41,32 @@ namespace FYP_WEB_APP.Controllers
 				type = type.Substring(0, 2);
 			}
 			else { iid = type; }
-			this.time = Convert.ToInt32(Request.Query["time"]);
-			this.timeSpacing = Convert.ToInt32(Request.Query["timeSpacing"]);
-			string roomId = Request.Query["roomId"];
-			if (roomId==null) {
-				roomId = "";
+			try {
+				this.time = Convert.ToInt32(Request.Query["time"]);
+				this.timeSpacing = Convert.ToInt32(Request.Query["timeSpacing"]);
+				Debug.WriteLine(timeSpacing);
+
+
+				string roomId = Request.Query["roomId"];
+				if (roomId == null) {
+					roomId = "";
+				}
+				switch (type) {
+					case "TS":
+					case "LS":
+					case "HS":
+						ViewBag.datasets = SensorsCurrectLineChart(iid, roomId);
+						break;
+					case "AC":
+					case "LT":
+					case "HD":
+					case "EF":
+						ViewBag.datasets = DeviceCurrectLineChart(iid, roomId);
+						break;
+				}
 			}
-			switch (type) {
-				case "TS":
-				case "LS":
-				case "HS":
-					ViewBag.datasets=SensorsCurrectLineChart(iid, roomId);
-					break;
-				case "AC":
-				case "LT":
-				case "HD":
-				case "EF":
-					ViewBag.datasets=DeviceCurrectLineChart(iid, roomId);
-					break;
+			catch (Exception e) {
+				return Content(e.Message);
 			}
 			//ViewBag.datasets = ChartData(lists, Request.Query["sensorType"]);
 
@@ -326,38 +334,7 @@ namespace FYP_WEB_APP.Controllers
 			//set time
 			int ix = 0;
 			List<string> time = new List<string>();
-			/**	for (int i = hour; i < 24; i++)
-				{
-					for (ix = Minute; ix < 60; ix += 5)
-					{
-						time.Add(i.ToString() + ":" + ix.ToString());
-						if (ix > 55)
-						{
-							Minute = ix + 5;
-							Minute %= 60;
-						}
-						else if (ix == 55)
-						{
-							Minute = 0;
-						}
-					}
-				}
 
-				for (int i = 0; i < hour + 1; i++)
-				{
-					for (int ixx = Minute; ixx < 60; ixx += 5)
-					{
-						if (i == hour && ixx > oMinute)
-						{
-
-						}
-						else
-						{
-							time.Add(i.ToString() + ":" + ixx.ToString());
-
-						}
-					}
-				}*/
 			if ((hour - ctime) > 0)
 			{
 				for (int i = hour - ctime; i <= today.Hour; i++)
@@ -438,40 +415,45 @@ namespace FYP_WEB_APP.Controllers
 
 			DateTime ca = today;
 			TimeSpan catime = ca - ca.AddHours(time * -1);
+			int counttime = 0;
 
-			int counttime = Convert.ToInt32(catime.TotalMinutes / timeSpacing);
+				counttime = Convert.ToInt32(catime.TotalMinutes / timeSpacing);
 
 
-			for (int x = 0; x <= counttime; x++)
-			{
-				data.Add(0);
-
-			}
-			if (CurrentList.Count() != 0)
-			{
-				foreach (CurrentDataModel getCurrent in CurrentList)
+				for (int x = 0; x <= counttime; x++)
 				{
-					var value = Convert.ToDouble(Convert.ToDouble(getCurrent.current).ToString("0.00"));
+					data.Add(0);
 
-					ca = DateTime.Now.AddHours(time * -1);
-
-					for (int x = 0; x <= counttime; x++)
+				}
+				if (CurrentList.Count() != 0)
+				{
+					foreach (CurrentDataModel getCurrent in CurrentList)
 					{
-						var bo = getCurrent.latest_checking_time >= ca && getCurrent.latest_checking_time <= ca.AddMinutes(timeSpacing);
+						var value = Convert.ToDouble(Convert.ToDouble(getCurrent.current).ToString("0.00"));
 
-						ca = ca.AddMinutes(timeSpacing);
-						if (getCurrent.latest_checking_time > ca && getCurrent.latest_checking_time < ca.AddMinutes(timeSpacing))
+						ca = DateTime.Now.AddHours(time * -1);
+
+						for (int x = 0; x <= counttime; x++)
 						{
-							data[x] = value;
+							var bo = getCurrent.latest_checking_time >= ca && getCurrent.latest_checking_time <= ca.AddMinutes(timeSpacing);
+
+							ca = ca.AddMinutes(timeSpacing);
+							if (getCurrent.latest_checking_time > ca && getCurrent.latest_checking_time < ca.AddMinutes(timeSpacing))
+							{
+								data[x] = value;
+							}
 						}
 					}
 				}
-			}
-			else
-			{
-			}
+				else
+				{
+				}
+			
+
 			return data;
 		}
+
+
 		public string GetChartTime() { return null; }
 	}
 }

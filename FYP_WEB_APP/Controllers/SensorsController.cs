@@ -174,10 +174,13 @@ namespace FYP_APP.Controllers
 						else
 						{
 							up = Builders<MongoSensorsListModel>.Update.Set(property.Name.ToString(), property.GetValue(postData).ToString());
-
+							Debug.WriteLine("\n "+ property+" + " + property.GetValue(postData));
 						}
 						var Updated = SensorsCollection.UpdateOne(filter, up);
+
 						this.isUpdated = Updated.IsAcknowledged;
+						Debug.WriteLine("\n update status" + this.isUpdated);
+
 					}
 				}
 			}
@@ -297,20 +300,62 @@ namespace FYP_APP.Controllers
 			List<SensorsListModel> roomSensorsDataList = new List<SensorsListModel> { };
 			if (HttpContext != null) { 
 
-				foreach (String key in Request.Query.Keys)
+				foreach (string key in Request.Query.Keys)
 			{
 				string skey = key;
 				string keyValue = Request.Query[key];
+					List<SensorsListModel> newlsit = new List<SensorsListModel>();
 
+					Debug.WriteLine(skey+"+"+keyValue); 
+					Debug.WriteLine(SensorsDataList.ToJson().ToString()); 
 				switch (skey)
 				{
-					case "roomId":
-						roomSensorsDataList = SensorsDataList.Where(x => x.roomId.Contains(keyValue)).ToList();
+					case "sensorName":
+						/*	roomSensorsDataList = SensorsDataList.Where(x => {
+							if(x.sensor_name != null) {
+								x.sensor_name.Contains(keyValue)
+								
+							}).ToList();
+							*/
+							foreach (SensorsListModel sm in SensorsDataList) {
+								if (sm.sensor_name != null) {
+									if (sm.sensor_name.Contains(keyValue)) {
+									newlsit.Add(sm);
+									}
+								}
+							}	
+						roomSensorsDataList = newlsit;
 						break;
+					case "roomId":
+							foreach (SensorsListModel sm in SensorsDataList)
+							{
+								if (sm.roomId != null)
+								{
+									if (sm.roomId.Contains(keyValue))
+									{
+										newlsit.Add(sm);
+									}
+								}
+							}
+							roomSensorsDataList = newlsit;
+
+							//roomSensorsDataList = SensorsDataList.Where(x => x.roomId.Contains(keyValue)).ToList();
+							break;
 					case "TS":
 					case "LS":
 					case "HS":
-						FDataList = SensorsDataList.Where(x => x.sensorId.Contains(skey)).ToList();
+							foreach (SensorsListModel sm in SensorsDataList)
+							{
+								if (sm.sensorId != null)
+								{
+									if (sm.sensorId.Contains(skey))
+									{
+										newlsit.Add(sm);
+									}
+								}
+							}
+							FDataList = newlsit;
+							//FDataList = SensorsDataList.Where(x => x.sensorId.Contains(skey)).ToList();
 						break;
 					default:
 						break;
@@ -391,6 +436,7 @@ namespace FYP_APP.Controllers
 					{
 						roomId = set.roomId,
 						sensorId = set.sensorId,
+						sensor_name = set.sensor_name,
 						pos_x = set.pos_x,
 						pos_y = set.pos_y,
 						desc = set.desc,
@@ -412,12 +458,12 @@ namespace FYP_APP.Controllers
 		{
 			List<SensorsListModel> SensorsDataList = GetAllSensors();
 
-				SensorsDataList = FindSensors(SensorsDataList);
-				SensorsDataList = SortList(SensorsDataList);
+				//SensorsDataList = FindSensors(SensorsDataList);
+				//SensorsDataList = SortList(SensorsDataList);
 
-
-			Debug.WriteLine("\n\n     last list ");
-			Debug.WriteLine(SensorsDataList.ToJson().ToString()+" \n\n");
+				
+		//	Debug.WriteLine("\n\n     last list ");
+			//Debug.WriteLine(SensorsDataList.ToJson().ToString()+" \n\n");
 
 			return SensorsDataList;
 		}
@@ -556,10 +602,11 @@ namespace FYP_APP.Controllers
 					break;
 			}
 			//db collection
-			collection = database.GetCollection<CurrentDataModel>(tableName);
-			IQueryable<CurrentDataModel> query;
-			query = from c in collection.AsQueryable<CurrentDataModel>() orderby c.latest_checking_time descending where c.sensorId.Contains(sensorId) select c;
-			return query.ToList();
+			List<CurrentDataModel> query = database.GetCollection<CurrentDataModel>(tableName).Find(new BsonDocument()).Limit(100).Sort(Builders<CurrentDataModel>.Sort.Descending("latest_checking_time")).ToList();
+			
+			//IQueryable<CurrentDataModel> query;
+			//query = from c in collection.AsQueryable<CurrentDataModel>() orderby c.latest_checking_time descending where c.sensorId.Contains(sensorId) select c;
+			return query;
 		}
 		public double GetSensorCurrentValue(string sensorId)
 		{
