@@ -58,6 +58,7 @@
         $("#current_value").html('@Model.current_Value  @sensorUnit');
         $("#totalPower").text("N/A");
         $("#avgPower").text("N/A");
+        $("#onOff").css("display", "none");
         $("#lastUpdateTimes").text('@Model.latest_checking_time');
         $("#detailDiv").removeClass('HSensor');
         $("#detailDiv").removeClass('TSensor');
