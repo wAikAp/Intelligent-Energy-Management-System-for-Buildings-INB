@@ -52,17 +52,17 @@ namespace FYP_WEB_APP.Controllers
 					roomId = "";
 				}
 				switch (type) {
-					case "TS":
-					case "LS":
-					case "HS":
-						ViewBag.datasets = SensorsCurrectLineChart(iid, roomId);
-						break;
-					case "AC":
-					case "LT":
-					case "HD":
-					case "EF":
-						ViewBag.datasets = DeviceCurrectLineChart(iid, roomId);
-						break;
+				case "TS"://Temp sensor
+				case "LS"://Light sensor
+				case "HS"://Hum sensor
+					ViewBag.datasets=SensorsCurrectLineChart(iid, roomId);
+					break;
+				case "AC"://Ac devices
+				case "LT"://Light devices
+				case "HD"://Hum devices
+				case "EF"://Fan devices
+					ViewBag.datasets=DeviceCurrectLineChart(iid, roomId);
+					break;
 				}
 			}
 			catch (Exception e) {
