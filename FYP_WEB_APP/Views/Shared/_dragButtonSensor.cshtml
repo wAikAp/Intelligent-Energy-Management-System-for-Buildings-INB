@@ -16,20 +16,20 @@
     {
         case "TS":
             sensorClassType = "TSensor";
-            sensorUnit = " C";
-            sensorImg = "weather24.png";
+            sensorUnit = " °C";
+            sensorImg = "temperature96.png";
             displayType = "Temperature Sensor";
             break;
         case "LS":
             sensorClassType = "LSensor";
             sensorUnit = " lm";
-            sensorImg = "light-off32.png";
+            sensorImg = "lightSensor96.png";
             displayType = "Luminosity Sensor";
             break;
         case "HS":
             sensorClassType = "HSensor";
             sensorUnit = " %";
-            sensorImg = "humidity24.png";
+            sensorImg = "humidity96.png";
             displayType = "Humidity Sensor";
             break;
     }
@@ -72,7 +72,7 @@
         $("#@Model.sensorId").draggable({
             
             stop: function () {
-                var position = $(this).position();
+                //var position = $(this).position();
                 //since the Model.pos_x is the server side c# cannot direct change it.
                 //so need a js model first, then use to save on cookie 
                 //change to js model
@@ -93,12 +93,6 @@
                 //JSSensorsList.push(jsSDmodel);
                 //save again to cookie
                 //Cookies.set('JSSensorsList', JSON.stringify(JSSensorsList));
-                
-                
-                
-                
-
-                
             }
         });
     });

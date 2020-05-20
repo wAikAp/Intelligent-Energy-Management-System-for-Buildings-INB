@@ -10,18 +10,21 @@
 
     String deviceImg = "";
     String displayType = "";
+    string value_unit = "";
     switch (Model.devicesId.Substring(0, 2))
     {
         case "AC":
-            deviceImg = "air-conditioner32.png";
+            deviceImg = "air-conditioner96.png";
             displayType = "Air Conditioner";
+            value_unit = " °C";
             break;
         case "LT":
-            deviceImg = "light-on32.png";
+            deviceImg = "light-on64.png";
             displayType = "Light";
+            value_unit = "";
             break;
         case "EF":
-            deviceImg = "fan32.png";
+            deviceImg = "fan96.png";
             displayType = "Fan";
             break;
     }
@@ -35,7 +38,7 @@
 <div class="draggable @deviceClass" id="@Model.devicesId">
     <p style="margin:0; padding:0;">@Model.devicesId</p>
     <img src="~/img/icon/@deviceImg" height="24px" />
-    <p>@Model.current</p>
+    <p>@Model.current @value_unit</p>
 </div>
 
 
@@ -48,7 +51,7 @@
         $("#typeName").text("@displayType");
         $("#sdid").text("@Model.devicesId");
         $("#typeImg").attr('src', '/img/icon/@deviceImg');
-        $("#current_value").text('@Model.current');
+        $("#current_value").text('@Model.current'+'@value_unit');
         $("#totalPower").text("@Model.power");
         $("#avgPower").text("@Model.avgPower");
         $("#lastUpdateTimes").text('@Model.lastest_checking_time');
@@ -62,14 +65,14 @@
         $("#turnOnOff").text("Turning off");
     });
 
-    $("#@Model.devicesId").css({ top: @Model.pos_x +'px', left:  @Model.pos_y +'px' });
+    $("#@Model.devicesId").css({ left: @Model.pos_x +'px', top:  @Model.pos_y +'px' });
     //var JSdeviceList = [];
     $(function () {
         $("#@Model.devicesId").draggable({
 
             stop: function () {
-                var position = $(this).position();
-                var jsSDmodel = new DragSensorDeviceButtonJSModel('@Model.devicesId', position.left, position.top);
+                //var position = $(this).position();
+                //var jsSDmodel = new DragSensorDeviceButtonJSModel('@Model.devicesId', position.left, position.top);
                 //JSdeviceList.push(jsSDmodel);
             }
         });

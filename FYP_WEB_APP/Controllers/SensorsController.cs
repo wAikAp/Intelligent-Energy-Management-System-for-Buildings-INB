@@ -504,7 +504,7 @@ namespace FYP_APP.Controllers
 			switch (sensorId.Substring(0, 2))
 			{
 				case "TS":
-					type = "℃";
+					type = "°C";
 					break;
 				case "LS":
 					type = "lm";
