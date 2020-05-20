@@ -10,6 +10,7 @@ using MongoDB.Driver;
 using System.Diagnostics;
 using FYP_WEB_APP.Models.MongoModels;
 using MongoDB.Driver;
+using Newtonsoft.Json.Linq;
 
 namespace FYP_WEB_APP.Models.LogicModels
 {
@@ -348,6 +349,84 @@ namespace FYP_WEB_APP.Models.LogicModels
 		}
 
 
+		public JObject getRoomPowerTrend()// gen a json for the chart.
+		{
+			List<String> RoomList = getRoomList();
+			PowerUsesList = getPowerUseList();
+
+
+			String oString = "{ labels: [";
+			String temp = "";
+			for (int i = 6; i > 0; i--)//gen x line tags
+			{
+				DateTime dt = DateTime.Now;
+				DateTime currentHourTime = dt.AddHours(-i);
+				if (currentHourTime.ToString("HH").Contains("24"))
+				{
+					temp += "'00:00' , ";
+				}
+				else
+				{
+					temp += "'" + currentHourTime.ToString("HH") + ":00' , ";
+				}				
+			}
+			oString += temp;
+			oString += "], datasets:[ ";
+			temp = "";
+			foreach (String room in RoomList)
+			{
+				temp += "{ label: '" + room + "',backgroundColor: '" + GetRandomColor() + "' ,borderColor: '" + GetRandomColor() + "', data:[";
+				// data insert
+				String tempdata = ""; // for store temp data 
+				for (int i = 6; i > 0; i--)
+				{
+					String currentHourTime = DateTime.Now.AddHours(-i).ToString("yyyy/MM/dd:HH"); //get current time
+					String fetchdata = "";
+					foreach (MongoDevicesPowerUse powerUse in PowerUsesList)
+					{
+						//Debug.WriteLine("Comparing ctime: " + currentHourTime +" and fetch time: "+ powerUse.recorded_time.ToString("yyyy/MM/dd:HH"));
+						//Debug.WriteLine("Comparing room: " + room + " and powerUse.roomId: " + powerUse.roomId);
+						if (currentHourTime.Contains(powerUse.recorded_time.ToString("yyyy/MM/dd:HH")) && room == powerUse.roomId)
+						{
+							//Debug.WriteLine("one passed record");
+							fetchdata ="'"+powerUse.power_used+"'";
+						}
+					}
+					if (fetchdata == "")
+					{
+						tempdata += "''";
+					}
+					else
+					{
+						tempdata += fetchdata;
+					}
+					if(i!= 1)
+					{
+						tempdata += ",";
+					}
+				}
+				temp += tempdata;
+				temp += "],fill: false}";
+				if (RoomList.IndexOf(room) != RoomList.Count - 1)
+				{
+					temp += ",";
+				}
+			}
+			oString += temp;
+			oString += "]}";
+			Debug.WriteLine("oString = " + oString);
+			JObject json = JObject.Parse(oString);
+
+			return json;
+		}
+
+
+		public string GetRandomColor()
+		{
+			var random = new Random();
+			var rmcolor = String.Format("#{0:X6}", random.Next(0x1000000));
+			return rmcolor;
+		}
 	}
 
 }

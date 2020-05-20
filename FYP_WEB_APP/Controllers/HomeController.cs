@@ -13,6 +13,7 @@ using FYP_WEB_APP.Controllers;
 using System.IO;
 using MongoDB.Bson;
 using FYP_WEB_APP.Models.LogicModels;
+using Newtonsoft.Json.Linq;
 
 namespace FYP_APP.Controllers
 {
@@ -72,18 +73,8 @@ namespace FYP_APP.Controllers
 			ViewBag.HDpower =  HDpower ;
 			ViewBag.EFpower =  EFpower ;
 
-			String datajsonstring = "{type: 'line', data:{labels: [(time - 7) + ':00', (time - 6) + ':00', (time - 5) + ':00', (time - 4) + ':00', (time - 3) + ':00', (time - 2) + ':00', (time - 1) + ':00', time + ':00'],"+
-                            "datasets: [{" +
-									"label: 'Room 348',"+
-                                    "backgroundColor: 'red',"+
-                                    "borderColor: 'red',"+
-                                    "data: ["+
-										"12.30, 11.30, 10.20, 12.30, 11.00, 10.40, 10.20, 10.40"+
-									"]";
-     
-                    
-
-			//MongoUserModel user = HttpContext.Session.Get<MongoUserModel>("user");
+			ViewBag.trendJsonString = powerUseOutputUtil.getRoomPowerTrend();
+		
 			return View();
 		}
 		
