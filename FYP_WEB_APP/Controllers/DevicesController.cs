@@ -138,11 +138,6 @@ namespace FYP_APP.Controllers
 
 			List<DevicesListModel> get=new List<DevicesListModel> { };
 			if (Request.Query.ContainsKey("roomId")) {
-				/*			List<MongoDevicesListModel> list = getAllDevices().Where(x => x.roomId == id).ToList();
-			Debug.WriteLine(list);
-			ViewData["MongoDevicesListModel"] = list;
-			ViewData["RoomListModel"] = GetRoomData();
-*/
 				if (Request.Query["roomId"] != string.Empty || Request.Query["roomId"] != "")
 				{ 
 					Debug.WriteLine("\n Request ContainsKey roomId");
@@ -150,6 +145,16 @@ namespace FYP_APP.Controllers
 				Debug.WriteLine(list.ToJson().ToString());
 				}
 			}
+			if (Request.Query.ContainsKey("device_Name"))
+			{
+				if (Request.Query["device_Name"] != string.Empty || Request.Query["device_Name"] != "")
+				{
+					Debug.WriteLine("\n Request ContainsKey device_Name");
+					list = list.Where(ls => ls.devices_Name.Contains(Request.Query["device_Name"])).ToList();
+					Debug.WriteLine("name :: "+list.ToJson().ToString());
+				}
+			}
+			if (Request.Query.Keys.Count() > 2) { 
 			foreach (String key in Request.Query.Keys)
 			{
 				Debug.WriteLine("in foreach ....");
@@ -166,7 +171,7 @@ namespace FYP_APP.Controllers
 						get = list.Where(ls => ls.devicesId.Contains(skey) ).ToList();
 						break;
 				}
-				if (key != "roomId") {
+				if (key != "roomId" || key != "device_Name") {
 				sum.AddRange(get);
 				sum = sum.Distinct().ToList();//delet double data
 					Debug.WriteLine("befor Distinct \n" + sum.ToJson().ToString());
@@ -174,7 +179,8 @@ namespace FYP_APP.Controllers
 				}
 
 			}
-			if (Request.Query.Keys.Count() !=1 || Request.Query["roomId"] != "")
+			}
+			if (Request.Query.Keys.Count() >2 || Request.Query["roomId"] != "" )
 			{
 				list = list.Intersect(sum).ToList();
 				Debug.WriteLine("befor Intersect \n" + list.ToJson().ToString());
@@ -571,7 +577,7 @@ namespace FYP_APP.Controllers
 				case "AC":
 					DevicesDataList = DevicesDataList.Where(x => x.devicesId.Contains("AC")).ToList();
 					ViewBag.unit = " ";
-					ViewBag.unitName = "Air Conditioning";
+					ViewBag.unitName = "Air Conditioner";
 					break;
 				case "LT":
 					DevicesDataList = DevicesDataList.Where(x => x.devicesId.Contains("LT")).ToList();
