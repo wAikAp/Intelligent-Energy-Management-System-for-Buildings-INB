@@ -62,9 +62,17 @@ DevicesList = ViewData["MongoDevicesListModel"] as List<FYP_WEB_APP.Models.Mongo
                                     <div class="col align-items-center bg-white  text-dark border border-secondary">
                                         <div class="col-4  d-flex  flex-row py-2">
                                             <div class="d-flex px-3 align-items-center">
+                                                Device Name:
+                                            </div>
+                                            <div class="d-flex px-3 align-items-center">
+                                                <input type="text" id="device_Name" name="device_Name" placeholder="Device Name" value="" />
+                                            </div>
+                                        </div>
+                                        <div class="col-4  d-flex  flex-row py-2">
+                                            <div class="d-flex px-3 align-items-center">
                                                 location:
                                             </div>
-                                            <div d-flex px-3 align-items-center">
+                                            <div class="d-flex px-3 align-items-center">
                                                 <select class="form-control bg-white" id="roomId" name="roomId" @ViewBag.SearchRoomIdENorDisable>
                                                     <option value="">Room.No</option>
                                                     @foreach (var Room in Rooms)

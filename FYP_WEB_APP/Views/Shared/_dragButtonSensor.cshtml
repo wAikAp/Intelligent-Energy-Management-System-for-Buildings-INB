@@ -10,25 +10,28 @@
 @{
     String sensorClassType = "";
     String sensorUnit = "";
+    string tempUnitUcode = "\u00B0\u0043";
     String sensorImg = "";
     String displayType = "";
     switch (Model.sensorId.Substring(0, 2))
     {
         case "TS":
             sensorClassType = "TSensor";
-            sensorUnit = " °C";
+            sensorUnit = tempUnitUcode;
+
             sensorImg = "temperature96.png";
             displayType = "Temperature Sensor";
             break;
         case "LS":
             sensorClassType = "LSensor";
-            sensorUnit = " lm";
+            sensorUnit = "lm";
+
             sensorImg = "lightSensor96.png";
             displayType = "Luminosity Sensor";
             break;
         case "HS":
             sensorClassType = "HSensor";
-            sensorUnit = " %";
+            sensorUnit = "%";
             sensorImg = "humidity96.png";
             displayType = "Humidity Sensor";
             break;
@@ -52,9 +55,10 @@
         $("#typeName").text("@displayType");
         $("#sdid").text("@Model.sensorId");
         $("#typeImg").attr('src', '/img/icon/@sensorImg');
-        $("#current_value").text('@Model.current_Value  @sensorUnit');
+        $("#current_value").html('@Model.current_Value  @sensorUnit');
         $("#totalPower").text("N/A");
         $("#avgPower").text("N/A");
+        $("#onOff").css("display", "none");
         $("#lastUpdateTimes").text('@Model.latest_checking_time');
         $("#detailDiv").removeClass('HSensor');
         $("#detailDiv").removeClass('TSensor');

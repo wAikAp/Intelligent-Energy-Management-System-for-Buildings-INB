@@ -323,8 +323,8 @@ namespace FYP_APP.Controllers
 									newlsit.Add(sm);
 									}
 								}
-							}	
-						roomSensorsDataList = newlsit;
+							}
+							EndDataList = newlsit;
 						break;
 					case "roomId":
 							foreach (SensorsListModel sm in SensorsDataList)
@@ -458,12 +458,12 @@ namespace FYP_APP.Controllers
 		{
 			List<SensorsListModel> SensorsDataList = GetAllSensors();
 
-				//SensorsDataList = FindSensors(SensorsDataList);
-				//SensorsDataList = SortList(SensorsDataList);
+				SensorsDataList = FindSensors(SensorsDataList);
+				SensorsDataList = SortList(SensorsDataList);
 
 				
-		//	Debug.WriteLine("\n\n     last list ");
-			//Debug.WriteLine(SensorsDataList.ToJson().ToString()+" \n\n");
+			Debug.WriteLine("\n\n     last list ");
+			Debug.WriteLine(SensorsDataList.ToJson().ToString()+" \n\n");
 
 			return SensorsDataList;
 		}
@@ -569,13 +569,13 @@ namespace FYP_APP.Controllers
 			switch (sensorId.Substring(0, 2))
 			{
 				case "TS":
-					type = "temp.png";
+					type = "temperature96.png";
 					break;
 				case "LS":
-					type = "light.png";
+					type = "lightSensor96.png";
 					break;
 				case "HS":
-					type = "humidity.png";
+					type = "humidity96.png";
 					break;
 				default:
 					break;

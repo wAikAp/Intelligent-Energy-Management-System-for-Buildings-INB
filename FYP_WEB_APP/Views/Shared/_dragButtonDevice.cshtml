@@ -10,13 +10,13 @@
 
     String deviceImg = "";
     String displayType = "";
-    string value_unit = "";
+    String value_unit = "";
     switch (Model.devicesId.Substring(0, 2))
     {
         case "AC":
             deviceImg = "air-conditioner96.png";
             displayType = "Air Conditioner";
-            value_unit = " °C";
+            value_unit = "ºC";
             break;
         case "LT":
             deviceImg = "light-on64.png";
@@ -51,7 +51,7 @@
         $("#typeName").text("@displayType");
         $("#sdid").text("@Model.devicesId");
         $("#typeImg").attr('src', '/img/icon/@deviceImg');
-        $("#current_value").text('@Model.current'+'@value_unit');
+        $("#current_value").html('@Model.current @value_unit');
         $("#totalPower").text("@Model.power");
         $("#avgPower").text("@Model.avgPower");
         $("#lastUpdateTimes").text('@Model.lastest_checking_time');
@@ -63,6 +63,7 @@
         $("#detailDiv").removeClass('device_off');
         $("#detailDiv").addClass('@deviceClass');
         $("#turnOnOff").text("Turning off");
+        $("#onOff").css("display", "inline");
     });
 
     $("#@Model.devicesId").css({ left: @Model.pos_x +'px', top:  @Model.pos_y +'px' });

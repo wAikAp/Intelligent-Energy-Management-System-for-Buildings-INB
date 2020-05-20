@@ -20,7 +20,8 @@ namespace FYP_WEB_APP.Controllers
 		private int time;//minute ~ how long display
 		/*
 		 * link this funcation
-		 * chart/chart?title=test chart&chartType=line&position=top&download=true&time=10&timeSpacing=30&type=TS
+		 * chart/chart?title=test chart&chartType=line&position=top&download=true&time=5&timeSpacing=30&type=TS
+		 * chart/chart?title=test chart&chartType=line&position=top&download=true&hour=5&timeSpacing=30&type=TS
 		 * 
 		 * you can by roomid to view
 		 * chart/chart?roomId=348&title=test chart&chartType=line&position=top&download=true&time=10&timeSpacing=30&type=TS
@@ -416,7 +417,8 @@ namespace FYP_WEB_APP.Controllers
 			DateTime ca = today;
 			TimeSpan catime = ca - ca.AddHours(time * -1);
 			int counttime = 0;
-
+			// time-hour to now time get data
+			//miss spacking for no record.
 				counttime = Convert.ToInt32(catime.TotalMinutes / timeSpacing);
 
 
