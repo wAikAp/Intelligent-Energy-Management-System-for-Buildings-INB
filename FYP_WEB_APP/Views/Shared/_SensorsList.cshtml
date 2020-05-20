@@ -104,7 +104,7 @@
                                         break;
 
                                 }
-                                <div class="card text-white @ViewData["TypeColor"] mb-3 mx-3" style="max-width: 13rem;">
+                                <div class="card text-white @ViewData["TypeColor"] mb-3 mx-3" style="max-width: 15rem; min-width:13rem;">
                                     <div class="card-header">
                                         <div class="d-flex bd-highlight align-items-center">
                                             <div class="mr-auto text-white bd-highlight">
@@ -128,18 +128,17 @@
 
                                     </div>
                                     <div class="card-body">
-                                        <p class="ard-text p-0 m-0">@get.roomId @get.sensorId</p>
+                                        <p class="ard-text p-0 m-0"><b>@get.roomId @get.sensorId</b></p>
                                         <input id="dropSensorID" type="hidden" value="@get.sensorId" />
-                                        <h4 class="card-title">
-                                            <img src="~/img/icon/@get.typeImg" height="50" style="filter: invert(100%);">
+                                        <h4 class="card-title" style="margin-top:5px">
+                                            <img src="~/img/icon/@get.typeImg" height="36">
                                             @get.current_Value @get.typeUnit
                                         </h4>
-                                        <p class="card-text my-1">
+                                        <p class="card-text my-1" style="font-size:12px">
                                             updated
                                             @if (get.current_Time != DateTime.MinValue)
-                                            {<b>
-                                                    @get.latest_checking_time
-                                                </b>
+                                            {
+                                                <b style="font-size:14px">@get.latest_checking_time</b>
                                             }
                                             else
                                             {

@@ -69,7 +69,7 @@
                             ViewData["cardType"] = "bg-light";
                             ViewData["text"] = "text-dark ";
                             ViewData["backimg"] = "filter: invert(100%);";
-                            ViewData["devicesType"] = "Light conditioner";
+                            ViewData["devicesType"] = "Light";
                             break;
                         case "HD":
                             ViewData["devicesType"] = "Humidifier";
@@ -81,7 +81,7 @@
 
 
 
-                    <div class="card  @ViewData["cardType"] @ViewData["text"] mb-3" style="max-width: 15rem;">
+                    <div class="card  @ViewData["cardType"] @ViewData["text"] mb-3" style="max-width: 15rem; min-width: 15rem">
                         <div class="card-header pr-1">
                             <div class="d-flex bd-highlight align-items-center">
                                 <div class="mr-auto bd-highlight">
@@ -118,18 +118,19 @@
 
                         <div class="card-body">
 
-                            <p class="ard-text p-0 m-0">@get.roomId - @get.devicesId - @get.devices_Name</p>
-
+                            <p class="ard-text p-0 m-0">@get.roomId - <b>@get.devicesId</b> - @get.devices_Name</p>
+                            
                             <h3 class="card-title">
                                 @{
+                                    string unit = "";
                                     switch (get.devicesId.Substring(0, 2))
                                     {
                                         case "AC":
-                                            <img class="mr-2" style="width: 32px;" src="~/img/icon/air-conditioner32.png" />
-
+                                            <img class="mr-2" style="width: 32px;" src="~/img/icon/air-conditioner96.png" />
+                                            unit = "ºC";
                                             break;
                                         case "LT":
-                                            <img class="mr-2" style="width: 32px;" src="~/img/icon/light-on32.png" />
+                                            <img class="mr-2" style="width: 32px;" src="~/img/icon/light-on64.png" />
 
                                             break;
                                         case "HD": break;
@@ -139,15 +140,14 @@
 
                                 }
 
-                                @get.current
+                                @get.current@unit
                             </h3>
-                            <p class="card-text">
-
+                            <p class="card-text" style="margin-bottom: 0px">
 
                                 <img style="width: 24px;" src="~/img/icon/lighting32.png" />
-                                @get.power -
-                                <snap class="card-text"><small> Avg: @get.avgPower kw / day</small></snap>
+                                <b>@get.power</b>
                             </p>
+                            <p class="card-text" style="margin-top: 0px"><small> Avg @get.avgPower kw / day</small></p>
                             <a class="badge badge-pill badge-danger" href="#" style="font-size: 14px">Turning off</a>
                             <p class="card-text"><small>@get.lastest_checking_time</small></p>
                         </div>
