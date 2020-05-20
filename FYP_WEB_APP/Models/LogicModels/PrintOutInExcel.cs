@@ -14,7 +14,7 @@ namespace FYP_APP.Models.LogicModels
     class PrintOutInExcel
     {
 
-        public static string Run(string connectionString)
+        public static string Run()
         {
 
             /*using (StreamWriter sw = fi1.CreateText()) //testing to output a text file

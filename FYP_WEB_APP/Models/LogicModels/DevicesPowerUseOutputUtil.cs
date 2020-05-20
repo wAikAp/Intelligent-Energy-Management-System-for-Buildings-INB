@@ -62,7 +62,6 @@ namespace FYP_WEB_APP.Models.LogicModels
 			return roomList;
 		}
 
-
 		public List<DailyUsageModel> Dailyusage() // get the total power usage of the room !!!!!
 		{
 			PowerUsesList = getPowerUseList();
@@ -126,10 +125,229 @@ namespace FYP_WEB_APP.Models.LogicModels
 			return datelist;
 		}
 
-		/*public List<DailyRoomUsageModel> DailyRoomusage() //get the total power usage of a room !!!!
+		public double getACPowerUse()//get the total power usage of the AC in the current month.
 		{
+			PowerUsesList = getPowerUseList();
+			double monthlyAcUse = 0; //kWh
+			DateTime localDate = DateTime.Now;
+			String currentMonthly = localDate.ToString("yyyy-MM");
 
-		}*/
+
+			foreach (MongoDevicesPowerUse powerUse in PowerUsesList)
+			{
+				var date = powerUse.recorded_time.ToString("yyyy-MM");
+				if (currentMonthly == date)
+				{
+					//Debug.WriteLine("Is the current month record" + powerUse.recorded_time);
+					if (powerUse.devicesId.Contains("AC"))
+					{
+						Debug.WriteLine("This record is AC" + powerUse.devicesId+" " + powerUse.recorded_time);
+						monthlyAcUse += powerUse.power_used;
+					}
+				}
+				
+			}
+			Debug.WriteLine("This month AC usage = " +monthlyAcUse +"(kWh)");
+			return monthlyAcUse;
+		}
+
+		public double getLPowerUse()//get the total power usage of the light in the current month.
+		{
+			PowerUsesList = getPowerUseList();
+			double monthlyAcUse = 0; //kWh
+			DateTime localDate = DateTime.Now;
+			String currentMonthly = localDate.ToString("yyyy-MM");
+
+
+			foreach (MongoDevicesPowerUse powerUse in PowerUsesList)
+			{
+				var date = powerUse.recorded_time.ToString("yyyy-MM");
+				if (currentMonthly == date)
+				{
+					//Debug.WriteLine("Is the current month record" + powerUse.recorded_time);
+					if (powerUse.devicesId.Contains("LT"))
+					{
+						Debug.WriteLine("This record is Light" + powerUse.devicesId + " " + powerUse.recorded_time);
+						monthlyAcUse += powerUse.power_used;
+					}
+				}
+
+			}
+			Debug.WriteLine("This month Light usage = " + monthlyAcUse + "(kWh)");
+			return monthlyAcUse;
+		}
+
+		public double getHUMPowerUse()//get the total power usage of the hum in the current month.
+		{
+			PowerUsesList = getPowerUseList();
+			double monthlyAcUse = 0; //kWh
+			DateTime localDate = DateTime.Now;
+			String currentMonthly = localDate.ToString("yyyy-MM");
+
+
+			foreach (MongoDevicesPowerUse powerUse in PowerUsesList)
+			{
+				var date = powerUse.recorded_time.ToString("yyyy-MM");
+				if (currentMonthly == date)
+				{
+					//Debug.WriteLine("Is the current month record" + powerUse.recorded_time);
+					if (powerUse.devicesId.Contains("HD"))
+					{
+						Debug.WriteLine("This record is Hum" + powerUse.devicesId + " " + powerUse.recorded_time);
+						monthlyAcUse += powerUse.power_used;
+					}
+				}
+
+			}
+			Debug.WriteLine("This month Hum usage = " + monthlyAcUse + "(kWh)");
+			return monthlyAcUse;
+		}
+
+		public double getEXHFPowerUse()//get the total power usage of the exhf in the current month.
+		{
+			PowerUsesList = getPowerUseList();
+			double monthlyAcUse = 0; //kWh
+			DateTime localDate = DateTime.Now;
+			String currentMonthly = localDate.ToString("yyyy-MM");
+
+
+			foreach (MongoDevicesPowerUse powerUse in PowerUsesList)
+			{
+				var date = powerUse.recorded_time.ToString("yyyy-MM");
+				if (currentMonthly == date)
+				{
+					//Debug.WriteLine("Is the current month record" + powerUse.recorded_time);
+					if (powerUse.devicesId.Contains("EF"))
+					{
+						Debug.WriteLine("This record is EXHF" + powerUse.devicesId + " " + powerUse.recorded_time);
+						monthlyAcUse += powerUse.power_used;
+					}
+				}
+
+			}
+			Debug.WriteLine("This month Exhf usage = " + monthlyAcUse + "(kWh)");
+			return monthlyAcUse;
+		}
+
+		public double getTotalPowerUse()//get the total power usagein the current month
+		{
+			double monthlyUse = getACPowerUse() + getEXHFPowerUse() + getHUMPowerUse() + getLPowerUse();
+			return monthlyUse;
+		}
+
+		//get power use time (second not minute).
+
+		public double getACPowerUseTime()//get the total power usage time of the AC in the current month.
+		{
+			PowerUsesList = getPowerUseList();
+			double monthlyAcUseTime = 0; //kWh
+			DateTime localDate = DateTime.Now;
+			String currentMonthly = localDate.ToString("yyyy-MM");
+
+
+			foreach (MongoDevicesPowerUse powerUse in PowerUsesList)
+			{
+				var date = powerUse.recorded_time.ToString("yyyy-MM");
+				if (currentMonthly == date)
+				{
+					//Debug.WriteLine("Is the current month record" + powerUse.recorded_time);
+					if (powerUse.devicesId.Contains("AC"))
+					{
+						Debug.WriteLine("This record is AC" + powerUse.devicesId + " " + powerUse.recorded_time);
+						monthlyAcUseTime += powerUse.recorded_used_time;
+					}
+				}
+
+			}
+			Debug.WriteLine("This month AC usage = " + monthlyAcUseTime + "(kWh)");
+			return monthlyAcUseTime;
+		}
+
+		public double getLPowerUseTime()//get the total power usage time of the light in the current month.
+		{
+			PowerUsesList = getPowerUseList();
+			double monthlyLUseTime = 0; //kWh
+			DateTime localDate = DateTime.Now;
+			String currentMonthly = localDate.ToString("yyyy-MM");
+
+
+			foreach (MongoDevicesPowerUse powerUse in PowerUsesList)
+			{
+				var date = powerUse.recorded_time.ToString("yyyy-MM");
+				if (currentMonthly == date)
+				{
+					//Debug.WriteLine("Is the current month record" + powerUse.recorded_time);
+					if (powerUse.devicesId.Contains("LT"))
+					{
+						Debug.WriteLine("This record is light" + powerUse.devicesId + " " + powerUse.recorded_time);
+						monthlyLUseTime += powerUse.recorded_used_time;
+					}
+				}
+
+			}
+			Debug.WriteLine("This month AC usage = " + monthlyLUseTime + "(kWh)");
+			return monthlyLUseTime;
+		}
+
+		public double getHUMPowerUseTime()//get the total power usage time of the hum in the current month.
+		{
+			PowerUsesList = getPowerUseList();
+			double monthlyHumUseTime = 0; //kWh
+			DateTime localDate = DateTime.Now;
+			String currentMonthly = localDate.ToString("yyyy-MM");
+
+
+			foreach (MongoDevicesPowerUse powerUse in PowerUsesList)
+			{
+				var date = powerUse.recorded_time.ToString("yyyy-MM");
+				if (currentMonthly == date)
+				{
+					//Debug.WriteLine("Is the current month record" + powerUse.recorded_time);
+					if (powerUse.devicesId.Contains("HD"))
+					{
+						Debug.WriteLine("This record is hum" + powerUse.devicesId + " " + powerUse.recorded_time);
+						monthlyHumUseTime += powerUse.recorded_used_time;
+					}
+				}
+
+			}
+			Debug.WriteLine("This month hum usage = " + monthlyHumUseTime + "(kWh)");
+			return monthlyHumUseTime;
+		}
+
+		public double getEXHFPowerUseTime()//get the total power usage time of the exhf in the current month.
+		{
+			PowerUsesList = getPowerUseList();
+			double monthlyExhfUseTime = 0; //kWh
+			DateTime localDate = DateTime.Now;
+			String currentMonthly = localDate.ToString("yyyy-MM");
+
+
+			foreach (MongoDevicesPowerUse powerUse in PowerUsesList)
+			{
+				var date = powerUse.recorded_time.ToString("yyyy-MM");
+				if (currentMonthly == date)
+				{
+					//Debug.WriteLine("Is the current month record" + powerUse.recorded_time);
+					if (powerUse.devicesId.Contains("EF"))
+					{
+						Debug.WriteLine("This record is exhf" + powerUse.devicesId + " " + powerUse.recorded_time);
+						monthlyExhfUseTime += powerUse.recorded_used_time;
+					}
+				}
+
+			}
+			Debug.WriteLine("This month exhf usage = " + monthlyExhfUseTime + "(kWh)");
+			return monthlyExhfUseTime;
+		}
+
+		public double getTotalPowerUseTime()//get the total power usagein the current month
+		{
+			double monthlyUse = getACPowerUseTime() + getLPowerUseTime() + getHUMPowerUseTime() + getEXHFPowerUseTime();
+			return monthlyUse;
+		}
+
+
 	}
-	
+
 }

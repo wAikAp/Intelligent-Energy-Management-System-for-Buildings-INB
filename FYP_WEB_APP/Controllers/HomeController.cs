@@ -55,39 +55,33 @@ namespace FYP_APP.Controllers
 
 		public IActionResult Dashboard()
 		{
-			DevicesController devices =new DevicesController();
-			var list = devices.GetAllDevices();
+
+			DevicesPowerUseOutputUtil powerUseOutputUtil = new DevicesPowerUseOutputUtil();
 
 			double TotalSavings = 0;
-			double TotalUsage = 0;
-			double ACpower = 0;
-			double LTpower = 0;
-			double HDpower = 0;
-			double EFpower = 0;
-			foreach (var get in list) {
-				switch (get.devicesId.Substring(0,2))
-				{
-					case "AC":
-						ACpower += get.power;
-						break;
-					case "LT":
-						LTpower += get.power;
-						break;
-					case "HD":
-						LTpower += get.power;
-						break;
-					case "EF":
-						LTpower += get.power;
-						break;
-				}
-				TotalUsage += get.power;
-			}
+			double TotalUsage = Math.Round(powerUseOutputUtil.getTotalPowerUse(), 2);
+			double ACpower = Math.Round(powerUseOutputUtil.getACPowerUse(),2);
+			double LTpower = Math.Round(powerUseOutputUtil.getLPowerUse(),2);
+			double HDpower = Math.Round(powerUseOutputUtil.getHUMPowerUse(),2);
+			double EFpower = Math.Round(powerUseOutputUtil.getEXHFPowerUse(),2);
+		
 			ViewBag.TotalUsage = TotalUsage;
 			ViewBag.TotalSavings = TotalSavings;
 			ViewBag.ACpower =  ACpower ;
 			ViewBag.LTpower =  LTpower ;
 			ViewBag.HDpower =  HDpower ;
 			ViewBag.EFpower =  EFpower ;
+
+			String datajsonstring = "{type: 'line', data:{labels: [(time - 7) + ':00', (time - 6) + ':00', (time - 5) + ':00', (time - 4) + ':00', (time - 3) + ':00', (time - 2) + ':00', (time - 1) + ':00', time + ':00'],"+
+                            "datasets: [{" +
+									"label: 'Room 348',"+
+                                    "backgroundColor: 'red',"+
+                                    "borderColor: 'red',"+
+                                    "data: ["+
+										"12.30, 11.30, 10.20, 12.30, 11.00, 10.40, 10.20, 10.40"+
+									"]";
+     
+                    
 
 			//MongoUserModel user = HttpContext.Session.Get<MongoUserModel>("user");
 			return View();
@@ -96,30 +90,31 @@ namespace FYP_APP.Controllers
 		[Route("Home/DoughnutChart")]
 		public ActionResult DoughnutChart()
 		{
-			//string id = "";
-			//id = Request.Query["roomID"];
 
-			//getdb();
-			//List<SensorsListModel> lists = GetSensorsData();
-			//Debug.WriteLine(lists.ToJson().ToString());
 			Debug.WriteLine(Request.Query["title"]);
 			Debug.WriteLine(Request.Query["chartType"]);
 			Debug.WriteLine(Request.Query["position"]);
-			//Debug.WriteLine(Request.Query["sensorType"]);
-			//Debug.WriteLine(Setgroup(lists).ToJson().ToString());
+
 			ViewBag.charttitle = Request.Query["title"];
 			ViewBag.chartType = Request.Query["chartType"];
 			ViewBag.position = Request.Query["position"];
-			//ViewBag.download = Request.Query["download"];
 
-			//ViewBag.day = getChartTime();
-			//ViewBag.datasets = chartData(lists, Request.Query["sensorType"]);
 			List<string> label = new List<string>();
 			DevicesController device = new DevicesController();
 			List<double> data = new List<double>();
+
+			DevicesPowerUseOutputUtil powerUseOutputUtil = new DevicesPowerUseOutputUtil();
+			double ACpower = Math.Round(powerUseOutputUtil.getACPowerUse(), 2);
+			double LTpower = Math.Round(powerUseOutputUtil.getLPowerUse(), 2);
+			double HDpower = Math.Round(powerUseOutputUtil.getHUMPowerUse(), 2);
+			double EFpower = Math.Round(powerUseOutputUtil.getEXHFPowerUse(), 2);
+			double[] myNum = { ACpower, LTpower, HDpower, EFpower };
+			var i = 0;
 			foreach (string getDeviceTypeName in device.typeName) {
 				label.Add(getDeviceTypeName);
-				data.Add(device.GetDeviceCount(getDeviceTypeName));
+				//data.Add(device.GetDeviceCount(getDeviceTypeName));
+				data.Add(myNum[i]);
+				i++;
 			}
 			ViewBag.divId = GetRandomDivId();
 			ChartController chart = new ChartController();
@@ -128,6 +123,43 @@ namespace FYP_APP.Controllers
 
 			return PartialView("_DoughnutChart");
 		}
+
+		[Route("Home/DoughnutUseTimeChart")]
+		public ActionResult DoughnutUseTimeChart()
+		{
+			ViewBag.charttitle = Request.Query["title"];
+			ViewBag.chartType = Request.Query["chartType"];
+			ViewBag.position = Request.Query["position"];
+
+			List<string> label = new List<string>();
+			DevicesController device = new DevicesController();
+			List<double> data = new List<double>();
+
+			DevicesPowerUseOutputUtil powerUseOutputUtil = new DevicesPowerUseOutputUtil();
+
+			double ACpower = Math.Round((powerUseOutputUtil.getACPowerUseTime()/3600), 2);
+			double LTpower = Math.Round((powerUseOutputUtil.getLPowerUseTime() / 3600), 2);
+			double HDpower = Math.Round((powerUseOutputUtil.getHUMPowerUseTime() / 3600), 2);
+			double EFpower = Math.Round((powerUseOutputUtil.getEXHFPowerUseTime() / 3600), 2);
+
+			double[] myNum = { ACpower, LTpower, HDpower, EFpower };
+			var i = 0;
+			foreach (string getDeviceTypeName in device.typeName)
+			{
+				label.Add(getDeviceTypeName);
+				//data.Add(device.GetDeviceCount(getDeviceTypeName));
+				data.Add(myNum[i]);
+				i++;
+			}
+			ViewBag.divId = GetRandomDivId();
+			ChartController chart = new ChartController();
+			ViewBag.datasets = chart.DoughnutChart(label, data);
+			ViewData["devices"] = label.ToJson();
+
+			return PartialView("_DoughnutChart");
+		}
+
+
 		public string GetRandomColor()
 		{
 			var random = new Random();
@@ -146,30 +178,28 @@ namespace FYP_APP.Controllers
 		{
 			MongoUserModel user = HttpContext.Session.Get<MongoUserModel>("user");
 
+			return View();
+		}
+
+		[Route("Home/MonthlyReport")]
+		public void MonthlyReport()
+		{
 			try
 			{
-				//
-				//EPPlusSamples.FileOutputUtil.OutputDir = new DirectoryInfo(@"c:\TestingDirForEx");
 				Debug.WriteLine("Running sample 8");
-				var output = PrintOutInExcel.Run("ss");
+				var output = PrintOutInExcel.Run();
 				Debug.WriteLine("Sample 8 created: {0}", output);
 				Debug.WriteLine("");
 
-				/*DevicesPowerUseOutputUtil du = new DevicesPowerUseOutputUtil();
-				du.Dailyusage();*/
+				//DevicesPowerUseOutputUtil du = new DevicesPowerUseOutputUtil();
+				//du.getACPowerUse();
 
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine("Error: {0}", ex.Message);
 			}
-			
-
-
-
-			return View();
 		}
-
 
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
