@@ -24,16 +24,19 @@ namespace FYP_WEB_APP.Controllers.API
         [HttpPost]
         public string Post(object SensorJson)
         {
+            var str = "";
+            bool isdone = true;
+            string valueNmae = "";
+            string dbname = "";
+            bool isErrorData = false;
             try
             {
                 var json = System.Text.Json.JsonSerializer.Serialize(SensorJson);
           
             var data = JsonConvert.DeserializeObject<List<SensorUpdateCurrentValueModel>> (json);
             
-            var str = "";
-           bool isdone=true;
 
-            if (SensorJson != null)
+                if (SensorJson != null)
             {
 
                 foreach (var S in data)
@@ -46,9 +49,7 @@ namespace FYP_WEB_APP.Controllers.API
                         else {
                             //  string id = S.sensorId;
                             //  string Value = S.value;
-                            string valueNmae = "";
-                            string dbname = "";
-                            bool isErrorData = false;
+                           
                             switch (S.sensorId.Substring(0, 2)) {
                                 case "TS":
                                     dbname = "TMP_SENSOR";
@@ -112,25 +113,29 @@ namespace FYP_WEB_APP.Controllers.API
                                     break;
                                 default:
                                     isdone = false;
-                                    str = isdone + ": sensorId type not found!";
+
+                                    throw new System.ArgumentException("Parameter error", "original");
+
                                     break;
                             }
                             FYP_APP.Controllers.SensorsController sensorC = new FYP_APP.Controllers.SensorsController();
                             var hasSensorInList = sensorC.GetAllSensors().Where(s => s.sensorId.Contains(S.sensorId));
-                            if (S.values.Length > 0) {
-                                if (S.values.Length == 1)
+                            if (S.values.Length > 0 && isdone != false && isErrorData != true && hasSensorInList.Count() != 0) 
+                            {
+                                if (S.values.Length == 1 && S.sensorId.Substring(0, 2) != "AS")
                                 {
-                                    Debug.WriteLine(S.values.First().GetType());
-                                    
-                                    if (isdone != false && isErrorData != true && hasSensorInList.Count() != 0 && dbname != "AS_SENSOR" && !string.IsNullOrEmpty(S.value))
+                                    Debug.WriteLine(S.values.First());
+
+                                    if (S.sensorId.Substring(0,2)!="AS")
                                     {
-                                        new DBManger().DataBase.GetCollection<BsonDocument>(dbname).InsertOne(new BsonDocument { { "sensorId", S.sensorId }, { "current", S.value.First() }, { "latest_checking_time", utcNow } });
+                                        double v = S.values.First();
+                                       new DBManger().DataBase.GetCollection<BsonDocument>(dbname).InsertOne(new BsonDocument { { "sensorId", S.sensorId }, { "current", v }, { "latest_checking_time", utcNow } });
                                         trueStatus(S.sensorId);
-                                        str += "{ sensorId , " + S.sensorId + "},{ value," + S.value + "},{ latest_checking_time," + utcNow + "}\n";
+                                        str += "{ sensorId , " + S.sensorId + "},{ value," + S.values.ToJson().ToString() + "},{ latest_checking_time," + utcNow + "}\n";
 
                                     }
                                 }
-                                else if (S.values.Length > 1)
+                                else if (S.values.Length > 1 && S.sensorId.Substring(0, 2) == "AS")
                                 {
                                     Debug.WriteLine(S.values);
                                     new DBManger().DataBase.GetCollection<BsonDocument>(dbname).InsertOne(new BsonDocument {
@@ -149,52 +154,21 @@ namespace FYP_WEB_APP.Controllers.API
                                    { "C_VOC", S.values[11] },
                                     { "C_AVG_PM25", S.values[12] },
                                     { "latest_checking_time", utcNow } });
-
-
+                                    
+                                    str += S.values.ToJson().ToString();
                                 }
-                                else {
+                               else
+                                {
                                     isdone = false;
 
                                     throw new System.ArgumentException("Parameter cannot be null", "original");
 
                                 }
                             }
-                  /* if (isdone != false && isErrorData!=true && hasSensorInList.Count()!=0 && dbname!= "AS_SENSOR" && !string.IsNullOrEmpty(S.value))
-                    {
-                        new DBManger().DataBase.GetCollection<BsonDocument>(dbname).InsertOne(new BsonDocument { { "sensorId", S.sensorId }, { "current", Convert.ToDouble(S.value)  }, { "latest_checking_time", utcNow } });
-                                trueStatus(S.sensorId);
-                        str += "{ sensorId , " + S.sensorId + "},{ value," + S.value + "},{ latest_checking_time," + utcNow + "}\n";
-
-                    }else if (dbname == "AS_SENSOR") {
-                                Debug.WriteLine("\n\n AS SENSOR ==>");
-
-                                new DBManger().DataBase.GetCollection<BsonDocument>(dbname).InsertOne(new BsonDocument { 
-                                    { "sensorId", S.sensorId },
-                                    { "C_CO", S.C_CO },
-                                    { "C_CO2", S.C_CO2 },
-                                    { "C_CI2", S.C_CI2 },
-                                    { "C_CH20", S.C_CH20 },
-                                    { "C_H2", S.C_H2 },
-                                    { "C_CH4", S.C_CH4 },
-                                    { "C_H2S", S.C_H2S },
-                                     { "C_NO2", S.C_NO2 },
-                                   { "C_O3", S.C_O3 },
-                                    { "C_C2CI4", S.C_C2CI4 },
-                                   { "C_SO2", S.C_SO2 },
-                                   { "C_VOC", S.C_VOC },
-                                    { "C_AVG_PM25", S.C_AVG_PM25 },
-                                    { "latest_checking_time", utcNow } });
-                                trueStatus(S.sensorId);
-                                //str += "{ sensorId , " + S.sensorId + "},{ value," + S.value + "},{ latest_checking_time," + utcNow + "}\n";
-
+                            else {
+                                Debug.WriteLine("else");
                             }
-                            else
-                            {
-                                return S.sensorId + "error data " + S.value;
-                                //throw new System.ArgumentException("Parameter value error", "original");
-
-                            }
-                    */
+                 
                         }
                     }
 
@@ -205,12 +179,13 @@ namespace FYP_WEB_APP.Controllers.API
 
                 str = isdone+": Parameter cannot be null ";
 
-                    throw new System.ArgumentException("Parameter cannot be null", "original");
+                   throw new System.ArgumentException("Parameter cannot be null", "original");
                 }
-                return isdone+": "+str;
+                //return utcNow+" => "+isdone + ": "+str;
             }
             catch (Exception e) { return e.ToString(); }
-            
+            return utcNow + " => " + isdone + ": " + str;
+
         }
         public void doException(string id,string error) {
             var filter = Builders<MongoSensorsListModel>.Filter.Eq("sensorId", id);
