@@ -21,6 +21,7 @@ namespace FYP_WEB_APP.Models
         public double current { get; set; }
         public bool powerOnOff { get; set; }
         public double avgPower { get; set; }
+        public bool status { get; set; }
 
     }
 }
