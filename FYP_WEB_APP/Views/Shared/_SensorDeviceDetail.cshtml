@@ -16,11 +16,11 @@
                 </h4>
             </div>
             <div class="card-body" style="margin-top:-20px">
-                <button id="editBtn" class="btn btn-info mt-0 px-0 mr-1 float-right" type="button" style="width: 80px; height: 40px">
+                <button id="editBtn" class="btn mt-0 px-0 float-right" type="button" style="width: 40px; height: 40px; padding-left:10px">
                     <img src="~/img/icon/edit32_white.png" style="height: 24px;width:24px;">
-                    <snap class="text-white">Edit</snap>
                 </button>
-                <h5 class="ard-text py-2"  id="sdid" ><b>--</b></h5>
+                <h5 class="card-text py-2" id="sdid"><b>--</b></h5>
+                <p class="card-text">Description: <snap id="desc">**</snap></p>
                 <h3 class="card-title">
                     <img id="typeImg" class="mr-2" style="width: 64px;" src="~/img/icon/air-conditioner96.png" />
                     <b id="current_value"> -- </b>
@@ -28,15 +28,17 @@
                 <p class="card-text">
                     <img style="width: 24px;" src="~/img/icon/lighting32.png" />
                     <b id="totalPower">--</b> -
-                    <snap class="card-text"><small id="avgPower"> Avg: 9kw / dy</small></snap>
+                    <snap class="card-text"><small id="avgPower"> Avg: -- / dy</small></snap>
                 </p>
-                <a id="turnOnOff" class="badge badge-pill badge-danger" href="#" style="font-size: 14px">--</a>
-                <p class="card-text"><small id="lastUpdateTimes">--</small></p>
+
+                <a id="turnOnOff" class="shadow badge badge-pill badge-danger" href="#" style="font-size: 14px">--</a>
+                <p class="card-text" style="margin-bottom:2px; margin-top:10px">🏁 Last update - <b id="lastUpdateTimes">--</b></p>
+                <p class="card-text">⏰ Turned on   - <b id="turnOnDateTime">--</b></p>
                 <!--
-            <p class="card-text"><b>Log</b></p>
-            <p class="card-text">01-02-2020 11:00:00 <b>25C</b></p>
-            <p class="card-text"><small>Last modifly on 02-02-2020</small></p>
-                -->
+    <p class="card-text"><b>Log</b></p>
+    <p class="card-text">01-02-2020 11:00:00 <b>25C</b></p>
+    <p class="card-text"><small>Last modifly on 02-02-2020</small></p>
+        -->
             </div>
         </div>
     

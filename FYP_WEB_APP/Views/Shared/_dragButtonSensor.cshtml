@@ -13,6 +13,9 @@
     string tempUnitUcode = "\u00B0\u0043";
     String sensorImg = "";
     String displayType = "";
+
+    string deviceClass = Model.status ? "device_on" : "device_off";
+
     switch (Model.sensorId.Substring(0, 2))
     {
         case "TS":
@@ -40,10 +43,12 @@
             sensorUnit = "PM";
             sensorImg = "aqSensor96.png";
             displayType = "Air Quality Sensor";
-        break;
-            
-        }
+            break;
+
     }
+    string turnOFstr = Model.status ? "Online" : "Offline";
+    string turnOFClr = Model.status ? "badge-success" : "badge-danger";
+   }
 <div class="draggable @sensorClassType" id="@Model.sensorId">
 
 
@@ -58,10 +63,12 @@
         //the id from _SensorDeviceDetail to change those UI
 
         $("#editBtn").attr("onclick", "EditSensors('@Model.sensorId')");
+        $("#editBtn").css({ filter: "" });
 
         $("#typeName").text("@displayType");
         $("#sdid").text("@Model.sensorId");
         $("#typeImg").attr('src', '/img/icon/@sensorImg');
+        $("#typeImg").css({ filter: "" });
         $("#current_value").html('@Model.current_Value  @sensorUnit');
         $("#totalPower").text("N/A");
         $("#avgPower").text("N/A");
@@ -73,25 +80,36 @@
         $("#detailDiv").removeClass('bg-dark');
         $("#detailDiv").removeClass('device_on');
         $("#detailDiv").removeClass('device_off');
+        $("#detailDiv").removeClass('LightDevice_on');
+        $("#detailDiv").removeClass('LightDevice_off');
+        $("#detailDiv").removeClass("text-white");
+        $("#detailDiv").removeClass("text-dark");
         $("#detailDiv").addClass('@sensorClassType');
-        $("#turnOnOff").text("N/A");
+        $("#detailDiv").addClass('text-white');
+
+        $("#turnOnOff").removeClass("badge-success");
+        $("#turnOnOff").removeClass("badge-danger");
+        $("#turnOnOff").addClass("@turnOFClr");
+        $("#turnOnOff").text("@turnOFstr");
+        $("#turnOnDateTime").text('@Model.total_run_time');
+        $("#onOff").css("display", "none");
     });
 
     $("#@Model.sensorId").css({ left: @Model.pos_x +'px', top:  @Model.pos_y +'px' });
-       
+
     $(function () {
         $("#@Model.sensorId").draggable({
-            
+
             stop: function () {
                 //var position = $(this).position();
                 //since the Model.pos_x is the server side c# cannot direct change it.
-                //so need a js model first, then use to save on cookie 
+                //so need a js model first, then use to save on cookie
                 //change to js model
-                
+
                 //var jsSDmodel = new DragSensorDeviceButtonJSModel('Model.sensorId', position.left, position.top);
-                
+
                 //var JSSensorsList = JSON.parse(Cookies.get('JSSensorsList'));
-                
+
                 //for (var sensorBtnObj of JSSensorsList) {
                 //    console.log(sensorBtnObj.id);
                 //    if (sensorBtnObj.id == 'Model.sensorId') {
