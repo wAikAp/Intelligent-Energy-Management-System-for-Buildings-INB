@@ -248,7 +248,7 @@ namespace FYP_APP.Controllers
 			{
 				new DBManger().DataBase.GetCollection<MongoSensorsListModel>("SENSOR_LIST").InsertOneAsync(insertList);
 			}
-			catch (Exception e)
+			catch (Exception )
 			{
 
 				return ReturnUrl();
@@ -298,87 +298,60 @@ namespace FYP_APP.Controllers
 			List<SensorsListModel> EndDataList = new List<SensorsListModel> { };
 			List<SensorsListModel> FDataList = new List<SensorsListModel> { };
 			List<SensorsListModel> roomSensorsDataList = new List<SensorsListModel> { };
-			if (HttpContext != null) { 
+			if (HttpContext != null) {
+				//var filterName = Builders<SensorsListModel>.Filter.Eq(x => x.sensor_name, Request.Query["sensorName"].ToString());
+				string QueryString = Request.QueryString.ToString();
 
+				var filterRoomid = Builders<SensorsListModel>.Filter.Eq(x => x.roomId, Request.Query["roomId"].ToString());
+
+				roomSensorsDataList = new DBManger().DataBase.GetCollection<SensorsListModel>("SENSOR_LIST").Find(filterRoomid).ToList();
+				if (!string.IsNullOrEmpty(Request.Query["sensorName"].ToString()) && QueryString.Contains("sensorName"))  { 
+				string name = Request.Query["sensorName"].ToString();
+					Debug.WriteLine(Request.Query["sensorName"].ToString());
+				roomSensorsDataList = roomSensorsDataList.Where(x=>x.sensor_name.Contains(name)).ToList();
+				}
+				Debug.WriteLine(Request.QueryString);
+				Debug.WriteLine(Request.QueryString.Equals("TS") +"\n"+ Request.QueryString.Equals("LS") + "\n" + Request.QueryString.Equals("HS") + "\n" + Request.QueryString.Equals("AS"));
+
+				if (QueryString.Contains("TS") || QueryString.Contains("LS") || QueryString.Contains("HS") || QueryString.Contains("AS")) {
+				
 				foreach (string key in Request.Query.Keys)
-			{
-				string skey = key;
-				string keyValue = Request.Query[key];
-					List<SensorsListModel> newlsit = new List<SensorsListModel>();
-
-					Debug.WriteLine(skey+"+"+keyValue); 
-					Debug.WriteLine(SensorsDataList.ToJson().ToString()); 
-				switch (skey)
 				{
-					case "sensorName":
-						/*	roomSensorsDataList = SensorsDataList.Where(x => {
-							if(x.sensor_name != null) {
-								x.sensor_name.Contains(keyValue)
-								
-							}).ToList();
-							*/
-							foreach (SensorsListModel sm in SensorsDataList) {
-								if (sm.sensor_name != null) {
-									if (sm.sensor_name.Contains(keyValue)) {
-									newlsit.Add(sm);
-									}
-								}
-							}
-							EndDataList = newlsit;
-						break;
-					case "roomId":
-							foreach (SensorsListModel sm in SensorsDataList)
-							{
-								if (sm.roomId != null)
-								{
-									if (sm.roomId.Contains(keyValue))
-									{
-										newlsit.Add(sm);
-									}
-								}
-							}
-							roomSensorsDataList = newlsit;
+					string skey = key;
+					string keyValue = Request.Query[key];
 
-							//roomSensorsDataList = SensorsDataList.Where(x => x.roomId.Contains(keyValue)).ToList();
+					switch (skey)
+					{
+						case "TS":
+						case "LS":
+						case "HS":
+						case "AS":
+								FDataList = roomSensorsDataList.Where(x => x.sensorId.Contains(skey)).ToList();
+								Debug.WriteLine(FDataList.ToJson().ToString());
 							break;
-					case "TS":
-					case "LS":
-					case "HS":
-							foreach (SensorsListModel sm in SensorsDataList)
-							{
-								if (sm.sensorId != null)
-								{
-									if (sm.sensorId.Contains(skey))
-									{
-										newlsit.Add(sm);
-									}
-								}
-							}
-							FDataList = newlsit;
-							//FDataList = SensorsDataList.Where(x => x.sensorId.Contains(skey)).ToList();
-						break;
-					default:
-						break;
-				}
-				if (skey != "sortOrder")
-				{
-					EndDataList.AddRange(FDataList);//B list add in A list
+					}
+					if (skey != "sortOrder" || FDataList.Count>0)
+					{
+						EndDataList.AddRange(FDataList);//B list add in A list
 
-					EndDataList = EndDataList.Distinct().ToList();//delet double data
+						EndDataList = EndDataList.Distinct().ToList();//delet double data
 
+					}
 				}
+					//get B & A list Intersect data
+					if (roomSensorsDataList.Count > 0 || FDataList.Count > 0)
+					{
+						SensorsDataList = roomSensorsDataList.Intersect(EndDataList).ToList();
+					}
+					else if (this.PageRoomId.Length > 0 || FDataList.Count > 0)
+					{//Sensors/{id}
+						roomSensorsDataList = SensorsDataList;
+						SensorsDataList = roomSensorsDataList.Intersect(EndDataList).ToList();
+					}
+					
 			}
-			}
-			//get B & A list Intersect data
-			if (roomSensorsDataList.Count > 0)
-			{
-				SensorsDataList = roomSensorsDataList.Intersect(EndDataList).ToList();
-			}
-			else if (this.PageRoomId.Length > 0)
-			{//Sensors/{id}
-				roomSensorsDataList = SensorsDataList;
-				SensorsDataList = roomSensorsDataList.Intersect(EndDataList).ToList();
-			}
+		}
+			
 
 			return SensorsDataList;
 		}
@@ -590,7 +563,6 @@ namespace FYP_APP.Controllers
 		{
 			string tableName = "";
 			List<CurrentDataModel> List = new List<CurrentDataModel>();
-			IMongoCollection<CurrentDataModel> collection;
 			switch (sensorId.Substring(0, 2))
 			{
 				case "TS":

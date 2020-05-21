@@ -26,7 +26,6 @@ namespace FYP_WEB_APP.Controllers.API
         {
             var str = "";
             bool isdone = true;
-            string valueNmae = "";
             string dbname = "";
             bool isErrorData = false;
             try
@@ -113,9 +112,6 @@ namespace FYP_WEB_APP.Controllers.API
                                     break;
                                 default:
                                     isdone = false;
-
-                                    throw new System.ArgumentException("Parameter error", "original");
-
                                     break;
                             }
                             FYP_APP.Controllers.SensorsController sensorC = new FYP_APP.Controllers.SensorsController();

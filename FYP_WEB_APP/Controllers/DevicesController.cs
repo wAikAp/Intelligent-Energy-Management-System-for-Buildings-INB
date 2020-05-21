@@ -271,7 +271,7 @@ namespace FYP_APP.Controllers
 			{
 				new DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").InsertOneAsync(insertList);
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				Debug.WriteLine("line 262 error ");
 

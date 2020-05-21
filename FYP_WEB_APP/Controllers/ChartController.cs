@@ -24,82 +24,88 @@ namespace FYP_WEB_APP.Controllers
 		private int time;//minute ~ how long display
 		/*
 		 * link this funcation
-		 * chart/chart?title=test chart&chartType=line&position=top&download=true&time=5&timeSpacing=30&type=TS
 		 * chart/chart?title=test chart&chartType=line&position=top&download=true&hour=5&timeSpacing=30&type=TS
 		 * 
 		 * you can by roomid to view
 		 * chart/chart?roomId=348&title=test chart&chartType=line&position=top&download=true&time=10&timeSpacing=30&type=TS
 		 * 
 		 */
+		[Route("Chart/Chart")]
 		[HttpGet]
-		public ActionResult chart() {
+		public ActionResult Chart() {
 			//getallcurrent();
-			ViewBag.charttitle = Request.Query["title"];//chart title
-			ViewBag.chartType = Request.Query["chartType"];//chart type
-			ViewBag.position = Request.Query["position"];//the lable position
-			ViewBag.download = Convert.ToBoolean(Request.Query["download"]);//true:display download
-			string type = Request.Query["type"];
-			string iid = "";
-			if (type.Length > 2)
+			if (Request.QueryString.HasValue)
 			{
-				iid = type;
-				type = type.Substring(0, 2);
-			}
-			else { iid = type; }
-			try {
-				this.time = Convert.ToInt32(Request.Query["time"]);
-				this.timeSpacing = Convert.ToInt32(Request.Query["timeSpacing"]);
-				Debug.WriteLine(timeSpacing);
-
-
-				string roomId = Request.Query["roomId"];
-				if (roomId == null) {
-					roomId = "";
+				ViewBag.charttitle = Request.Query["title"];//chart title
+				ViewBag.chartType = Request.Query["chartType"];//chart type
+				ViewBag.position = Request.Query["position"];//the lable position
+				ViewBag.download = Convert.ToBoolean(Request.Query["download"]);//true:display download
+				string type = Request.Query["type"];
+				string iid = "";
+				if (type.Length > 2)
+				{
+					iid = type;
+					type = type.Substring(0, 2);
 				}
-				switch (type) {
-				case "TS"://Temp sensor
-				case "LS"://Light sensor
-				case "HS"://Hum sensor
-					ViewBag.datasets=SensorsCurrectLineChart(iid, roomId);
-					break;
-				case "AC"://Ac devices
-				case "LT"://Light devices
-				case "HD"://Hum devices
-				case "EF"://Fan devices
-					ViewBag.datasets=DeviceCurrectLineChart(iid, roomId);
-					break;
+				else { iid = type; }
+				try
+				{
+					this.time = Convert.ToInt32(Request.Query["time"]);
+					this.timeSpacing = Convert.ToInt32(Request.Query["timeSpacing"]);
+					string roomId="";
+					if (!string.IsNullOrEmpty(Request.Query["roomId"].ToString()))
+					{
+						roomId = Request.Query["roomId"];
+					}
+					
+					switch (type)
+					{
+						case "TS"://Temp sensor
+						case "LS"://Light sensor
+						case "HS"://Hum sensor
+							ViewBag.datasets = SensorsCurrectLineChart(iid, roomId);
+							break;
+						case "AC"://Ac devices
+						case "LT"://Light devices
+						case "HD"://Hum devices
+						case "EF"://Fan devices
+							ViewBag.datasets = DeviceCurrectLineChart(iid, roomId);
+							break;
+					}
 				}
-			}
-			catch (Exception e) {
-				return Content(e.Message);
-			}
-			//ViewBag.datasets = ChartData(lists, Request.Query["sensorType"]);
+				catch (Exception e)
+				{
+						return Content(e.Message );
+				}
+				//ViewBag.datasets = ChartData(lists, Request.Query["sensorType"]);
 
-			ViewBag.day = GetChartTime(time,timeSpacing);
-			ViewBag.divId = GetRandomDivId();
-			//ViewBag.unit
-			//ViewBag.unitName
+				ViewBag.day = GetChartTime(time, timeSpacing);
+				ViewBag.divId = GetRandomDivId();
+				//ViewBag.unit
+				//ViewBag.unitName
+			}
+			else {
+				ViewBag.charttitle = "";
+				ViewBag.chartType = "";
+				ViewBag.position = "";
+				ViewBag.download = false;
 
+				ViewBag.datasets = "";
+
+				ViewBag.datasets = "";
+
+				ViewBag.day = "";
+				ViewBag.divId = "";
+				//ViewBag.unit
+				//ViewBag.unitName
+			}
 			return PartialView("_LineChart");
 
 		}
 		public string SensorsCurrectLineChart(string type,string roomId)
 		{
 			FYP_APP.Controllers.SensorsController SensorsControl = new FYP_APP.Controllers.SensorsController();
-			if (string.IsNullOrEmpty(roomId))
-			{
-				if (Request.Cookies.TryGetValue("returnUrl", out string url))
-				{
-					string host = HttpContext.Request.Host.Value;
-
-					string UrlroomId = HttpUtility.ParseQueryString(new Uri(host + url).Query).Get("roomId");
-					if (!string.IsNullOrEmpty(UrlroomId))
-					{
-						roomId = UrlroomId;
-					}
-				}
-			}
-			
+					
 			var SensorsDataList = SensorsControl.GetSensorsData().Where(s => s.roomId.Contains(roomId)).ToList();
 
 			string tableName = "";
@@ -192,18 +198,7 @@ namespace FYP_WEB_APP.Controllers
 		{
 
 			DevicesController DevicesControl = new DevicesController();
-			if (string.IsNullOrEmpty(roomId)) { 
-			if (Request.Cookies.TryGetValue("returnUrl", out string url))
-			{
-				string host = HttpContext.Request.Host.Value;
-
-				string UrlroomId = HttpUtility.ParseQueryString(new Uri(host + url).Query).Get("roomId");
-				if (!string.IsNullOrEmpty(UrlroomId))
-				{
-					roomId = UrlroomId;
-				}
-			}
-			}
+		
 			string tableName = "";
 			List<DevicesListModel> DevicesDataList = DevicesControl.GetAllDevices().Where(d => d.roomId.Contains(roomId)).ToList(); 
 			switch (type)
@@ -456,38 +451,19 @@ namespace FYP_WEB_APP.Controllers
 			List<string> data = new List<string>();
 
 			if (CurrentList.Count > 0) { 
-			//Debug.WriteLine("*****************************************************");
-
-			//Debug.WriteLine("currentDataModel :\n"+CurrentList.ToJson().ToString());
-			//foreach (var get in CurrentList) { Debug.WriteLine("currentDataModel ==> "+get.latest_checking_time); }
-			//Debug.WriteLine("currentDataModel :\n"+CurrentList.ToJson().ToString());
-
-			//DateTime today = DateTime.Now.AddHours(-6);
 
 			var MaStart = today.AddHours(time * -1);
-			//var start = today.AddHours(-3);
 			var MaEnd = today;
 
-			//var start = today.AddHours(time * -1);
-			//var end = today;
+	
 			DateTime ca = MaStart;
 			TimeSpan catime = today - today.AddHours(time * -1);
 
-		//	Debug.WriteLine("MangeData start  : " + MaStart);
-		//	Debug.WriteLine("MangeData end  : " + MaEnd); 
-		//	Debug.WriteLine("MangeData timeSpacing  : " + timeSpacing); 
 			int counttime = 0;
 			// time-hour to now time get data
 			//miss spacking for no record.
 				counttime = Convert.ToInt32(catime.TotalMinutes / timeSpacing); int zx = 0;
-			//	
-			double value = 0;
 
-			/*for (int x = 0; x <= counttime; x++)
-			{
-				data.Add(0);
-
-			}*/
 			string back ="";
 			while (ca<= MaEnd)
 			{
@@ -527,8 +503,7 @@ namespace FYP_WEB_APP.Controllers
 
 				//	Debug.WriteLine("*****************************************************");
             }catch (Exception e) {
-					Debug.WriteLine("line 552:"+e.Message);
-
+						error("line 552:" + e.Message);
 				}
 				ca = ca.AddMinutes(timeSpacing);
 
@@ -538,8 +513,10 @@ namespace FYP_WEB_APP.Controllers
 			return data;
 		}
 
+		public ActionResult error(string str)
+		{ return Content(str); }
 
-		public string GetChartTime() { return null; }
+			public string GetChartTime() { return null; }
 		public void getallcurrent()
 		{
 			var start = today.AddHours(-3);
