@@ -18,7 +18,7 @@ namespace FYP_WEB_APP.Controllers
 {
     public class ChartController : Controller
     {
-		DateTime today = DateTime.UtcNow;
+		DateTime today = DateTime.UtcNow.AddHours(8);
 
 		private int timeSpacing;//minute ~ point to point of spacing
 		private int time;//minute ~ how long display
@@ -169,28 +169,21 @@ namespace FYP_WEB_APP.Controllers
 			List<object> datasets = new List<object>();
 			List<object> datas = new List<object>();
 			List<CurrentDataModel> searchResultOfCurrentDataList = new List<CurrentDataModel>();
+
 			var filterStartDateTime = Builders<CurrentDataModel>.Filter.Gte(x => x.latest_checking_time, start);
 
 			var filterEndDateTime = Builders<CurrentDataModel>.Filter.Lte(x => x.latest_checking_time, end);
 
 			foreach (SensorsListModel get in SensorsDataList)
 			{
+				var filterid = Builders<CurrentDataModel>.Filter.Eq(x => x.sensorId,get.sensorId );
+
 				labelss.Add(get.sensorId);
-				searchResultOfCurrentDataList = new DBManger().DataBase.GetCollection<CurrentDataModel>(tableName).Find(filterStartDateTime & filterEndDateTime).Sort(Builders<CurrentDataModel>.Sort.Descending(s=>s.latest_checking_time)).ToList();
-				/*foreach (var document in searchResultOfCurrentDataList)
-				{
-					//Debug.WriteLine(document.latest_checking_time);
-				}
-				//Debug.WriteLine("Count: " + searchResultOfCurrentDataList.Count());
-					*/
+				searchResultOfCurrentDataList = new DBManger().DataBase.GetCollection<CurrentDataModel>(tableName).Find(filterid&filterStartDateTime & filterEndDateTime).Sort(Builders<CurrentDataModel>.Sort.Descending(s=>s.latest_checking_time)).ToList();
 
 				datas.Add(MangeData(searchResultOfCurrentDataList).ToArray());
 			}
 
-			/*for (int i = 0; i < SensorsDataList.Count; i++)
-			{
-				labelss.Add(SensorsDataList[i].sensorId);
-			}*/
 			return LineChart(SensorsDataList.Count, labelss, datas);
 
 		}
@@ -243,6 +236,13 @@ namespace FYP_WEB_APP.Controllers
 					tableName = "EXH_FAN";
 
 					break;
+				case "AS":
+					DevicesDataList = DevicesDataList.Where(x => x.devicesId.Contains("AS")).ToList();
+					ViewBag.unit = " ";
+					ViewBag.unitName = "AS";
+					tableName = "AS_SENSOR";
+
+					break;
 				default:
 
 					break;
@@ -269,36 +269,14 @@ namespace FYP_WEB_APP.Controllers
 			if (DevicesDataList.Count()>0) { 
 			foreach (var get in DevicesDataList)
 			{
+			var filterId = Builders<CurrentDataModel>.Filter.Eq(x => x.devicesId, get.devicesId);
+					
 				labelss.Add(get.devicesId);
-				searchResultOfCurrentDataList = new DBManger().DataBase.GetCollection<CurrentDataModel>(tableName).Find(filterStartDateTime & filterEndDateTime).Sort(Builders<CurrentDataModel>.Sort.Descending(s => s.latest_checking_time)).ToList();
-				/*foreach (var document in searchResultOfCurrentDataList)
-				{
-					//Debug.WriteLine(document.latest_checking_time);
-				}
-				//Debug.WriteLine("Count: " + searchResultOfCurrentDataList.Count());
-					*/
-
+				searchResultOfCurrentDataList = new DBManger().DataBase.GetCollection<CurrentDataModel>(tableName).Find(filterId&filterStartDateTime & filterEndDateTime).Sort(Builders<CurrentDataModel>.Sort.Descending(s => s.latest_checking_time)).ToList();
 				datas.Add(MangeData(searchResultOfCurrentDataList).ToArray());
 			}
-
-			foreach (DevicesListModel get in DevicesDataList)
-			{
-				labelss.Add(get.devicesId);
-				CurrentList = DevicesControl.GetChartDataList(get.devicesId).Where(x => x.latest_checking_time > today.AddDays(-1)).OrderBy(x => x.latest_checking_time).ToList();
-
-				datas.Add(MangeData(CurrentList).ToArray());
 			}
-			}
-			/*	for (int i = 0; i < DevicesDataList.Count; i++)
-				{
-					labelss.Add(DevicesDataList[i].devicesId);
-				}*/
 
-			/*foreach (var get in datas)
-			{
-				Debug.WriteLine(get.ToJson());
-
-			}*/
 			return LineChart(DevicesDataList.Count, labelss, datas); 
 		}
 
