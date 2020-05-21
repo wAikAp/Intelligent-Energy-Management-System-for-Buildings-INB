@@ -5,7 +5,7 @@
     List<List<FYP_WEB_APP.Models.SensorsListModel>> SensorsByroomList = ViewData["SensorsListModel"] as List<List<FYP_WEB_APP.Models.SensorsListModel>>;
 
 }
-
+    <link rel="stylesheet" href="~/css/dragButton.css">
 <div class="modal fade" id="EditSensors" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -84,21 +84,28 @@
                     }
                     <div id="collapse_@getSensorsByroom.First().roomId" class="collapse show" aria-labelledby="heading_@getSensorsByroom.First().roomId">
                         <div class="card-body d-flex flex-wrap">
-                            @foreach (var get in getSensorsByroom)
+                            @foreach (var sensorModel in getSensorsByroom)
                             {
-                                switch (get.sensorId.Substring(0, 2))
+                                string turnOFstr = sensorModel.status ? "Online" : "Offline";
+                                string turnOFClr = sensorModel.status ? "badge-success" : "badge-danger";
+                                string expStr = sensorModel.Exception;
+                                switch (sensorModel.sensorId.Substring(0, 2))
                                 {
                                     case "TS":
                                         ViewData["devicesType"] = "Temperature";
-                                        ViewData["TypeColor"] = "bg-primary";
+                                        ViewData["TypeColor"] = "TSensor";
                                         break;
                                     case "LS":
                                         ViewData["devicesType"] = "Luminosity";
-                                        ViewData["TypeColor"] = "bg-warning";
+                                        ViewData["TypeColor"] = "LSensor";
                                         break;
                                     case "HS":
                                         ViewData["devicesType"] = "Humidity";
-                                        ViewData["TypeColor"] = "bg-info";
+                                        ViewData["TypeColor"] = "HSensor";
+                                        break;
+                                    case "AS":
+                                        ViewData["devicesType"] = "Air Quality";
+                                        ViewData["TypeColor"] = "ASensor";
                                         break;
 
                                 }
@@ -117,9 +124,9 @@
                                                 <img class=" mt-1" style="width: 16px;@ViewData["backimg"]" src="~/img/icon/rightArrow.png" />
                                             </button>
                                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton0">
-                                                <a href="#" class="btn text-success mx-2" onclick="EditSensors('@get.sensorId')">edit </a>
+                                                <a href="#" class="btn text-success mx-2" onclick="EditSensors('@sensorModel.sensorId')">edit </a>
 
-                                                <a href="#" class="btn text-danger mx-2" onclick="DropSensors('@get.sensorId')">Delete </a>
+                                                <a href="#" class="btn text-danger mx-2" onclick="DropSensors('@sensorModel.sensorId')">Delete </a>
                                             </div>
                                         </div>
                                     </div>
@@ -127,17 +134,17 @@
 
                                 </div>
                                 <div class="card-body">
-                                    <p class="ard-text p-0 m-0"><b>@get.roomId @get.sensorId</b></p>
-                                    <input id="dropSensorID" type="hidden" value="@get.sensorId" />
+                                    <p class="ard-text p-0 m-0"><b>@sensorModel.roomId @sensorModel.sensorId</b></p>
+                                    <input id="dropSensorID" type="hidden" value="@sensorModel.sensorId" />
                                     <h4 class="card-title" style="margin-top:5px">
-                                        <img src="~/img/icon/@get.typeImg" height="36">
-                                        @get.current_Value @get.typeUnit
+                                        <img src="~/img/icon/@sensorModel.typeImg" height="36">
+                                        @sensorModel.current_Value @sensorModel.typeUnit
                                     </h4>
+                                    <a class="shadow badge badge-pill  @turnOFClr" style="margin-left:-2px; margin-top:2px font-size: 14px" href="#">@turnOFstr</a>
                                     <p class="card-text my-1" style="font-size:12px">
-                                        updated
-                                        @if (get.current_Time != DateTime.MinValue)
+                                        @if (sensorModel.current_Time != DateTime.MinValue)
                                         {
-                                            <b style="font-size:14px">@get.latest_checking_time</b>
+                                            <b style="font-size:14px">@sensorModel.latest_checking_time</b>
                                         }
                                         else
                                         {
