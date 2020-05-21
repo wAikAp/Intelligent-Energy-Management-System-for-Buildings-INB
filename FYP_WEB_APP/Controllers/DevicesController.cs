@@ -264,8 +264,9 @@ namespace FYP_APP.Controllers
 				insertList.lastest_checking_time = DateTime.UtcNow;
 				insertList.total_run_time = DateTime.UtcNow;
 				insertList.power = 0;
-			
-			
+				insertList.status = false;
+
+
 			try
 			{
 				new DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").InsertOneAsync(insertList);
@@ -374,7 +375,8 @@ namespace FYP_APP.Controllers
 					desc = get.desc,
 					current= currentValue,
 					powerOnOff = false,
-					avgPower= avgPowers
+					avgPower= avgPowers,
+					status=get.status
 				};
 				//Debug.WriteLine(data.current);
 				list.Add(data);

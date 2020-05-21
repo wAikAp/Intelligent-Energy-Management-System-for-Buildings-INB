@@ -18,8 +18,9 @@ namespace FYP_WEB_APP.Models.MongoModels
         public double pos_x { get; set; }
         public double pos_y { get; set; }
         public string desc { get; set; }
+        public bool status { get; set; }
 
 
 
-}
+    }
 }
