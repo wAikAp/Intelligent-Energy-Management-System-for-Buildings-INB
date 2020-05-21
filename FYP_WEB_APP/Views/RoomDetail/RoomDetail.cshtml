@@ -1,6 +1,7 @@
 ﻿
 @{
     @using FYP_WEB_APP.Models
+    @using FYP_APP.Models.MongoModels
     ViewData["Title"] = "Rooms Detail";
     Layout = "_Layout";
 
@@ -10,6 +11,7 @@
 
     List<SensorsListModel> sensorsList = ViewData["sensorsList"] as List<SensorsListModel>;
     List<DevicesListModel> devicesLists = ViewData["devicesList"] as List<DevicesListModel>;
+    MongoRoomModel roomModel = ViewData["roomModel"] as MongoRoomModel;
 }
 
     <head>
@@ -52,7 +54,7 @@
                 formData.append("dPositionList", dPositionList);
                 formData.append("roomID", '@ViewData["roomID"]');
                 //{ 'sPositionList': sPositionList, 'dPositionList': dPositionList, 'roomID':@ViewData["roomID"] }
-                
+
                 $.ajax({
                     url: '@Url.Action("UpdateSensorDevicePosition", "RoomDetail")',
                     type: "POST",
@@ -74,6 +76,7 @@
             }
 
         </script>
+
     </head>
 
 
@@ -81,6 +84,7 @@
 
 
         @Html.Partial("_addDragButton")
+        @Html.Partial("_loader", "roomDetailLoader")
         <!--page title-->
         <div class="container-fluid p-4 ">
             <div class="d-flex">
@@ -93,13 +97,15 @@
                     <h4>
                         <b style="font-size: .6em;"><img src="~/img/icon/lighting32.png" />Power Usage</b>
                     </h4>
-                    <h3><strong class="pl-sm-2">9000KW</strong><snap class="text-black" style="font-size: .6em;">/ pre month</snap></h3>
+                    <h3><strong class="pl-sm-2">@ViewData["sumPowerUsage"]</strong><snap class="text-black" style="font-size: .6em;">/ pre month</snap></h3>
                 </div>
             </div>
             <!-- tag -->
             <div class="d-flex">
-                <a href="#" class="badge badge-primary mx-0">Lab</a>
-                <a href="#" class="badge badge-warning mx-1">3 / f</a>
+                <a href="#" class="badge badge-primary mx-0">@roomModel.type</a>
+                <a href="#" class="badge badge-warning mx-1">@roomModel.floor / f</a>
+
+
             </div>
 
             <nav class="col-sm-4 my-2 " aria-label="breadcrumb" style="margin-left: -20px;">
@@ -108,36 +114,59 @@
                     <li class="breadcrumb-item active" aria-current="page">Room detail</li>
                 </ol>
             </nav>
+
             <div id="sensorView"></div>
             <div id="devicesView"></div>
+
             <div class="d-flex bd-highlight flex-wrap flex-column">
                 <div id="sensorChartTS" class="flex-fill bd-highlight col-12 h-100"></div>
                 <div id="sensorChartHS" class="flex-fill bd-highlight  col-12 h-100"></div>
                 <div id="sensorChartLS" class="flex-fill bd-highlight  col-12 h-100"></div>
-                <script>
-                $(document).ready(function () {
-                $("#devicesView").load("@Url.Action("SearchDevicesByRoomid", "Devices", new { roomID = ViewData["roomID"] })", function () { });
-                $("#sensorView").load("@Url.Action("SensorsListByRoomid", "Sensors", new { roomID = ViewData["roomID"] })", function () {});
-                $("#sensorChartTS").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Temperature Sensor Log Record", chartType = "line" ,position ="top" , download = false , time = 6 , timeSpacing = 1 , type = "TS" }))", function () {});
-                $("#sensorChartHS").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Humidity Sensor Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "HS" }))", function () {});
-                $("#sensorChartLS").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Luminosity Sensor Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "LS" }))", function () {});
 
-                });
-
-                </script>
                 <div id="DevicesChartAC" class="flex-fill bd-highlight col-12 h-100"></div>
                 <div id="DevicesChartLT" class="flex-fill bd-highlight col-12 h-100"></div>
                 <div id="DevicesChartHD" class="flex-fill bd-highlight col-12 h-100"></div>
                 <div id="DevicesChartEF" class="flex-fill bd-highlight col-12 h-100"></div>
                 <script>
-                $(document).ready(function () {
-                     $("#DevicesChartAC").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Air Conditioning Log Record", chartType = "line" ,position ="top" , download = false , time = 6 , timeSpacing = 1 , type = "AC" }))", function () {});
-                    $("#DevicesChartLT").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Light Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "LT" }))", function () {});
-                    $("#DevicesChartHD").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Humidifier Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "HD" }))", function () {});
-                    $("#DevicesChartEF").load("@Html.Raw(Url.Action("chart", "chart", new { title = "FAN Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "EF" }))", function () {});
+                    $(".roomDetailLoader").css("top", "300px");
+                    $(".roomDetailLoader").css("left", "45%");
+                    $(".roomDetailLoader").show();
 
-                });
+                    //load sensor device list
+                    updateSensorDeviceList();
+                    $(".roomDetailLoader").delay(5000).hide(1250);
 
+
+                    //each 30s to referash the sensor status
+                    var myVar = setInterval(function () {
+                        $.when(updateSensorDeviceList()).then(dismissLoader());
+                    }, 30000);
+                    
+                    function updateSensorDeviceList() {
+
+                        $(".sensorLoader").show();
+                        $(".deviceLoader").show();
+
+                        //sensors
+                        $("#devicesView").load("@Url.Action("SearchDevicesByRoomid", "Devices", new { roomID = ViewData["roomID"] })", function () { });
+                        $("#sensorView").load("@Url.Action("SensorsListByRoomid", "Sensors", new { roomID = ViewData["roomID"] })", function () {});
+                        $("#sensorChartTS").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Temperature Sensor Log Record", chartType = "line" ,position ="top" , download = false , time = 6 , timeSpacing = 1 , type = "TS" }))", function () {});
+                        $("#sensorChartHS").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Humidity Sensor Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "HS" }))", function () {});
+                        $("#sensorChartLS").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Luminosity Sensor Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "LS" }))", function () { });
+
+                        //devices
+                        $("#DevicesChartAC").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Air Conditioning Log Record", chartType = "line" ,position ="top" , download = false , time = 6 , timeSpacing = 1 , type = "AC" }))", function () {});
+                        $("#DevicesChartLT").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Light Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "LT" }))", function () {});
+                        $("#DevicesChartHD").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Humidifier Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "HD" }))", function () {});
+                        $("#DevicesChartEF").load("@Html.Raw(Url.Action("chart", "chart", new { title = "FAN Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "EF" }))", function () {});
+
+                    }
+
+                    function dismissLoader() {
+                        //delay(2000)
+                        $(".sensorLoader").hide(3500);
+                        $(".deviceLoader").hide(3500);
+                    }
                 </script>
             </div>
             <!-- data end -->
@@ -237,179 +266,205 @@
                     </div>
 
                     <!--     Detail     -->
-                    @Html.Partial("_SensorDeviceDetail")
+                    <div class="col-lg-6 col-xl-6 offset-xl-0 ml-4  py-0" style=" max-width: 700px">
+                        @Html.Partial("_SensorDeviceDetail")
+
+                        <div class="card text-white bg-secondary mb-3" style="max-width: 300px;">
+                            <div class="card-header" style="padding-bottom:0">
+                                <p><b>Room infrared thermal imaging</b></p>
+                            </div>
+                            <!--<iframe id="ircam" class="myframe" name="myframe" src="http://47.56.85.130:18888/simg?n=f348" width="300px" height="300px"></iframe>-->
+                            <!--<div id="ircam"></div>-->
+                            <img id="IRCAMimg" src="http://47.56.85.130:18888/simg?n=f348" />
+
+                        </div>
+
+                        <script>
+                            //each 1s to referash the sensor status
+                            var myVar = setInterval(function () {
+                                //$('#ircam').attr('src', $('#ircam').attr('src'));
+                                //$("#ircam").html('<img id="IRCAMimg" src="http://47.56.85.130:18888/simg?n=f348" />');
+
+                                //$("#IRCAMimg").attr("src", "");
+                                 
+                                $("#IRCAMimg").attr("src", "http://47.56.85.130:18888/simg?n=f348" + "&x=" + new Date().getTime());
+                                console.log("IRCAMimg ");
+                            }, 1000);
+                        </script>
+                    </div>
+
+                </div>
             </div>
         </div>
-
         <!--heatmap js-->
         <script>/*
-            window.onload = function () {
+                                                                                                                        window.onload = function () {
 
-                function generateRandomData(len) {
-                    var floorPlanImgW = document.getElementById('planImg').offsetWidth;
-                    var floorPlanImgH = document.getElementById('planImg').offsetHeight;
-
-
-                    // generate some random data
-                    var points = [];
-                    var max = 0;
-                    var min = 0;
-                    var width = floorPlanImgW;
-                    var height = floorPlanImgH;
-
-                    var TData = [[137, 193, 18],
-                    [162, 346, 31],
-                    [292, 249, 31],
-                    [354, 121, 23],
-                    [198, 10, 15],
-                    [197, 198, 24],
-                    [296, 111, 24],
-                    [185, 40, 20],
-                    [237, 394, 19],
-                    [105, 358, 18],
-                    [251, 390, 29],
-                    [265, 368, 21],
-                    [187, 146, 17],
-                    [168, 226, 17],
-                    [324, 277, 33],
-                    [341, 285, 30],
-                    [182, 412, 24],
-                    [228, 344, 16],
-                    [206, 398, 29],
-                    [377, 206, 30],
-                    [371, 422, 20],
-                    [263, 73, 15],
-                    [253, 431, 30],
-                    [183, 237, 19],
-                    [319, 109, 27],
-                    [365, 21, 27],
-                    [97, 312, 26],
-                    [354, 379, 15],
-                    [149, 11, 17],
-                    [284, 166, 31],
-                    [370, 332, 31],
-                    [307, 282, 28],
-                    [85, 236, 26],
-                    [172, 386, 19],
-                    [324, 356, 17],
-                    [142, 285, 27],
-                    [183, 1, 25],
-                    [304, 157, 20],
-                    [183, 185, 16],
-                    ];
-                    for (let i = 0; i < TData.length; i++) {
-                        var val = TData[i][2];
-
-                        max = Math.max(max, val);
-                        min = Math.min(min, val);
-                        var x = TData[i][0];
-                        var y = TData[i][1];
-                        var point = {
-                            x: x,
-                            y: y,
-                            value: val
-                        };
-                        points.push(point);
-                    }
+                                                                                                                            function generateRandomData(len) {
+                                                                                                                                var floorPlanImgW = document.getElementById('planImg').offsetWidth;
+                                                                                                                                var floorPlanImgH = document.getElementById('planImg').offsetHeight;
 
 
-                    var data = { max: max, min: min, data: points };
+                                                                                                                                // generate some random data
+                                                                                                                                var points = [];
+                                                                                                                                var max = 0;
+                                                                                                                                var min = 0;
+                                                                                                                                var width = floorPlanImgW;
+                                                                                                                                var height = floorPlanImgH;
 
-                    return data;
-                };
+                                                                                                                                var TData = [[137, 193, 18],
+                                                                                                                                [162, 346, 31],
+                                                                                                                                [292, 249, 31],
+                                                                                                                                [354, 121, 23],
+                                                                                                                                [198, 10, 15],
+                                                                                                                                [197, 198, 24],
+                                                                                                                                [296, 111, 24],
+                                                                                                                                [185, 40, 20],
+                                                                                                                                [237, 394, 19],
+                                                                                                                                [105, 358, 18],
+                                                                                                                                [251, 390, 29],
+                                                                                                                                [265, 368, 21],
+                                                                                                                                [187, 146, 17],
+                                                                                                                                [168, 226, 17],
+                                                                                                                                [324, 277, 33],
+                                                                                                                                [341, 285, 30],
+                                                                                                                                [182, 412, 24],
+                                                                                                                                [228, 344, 16],
+                                                                                                                                [206, 398, 29],
+                                                                                                                                [377, 206, 30],
+                                                                                                                                [371, 422, 20],
+                                                                                                                                [263, 73, 15],
+                                                                                                                                [253, 431, 30],
+                                                                                                                                [183, 237, 19],
+                                                                                                                                [319, 109, 27],
+                                                                                                                                [365, 21, 27],
+                                                                                                                                [97, 312, 26],
+                                                                                                                                [354, 379, 15],
+                                                                                                                                [149, 11, 17],
+                                                                                                                                [284, 166, 31],
+                                                                                                                                [370, 332, 31],
+                                                                                                                                [307, 282, 28],
+                                                                                                                                [85, 236, 26],
+                                                                                                                                [172, 386, 19],
+                                                                                                                                [324, 356, 17],
+                                                                                                                                [142, 285, 27],
+                                                                                                                                [183, 1, 25],
+                                                                                                                                [304, 157, 20],
+                                                                                                                                [183, 185, 16],
+                                                                                                                                ];
+                                                                                                                                for (let i = 0; i < TData.length; i++) {
+                                                                                                                                    var val = TData[i][2];
 
-
-                // legend code
-                // we want to display the gradient, so we have to draw it
-                var legendCanvas = document.createElement('canvas');
-                legendCanvas.width = 100;
-                legendCanvas.height = 10;
-                var min = document.querySelector('#min');
-                var max = document.querySelector('#max');
-                var gradientImg = document.querySelector('#gradient');
-
-                var legendCtx = legendCanvas.getContext('2d');
-                var gradientCfg = {};
-
-                function updateLegend(data) {
-                    // the onExtremaChange callback gives us min, max, and the gradientConfig
-                    // so we can update the legend
-                    min.innerHTML = data.min;
-                    max.innerHTML = data.max;
-                    // regenerate gradient image
-                    if (data.gradient != gradientCfg) {
-                        gradientCfg = data.gradient;
-                        var gradient = legendCtx.createLinearGradient(0, 0, 100, 1);
-                        for (var key in gradientCfg) {
-                            gradient.addColorStop(key, gradientCfg[key]);
-                        }
-
-                        legendCtx.fillStyle = gradient;
-                        legendCtx.fillRect(0, 0, 100, 10);
-                        gradientImg.src = legendCanvas.toDataURL();
-                    }
-                };
-                //legend code end
-
-                var heatmapInstance = h337.create({
-                    container: document.querySelector('.heatmap'),
-                    onExtremaChange: function (data) {
-                        updateLegend(data);
-                    }
-                });
-
-                // generate 200 random datapoints
-                var data = generateRandomData(200);
-                heatmapInstance.setData(data);
-
-                var demoWrapper = document.querySelector('.demo-wrapper');
-                var tooltip = document.querySelector('.tooltips');
-
-                function updateTooltip(x, y, value) {
-                    // + 15 for distance to cursor
-                    var transform = 'translate(' + (x + 15) + 'px, ' + (y + 15) + 'px)';
-                    tooltip.style.MozTransform = transform; // Firefox
-                    tooltip.style.msTransform = transform; // IE (9+) - note ms is lowercase
-                    tooltip.style.OTransform = transform; // Opera
-                    tooltip.style.WebkitTransform = transform; // Safari and Chrome
-                    tooltip.style.transform = transform; // One day, my pretty
-                    tooltip.innerHTML = "x:" + x + ",y:" + y + ",value:" + value;
-                }
-
-                demoWrapper.onmousemove = function (ev) {
-                    var x = ev.layerX;
-                    var y = ev.layerY;
-                    var value = heatmapInstance.getValueAt({
-                        x: x,
-                        y: y
-                    });
-
-                    tooltip.style.display = 'block';
-
-                    updateTooltip(x, y, value);
-                };
-                demoWrapper.onmouseout = function () {
-                    tooltip.style.display = 'none';
-                };
+                                                                                                                                    max = Math.max(max, val);
+                                                                                                                                    min = Math.min(min, val);
+                                                                                                                                    var x = TData[i][0];
+                                                                                                                                    var y = TData[i][1];
+                                                                                                                                    var point = {
+                                                                                                                                        x: x,
+                                                                                                                                        y: y,
+                                                                                                                                        value: val
+                                                                                                                                    };
+                                                                                                                                    points.push(point);
+                                                                                                                                }
 
 
-                document.querySelector('.trigger-refresh').onclick = function () {
-                    heatmapInstance.setData(generateRandomData(200));
-                };
+                                                                                                                                var data = { max: max, min: min, data: points };
 
-                document.querySelector('.thankyou').onclick = function () {
-                    ga('send', 'event', 'social', 'thanks');
-                    document.querySelector('.thankyou').style.display = 'none';
-                    document.querySelector('#share').style.display = 'block';
-                };
-                var btns = document.querySelectorAll('.symbol');
-                for (var i = 0; i < btns.length; i++) {
-                    btns[i].onclick = function () {
-                        ga('send', 'event', 'social', 'share');
-                    };
-                }
+                                                                                                                                return data;
+                                                                                                                            };
 
-            };*/</script>
+
+                                                                                                                            // legend code
+                                                                                                                            // we want to display the gradient, so we have to draw it
+                                                                                                                            var legendCanvas = document.createElement('canvas');
+                                                                                                                            legendCanvas.width = 100;
+                                                                                                                            legendCanvas.height = 10;
+                                                                                                                            var min = document.querySelector('#min');
+                                                                                                                            var max = document.querySelector('#max');
+                                                                                                                            var gradientImg = document.querySelector('#gradient');
+
+                                                                                                                            var legendCtx = legendCanvas.getContext('2d');
+                                                                                                                            var gradientCfg = {};
+
+                                                                                                                            function updateLegend(data) {
+                                                                                                                                // the onExtremaChange callback gives us min, max, and the gradientConfig
+                                                                                                                                // so we can update the legend
+                                                                                                                                min.innerHTML = data.min;
+                                                                                                                                max.innerHTML = data.max;
+                                                                                                                                // regenerate gradient image
+                                                                                                                                if (data.gradient != gradientCfg) {
+                                                                                                                                    gradientCfg = data.gradient;
+                                                                                                                                    var gradient = legendCtx.createLinearGradient(0, 0, 100, 1);
+                                                                                                                                    for (var key in gradientCfg) {
+                                                                                                                                        gradient.addColorStop(key, gradientCfg[key]);
+                                                                                                                                    }
+
+                                                                                                                                    legendCtx.fillStyle = gradient;
+                                                                                                                                    legendCtx.fillRect(0, 0, 100, 10);
+                                                                                                                                    gradientImg.src = legendCanvas.toDataURL();
+                                                                                                                                }
+                                                                                                                            };
+                                                                                                                            //legend code end
+
+                                                                                                                            var heatmapInstance = h337.create({
+                                                                                                                                container: document.querySelector('.heatmap'),
+                                                                                                                                onExtremaChange: function (data) {
+                                                                                                                                    updateLegend(data);
+                                                                                                                                }
+                                                                                                                            });
+
+                                                                                                                            // generate 200 random datapoints
+                                                                                                                            var data = generateRandomData(200);
+                                                                                                                            heatmapInstance.setData(data);
+
+                                                                                                                            var demoWrapper = document.querySelector('.demo-wrapper');
+                                                                                                                            var tooltip = document.querySelector('.tooltips');
+
+                                                                                                                            function updateTooltip(x, y, value) {
+                                                                                                                                // + 15 for distance to cursor
+                                                                                                                                var transform = 'translate(' + (x + 15) + 'px, ' + (y + 15) + 'px)';
+                                                                                                                                tooltip.style.MozTransform = transform; // Firefox
+                                                                                                                                tooltip.style.msTransform = transform; // IE (9+) - note ms is lowercase
+                                                                                                                                tooltip.style.OTransform = transform; // Opera
+                                                                                                                                tooltip.style.WebkitTransform = transform; // Safari and Chrome
+                                                                                                                                tooltip.style.transform = transform; // One day, my pretty
+                                                                                                                                tooltip.innerHTML = "x:" + x + ",y:" + y + ",value:" + value;
+                                                                                                                            }
+
+                                                                                                                            demoWrapper.onmousemove = function (ev) {
+                                                                                                                                var x = ev.layerX;
+                                                                                                                                var y = ev.layerY;
+                                                                                                                                var value = heatmapInstance.getValueAt({
+                                                                                                                                    x: x,
+                                                                                                                                    y: y
+                                                                                                                                });
+
+                                                                                                                                tooltip.style.display = 'block';
+
+                                                                                                                                updateTooltip(x, y, value);
+                                                                                                                            };
+                                                                                                                            demoWrapper.onmouseout = function () {
+                                                                                                                                tooltip.style.display = 'none';
+                                                                                                                            };
+
+
+                                                                                                                            document.querySelector('.trigger-refresh').onclick = function () {
+                                                                                                                                heatmapInstance.setData(generateRandomData(200));
+                                                                                                                            };
+
+                                                                                                                            document.querySelector('.thankyou').onclick = function () {
+                                                                                                                                ga('send', 'event', 'social', 'thanks');
+                                                                                                                                document.querySelector('.thankyou').style.display = 'none';
+                                                                                                                                document.querySelector('#share').style.display = 'block';
+                                                                                                                            };
+                                                                                                                            var btns = document.querySelectorAll('.symbol');
+                                                                                                                            for (var i = 0; i < btns.length; i++) {
+                                                                                                                                btns[i].onclick = function () {
+                                                                                                                                    ga('send', 'event', 'social', 'share');
+                                                                                                                                };
+                                                                                                                            }
+
+                                                                                                                        };*/</script>
         <!--heatmap js-->
 
     </body>

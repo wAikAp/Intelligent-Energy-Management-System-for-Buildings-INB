@@ -1,0 +1,17 @@
+﻿@model string
+<link rel="stylesheet" href="~/css/loader.css">
+<div class="loader @Model.ToString()" id="">
+    <div class="lds-roller">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+</div>
+<script>
+    $(".@Model.ToString()").hide();
+</script>

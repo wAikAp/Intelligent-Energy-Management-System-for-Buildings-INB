@@ -577,7 +577,11 @@ namespace FYP_APP.Controllers
 				case "HS":
 					type = "humidity96.png";
 					break;
+				case "AS":
+					type = "aqSensor96.png";
+					break;
 				default:
+					type = "light-off96";
 					break;
 			}
 			return type;
@@ -604,7 +608,9 @@ namespace FYP_APP.Controllers
 			//db collection
 			List<CurrentDataModel> query=new List<CurrentDataModel>();
 			if (!string.IsNullOrEmpty(tableName)) {
-				query=database.GetCollection<CurrentDataModel>(tableName).Find(new BsonDocument()).Limit(100).Sort(Builders<CurrentDataModel>.Sort.Descending("latest_checking_time")).ToList();
+				var filter = Builders<CurrentDataModel>.Filter.Eq(x => x.sensorId, sensorId);
+
+				query = database.GetCollection<CurrentDataModel>(tableName).Find(filter).Limit(1).Sort(Builders<CurrentDataModel>.Sort.Descending("latest_checking_time")).ToList();
 			}
 			//IQueryable<CurrentDataModel> query;
 			//query = from c in collection.AsQueryable<CurrentDataModel>() orderby c.latest_checking_time descending where c.sensorId.Contains(sensorId) select c;

@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using FYP_APP.Controllers;
+using FYP_APP.Models.MongoModels;
 using FYP_WEB_APP.Models;
+using FYP_WEB_APP.Models.LogicModels;
 using FYP_WEB_APP.Models.MongoModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,29 +27,43 @@ namespace FYP_WEB_APP.Controllers
         public IActionResult RoomDetail(String roomID)
         {
             ViewData["roomID"] = roomID;
+            //get sensor and device list
             SensorsController sensorsController = new SensorsController();
             List<SensorsListModel> sensorsList = sensorsController.GetSensorsListByRoomid(roomID);
             DevicesController DevicesController = new DevicesController();
             List<DevicesListModel> devicesList = DevicesController.GetDevicesListByRoomid(roomID);
 
-            //Debug.WriteLine("sensor list = "+sensorsList.ToJson().ToString());
+            //power list
+            DevicesPowerUseOutputUtil devicesPowerUseOutputUtil = new DevicesPowerUseOutputUtil();
+            List<MongoDevicesPowerUse> powerUsageList = devicesPowerUseOutputUtil.getPowerUseList();
+
+            double powerSum = 0;//sum power usage of this room
+            foreach (MongoDevicesPowerUse mpu in powerUsageList) {
+                powerSum += mpu.power_used;
+            }
+
+            //get room model
+            var collection = dBManger.DataBase.GetCollection<MongoRoomModel>("ROOM");
+            var roomList = collection.Find(x => x.roomId == roomID).ToList();
+
+            //Debug.WriteLine("roomList list = " + roomList.ToJson().ToString());
+            if (roomList.Count > 0)
+            {
+                ViewData["roomModel"] = roomList[0];
+            }
+            else {
+                ViewData["roomModel"] = new MongoRoomModel();
+            }
+            
+            
             //Debug.WriteLine("Devices list = " + deviceslist.ToJson().ToString());
             ViewData["sensorsList"] = sensorsList;
             ViewData["devicesList"] = devicesList;
-
+            ViewData["powerUsageList"] = powerUsageList;
+            ViewData["sumPowerUsage"] = powerSum;
+            Debug.WriteLine("powerUsageList list = " + powerUsageList.ToJson().ToString());
             return View();
         }
-
-        [HttpPost]
-        public IActionResult AddDragButton(IFormCollection post) {
-			Debug.WriteLine("AddDragButton");
-            //Debug.WriteLine("sensorID = " + post["sensor_type"] + post["sensorNo"]);
-            ViewData["roomID"] = post["roomID"];
-            //Debug.WriteLine("AddDragButton room id = " + ViewData["roomID"]);
-            return Redirect("RoomDetail?roomID="+ ViewData["roomID"]+"#floorPlan");
-        }
-
-
 
         [Route("RoomDetail/UpdateSensorDevicePosition")]
         [HttpPost]
