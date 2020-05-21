@@ -7,15 +7,19 @@ using System.Web;
 using FYP_APP.Controllers;
 using FYP_WEB_APP.Models;
 using FYP_WEB_APP.Models.chart;
+using FYP_WEB_APP.Models.MongoModels;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using Newtonsoft.Json;
 
 namespace FYP_WEB_APP.Controllers
 {
     public class ChartController : Controller
     {
+		DateTime today = DateTime.UtcNow;
+
 		private int timeSpacing;//minute ~ point to point of spacing
 		private int time;//minute ~ how long display
 		/*
@@ -29,7 +33,7 @@ namespace FYP_WEB_APP.Controllers
 		 */
 		[HttpGet]
 		public ActionResult chart() {
-
+			//getallcurrent();
 			ViewBag.charttitle = Request.Query["title"];//chart title
 			ViewBag.chartType = Request.Query["chartType"];//chart type
 			ViewBag.position = Request.Query["position"];//the lable position
@@ -98,7 +102,8 @@ namespace FYP_WEB_APP.Controllers
 			}
 			
 			var SensorsDataList = SensorsControl.GetSensorsData().Where(s => s.roomId.Contains(roomId)).ToList();
-			
+
+			string tableName = "";
 
 			var iid = type;
 			if (type.Length > 2) {
@@ -112,15 +117,20 @@ namespace FYP_WEB_APP.Controllers
 					SensorsDataList = SensorsDataList.Where(x => x.sensorId.Contains("TS")).ToList();
 					ViewBag.unit = " ";
 					ViewBag.unitName = "Temperature";
+					tableName = "TMP_SENSOR";
+
 					break;
 				case "LS":
 					SensorsDataList = SensorsDataList.Where(x => x.sensorId.Contains("LS")).ToList();
 					ViewBag.unit = " lm";
 					ViewBag.unitName = "Luminosity";
+					tableName = "LIGHT_SENSOR";
+
 					break;
 				case "HS":
 					SensorsDataList = SensorsDataList.Where(x => x.sensorId.Contains("HS")).ToList();
 					ViewBag.unit = " %";
+					tableName = "HUM_SENSOR";
 					ViewBag.unitName = "Humidity";
 					break;
 				case "true":
@@ -130,14 +140,19 @@ namespace FYP_WEB_APP.Controllers
 						case "TS":
 							ViewBag.unit = " ";
 							ViewBag.unitName = "Temperature";
+							tableName = "TMP_SENSOR";
+
 							break;
 						case "LS":
 							ViewBag.unit = " lm";
 							ViewBag.unitName = "Luminosity";
+							tableName = "LIGHT_SENSOR";
+
 							break;
 						case "HS":
 							ViewBag.unit = " %";
 							ViewBag.unitName = "Humidity";
+					tableName = "HUM_SENSOR";
 							break;
 					}
 					break;
@@ -146,21 +161,34 @@ namespace FYP_WEB_APP.Controllers
 			List<CurrentDataModel> CurrentList = new List<CurrentDataModel>();
 			//only ts
 
-			DateTime today = DateTime.Now;
-
-
+			var start = today.AddHours(time*-1);
+			//var start = today.AddHours(-3);
+			var end = today;
+			Debug.WriteLine("start >= : " + start);
+			Debug.WriteLine("end <= : " + end);
+			var dbconn = new DBManger().DataBase.GetCollection<CurrentDataModel>(tableName); 
 			//end set time
 			List<string> labelss = new List<string>();
 
 			List<object> datasets = new List<object>();
 			List<object> datas = new List<object>();
+			List<CurrentDataModel> searchResultOfCurrentDataList = new List<CurrentDataModel>();
+			var filterStartDateTime = Builders<CurrentDataModel>.Filter.Gte(x => x.latest_checking_time, start);
+
+			var filterEndDateTime = Builders<CurrentDataModel>.Filter.Lte(x => x.latest_checking_time, end);
 
 			foreach (SensorsListModel get in SensorsDataList)
 			{
 				labelss.Add(get.sensorId);
-				CurrentList = SensorsControl.GetSensorIDCurrentList(get.sensorId).Where(x => x.latest_checking_time > today.AddDays(-1)).OrderBy(x => x.latest_checking_time).ToList();
-				
-				datas.Add(MangeData(CurrentList).ToArray());
+				searchResultOfCurrentDataList = new DBManger().DataBase.GetCollection<CurrentDataModel>(tableName).Find(filterStartDateTime & filterEndDateTime).Sort(Builders<CurrentDataModel>.Sort.Descending(s=>s.latest_checking_time)).ToList();
+				foreach (var document in searchResultOfCurrentDataList)
+				{
+					//Debug.WriteLine(document.latest_checking_time);
+				}
+				//Debug.WriteLine("Count: " + searchResultOfCurrentDataList.Count());
+
+
+				datas.Add(MangeData(searchResultOfCurrentDataList).ToArray());
 			}
 
 			/*for (int i = 0; i < SensorsDataList.Count; i++)
@@ -327,135 +355,234 @@ namespace FYP_WEB_APP.Controllers
 		}
 		public string GetChartTime(int ctime,int timeSpacing)
 		{
-			DateTime today = DateTime.Now;
-			int hour = today.Hour;
-			int Minute = today.Minute;
+			//DateTime today = DateTime.Now;
+		///	int hour = today.Hour;
+		//	int Minute = today.Minute;
 
-			int oMinute = today.Minute;
+		//	int oMinute = today.Minute;
 			//set time
-			int ix = 0;
-			List<string> time = new List<string>();
+		//	int ix = 0;
+			List<string> datetime = new List<string>();
+			var CountStart = today.AddHours(time * -1);
+			//var start = today.AddHours(-3);
+			var CountEnd = today;
+			DateTime ca = CountStart;
 
-			if ((hour - ctime) > 0)
-			{
-				for (int i = hour - ctime; i <= today.Hour; i++)
-				{
-					for (ix = Minute; ix < 60; ix += timeSpacing)
-					{
-						if (i == today.Hour && ix > today.Minute)
-						{
-
-						}
-						else
-						{
-							time.Add(i.ToString() + ":" + ix.ToString());
-						}
-						if (ix > 55)
-						{
-							Minute = ix + timeSpacing;
-							Minute %= 60;
-						}
-						else if (ix == 55)
-						{
-							Minute = 0;
-						}
-
-					}
-				}
+			while (ca <= CountEnd) {
+				datetime.Add(ca.ToString("HH:mm"));
+				ca=ca.AddMinutes(timeSpacing);
 			}
-			else {
-				for (int i =24+(hour - ctime); i <24; i++)
+			/*	if ((hour - ctime) > 0)
 				{
-					for (ix = Minute; ix < 60; ix += timeSpacing)
-					{						
-							time.Add(i.ToString() + ":" + ix.ToString());
-						if (ix > 55)
-						{
-							Minute = ix + timeSpacing;
-							Minute %= 60;
-						}
-						else if (ix == 55)
-						{
-							Minute = 0;
-						}
-
-					}
-				}
-				for (int i = 0; i <= today.Hour; i++)
-				{
-					for (ix = Minute; ix < 60; ix += timeSpacing)
+					for (int i = hour - ctime; i <= today.Hour; i++)
 					{
-						if (i == today.Hour && ix > today.Minute)
+						for (ix = Minute; ix < 60; ix += timeSpacing)
 						{
+							if (i == today.Hour && ix > today.Minute)
+							{
+
+							}
+							else
+							{
+								time.Add(i.ToString() + ":" + ix.ToString());
+							}
+							if (ix > 55)
+							{
+								Minute = ix + timeSpacing;
+								Minute %= 60;
+							}
+							else if (ix == 55)
+							{
+								Minute = 0;
+							}
 
 						}
-						else
-						{
-							time.Add(i.ToString() + ":" + ix.ToString());
-						}
-						if (ix > 55)
-						{
-							Minute = ix + timeSpacing;
-							Minute %= 60;
-						}
-						else if (ix == 55)
-						{
-							Minute = 0;
-						}
-
 					}
 				}
-			}
-			return time.ToJson();
+				else {
+					for (int i =24+(hour - ctime); i <24; i++)
+					{
+						for (ix = Minute; ix < 60; ix += timeSpacing)
+						{						
+								time.Add(i.ToString() + ":" + ix.ToString());
+							if (ix > 55)
+							{
+								Minute = ix + timeSpacing;
+								Minute %= 60;
+							}
+							else if (ix == 55)
+							{
+								Minute = 0;
+							}
+
+						}
+					}
+					for (int i = 0; i <= today.Hour; i++)
+					{
+						for (ix = Minute; ix < 60; ix += timeSpacing)
+						{
+							if (i == today.Hour && ix > today.Minute)
+							{
+
+							}
+							else
+							{
+								time.Add(i.ToString() + ":" + ix.ToString());
+							}
+							if (ix > 55)
+							{
+								Minute = ix + timeSpacing;
+								Minute %= 60;
+							}
+							else if (ix == 55)
+							{
+								Minute = 0;
+							}
+
+						}
+					}
+				}*/
+			return datetime.ToJson();
 
 		}
-		public List<double> MangeData(List<CurrentDataModel> CurrentList)
+		public List<string> MangeData(List<CurrentDataModel> CurrentList)
 		{
-			DateTime today = DateTime.Now;
-			List<double> data = new List<double>();
+			Debug.WriteLine("*****************************************************");
 
-			DateTime ca = today;
-			TimeSpan catime = ca - ca.AddHours(time * -1);
+			//Debug.WriteLine("currentDataModel :\n"+CurrentList.ToJson().ToString());
+			//foreach (var get in CurrentList) { Debug.WriteLine("currentDataModel ==> "+get.latest_checking_time); }
+			//Debug.WriteLine("currentDataModel :\n"+CurrentList.ToJson().ToString());
+
+			//DateTime today = DateTime.Now.AddHours(-6);
+			List<string> data = new List<string>();
+
+			var MaStart = today.AddHours(time * -1);
+			//var start = today.AddHours(-3);
+			var MaEnd = today;
+
+			//var start = today.AddHours(time * -1);
+			//var end = today;
+			DateTime ca = MaStart;
+			TimeSpan catime = today - today.AddHours(time * -1);
+
+			Debug.WriteLine("MangeData start  : " + MaStart);
+			Debug.WriteLine("MangeData end  : " + MaEnd); 
+			Debug.WriteLine("MangeData timeSpacing  : " + timeSpacing); 
 			int counttime = 0;
 			// time-hour to now time get data
 			//miss spacking for no record.
-				counttime = Convert.ToInt32(catime.TotalMinutes / timeSpacing);
+				counttime = Convert.ToInt32(catime.TotalMinutes / timeSpacing); int zx = 0;
+			//	
+			double value = 0;
 
+			/*for (int x = 0; x <= counttime; x++)
+			{
+				data.Add(0);
 
-				for (int x = 0; x <= counttime; x++)
-				{
-					data.Add(0);
+			}*/
+			string back ="";
+			while (ca<= MaEnd)
+			{
+				var checkList = new List<CurrentDataModel>();
 
+				zx++;				
+				foreach (CurrentDataModel getCurrent in CurrentList) { 
+					var both = getCurrent.latest_checking_time >= ca && getCurrent.latest_checking_time <= ca.AddMinutes(timeSpacing);
+					if (both) {
+						checkList.Add(getCurrent);
+				//	Debug.WriteLine(zx + " bool : " + both);
+				//	Debug.WriteLine(zx + " get : " + getCurrent.latest_checking_time);
+				//	Debug.WriteLine(zx + " start >= : " + ca);
+
+				//	Debug.WriteLine(zx + " end <= : " + ca.AddMinutes(timeSpacing));
+					}
 				}
-				if (CurrentList.Count() != 0)
+				if (checkList.Count() > 0)
 				{
-					foreach (CurrentDataModel getCurrent in CurrentList)
+					/*value = Convert.ToDouble(Convert.ToDouble(checkList.First().current).ToString("0.00"));*/
+					data.Add(checkList.First().current.ToString());
+					back = checkList.First().latest_checking_time.ToString();
+				}
+				else {
+					Debug.WriteLine("miss point =>> "+ checkList.First().sensorId + " + "+back);
+					string falses = null;
+				data.Add(falses);
+				}
+
+				ca = ca.AddMinutes(timeSpacing);
+
+
+			}
+			Debug.WriteLine("*****************************************************");
+
+			/*for (int x = 0; x <= counttime; x++)
+			{
+				data.Add(0);
+
+			}*/
+			/*if (CurrentList.Count() != 0)
 					{
-						var value = Convert.ToDouble(Convert.ToDouble(getCurrent.current).ToString("0.00"));
-
-						ca = DateTime.Now.AddHours(time * -1);
-
-						for (int x = 0; x <= counttime; x++)
+					int zx = 0;
+						foreach (CurrentDataModel getCurrent in CurrentList)
 						{
-							var bo = getCurrent.latest_checking_time >= ca && getCurrent.latest_checking_time <= ca.AddMinutes(timeSpacing);
+						zx++;
+						   var value = Convert.ToDouble(Convert.ToDouble(getCurrent.current).ToString("0.00"));
+
+							ca = DateTime.Now.AddHours(time * -1);
+						var bo = getCurrent.latest_checking_time >= ca && getCurrent.latest_checking_time <= ca.AddMinutes(timeSpacing);
+
+						Debug.WriteLine("\n");
+
+						Debug.WriteLine(zx+" get : " + getCurrent.latest_checking_time);
+						Debug.WriteLine(zx+" start >= : " + ca);
+						Debug.WriteLine(zx+" end <= : " + ca.AddMinutes(timeSpacing));
+						ca=ca.AddMinutes(timeSpacing);
+					/*	for (int x = 0; x <= counttime; x++)
+							{
+								var bo = getCurrent.latest_checking_time >= ca && getCurrent.latest_checking_time <= ca.AddMinutes(timeSpacing);
+							Debug.WriteLine("data : " + bo);
+
 
 							ca = ca.AddMinutes(timeSpacing);
-							if (getCurrent.latest_checking_time > ca && getCurrent.latest_checking_time < ca.AddMinutes(timeSpacing))
-							{
-								data[x] = value;
+								if (getCurrent.latest_checking_time > ca && getCurrent.latest_checking_time < ca.AddMinutes(timeSpacing))
+								{
+								Debug.WriteLine("add data : "+ value);
+									data.Add(value);
+								}
 							}
 						}
 					}
-				}
-				else
-				{
-				}
-			
+					else
+					{
+					}
+				*/
 
 			return data;
 		}
 
 
 		public string GetChartTime() { return null; }
+		public void getallcurrent()
+		{
+			var start = today.AddHours(-3);
+			var end = today;
+			Debug.WriteLine("ssssstart >= : " + start);
+			Debug.WriteLine("eeeeeend <= : " + end);
+			var filter1 = Builders<CurrentDataModel>.Filter.Gte(x => x.latest_checking_time, start);
+
+			var filter = Builders<CurrentDataModel>.Filter.Lte(x => x.latest_checking_time, end);
+
+			var cursor = new DBManger().DataBase.GetCollection<CurrentDataModel>("TMP_SENSOR").Find(filter1&filter).ToList();
+			foreach (var document in cursor)
+			{
+				Debug.WriteLine(document.latest_checking_time);
+			}
+
+		/*	foreach (var get in query)
+			{
+				x++;
+				Debug.WriteLine(x + " => " + get.latest_checking_time);
+			}*/
+		}
 	}
 }
