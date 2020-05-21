@@ -41,7 +41,7 @@ namespace FYP_APP.Controllers
 				HttpContext.Session.Set<MongoUserModel>("user", user);
 				HttpContext.Session.SetString("userName", user.lName);
 				//Debug.WriteLine("json " + HttpContext.Session.Get<MongoUserModel>("user"));
-				return RedirectToAction("Home", "Home");
+				return RedirectToAction("Dashboard", "Home");
 			}
 			else
 			{
@@ -150,7 +150,6 @@ namespace FYP_APP.Controllers
 			return PartialView("_DoughnutChart");
 		}
 
-
 		public string GetRandomColor()
 		{
 			var random = new Random();
@@ -168,7 +167,6 @@ namespace FYP_APP.Controllers
 		public IActionResult UserSetting()
 		{
 			MongoUserModel user = HttpContext.Session.Get<MongoUserModel>("user");
-
 			return View();
 		}
 
