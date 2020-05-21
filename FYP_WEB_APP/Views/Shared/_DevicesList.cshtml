@@ -81,77 +81,78 @@
 
 
 
-                    <div class="card  @ViewData["cardType"] @ViewData["text"] mb-3" style="max-width: 15rem; min-width: 15rem">
-                        <div class="card-header pr-1">
-                            <div class="d-flex bd-highlight align-items-center">
-                                <div class="mr-auto bd-highlight">
-                                    <a class=" @ViewData["text"] align-middle h-100" href="#">
-                                        @ViewData["devicesType"]
-                                    </a>
-                                </div>
-                                <div class=" bd-highlight">
-                                    <a class="bd-highlight mt-1 align-middle h-100" href="#">
-                                        @if (get.powerOnOff)
-                                        {
-                                            <img class="mt-1" style="width: 24px;" src="~/img/icon/power-button-on36.png" />
-                                        }
-                                        else
-                                        {
-                                            <img class="float-right mt-1" style="width: 24px;" src="~/img/icon/power-button-off36.png" />
-                                        }
-
-                                    </a>
-                                </div>
-                                <div class="dropdown  bd-highlight">
-
-                                    <button role="button" class="btn  float-right mt-1 ml-2" type="button" id="dropdownMenuButton0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <img class=" mt-1" style="width: 16px;@ViewData["backimg"]" src="~/img/icon/rightArrow.png" />
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton0">
-                                        <a href="#" class="dropdown-item text-success " onclick="EditDevices('@get.devicesId')">Edit </a>
-                                        <a href="#" class="dropdown-item text-danger " onclick="DropDevices('@get.devicesId')">Delete </a>
-                                    </div>
-
-                                </div>
+                <div class="card  @ViewData["cardType"] @ViewData["text"] mb-3" style="max-width: 15rem; min-width: 15rem">
+                    @Html.Partial("_loader","deviceLoader")
+                    <div class="card-header pr-1">
+                        <div class="d-flex bd-highlight align-items-center">
+                            <div class="mr-auto bd-highlight">
+                                <a class=" @ViewData["text"] align-middle h-100" href="#">
+                                    @ViewData["devicesType"]
+                                </a>
                             </div>
-                        </div>
-
-                        <div class="card-body">
-
-                            <p class="ard-text p-0 m-0">@get.roomId - <b>@get.devicesId</b> - @get.devices_Name</p>
-                            
-                            <h3 class="card-title">
-                                @{
-                                    string unit = "";
-                                    switch (get.devicesId.Substring(0, 2))
+                            <div class=" bd-highlight">
+                                <a class="bd-highlight mt-1 align-middle h-100" href="#">
+                                    @if (get.powerOnOff)
                                     {
-                                        case "AC":
-                                            <img class="mr-2" style="width: 32px;" src="~/img/icon/air-conditioner96.png" />
-                                            unit = "ºC";
-                                            break;
-                                        case "LT":
-                                            <img class="mr-2" style="width: 32px;" src="~/img/icon/light-on64.png" />
-
-                                            break;
-                                        case "HD": break;
-                                        case "EF": break;
+                                        <img class="mt-1" style="width: 24px;" src="~/img/icon/power-button-on36.png" />
+                                    }
+                                    else
+                                    {
+                                        <img class="float-right mt-1" style="width: 24px;" src="~/img/icon/power-button-off36.png" />
                                     }
 
+                                </a>
+                            </div>
+                            <div class="dropdown  bd-highlight">
 
-                                }
+                                <button role="button" class="btn  float-right mt-1 ml-2" type="button" id="dropdownMenuButton0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <img class=" mt-1" style="width: 16px;@ViewData["backimg"]" src="~/img/icon/rightArrow.png" />
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton0">
+                                    <a href="#" class="dropdown-item text-success " onclick="EditDevices('@get.devicesId')">Edit </a>
+                                    <a href="#" class="dropdown-item text-danger " onclick="DropDevices('@get.devicesId')">Delete </a>
+                                </div>
 
-                                @get.current@unit
-                            </h3>
-                            <p class="card-text" style="margin-bottom: 0px">
-
-                                <img style="width: 24px;" src="~/img/icon/lighting32.png" />
-                                <b>@get.power</b>
-                            </p>
-                            <p class="card-text" style="margin-top: 0px"><small> Avg @get.avgPower kw / day</small></p>
-                            <a class="badge badge-pill badge-danger" href="#" style="font-size: 14px">Turning off</a>
-                            <p class="card-text"><small>@get.lastest_checking_time</small></p>
+                            </div>
                         </div>
                     </div>
+
+                    <div class="card-body">
+
+                        <p class="ard-text p-0 m-0">@get.roomId - <b>@get.devicesId</b> - @get.devices_Name</p>
+
+                        <h3 class="card-title">
+                            @{
+                                string unit = "";
+                                switch (get.devicesId.Substring(0, 2))
+                                {
+                                    case "AC":
+                                        <img class="mr-2" style="width: 32px;" src="~/img/icon/air-conditioner96.png" />
+                                        unit = "ºC";
+                                        break;
+                                    case "LT":
+                                        <img class="mr-2" style="width: 32px;" src="~/img/icon/light-on64.png" />
+
+                                        break;
+                                    case "HD": break;
+                                    case "EF": break;
+                                }
+
+
+                            }
+
+                            @get.current@unit
+                        </h3>
+                        <p class="card-text" style="margin-bottom: 0px">
+
+                            <img style="width: 24px;" src="~/img/icon/lighting32.png" />
+                            <b>@get.power</b>
+                        </p>
+                        <p class="card-text" style="margin-top: 0px"><small> Avg @get.avgPower kw / day</small></p>
+                        <a class="badge badge-pill badge-danger" href="#" style="font-size: 14px">Turning off</a>
+                        <p class="card-text"><small>@get.lastest_checking_time</small></p>
+                    </div>
+                </div>
 
                     <!--    <div class="card bg-light mb-3 shadow-sm" style="max-width: 15rem;">
             <div class="card-header">

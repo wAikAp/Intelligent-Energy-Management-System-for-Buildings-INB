@@ -29,36 +29,17 @@
                 $(window).resize(function () {
                     resizeNav();
                 });
-                $('.navbar-nav .nav-link').removeClass('active');
-                $("#index").addClass('active');
-                $(window).on("load", function () {
-                    $("#perloaddiv").delay(200).fadeOut("fast");
+                $('.navbar-nav .nav-link').click(function () {
+                    $('.navbar-nav .nav-link').removeClass('active');
+                    $(this).addClass('active');
                 });
+                
+                //$("#index").addClass('active');
             });
             function resizeNav() {
                 $("#nav2").css({ "margin-top": $("#nav1").height() });
             }
         </script>
-        <style>
-
-
-
-
-
-            #perloaddiv {
-                position: fixed;
-                left: 0px;
-                top: 0px;
-                width: 100%;
-                height: 100%;
-                z-index: 9999;
-                background-image: url("http://smallenvelop.com/wp-content/uploads/2014/08/Preloader_11.gif");
-                background-repeat: no-repeat;
-                background-attachment: fixed;
-                background-position: center;
-                background-color: #fff;
-            }
-        </style>
     </head>
 <style>
 
@@ -66,9 +47,7 @@
         margin-right: 20px;
     }
 </style>
-<div id="perloaddiv" class="w-100 h-100 position-fixed">
 
-</div>
 <header>
 
     <nav class="statusBar navbar navbar-expand-sm py-0 py-md-0 navbar-dark fixed-top" id="nav1">

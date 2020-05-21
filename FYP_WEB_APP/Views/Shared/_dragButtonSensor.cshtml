@@ -35,8 +35,15 @@
             sensorImg = "humidity96.png";
             displayType = "Humidity Sensor";
             break;
+        case "AS":
+            sensorClassType = "ASensor";
+            sensorUnit = "PM";
+            sensorImg = "aqSensor96.png";
+            displayType = "Air Quality Sensor";
+        break;
+            
+        }
     }
-}
 <div class="draggable @sensorClassType" id="@Model.sensorId">
 
 
