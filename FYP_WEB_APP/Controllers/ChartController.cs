@@ -85,7 +85,6 @@ namespace FYP_WEB_APP.Controllers
 		}
 		public string SensorsCurrectLineChart(string type,string roomId)
 		{
-			Debug.WriteLine("\n\n Chart strat ");
 			FYP_APP.Controllers.SensorsController SensorsControl = new FYP_APP.Controllers.SensorsController();
 			if (string.IsNullOrEmpty(roomId))
 			{
@@ -164,9 +163,6 @@ namespace FYP_WEB_APP.Controllers
 			var start = today.AddHours(time*-1);
 			//var start = today.AddHours(-3);
 			var end = today;
-			Debug.WriteLine("start >= : " + start);
-			Debug.WriteLine("end <= : " + end);
-			var dbconn = new DBManger().DataBase.GetCollection<CurrentDataModel>(tableName); 
 			//end set time
 			List<string> labelss = new List<string>();
 
@@ -181,12 +177,12 @@ namespace FYP_WEB_APP.Controllers
 			{
 				labelss.Add(get.sensorId);
 				searchResultOfCurrentDataList = new DBManger().DataBase.GetCollection<CurrentDataModel>(tableName).Find(filterStartDateTime & filterEndDateTime).Sort(Builders<CurrentDataModel>.Sort.Descending(s=>s.latest_checking_time)).ToList();
-				foreach (var document in searchResultOfCurrentDataList)
+				/*foreach (var document in searchResultOfCurrentDataList)
 				{
 					//Debug.WriteLine(document.latest_checking_time);
 				}
 				//Debug.WriteLine("Count: " + searchResultOfCurrentDataList.Count());
-
+					*/
 
 				datas.Add(MangeData(searchResultOfCurrentDataList).ToArray());
 			}
@@ -215,6 +211,7 @@ namespace FYP_WEB_APP.Controllers
 				}
 			}
 			}
+			string tableName = "";
 			List<DevicesListModel> DevicesDataList = DevicesControl.GetAllDevices().Where(d => d.roomId.Contains(roomId)).ToList(); 
 			switch (type)
 			{
@@ -222,21 +219,29 @@ namespace FYP_WEB_APP.Controllers
 					DevicesDataList = DevicesDataList.Where(x => x.devicesId.Contains("AC")).ToList();
 					ViewBag.unit = " ";
 					ViewBag.unitName = "Air Conditioning";
+					tableName = "AC";
+
 					break;
 				case "LT":
 					DevicesDataList = DevicesDataList.Where(x => x.devicesId.Contains("LT")).ToList();
 					ViewBag.unit = " lm";
 					ViewBag.unitName = "Light";
+					tableName = "LIGHT";
+
 					break;
 				case "HD":
 					DevicesDataList = DevicesDataList.Where(x => x.devicesId.Contains("HD")).ToList();
 					ViewBag.unit = " %";
-					ViewBag.unitName = "Humidifier";
+					ViewBag.unitName = "Humidifier"; 
+					tableName = "HUM";
+
 					break;
 				case "EF":
 					DevicesDataList = DevicesDataList.Where(x => x.devicesId.Contains("EF")).ToList();
 					ViewBag.unit = " rpm";
-					ViewBag.unitName = "FAN";
+					ViewBag.unitName = "FAN"; 
+					tableName = "EXH_FAN";
+
 					break;
 				default:
 
@@ -253,6 +258,29 @@ namespace FYP_WEB_APP.Controllers
 
 			List<object> datas = new List<object>();
 
+			var start = today.AddHours(time * -1);
+			//var start = today.AddHours(-3);
+			var end = today;
+			//end set time
+			List<CurrentDataModel> searchResultOfCurrentDataList = new List<CurrentDataModel>();
+			var filterStartDateTime = Builders<CurrentDataModel>.Filter.Gte(x => x.latest_checking_time, start);
+
+			var filterEndDateTime = Builders<CurrentDataModel>.Filter.Lte(x => x.latest_checking_time, end);
+			if (DevicesDataList.Count()>0) { 
+			foreach (var get in DevicesDataList)
+			{
+				labelss.Add(get.devicesId);
+				searchResultOfCurrentDataList = new DBManger().DataBase.GetCollection<CurrentDataModel>(tableName).Find(filterStartDateTime & filterEndDateTime).Sort(Builders<CurrentDataModel>.Sort.Descending(s => s.latest_checking_time)).ToList();
+				/*foreach (var document in searchResultOfCurrentDataList)
+				{
+					//Debug.WriteLine(document.latest_checking_time);
+				}
+				//Debug.WriteLine("Count: " + searchResultOfCurrentDataList.Count());
+					*/
+
+				datas.Add(MangeData(searchResultOfCurrentDataList).ToArray());
+			}
+
 			foreach (DevicesListModel get in DevicesDataList)
 			{
 				labelss.Add(get.devicesId);
@@ -260,11 +288,11 @@ namespace FYP_WEB_APP.Controllers
 
 				datas.Add(MangeData(CurrentList).ToArray());
 			}
-
-		/*	for (int i = 0; i < DevicesDataList.Count; i++)
-			{
-				labelss.Add(DevicesDataList[i].devicesId);
-			}*/
+			}
+			/*	for (int i = 0; i < DevicesDataList.Count; i++)
+				{
+					labelss.Add(DevicesDataList[i].devicesId);
+				}*/
 
 			/*foreach (var get in datas)
 			{
@@ -447,14 +475,16 @@ namespace FYP_WEB_APP.Controllers
 		}
 		public List<string> MangeData(List<CurrentDataModel> CurrentList)
 		{
-			Debug.WriteLine("*****************************************************");
+			List<string> data = new List<string>();
+
+			if (CurrentList.Count > 0) { 
+			//Debug.WriteLine("*****************************************************");
 
 			//Debug.WriteLine("currentDataModel :\n"+CurrentList.ToJson().ToString());
 			//foreach (var get in CurrentList) { Debug.WriteLine("currentDataModel ==> "+get.latest_checking_time); }
 			//Debug.WriteLine("currentDataModel :\n"+CurrentList.ToJson().ToString());
 
 			//DateTime today = DateTime.Now.AddHours(-6);
-			List<string> data = new List<string>();
 
 			var MaStart = today.AddHours(time * -1);
 			//var start = today.AddHours(-3);
@@ -465,9 +495,9 @@ namespace FYP_WEB_APP.Controllers
 			DateTime ca = MaStart;
 			TimeSpan catime = today - today.AddHours(time * -1);
 
-			Debug.WriteLine("MangeData start  : " + MaStart);
-			Debug.WriteLine("MangeData end  : " + MaEnd); 
-			Debug.WriteLine("MangeData timeSpacing  : " + timeSpacing); 
+		//	Debug.WriteLine("MangeData start  : " + MaStart);
+		//	Debug.WriteLine("MangeData end  : " + MaEnd); 
+		//	Debug.WriteLine("MangeData timeSpacing  : " + timeSpacing); 
 			int counttime = 0;
 			// time-hour to now time get data
 			//miss spacking for no record.
@@ -485,78 +515,48 @@ namespace FYP_WEB_APP.Controllers
 			{
 				var checkList = new List<CurrentDataModel>();
 
-				zx++;				
-				foreach (CurrentDataModel getCurrent in CurrentList) { 
-					var both = getCurrent.latest_checking_time >= ca && getCurrent.latest_checking_time <= ca.AddMinutes(timeSpacing);
-					if (both) {
-						checkList.Add(getCurrent);
-				//	Debug.WriteLine(zx + " bool : " + both);
-				//	Debug.WriteLine(zx + " get : " + getCurrent.latest_checking_time);
-				//	Debug.WriteLine(zx + " start >= : " + ca);
-
-				//	Debug.WriteLine(zx + " end <= : " + ca.AddMinutes(timeSpacing));
-					}
-				}
-				if (checkList.Count() > 0)
-				{
-					/*value = Convert.ToDouble(Convert.ToDouble(checkList.First().current).ToString("0.00"));*/
-					data.Add(checkList.First().current.ToString());
-					back = checkList.First().latest_checking_time.ToString();
-				}
-				else {
-					Debug.WriteLine("miss point =>> "+ checkList.First().sensorId + " + "+back);
-					string falses = null;
-				data.Add(falses);
-				}
-
-				ca = ca.AddMinutes(timeSpacing);
-
-
-			}
-			Debug.WriteLine("*****************************************************");
-
-			/*for (int x = 0; x <= counttime; x++)
-			{
-				data.Add(0);
-
-			}*/
-			/*if (CurrentList.Count() != 0)
+				zx++;	
+				try {
+					if (CurrentList.Count() > 0)
 					{
-					int zx = 0;
-						foreach (CurrentDataModel getCurrent in CurrentList)
+						foreach (CurrentDataModel getCurrent in CurrentList)//in the time spaceing all record
 						{
-						zx++;
-						   var value = Convert.ToDouble(Convert.ToDouble(getCurrent.current).ToString("0.00"));
 
-							ca = DateTime.Now.AddHours(time * -1);
-						var bo = getCurrent.latest_checking_time >= ca && getCurrent.latest_checking_time <= ca.AddMinutes(timeSpacing);
-
-						Debug.WriteLine("\n");
-
-						Debug.WriteLine(zx+" get : " + getCurrent.latest_checking_time);
-						Debug.WriteLine(zx+" start >= : " + ca);
-						Debug.WriteLine(zx+" end <= : " + ca.AddMinutes(timeSpacing));
-						ca=ca.AddMinutes(timeSpacing);
-					/*	for (int x = 0; x <= counttime; x++)
+							var both = getCurrent.latest_checking_time >= ca && getCurrent.latest_checking_time <= ca.AddMinutes(timeSpacing);
+							if (both)
 							{
-								var bo = getCurrent.latest_checking_time >= ca && getCurrent.latest_checking_time <= ca.AddMinutes(timeSpacing);
-							Debug.WriteLine("data : " + bo);
-
-
-							ca = ca.AddMinutes(timeSpacing);
-								if (getCurrent.latest_checking_time > ca && getCurrent.latest_checking_time < ca.AddMinutes(timeSpacing))
-								{
-								Debug.WriteLine("add data : "+ value);
-									data.Add(value);
-								}
+								checkList.Add(getCurrent);
 							}
 						}
-					}
-					else
-					{
-					}
-				*/
+						if (checkList.Count() > 0)
+						{
+							/*value = Convert.ToDouble(Convert.ToDouble(checkList.First().current).ToString("0.00"));*/
+							data.Add(checkList.First().current.ToString());//get the time spacing first approaching the time point
+							back = checkList.First().latest_checking_time.ToString();
+						}
+						else
+						{
+								//missing point
+								//Debug.WriteLine("miss point =>> " + checkList.First().sensorId + " + " + back);
+								data.Add("");
+						}
 
+					}
+					else {
+						//Debug.WriteLine("line 520 : CurrentList NOT > 0" );
+
+					}
+
+				//	Debug.WriteLine("*****************************************************");
+            }catch (Exception e) {
+					Debug.WriteLine("line 552:"+e.Message);
+
+				}
+				ca = ca.AddMinutes(timeSpacing);
+
+			}
+				
+			}
 			return data;
 		}
 
@@ -566,17 +566,12 @@ namespace FYP_WEB_APP.Controllers
 		{
 			var start = today.AddHours(-3);
 			var end = today;
-			Debug.WriteLine("ssssstart >= : " + start);
-			Debug.WriteLine("eeeeeend <= : " + end);
 			var filter1 = Builders<CurrentDataModel>.Filter.Gte(x => x.latest_checking_time, start);
 
 			var filter = Builders<CurrentDataModel>.Filter.Lte(x => x.latest_checking_time, end);
 
 			var cursor = new DBManger().DataBase.GetCollection<CurrentDataModel>("TMP_SENSOR").Find(filter1&filter).ToList();
-			foreach (var document in cursor)
-			{
-				Debug.WriteLine(document.latest_checking_time);
-			}
+
 
 		/*	foreach (var get in query)
 			{

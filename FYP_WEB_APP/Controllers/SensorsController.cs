@@ -602,8 +602,10 @@ namespace FYP_APP.Controllers
 					break;
 			}
 			//db collection
-			List<CurrentDataModel> query = database.GetCollection<CurrentDataModel>(tableName).Find(new BsonDocument()).Limit(100).Sort(Builders<CurrentDataModel>.Sort.Descending("latest_checking_time")).ToList();
-			
+			List<CurrentDataModel> query=new List<CurrentDataModel>();
+			if (!string.IsNullOrEmpty(tableName)) {
+				query=database.GetCollection<CurrentDataModel>(tableName).Find(new BsonDocument()).Limit(100).Sort(Builders<CurrentDataModel>.Sort.Descending("latest_checking_time")).ToList();
+			}
 			//IQueryable<CurrentDataModel> query;
 			//query = from c in collection.AsQueryable<CurrentDataModel>() orderby c.latest_checking_time descending where c.sensorId.Contains(sensorId) select c;
 			return query;
