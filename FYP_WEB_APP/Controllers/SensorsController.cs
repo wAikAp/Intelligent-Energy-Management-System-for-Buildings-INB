@@ -577,7 +577,11 @@ namespace FYP_APP.Controllers
 				case "HS":
 					type = "humidity96.png";
 					break;
+				case "AS":
+					type = "aqSensor96.png";
+					break;
 				default:
+					type = "light-off96";
 					break;
 			}
 			return type;
