@@ -29,12 +29,6 @@
                 $(window).resize(function () {
                     resizeNav();
                 });
-                $('.navbar-nav .nav-link').click(function () {
-                    $('.navbar-nav .nav-link').removeClass('active');
-                    $(this).addClass('active');
-                });
-                
-                //$("#index").addClass('active');
             });
             function resizeNav() {
                 $("#nav2").css({ "margin-top": $("#nav1").height() });
@@ -135,24 +129,29 @@
                 <li class="nav-item " id="index">
                     <a class="nav-link" href="~/Home/Index">Home</a>
                 </li>
-                <li class="nav-item" id="devices">
+                <li class="nav-item" id="Devices">
                     <a class="nav-link " href="~/Devices/Devices">Devices</a>
                 </li>
-                <li class="nav-item" id="sensors">
+                <li class="nav-item" id="Sensors">
                     <a class="nav-link " href="~/Sensors/Sensors">Sensors</a>
                 </li>
-                <li class="nav-item" id="floors">
+                <li class="nav-item" id="Floors">
                     <a class="nav-link " href="~/Floors/Floors">Floors</a>
                 </li>
-                <li class="nav-item" id="rooms">
+                <li class="nav-item" id="Rooms">
                     <a class="nav-link  " href="~/Rooms/Rooms">Rooms</a>
                 </li>
-                <li class="nav-item" id="schedule">
+                <li class="nav-item" id="Schedule">
                     <a class="nav-link  " href="~/Schedules/Schedules">Schedules</a>
                 </li>
             </ul>
         </div>
+        <script>
+            $('.nav-item').removeClass('active');
+            
+            $('#@ViewData["Title"]' ).addClass('active');
 
+        </script>
     </nav>
 </header>
 

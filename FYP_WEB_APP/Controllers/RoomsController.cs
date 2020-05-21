@@ -25,7 +25,6 @@ namespace FYP_APP.Controllers
             foreach (MongoRoomModel roomModel in documents)
             {
                 roomsDatalist.Add(roomModel);
-                Debug.WriteLine(roomModel.roomId);
             }
             //return data
             ViewData["roomsDatalist"] = roomsDatalist;
