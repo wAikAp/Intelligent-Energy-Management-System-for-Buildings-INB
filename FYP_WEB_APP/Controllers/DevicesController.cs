@@ -15,10 +15,6 @@ namespace FYP_APP.Controllers
 {
 	public class DevicesController : Controller
 	{
-		/*
-			id
-		pi_cam=CAxxxx
-		*/
 		public List<DevicesListModel> MongoDevicesList = new List<DevicesListModel> { };
 		public IMongoCollection<DevicesListModel> Getconn()
 		{
@@ -137,65 +133,140 @@ namespace FYP_APP.Controllers
 		{
 
 			ViewData["Title"] = "Search Devices";
-			var list = GetAllDevices();
+			var deivcelist = GetAllDevices();
 			List<DevicesListModel> sum = new List<DevicesListModel> { };
-
-			List<DevicesListModel> get=new List<DevicesListModel> { };
+			List<DevicesListModel> newList=new List<DevicesListModel> { };
+			Debug.WriteLine("All device = "+ deivcelist.ToJson().ToString());
+			var roomid = "";
 			if (Request.Query.ContainsKey("roomId")) {
 				if (Request.Query["roomId"] != string.Empty || Request.Query["roomId"] != "")
-				{ 
-					Debug.WriteLine("\n Request ContainsKey roomId");
-				list = list.Where(ls => ls.roomId.Contains(Request.Query["roomId"])).ToList();
-				Debug.WriteLine(list.ToJson().ToString());
-				}
-			}
-			if (Request.Query.ContainsKey("device_Name"))
-			{
-				if (Request.Query["device_Name"] != string.Empty || Request.Query["device_Name"] != "")
 				{
-					Debug.WriteLine("\n Request ContainsKey device_Name");
-					list = list.Where(ls => ls.devices_Name.Contains(Request.Query["device_Name"])).ToList();
-					Debug.WriteLine("name :: "+list.ToJson().ToString());
+					roomid = Request.Query["roomId"];
+					//Debug.WriteLine("\n Request ContainsKey roomId");
+                    //deivcelist = deivcelist.Where(ls => ls.roomId.Contains(Request.Query["roomId"])).ToList();
+				    //Debug.WriteLine("search by roomid = "+ deivcelist.ToJson().ToString());
 				}
 			}
+			var dev_id = "";
+			if (Request.Query.ContainsKey("device_id"))
+			{
+				if (Request.Query["device_id"] != string.Empty || Request.Query["device_id"] != "")
+				{
+					dev_id = Request.Query["device_id"];
+					//deivcelist = deivcelist.Where(dm => dm.devicesId.Contains(Request.Query["device_id"])).ToList();
+					//Debug.WriteLine("search Device by id = "+ deivcelist.ToJson().ToString());
+				}
+			}
+
+			var de_typeAC = "";
+			var de_typeLT = "";
+			var de_typeHD = "";
+			var de_typeEF = "";
+			List<string> typeList = new List<string>();
 			if (Request.Query.Keys.Count() > 2) { 
-			foreach (String key in Request.Query.Keys)
-			{
-				Debug.WriteLine("in foreach ....");
+			    foreach (String key in Request.Query.Keys)
+			    {
+				    string skey = key;
+				    string keyValue = Request.Query[key];
+				    switch (skey) {					
+					    case "AC":
+							de_typeAC = "AC";
+							typeList.Add(de_typeAC);
+							break;
+						case "LT":
+							de_typeLT = "LT";
+							typeList.Add(de_typeLT);
+							break;
+						case "HD":
+						    de_typeHD = "HD";
+							typeList.Add(de_typeHD);
+							break;
+						case "EF":
+							de_typeEF = "EF";
+							typeList.Add(de_typeEF);
+							break;
+				    }
+                    
+			    }
+			}
 
-				string skey = key;
-				string keyValue = Request.Query[key];
+			//if (Request.Query.ContainsKey("All"))
+			//{
+   //             deivcelist = deivcelist.Where(ls =>
+   //             ls.roomId.Contains(roomid) ||
+   //             ls.devicesId.Contains(dev_id) ||
+   //             ls.devicesId.Contains(de_typeAC) ||
+   //             ls.devicesId.Contains(de_typeLT) ||
+   //             ls.devicesId.Contains(de_typeHD) ||
+   //             ls.devicesId.Contains(de_typeEF)
 
+   //             ).ToList();
+   //         }
 
-				switch (skey) {					
-					case "AC":
-					case "LT":
-					case "HD":
-					case "EF":
-						get = list.Where(ls => ls.devicesId.Contains(skey) ).ToList();
-						break;
+			if (!roomid.Equals(" ") || roomid.Length > 0)
+            {
+				deivcelist = deivcelist.Where(ls => ls.roomId.Contains(roomid)).ToList();
+            }
+
+            if (!dev_id.Equals(" ") || dev_id.Length > 0)
+            {
+				deivcelist = deivcelist.Where(ls => ls.devicesId.Contains(dev_id)).ToList();
+			}
+
+			foreach (string dtype in typeList) {
+				deivcelist = deivcelist.Where(ls => ls.devicesId.Contains(dtype)).ToList();
+			}
+
+			if (Request.Query.ContainsKey("All")) {
+				if (Request.Query["All"].Equals("on")) {
+					deivcelist = GetAllDevices();
+                    foreach (string dtype in typeList)
+                    {
+                        deivcelist = deivcelist.Where(ls => ls.devicesId.Contains(dtype)).ToList();
+                    }
+					if (!roomid.Equals(" ") || roomid.Length > 0)
+					{
+						deivcelist = deivcelist.Where(ls => ls.roomId.Contains(roomid)).ToList();
+					}
+
+					if (!dev_id.Equals(" ") || dev_id.Length > 0)
+					{
+						deivcelist = deivcelist.Where(ls => ls.devicesId.Contains(dev_id)).ToList();
+					}
 				}
-				if (key != "roomId" || key != "device_Name") {
-				sum.AddRange(get);
-				sum = sum.Distinct().ToList();//delet double data
-					Debug.WriteLine("befor Distinct \n" + sum.ToJson().ToString());
-
-				}
-
-			}
-			}
-			if (Request.Query.Keys.Count() >2 || Request.Query["roomId"] != "" )
-			{
-				list = list.Intersect(sum).ToList();
-				Debug.WriteLine("befor Intersect \n" + list.ToJson().ToString());
-			}
-			
+				//Debug.WriteLine("ALL = "+ Request.Query["All"]);
+            }
+				
 
 
-			ViewData["MongoDevicesListModel"] = list;
+            //if (de_typeAC.Length > 0)
+            //{
+            //	newList = newList.Where(ls => ls.devicesId.Contains(de_typeAC)).ToList();
+            //}
 
+            //if (de_typeHD.Length > 0)
+            //{
+            //	newList = newList.Where(ls => ls.devicesId.Contains(de_typeHD)).ToList();
+            //}
+
+            //if (de_typeHD.Length > 0)
+            //{
+            //	newList = newList.Where(ls => ls.devicesId.Contains(de_typeHD)).ToList();
+            //}
+
+            //if (de_typeLT.Length > 0)
+            //{
+            //	newList = newList.Where(ls => ls.devicesId.Contains(de_typeLT)).ToList();
+            //}
+
+
+            ViewData["MongoDevicesListModel"] = deivcelist;
+			Debug.WriteLine("Find list = " + deivcelist.ToJson().ToString());
 			ViewData["RoomListModel"] = GetRoomData();
 		}
+
+
+
 		[Route("Devices/AddDevices")]
 		public ActionResult AddDevices()//display add sensors form
 		{
