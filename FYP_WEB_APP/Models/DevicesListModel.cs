@@ -22,7 +22,7 @@ namespace FYP_WEB_APP.Models
         public bool powerOnOff { get; set; }
         public double avgPower { get; set; }
         public bool status { get; set; }
-        public double set_temp { get; set; }
+        public double set_value { get; set; }
         
 
     }

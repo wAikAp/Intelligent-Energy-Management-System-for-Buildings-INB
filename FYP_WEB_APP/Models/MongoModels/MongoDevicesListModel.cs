@@ -19,7 +19,7 @@ namespace FYP_WEB_APP.Models.MongoModels
         public double pos_y { get; set; }
         public string desc { get; set; }
         public bool status { get; set; }
-        public double set_temp { get; set; }
+        public double set_value { get; set; }
 
 
 

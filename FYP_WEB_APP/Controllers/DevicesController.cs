@@ -265,7 +265,7 @@ namespace FYP_APP.Controllers
 				insertList.total_run_time = DateTime.UtcNow;
 				insertList.power = 0;
 				insertList.status = false;
-				insertList.set_temp = 25.0;
+				insertList.set_value = 25.0;
 
 
 			try
@@ -378,7 +378,7 @@ namespace FYP_APP.Controllers
 					powerOnOff = false,
 					avgPower= avgPowers,
 					status=get.status,
-					set_temp=get.set_temp
+					set_value = get.set_value
 				};
 				//Debug.WriteLine(data.current);
 				list.Add(data);
