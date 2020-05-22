@@ -42,8 +42,8 @@ namespace FYP_WEB_APP.Controllers.API
                 var deviceFilter = Builders<MongoDevicesListModel>.Filter.Eq(x => x.devicesId, get.deviceId);
                 var PiFilter = Builders<pi_cam_model>.Filter.Eq(x => x.deviceId, get.deviceId);
 
-                var check =new DBManger().DataBase.GetCollection<MongoDevicesListModel>("SENSOR_LIST").Find(deviceFilter).ToList();
-
+                var check =new DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").Find(deviceFilter).ToList();
+                System.Diagnostics.Debug.WriteLine(get.deviceId +"has "+check.Count());
                 try
                 {
                     if (check.Count() != 0)
@@ -52,8 +52,12 @@ namespace FYP_WEB_APP.Controllers.API
                         var picheck = new DBManger().DataBase.GetCollection<pi_cam_model>("PI_CAM").Find(PiFilter).ToList();
                         if (picheck.Count() != 0)
                         {
-                            var up = Builders<pi_cam_model>.Update.Set("Base64", get.Base64);
+                            var up = Builders<pi_cam_model>.Update.Set(x=>x.base_cam_img, get.base_cam_img);
                             var UpdateResult = new DBManger().DataBase.GetCollection<pi_cam_model>("PI_CAM").FindOneAndUpdateAsync(u => u.deviceId == get.deviceId, up);
+                             up = Builders<pi_cam_model>.Update.Set(x=>x.latest_checking_time, DateTime.UtcNow.AddHours(8));
+                             UpdateResult = new DBManger().DataBase.GetCollection<pi_cam_model>("PI_CAM").FindOneAndUpdateAsync(u => u.deviceId == get.deviceId, up);
+
+
                             if (UpdateResult == null)
                             {
                                 //error 
@@ -63,13 +67,23 @@ namespace FYP_WEB_APP.Controllers.API
                         }
                         else
                         {
-                            new DBManger().DataBase.GetCollection<pi_cam_model>("PI_CAM").InsertOneAsync(get);
+
+                            var insert =new pi_cam_model()
+                            {
+                                roomId = check.FirstOrDefault().roomId,
+                                deviceId = get.deviceId,
+                                latest_checking_time = DateTime.UtcNow.AddHours(8),
+                                 base_cam_img = get.base_cam_img,
+                                current = 0
+                        };
+
+                            new DBManger().DataBase.GetCollection<pi_cam_model>("PI_CAM").InsertOneAsync(insert);
 
                         }
 
                     }
                     else {
-                        throw new System.ArgumentException("device error", "original");
+                        throw new System.ArgumentException("No device error", "original");
 
                     }
                 }
@@ -106,7 +120,9 @@ namespace FYP_WEB_APP.Controllers.API
         public ObjectId _id { get; set; }
         public string roomId{ get; set; }
         public string deviceId { get; set; }
-        public string Base64 { get; set; }
-
+        public string base_cam_img { get; set; }
+        public DateTime latest_checking_time { get; set; }
+        public double current { get; set; }
+        
     }
 }
