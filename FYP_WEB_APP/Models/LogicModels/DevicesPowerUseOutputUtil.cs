@@ -20,8 +20,6 @@ namespace FYP_WEB_APP.Models.LogicModels
 		List<MongoDevicesPowerUse> PowerUsesList;
 		int count;
 		List<String> roomList;
-		
-
 
 		public DevicesPowerUseOutputUtil()
 		{
