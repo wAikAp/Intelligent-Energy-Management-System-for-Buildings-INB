@@ -15,6 +15,10 @@ namespace FYP_APP.Controllers
 {
 	public class DevicesController : Controller
 	{
+		/*
+			id
+		pi_cam=CAxxxx
+		*/
 		public List<DevicesListModel> MongoDevicesList = new List<DevicesListModel> { };
 		public IMongoCollection<DevicesListModel> Getconn()
 		{
