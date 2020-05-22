@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FYP_WEB_APP.Models.LogicModels;
 using FYP_WEB_APP.Models.MongoModels;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -74,9 +75,13 @@ namespace FYP_WEB_APP.Controllers.API
                     up = Builders<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>.Update.Set(x => x.turn_on_time,nowTime);
                     new Models.DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").FindOneAndUpdateAsync(u => u.devicesId == get.deviceId, up);
                     isdone= true;
+
                 }
                 else {
-                }
+                        if (!new DevicesPowerUseInputUtil().insertDevicesPowerUse(get.deviceId)) {
+                            throw new System.ArgumentException("insertDevicesPowerUse error", get.deviceId + " insert Devices Power Use");
+                        }
+                    }
             }
             }
             catch (Exception e) {
