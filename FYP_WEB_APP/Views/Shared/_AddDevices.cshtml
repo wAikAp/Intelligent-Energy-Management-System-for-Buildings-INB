@@ -28,7 +28,7 @@
         @if (ViewBag.viewType.Equals("Add"))
         {
         <div class="row mx-3 justify-content-center align-items-center pb-2">
-            <label class="col h5" for="roomId">roomId :</label>
+            <label class="col h5" for="roomId">roomId </label>
             <div class="col">
                 @{
                     string chid = ViewBag.CheckRoomid;}
@@ -57,7 +57,7 @@
             </div>
         </div>
         <div class="row mx-3 justify-content-center align-items-center pb-2">
-            <label class="col h5" for="devices_Name">Devices Name:</label>
+            <label class="col h5" for="devices_Name">Devices Name</label>
             <div class="col">
                 <input type="text" class="form-control bg-white" id="devices_Name" name="devices_Name" value="@if (ViewBag.viewType.Equals("Edit"))
                             {@Devices.First().devices_Name }" placeholder="Name" required>
@@ -65,13 +65,13 @@
         </div>
 
         <div class="row mx-3 justify-content-center align-items-center pb-2">
-            <label class="col h5" for="devicesId">Devices type:</label>
+            <label class="col h5" for="devicesId">Devices type</label>
             <div class="col">
                 <select class="form-control bg-white" id="type" name="devicesId" placeholder="type" required>
-                    <option value="LT">light</option>
-                    <option value="AC">Air Conditioning</option>
+                    <option value="LT">Light</option>
+                    <option value="AC">Air Conditioner</option>
                     <option value="HD">Humidifier</option>
-                    <option value="EF">EXH_FAN</option>
+                    <option value="EF">Fan</option>
                 </select>
             </div>
         </div>
@@ -114,7 +114,7 @@
         {
         <div class="row mx-3 justify-content-center align-items-center pb-2">
 
-            <label class="col h5" for="devicesId">Devices Id:</label>
+            <label class="col h5" for="devicesId">Devices Id</label>
             <div class="col">
                 <input type="text" class="form-control bg-white" id="devicesId" name="devicesId" placeholder="id" value="@Devices.First().devicesId" required readonly>
             </div>
@@ -123,14 +123,14 @@
 
         </div>
         <div class="row mx-3 justify-content-center align-items-center pb-2">
-            <label class="col h5" for="roomId">roomId :</label>
+            <label class="col h5" for="roomId">roomId </label>
             <div class="col">
                 <input type="text" class="form-control bg-white" id="roomId" name="roomId" placeholder="id" value="@Devices.First().roomId" required readonly>
 
             </div>
         </div>
         <div class="row mx-3 justify-content-center align-items-center pb-2">
-            <label class="col h5" for="devices_Name">Devices Name:</label>
+            <label class="col h5" for="devices_Name">Devices Name</label>
             <div class="col">
                 <input type="text" class="form-control bg-white" id="devices_Name" name="devices_Name" value="@if (ViewBag.viewType.Equals("Edit"))
                             {@Devices.First().devices_Name }" placeholder="Name" required>
@@ -138,7 +138,7 @@
         </div>
 
         <div class="row mx-3 justify-content-center align-items-center pb-2">
-            <label class="col h5" for="devicesId">Devices type:</label>
+            <label class="col h5" for="devicesId">Devices type</label>
             <div class="col">
                 <select class="form-control bg-white" id="type" name="type" placeholder="type" required disabled>
                     <option value="@if (ViewBag.viewType.Equals("Edit"))
@@ -189,7 +189,7 @@
 
         </div>
         <div class="row mx-3 justify-content-center align-items-center pb-2">
-            <label class="col h5" for="power">Power:</label>
+            <label class="col h5" for="power">Power/hr</label>
             <div class="col">
                 <div class="input-group mb-3">
                     <input type="number" class="form-control bg-white" id="power" name="power" value="@Devices.First().power" required readonly>
@@ -206,10 +206,10 @@
             </div>
         </div>
         <div class="row mx-3 justify-content-center align-items-center pb-2">
-            <label class="col h5" for="total_run_time">total run time:</label>
+            <label class="col h5" for="total_run_time">Turn on time</label>
             <div class="col">
                 <div class="input-group mb-3">
-                    <input type="datetime" class="form-control bg-white" id="total_run_time" name="total_run_time" value="@Devices.First().total_run_time" required readonly>
+                    <input type="datetime" class="form-control bg-white" id="total_run_time" name="total_run_time" value="@Devices.First().turn_on_time" required readonly>
                     <div class="input-group-append">
                         <span class="input-group-text" id="resetRunTime"><img src="https://cdn.onlinewebfonts.com/svg/img_260976.png" width="25" height="25" /></span>
                     </div>
