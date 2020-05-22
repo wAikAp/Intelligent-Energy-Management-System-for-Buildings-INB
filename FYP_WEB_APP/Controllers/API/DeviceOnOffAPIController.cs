@@ -32,7 +32,7 @@ namespace FYP_WEB_APP.Controllers.API
                         {
                             deviceId = DList.First().devicesId,
                             status = DList.First().status,
-                            ACTemp = DList.First().set_temp,
+                            set_value = DList.First().set_value,
                             lastest_checking_time = DList.First().lastest_checking_time
                         };
                     }
@@ -65,7 +65,7 @@ namespace FYP_WEB_APP.Controllers.API
                 var UpdateResult = new Models.DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").FindOneAndUpdateAsync(u => u.devicesId == get.deviceId, up);
                 if (get.deviceId.Contains("AC"))
                 {
-                    up = Builders<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>.Update.Set(x => x.set_temp, get.ACTemp);
+                    up = Builders<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>.Update.Set(x => x.set_value, get.set_value);
                      new Models.DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").FindOneAndUpdateAsync(u => u.devicesId == get.deviceId, up);
                  }
                 DateTime nowTime = DateTime.UtcNow.AddHours(8);
@@ -89,7 +89,7 @@ namespace FYP_WEB_APP.Controllers.API
     {
         public string deviceId { get; set; }
         public bool status { get; set; }
-        public double ACTemp { get; set; }
+        public double set_value { get; set; }
         public DateTime lastest_checking_time { get; set; }
     }
 }
