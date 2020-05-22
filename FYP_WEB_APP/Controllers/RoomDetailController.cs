@@ -61,7 +61,7 @@ namespace FYP_WEB_APP.Controllers
             ViewData["sensorsList"] = sensorsList;
             ViewData["devicesList"] = devicesList;
             ViewData["powerUsageList"] = powerUsageList;
-            ViewData["sumPowerUsage"] = powerSum;
+            ViewData["sumPowerUsage"] = Math.Round(powerSum, 3, MidpointRounding.AwayFromZero);
             Debug.WriteLine("powerUsageList list = " + powerUsageList.ToJson().ToString());
             return View();
         }
