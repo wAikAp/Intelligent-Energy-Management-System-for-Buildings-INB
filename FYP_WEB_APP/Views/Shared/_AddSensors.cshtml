@@ -76,7 +76,7 @@
                 <label class="col h5" for="Sensortype">Sensor type</label>
                 <div class="col">
                     <select class="form-control bg-white" id="Sensortype" name="Sensortype" placeholder="type" required>
-                        <option value="TS">Tempperature</option>
+                        <option value="TS">Temperature</option>
                         <option value="HS">Humidity</option>
                         <option value="LS">Luminosity</option>
                     </select>
@@ -163,7 +163,7 @@
                             @switch (Sensors.First().sensorId.Substring(0, 2))
                             {
                                 case "TS":
-                                    str = "Tempperature";
+                                    str = "Temperature";
                                     break;
                                 case "LS":
                                     str = "Luminosity";

@@ -301,15 +301,30 @@ namespace FYP_APP.Controllers
 			if (HttpContext != null) {
 				//var filterName = Builders<SensorsListModel>.Filter.Eq(x => x.sensor_name, Request.Query["sensorName"].ToString());
 				string QueryString = Request.QueryString.ToString();
-
-				var filterRoomid = Builders<SensorsListModel>.Filter.Eq(x => x.roomId, Request.Query["roomId"].ToString());
-
-				roomSensorsDataList = new DBManger().DataBase.GetCollection<SensorsListModel>("SENSOR_LIST").Find(filterRoomid).ToList();
-				if (!string.IsNullOrEmpty(Request.Query["sensorName"].ToString()) && QueryString.Contains("sensorName"))  { 
-				string name = Request.Query["sensorName"].ToString();
-					Debug.WriteLine(Request.Query["sensorName"].ToString());
-				roomSensorsDataList = roomSensorsDataList.Where(x=>x.sensor_name.Contains(name)).ToList();
+				if (!string.IsNullOrEmpty(Request.Query["roomId"].ToString()) && QueryString.Contains("roomId"))
+				{
+					var filterRoomid = Builders<SensorsListModel>.Filter.Eq(x => x.roomId, Request.Query["roomId"].ToString());
+					roomSensorsDataList = new DBManger().DataBase.GetCollection<SensorsListModel>("SENSOR_LIST").Find(filterRoomid).ToList();
+					Debug.WriteLine("find sensor oList" + roomSensorsDataList.ToJson().ToString());
 				}
+				else {
+					Debug.WriteLine("find sensor oList null"  );
+
+				}
+
+				if (!string.IsNullOrEmpty(Request.Query["sensorName"].ToString()) && QueryString.Contains("roomId"))
+				{
+					roomSensorsDataList = new DBManger().DataBase.GetCollection<SensorsListModel>("SENSOR_LIST").Find(new BsonDocument()).ToList();
+					roomSensorsDataList = roomSensorsDataList.Where(s => s.sensor_name.Contains(Request.Query["sensorName"].ToString())).ToList();
+					Debug.WriteLine("find sensor Name" + roomSensorsDataList.ToJson().ToString());
+					SensorsDataList = roomSensorsDataList;
+				}
+
+
+			
+			
+
+				
 				Debug.WriteLine(Request.QueryString);
 				Debug.WriteLine(Request.QueryString.Equals("TS") +"\n"+ Request.QueryString.Equals("LS") + "\n" + Request.QueryString.Equals("HS") + "\n" + Request.QueryString.Equals("AS"));
 
@@ -341,10 +356,19 @@ namespace FYP_APP.Controllers
 					//get B & A list Intersect data
 					if (roomSensorsDataList.Count > 0 || FDataList.Count > 0)
 					{
-						SensorsDataList = roomSensorsDataList.Intersect(EndDataList).ToList();
-					}
+						if (Request.Query["TS"]!=false || Request.Query["LS"] != false || Request.Query["HS"] != false || Request.Query["AS"] != false )
+						{
+
+							SensorsDataList = roomSensorsDataList.Intersect(EndDataList).ToList();
+						}
+						else {
+
+							}
+						}					
 					else if (this.PageRoomId.Length > 0 || FDataList.Count > 0)
 					{//Sensors/{id}
+						Debug.WriteLine("if (this.PageRoomId.Length > 0 || FDataList.Count > 0)");
+
 						roomSensorsDataList = SensorsDataList;
 						SensorsDataList = roomSensorsDataList.Intersect(EndDataList).ToList();
 					}
@@ -435,8 +459,8 @@ namespace FYP_APP.Controllers
 				SensorsDataList = SortList(SensorsDataList);
 
 				
-			Debug.WriteLine("\n\n     last list ");
-			Debug.WriteLine(SensorsDataList.ToJson().ToString()+" \n\n");
+			//Debug.WriteLine("\n\n     last list ");
+			//Debug.WriteLine(SensorsDataList.ToJson().ToString()+" \n\n");
 
 			return SensorsDataList;
 		}

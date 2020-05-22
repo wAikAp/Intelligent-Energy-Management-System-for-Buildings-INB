@@ -30,6 +30,35 @@ namespace FYP_WEB_APP.Controllers
 		 * chart/chart?roomId=348&title=test chart&chartType=line&position=top&download=true&time=10&timeSpacing=30&type=TS
 		 * 
 		 */
+		[Route("Chart/Log")]
+		[HttpGet]
+		public IEnumerable<CurrentDataModel> Log()
+		{
+			DateTime dtoday = DateTime.UtcNow.AddHours(8);
+			DateTime start = dtoday.AddHours(-1);
+			DateTime end = dtoday;
+			var filterStartDateTime = Builders<CurrentDataModel>.Filter.Gte(x => x.latest_checking_time, start);
+
+			var filterEndDateTime = Builders<CurrentDataModel>.Filter.Lte(x => x.latest_checking_time, end);
+			List<CurrentDataModel> current = new List<CurrentDataModel>();
+
+			List<CurrentDataModel> TS = new List<CurrentDataModel>();
+			List<CurrentDataModel> HS = new List<CurrentDataModel>();
+			List<CurrentDataModel> LS = new List<CurrentDataModel>();
+			List<CurrentDataModel> AS = new List<CurrentDataModel>();
+			string[] tableArr= { "TMP_SENSOR", "LIGHT_SENSOR", "HUM_SENSOR" };
+			foreach (var get in tableArr) {
+
+			current.AddRange(new DBManger().DataBase.GetCollection<CurrentDataModel>(get).Find(new BsonDocument()).Limit(50).Sort(Builders<CurrentDataModel>.Sort.Descending(s => s.latest_checking_time)).ToList());//B list add in A list
+				Debug.WriteLine(current.ToJson().ToString());
+
+			}
+			current.OrderByDescending(x=>x.latest_checking_time);
+			foreach (var p in current) {
+				yield return p;
+
+			}
+		}
 		[Route("Chart/Chart")]
 		[HttpGet]
 		public ActionResult Chart() {
