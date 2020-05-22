@@ -87,36 +87,53 @@
         @Html.Partial("_loader", "roomDetailLoader")
         <!--page title-->
         <div class="container-fluid p-4 ">
-            <div class="d-flex">
-                <h1 class="display-4">
-                    <strong>Room @ViewData["roomID"]</strong>
-                    <span class="badge badge-pill badge-success" style="font-size: 14px">Online</span>
-                </h1>
-                <!-- power -->
-                <div class="bd-callout bd-callout-warning py-2 shadow-sm m-0 ml-sm-4 " style="max-width: 30rem; max-height: 100px;">
-                    <h4>
-                        <b style="font-size: .6em;"><img src="~/img/icon/lighting32.png" />Power Usage</b>
-                    </h4>
-                    @{
-                        var monthName = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(DateTime.Now.Month);
-                    }
-                    <h3><strong class="pl-sm-2">@ViewData["sumPowerUsage"]</strong><snap class="text-black" style="font-size: .6em;">KW - <b>@monthName/@DateTime.Now.Year</b></snap></h3>
+            <div class="col-12 d-flex">
+                <div class="col-lg-4">
+                    <h1 class="display-4"><strong>Room @ViewData["roomID"]</strong><span class="badge badge-pill badge-success" style="font-size: 14px">Online</span></h1>
+                    <!-- tag -->
+                    <div class="d-flex col-sm-12 ml-0 pl-0">
+                        <a href="#" class="badge badge-primary mx-0">@roomModel.type</a>
+                        <a href="#" class="badge badge-warning mx-1">@roomModel.floor / f</a>
+                    </div>
+
+                    <nav class="col-sm-12 my-2 " aria-label="breadcrumb" style="margin-left: -20px;">
+                        <ol class="breadcrumb ">
+                            <li class="breadcrumb-item"><a href="~/Rooms/Rooms">Rooms List</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Room detail</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-8 row row-cols-4">
+                    <!-- totalPowerUsage -->
+                    <div class="col bd-callout bd-callout-warning py-2 shadow-sm m-0 ml-sm-4 " style="max-width: 300px; min-width: 220px; max-height: 100px; overflow:hidden">
+                        <h4>
+                            <b style="font-size: .6em;"><img src="~/img/icon/lighting32.png" />Total Power Usage</b>
+                        </h4>
+                        <h3><strong class="pl-sm-2">@ViewData["totalPowerUsage"]</strong><snap class="text-black" style="font-size: .6em;">KW </snap></h3>
+                    </div>
+
+                    <!-- monthPowerUsage -->
+                    <div class="col bd-callout bd-callout-danger py-2 shadow-sm m-0 ml-sm-4 " style="max-width: 300px; min-width: 220px; max-height: 100px;">
+                        <h4>
+                            <b style="font-size: .6em;"><img src="~/img/icon/lighting32.png" />Month Power Usage</b>
+                        </h4>
+                        @{
+                            var monthName = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(DateTime.Now.Month);
+                        }
+                        <h3><strong class="pl-sm-2">@ViewData["monthPowerUsage"]</strong><snap class="text-black" style="font-size: .6em;">KW - <b>@monthName/@DateTime.Now.Year</b></snap></h3>
+                    </div>
+
+                    <!-- dailyPowerUsage -->
+                    <div class="col bd-callout bd-callout-info py-2 shadow-sm m-0 ml-sm-4 " style="max-width: 300px; min-width: 220px; max-height: 100px;">
+                        <h4>
+                            <b style="font-size: .6em;"><img src="~/img/icon/lighting32.png" />Daily Power Usage</b>
+                        </h4>
+                        <h3><strong class="pl-sm-2">@ViewData["dailyPowerUsage"]</strong><snap class="text-black" style="font-size: .6em;">KW </snap></h3>
+                    </div>
                 </div>
             </div>
-            <!-- tag -->
-            <div class="d-flex">
-                <a href="#" class="badge badge-primary mx-0">@roomModel.type</a>
-                <a href="#" class="badge badge-warning mx-1">@roomModel.floor / f</a>
 
 
-            </div>
-
-            <nav class="col-sm-4 my-2 " aria-label="breadcrumb" style="margin-left: -20px;">
-                <ol class="breadcrumb ">
-                    <li class="breadcrumb-item"><a href="~/Rooms/Rooms">Rooms List</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Room detail</li>
-                </ol>
-            </nav>
 
             <div id="sensorView"></div>
             <div id="devicesView"></div>
