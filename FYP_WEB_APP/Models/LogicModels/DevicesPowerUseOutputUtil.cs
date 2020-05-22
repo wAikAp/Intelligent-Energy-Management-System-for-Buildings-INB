@@ -420,7 +420,6 @@ namespace FYP_WEB_APP.Models.LogicModels
 			return json;
 		}
 
-
 		public string GetRandomColor()
 		{
 			var random = new Random();

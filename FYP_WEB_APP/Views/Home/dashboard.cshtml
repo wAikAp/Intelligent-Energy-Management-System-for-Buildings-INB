@@ -120,7 +120,7 @@
                             <div class="">
                                 <div class=" d-flex flex-row ">
                                     <div class=" mb-4  w-50 ">
-                                        Air Conditioning
+                                        Air Conditioner
                                     </div>
                                     <div class=" mb-4  w-25 text-right">
                                         @ViewBag.ACpower
@@ -186,30 +186,7 @@
                     var config = {
                         type: 'line',
                         data: @Html.Raw(ViewBag.trendJsonString) 
-                        /*data: {
-                            //only current 6 hours
-                            labels: [(time - 7) + ':00', (time - 6) + ':00', (time - 5) + ':00', (time - 4) + ':00', (time - 3) + ':00', (time - 2) + ':00', (time - 1) + ':00', time + ':00'],
-                            datasets: [
-                                {
-                                    label: 'Room 348',
-                                    backgroundColor: 'red',
-                                    borderColor: 'red',
-                                    data: [
-                                        // data value
-                                        12.30, 11.30, 10.20, 12.30, 11.00, 10.40, 10.20, 10.40
-                                    ],
-                                    fill: false,
-                                },
-                                {
-                                    label: 'Room 350',
-                                    fill: false,
-                                    backgroundColor: window.chartColors.blue,
-                                    borderColor: window.chartColors.blue,
-                                    data: [
-                                        // data value
-                                    ],
-                                }]
-                        }*/,
+                       ,
                         options: {
                                 responsive: true,
                                 title: {

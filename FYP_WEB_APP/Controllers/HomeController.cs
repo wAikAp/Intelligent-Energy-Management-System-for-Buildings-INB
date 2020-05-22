@@ -14,6 +14,7 @@ using System.IO;
 using MongoDB.Bson;
 using FYP_WEB_APP.Models.LogicModels;
 using Newtonsoft.Json.Linq;
+using Hangfire;
 
 namespace FYP_APP.Controllers
 {
@@ -26,6 +27,7 @@ namespace FYP_APP.Controllers
 			{
 				return RedirectToAction("Home", "Home");
 			}
+
 			return View();
 		}
 		
@@ -41,7 +43,7 @@ namespace FYP_APP.Controllers
 				HttpContext.Session.Set<MongoUserModel>("user", user);
 				HttpContext.Session.SetString("userName", user.lName);
 				//Debug.WriteLine("json " + HttpContext.Session.Get<MongoUserModel>("user"));
-				return RedirectToAction("Home", "Home");
+				return RedirectToAction("Dashboard", "Home");
 			}
 			else
 			{
@@ -150,7 +152,6 @@ namespace FYP_APP.Controllers
 			return PartialView("_DoughnutChart");
 		}
 
-
 		public string GetRandomColor()
 		{
 			var random = new Random();
@@ -169,6 +170,10 @@ namespace FYP_APP.Controllers
 		{
 			MongoUserModel user = HttpContext.Session.Get<MongoUserModel>("user");
 
+			DevicesPowerUseInputUtil inputUtil = new DevicesPowerUseInputUtil();
+			inputUtil.insertDevicesPowerUse("000000");
+
+
 			return View();
 		}
 
@@ -181,9 +186,6 @@ namespace FYP_APP.Controllers
 				var output = PrintOutInExcel.Run();
 				Debug.WriteLine("Sample 8 created: {0}", output);
 				Debug.WriteLine("");
-
-				//DevicesPowerUseOutputUtil du = new DevicesPowerUseOutputUtil();
-				//du.getACPowerUse();
 
 			}
 			catch (Exception ex)
