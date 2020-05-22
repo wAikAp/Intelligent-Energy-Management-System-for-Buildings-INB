@@ -23,5 +23,6 @@ namespace FYP_WEB_APP.Models
         public string exhasFanListId { get; set; }
         public string sensorListId { get; set; }
         public string floor { get; set; }
+        public string floorPlanImg { get; set; }
     }
 }

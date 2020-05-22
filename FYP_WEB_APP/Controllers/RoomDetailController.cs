@@ -22,6 +22,7 @@ namespace FYP_WEB_APP.Controllers
         private static DBManger dBManger = new DBManger();
         private readonly IMongoCollection<BsonDocument> SENSORCOLLECTION = dBManger.DataBase.GetCollection<BsonDocument>("SENSOR_LIST");
         private readonly IMongoCollection<BsonDocument> DEVICECOLLECTION = dBManger.DataBase.GetCollection<BsonDocument>("DEVICES_LIST");
+        private readonly IMongoCollection<BsonDocument> ROOMCOLLECTION = dBManger.DataBase.GetCollection<BsonDocument>("ROOM");
 
         //[Route("RoomDetail/RoomDetail/{roomID}")]
         public IActionResult RoomDetail(String roomID)
@@ -89,7 +90,7 @@ namespace FYP_WEB_APP.Controllers
                         .Set(pos_x, double.Parse(sensorJSONObjectList[i]["pos_x"]));
                     var result = SENSORCOLLECTION.FindOneAndUpdate(filter, updteFields);
 
-                    Debug.WriteLine("update result: " + result);
+                    //Debug.WriteLine("update result: " + result);
                 }
 
                 //update device position to device list table
@@ -102,19 +103,43 @@ namespace FYP_WEB_APP.Controllers
                         .Set(pos_x, double.Parse(deviceJSONObjectList[i]["pos_x"]));
                     var result = DEVICECOLLECTION.FindOneAndUpdate(filter, updteFields);
 
-                    Debug.WriteLine("device update result: " + result);
+                    //Debug.WriteLine("device update result: " + result);
                 }
 
             }
             catch (Exception ex) {
                 return Json("Error:"+ex);
             }
-			
-
-            
-
+		
 			return Json("Success");
 		}
+        public IActionResult uploadFloorPlan(IFormCollection postFrom) {
+            ViewData["roomID"] = postFrom["roomID"];
+            string floorPlanBase64 = postFrom["floorPlanBase64"];
+            try
+            {
+                //base 64 img save to db
+                //ROOMCOLLECTION
+                var filter = Builders<BsonDocument>.Filter.Eq("roomId", postFrom["roomId"]);
+                UpdateDefinition<BsonDocument> updteFields = Builders<BsonDocument>.Update.Set("floorPlanImg", floorPlanBase64);
+                var result = ROOMCOLLECTION.FindOneAndUpdate(filter, updteFields);
+                if (result != null)
+                {
+                    ViewData["uploadStatus"] = true;
+                }
+                else {
+                    ViewData["uploadStatus"] = false;
+                }
+            }
+            catch (Exception ex) {
+                ViewData["uploadStatus"] = false;
+                Debug.WriteLine("upload floor plan exception:"+ ex);
+            }
 
-	}
+            
+            return Redirect("RoomDetail?roomID=" + ViewData["roomID"] + "#floorPlan");
+        }
+
+
+    }
 }
