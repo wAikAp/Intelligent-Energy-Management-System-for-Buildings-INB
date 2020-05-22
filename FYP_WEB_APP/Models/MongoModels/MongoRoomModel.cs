@@ -21,6 +21,6 @@ namespace FYP_APP.Models.MongoModels
         public String exhasFanListId { get; set; }
         public String sensorListId { get; set; }
         public String floor { get; set; }
-        
+        public String floorPlanImg { get; set; }
     }
 }
