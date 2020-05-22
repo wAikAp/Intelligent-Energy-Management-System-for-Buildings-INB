@@ -2,39 +2,78 @@
 @model FYP_APP.Models.MongoModels.MongoUserModel
 
 @{
+    //var user = Context.Session.Get<MongoUserModel>("user");
     var userName = Context.Session.GetString("userName");
+    var isLogin = false;
 }
 
-    <head>
-        <link rel="shortcut icon" href="~/img/icon/iconT36.ico" type="image/x-icon">
-        <link rel="icon" href="~/img/icon/iconT36.ico" type="image/x-icon">
-        <link rel="stylesheet" href="~/css/style.css">
-        <link rel="stylesheet" href="~/css/callout.css">
-        <link rel="stylesheet" href="~/css/bootstrap.min.css">
+@if (userName == null)
+{
+    isLogin = false;
+}
+else
+{
+    isLogin = true;
+}
 
-        <!--<script src="~/js/bootstrap/jquery.min.js"></script>-->
-        <script src="~/js/jquery/jquery-3.5.1.min.js"></script>
-        <script src="~/js/bootstrap/popper.min.js"></script>
-        <script src="~/js/bootstrap/bootstrap.min.js"></script>
-        <script src="~/js/Chart/Chart.min.js"></script>
-        <script src="~/js/heatmap/heatmap.js"></script>
-        <script src="~/js/heatmap/heatmap.min.js"></script>
 
-        
-        <script src="~/js/jquery/jquery-ui-1.12.1/jquery-ui.js"></script>
 
-        <script>
-            $(document).ready(function () {
+
+<head>
+    <link rel="shortcut icon" href="~/img/icon/iconT36.ico" type="image/x-icon">
+    <link rel="icon" href="~/img/icon/iconT36.ico" type="image/x-icon">
+    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="~/css/callout.css">
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+
+    <!--<script src="~/js/bootstrap/jquery.min.js"></script>-->
+    <script src="~/js/jquery/jquery-3.5.1.min.js"></script>
+    <script src="~/js/bootstrap/popper.min.js"></script>
+    <script src="~/js/bootstrap/bootstrap.min.js"></script>
+    <script src="~/js/Chart/Chart.min.js"></script>
+    <script src="~/js/heatmap/heatmap.js"></script>
+    <script src="~/js/heatmap/heatmap.min.js"></script>
+
+
+    <script src="~/js/jquery/jquery-ui-1.12.1/jquery-ui.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            resizeNav();
+            $(window).resize(function () {
                 resizeNav();
-                $(window).resize(function () {
-                    resizeNav();
-                });
             });
-            function resizeNav() {
-                $("#nav2").css({ "margin-top": $("#nav1").height() });
-            }
-        </script>
-    </head>
+            $('.navbar-nav .nav-link').removeClass('active');
+            $("#index").addClass('active');
+            $(window).on("load", function () {
+                $("#perloaddiv").delay(200).fadeOut("fast");
+            });
+        });
+        function resizeNav() {
+            $("#nav2").css({ "margin-top": $("#nav1").height() });
+        }
+    </script>
+    <style>
+
+
+
+
+
+        #perloaddiv {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background-image: url("http://smallenvelop.com/wp-content/uploads/2014/08/Preloader_11.gif");
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            background-color: #fff;
+        }
+    </style>
+</head>
 <style>
 
     .nav-link {
@@ -143,6 +182,9 @@
                 </li>
                 <li class="nav-item" id="Schedule">
                     <a class="nav-link  " href="~/Schedules/Schedules">Schedules</a>
+                </li>
+                <li class="nav-item" id="administration">
+                    <a class="nav-link  " href="~/Schedules/Schedules">Administration</a>
                 </li>
             </ul>
         </div>

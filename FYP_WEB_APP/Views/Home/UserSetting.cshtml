@@ -9,52 +9,118 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>UserSetting</title>
+    <script src="~/js/jquery/jquery-3.5.1.min.js"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            $("#EditUser").show();
+
+            $("#userSettingButton").click(function () {
+                $("#PersonalUsagePlan").hide();
+                $("#EditUser").show();
+            });
+
+            $("#userPrefereceButton").click(function () {
+                $("#EditUser").hide();
+                $("#PersonalUsagePlan").show();
+                
+            });
+
+
+        });
+    </script>
+
 </head>
 <body>
-    <div class ="container-sm pt-5">
-        <div class="col-">
-            <h4 class="mb-3">User setting</h4>
-            <form class="needs-validation" novalidate="">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="firstName">First name</label>
-                        <input type="text" class="form-control" id="firstName" placeholder="" value="" required="">
-                        <div class="invalid-feedback">
-                            Valid first name is required.
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="lastName">Last name</label>
-                        <input type="text" class="form-control" id="lastName" placeholder="" value="" required="">
-                        <div class="invalid-feedback">
-                            Valid last name is required.
-                        </div>
+    <div class="row mt-4">
+        <div class="col-sm-3">
+            <div class="col-12">
+                <div class="dropdown w-100">
+                    <button type="button" class="btn btn-secondary w-25 mx-auto dropdown-toggle w-100" data-toggle="dropdown" aria-expanded="false">User Setting</button>
+                    <div class="dropdown-menu w-100" style="">
+                        <a class="dropdown-item " id="userSettingButton">User setting</a>
+                        <a class="dropdown-item " id="userPrefereceButton">User preferece use plan</a>
                     </div>
                 </div>
-
-                <div class="mb-3">
-                    <label for="username">Username</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="username" placeholder="Username" required="">
-                        <div class="invalid-feedback" style="width: 100%;">
-                            Your username is required.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="email">Email <span class="text-muted">(Optional)</span></label>
-                    <input type="email" class="form-control" id="email" placeholder="email">
-                    <div class="invalid-feedback">
-                        Please enter a valid email address for shipping updates.
-                    </div>
-                </div>
-
-
-                <hr class="mb-4">
-                <input type="submit" class="btn  btn-secondary w-25 mx-auto" value="Save">
-            </form>
+            </div>
         </div>
+
+        <div class="col-sm-8">
+            <div class="col-12" id="EditUser">
+                <h4 class="mb-3">User setting</h4>
+                <form class="needs-validation" novalidate="">
+
+                    <div class="mb-3">
+                        <label for="username">Username</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="username" placeholder="Username" required="">
+                            <div class="invalid-feedback" style="width: 100%;">
+                                Your username is required.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="firstName">First name</label>
+                            <input type="text" class="form-control" id="firstName" placeholder="" value="" required="">
+                            <div class="invalid-feedback">
+                                Valid first name is required.
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="lastName">Last name</label>
+                            <input type="text" class="form-control" id="lastName" placeholder="" value="" required="">
+                            <div class="invalid-feedback">
+                                Valid last name is required.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password">New Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Password">
+
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password">Confirm Password</label>
+                        <input type="password" class="form-control" id="cPassword" placeholder="Confirm password">
+                    </div>
+
+
+                    <hr class="mb-4">
+                    <input type="submit" class="btn  btn-secondary w-25 mx-auto" value="Save">
+                </form>
+
+            </div>
+
+            <div class="col-12" id="PersonalUsagePlan">
+                <h4 class="mb-3">Personal Usage Plan</h4>
+
+                <div class="overflow-auto">
+                    <table class="table table-striped table-hover" id="RoomsTable">
+                        <thead>
+                            <tr>
+                                <th class="th-sm" scope="col">Plan name</th>
+                                <th scope="col">Preferred Temperature</th>
+                                <th scope="col">Preferred Humidity</th>
+                                <th scope="col">Preferred Lighting</th>
+ 
+      
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                           
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
     </div>
     
 
