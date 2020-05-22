@@ -33,7 +33,7 @@ namespace FYP_WEB_APP.Controllers.API
        */
         // POST api/<PIcamController>
         [HttpPost]
-        public void Post(object imgJson)
+        public string Post(object imgJson)
         {
             var json = System.Text.Json.JsonSerializer.Serialize(imgJson);
 
@@ -44,9 +44,11 @@ namespace FYP_WEB_APP.Controllers.API
 
                 var check =new DBManger().DataBase.GetCollection<MongoDevicesListModel>("SENSOR_LIST").Find(deviceFilter).ToList();
 
-                if (check.Count() != 0) { 
                 try
                 {
+                    if (check.Count() != 0)
+                    {
+
                         var picheck = new DBManger().DataBase.GetCollection<pi_cam_model>("PI_CAM").Find(PiFilter).ToList();
                         if (picheck.Count() != 0)
                         {
@@ -59,19 +61,27 @@ namespace FYP_WEB_APP.Controllers.API
                                 //Debug.WriteLine("error: line 306 =>> "+ property.Name);
                             }
                         }
-                        else {
+                        else
+                        {
                             new DBManger().DataBase.GetCollection<pi_cam_model>("PI_CAM").InsertOneAsync(get);
 
                         }
 
                     }
+                    else {
+                        throw new System.ArgumentException("device error", "original");
+
+                    }
+                }
                 catch (Exception e)
                 {
 
-                    //return e.Message.ToString();
+                    return e.Message.ToString();
                 };
-                }
+              
             }
+            return "";
+
         }
         /*
         device id
