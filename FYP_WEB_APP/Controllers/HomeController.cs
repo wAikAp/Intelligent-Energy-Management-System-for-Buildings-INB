@@ -14,6 +14,7 @@ using System.IO;
 using MongoDB.Bson;
 using FYP_WEB_APP.Models.LogicModels;
 using Newtonsoft.Json.Linq;
+using Hangfire;
 
 namespace FYP_APP.Controllers
 {
@@ -26,6 +27,7 @@ namespace FYP_APP.Controllers
 			{
 				return RedirectToAction("Home", "Home");
 			}
+
 			return View();
 		}
 		
@@ -167,6 +169,11 @@ namespace FYP_APP.Controllers
 		public IActionResult UserSetting()
 		{
 			MongoUserModel user = HttpContext.Session.Get<MongoUserModel>("user");
+
+			DevicesPowerUseInputUtil inputUtil = new DevicesPowerUseInputUtil();
+			inputUtil.insertDevicesPowerUse("000000");
+
+
 			return View();
 		}
 
@@ -179,9 +186,6 @@ namespace FYP_APP.Controllers
 				var output = PrintOutInExcel.Run();
 				Debug.WriteLine("Sample 8 created: {0}", output);
 				Debug.WriteLine("");
-
-				//DevicesPowerUseOutputUtil du = new DevicesPowerUseOutputUtil();
-				//du.getACPowerUse();
 
 			}
 			catch (Exception ex)

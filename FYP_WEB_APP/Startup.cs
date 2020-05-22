@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hangfire;
+using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -25,6 +27,8 @@ namespace FYP_APP
 		{
 			services.AddControllersWithViews();
 			services.AddSession();
+			services.AddHangfire(configuration => configuration.UseMemoryStorage());
+
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,13 +52,8 @@ namespace FYP_APP
 
 			app.UseSession();
 
-			/*app.Run(async (context) =>
-			{
-				//context.Session.SetString("Sample", "This is Session.");
-				//string message = context.Session.GetString("Sample");
-				//await context.Response.WriteAsync($"{message}");
-			});*/
-
+			app.UseHangfireServer();
+			app.UseHangfireDashboard();
 
 			app.UseEndpoints(endpoints =>
 			{
