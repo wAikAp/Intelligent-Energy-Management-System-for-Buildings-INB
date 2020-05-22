@@ -89,7 +89,7 @@ namespace FYP_WEB_APP.Controllers
                         .Set(pos_x, double.Parse(sensorJSONObjectList[i]["pos_x"]));
                     var result = SENSORCOLLECTION.FindOneAndUpdate(filter, updteFields);
 
-                    Debug.WriteLine("update result: " + result);
+                    //Debug.WriteLine("update result: " + result);
                 }
 
                 //update device position to device list table
@@ -102,19 +102,27 @@ namespace FYP_WEB_APP.Controllers
                         .Set(pos_x, double.Parse(deviceJSONObjectList[i]["pos_x"]));
                     var result = DEVICECOLLECTION.FindOneAndUpdate(filter, updteFields);
 
-                    Debug.WriteLine("device update result: " + result);
+                    //Debug.WriteLine("device update result: " + result);
                 }
 
             }
             catch (Exception ex) {
                 return Json("Error:"+ex);
             }
-			
-
-            
-
+		
 			return Json("Success");
 		}
+        public IActionResult uploadFloorPlan(IFormCollection postFrom) {
 
-	}
+            ViewData["roomID"] = postFrom["roomID"];
+            string floorPlanBase64 = postFrom["floorPlanBase64"];
+            Debug.WriteLine("floorPlanBase64 = "+ floorPlanBase64);
+
+
+
+            return Redirect("RoomDetail?roomID=" + ViewData["roomID"] + "#floorPlan");
+        }
+
+
+    }
 }

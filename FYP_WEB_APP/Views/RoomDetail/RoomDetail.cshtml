@@ -185,10 +185,31 @@
                         </h3>
                     </div>
                     <div class="col-12 d-flex ">
-                        <form>
-                            <input style="display:none" type="file" id="imgUpload1" />
+                        
+                        <form id="floorPlanSubmit" method="post" action="~/RoomDetail/uploadFloorPlan">
+                            <!--upload file-->
+                            <input type="hidden" name="roomID" value="@ViewData["roomID"]" />
+                            <input type="hidden" id="floorPlanBase64" name="floorPlanBase64" value="" />
+                            <input style="display:none" type="file" id="imgUpload1" onchange="encodeImageFileAsURL(this)" />
                             <button title="Upload floor plan" class="btn btn-outline-secondary px-0 mr-1 ml-2 " type="button" style="width: 40px; height: 40px" onclick='$("#imgUpload1").click()'><img src="~/img/icon/floor-plans512.png" style="height: auto;width:24px;"></button>
+
                         </form>
+                        <script>var imagebase64 = "";
+
+                            function encodeImageFileAsURL(element) {
+                                var file = element.files[0];
+                                var reader = new FileReader();
+                                reader.onloadend = function () {
+                                    imagebase64 = reader.result;
+                                    $("#floorPlanBase64").val(reader.result);
+                                    console.log('imagebase64', $("#floorPlanBase64").val());
+                                    $("#floorPlanSubmit").submit();
+                                }
+                                reader.readAsDataURL(file);
+                                
+                                
+
+                            }</script>
                         <button title="Add Sensor" type="button" class="btn btn-outline-secondary px-2" style="width: 40px; height: 40px;" onclick='AddtSensors("@ViewData["roomID"]")'>
                             <img src="~/img/icon/temp.png" width="24px">
                         </button>
