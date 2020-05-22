@@ -35,8 +35,6 @@ namespace FYP_WEB_APP.Models.LogicModels
 				var device = BsonSerializer.Deserialize<MongoDevicesListModel>(firstDocument);
 				var DEVICES_POWER_USEcollection = dbManager.DataBase.GetCollection<BsonDocument>("DEVICES_POWER_USE");
 
-
-
 				DateTime turnOnTime = device.turn_on_time;
 				DateTime currentTime = DateTime.Now;
 
@@ -66,7 +64,6 @@ namespace FYP_WEB_APP.Models.LogicModels
 			}
 
 		}
-
 
 	}
 }

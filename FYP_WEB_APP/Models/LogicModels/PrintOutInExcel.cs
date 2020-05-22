@@ -82,19 +82,19 @@ namespace FYP_APP.Models.LogicModels
                     int y = 0;
                     foreach(DailyUsageModel usageRecord in dailyUsages)
                     {
-                        System.Diagnostics.Debug.WriteLine("usageRecord.roomId == roomList[i]" + usageRecord.roomId + roomList[i]);
+                        //System.Diagnostics.Debug.WriteLine("usageRecord.roomId == roomList[i]" + usageRecord.roomId + roomList[i]);
                         if (usageRecord.roomId == roomList[i])
                         {
                             
                             String cellpoint = alphabet[(1 + i)] +""+ (6 + y);
-                            System.Diagnostics.Debug.WriteLine("new day" + cellpoint);
+                            //System.Diagnostics.Debug.WriteLine("new day" + cellpoint);
                             worksheet.Cells[cellpoint].Value = usageRecord.recorded_date + " " + usageRecord.power_used + "kWh ";
                             worksheet.Cells[cellpoint].AutoFitColumns();
                             y++;
                         }
                         else
                         {
-                            System.Diagnostics.Debug.WriteLine("not new day");
+                           // System.Diagnostics.Debug.WriteLine("not new day");
                         }
                         
                     }

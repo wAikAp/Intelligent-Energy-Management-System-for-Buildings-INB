@@ -67,58 +67,61 @@ namespace FYP_WEB_APP.Models.LogicModels
 		{
 			PowerUsesList = getPowerUseList();
 			List<DailyUsageModel> datelist = new List<DailyUsageModel>();  //  a list store only two attribute the day (recorded_date) and (power_used ) total power consum in that day. 
+			int i = 0; //counter 
 			foreach (MongoDevicesPowerUse powerUse in PowerUsesList)
 			{
-				Boolean isNewRecord = true;
-				
-				var date = powerUse.recorded_time.ToString("yyyy-MM-dd");
-
-				Debug.WriteLine("date: " + date);
-				foreach(DailyUsageModel datesUsage in datelist)
+				var tempRecord = powerUse;
+				var tempRecordDate = tempRecord.recorded_time.ToString("yyyy-MM-dd");
+				int y = 0;
+				Boolean isChecked = false;
+				foreach (DailyUsageModel outputlist in datelist)
 				{
-					if(datesUsage.recorded_date == date && datesUsage.roomId == powerUse.roomId)
+					if (outputlist.recorded_date == tempRecordDate && outputlist.roomId == tempRecord.roomId)
 					{
-						datesUsage.power_used += powerUse.power_used;
-						isNewRecord = false;
-					}
-					else if(datesUsage.recorded_date == date && datesUsage.roomId != powerUse.roomId)
-					{
-						isNewRecord = true;
-					}
-					else if(datesUsage.recorded_date != date && datesUsage.roomId == powerUse.roomId)
-					{
-						isNewRecord = true;
-					}
-					else
-					{
-						isNewRecord = true;
+						isChecked = true;
+						break;
 					}
 				}
-
-				if (isNewRecord == true)
+				if(isChecked != true)
 				{
-					Debug.WriteLine("isNewRecord" + date);
-					Debug.WriteLine("isNewRecord roomID: " + powerUse.roomId);
+					foreach (MongoDevicesPowerUse sencondCheckPowerUse in PowerUsesList)
+					{
+						var sencondCheckRecordDate = sencondCheckPowerUse.recorded_time.ToString("yyyy-MM-dd");
+						Debug.WriteLine("Comparing tempRecordDate " + tempRecordDate + " -- " + "sencondCheckRecordDate " + sencondCheckRecordDate);
+						Debug.WriteLine("And tempRecord.roomId " + tempRecord.roomId + " -- " + "sencondCheckPowerUse.roomId " + sencondCheckPowerUse.roomId);
+						Debug.WriteLine("y " + y + " -- " + "i " + i);
+						if (tempRecordDate == sencondCheckRecordDate && tempRecord.roomId == sencondCheckPowerUse.roomId && y > i && isChecked != true)
+						{
+							Debug.WriteLine("ADDD ");
+							Debug.WriteLine("tempRecord.power_used " + tempRecord.power_used + "sencondCheckPowerUse.power_used " + sencondCheckPowerUse.power_used);
+							tempRecord.power_used += sencondCheckPowerUse.power_used;
+							Debug.WriteLine("Sum =  " + tempRecord.power_used);
+						}
+						y++;
+					}
 					var newDateRecord = new DailyUsageModel();
-					newDateRecord.recorded_date = date;
-					newDateRecord.roomId = powerUse.roomId;
-					newDateRecord.power_used = powerUse.power_used;
+					newDateRecord.recorded_date = tempRecordDate;
+					newDateRecord.roomId = tempRecord.roomId;
+					newDateRecord.power_used = tempRecord.power_used;
+
+					Debug.WriteLine("datelist " + newDateRecord.recorded_date);
+					Debug.WriteLine("Room Id " + newDateRecord.roomId);
+					Debug.WriteLine("Power consumtion " + newDateRecord.power_used + "kWh");
 					datelist.Add(newDateRecord);
 				}
-
+				
+				i++;
 			}
-			if(datelist != null)
-			{
-				datelist.RemoveAt(datelist.Count-1);
-			}
-			int i = 0;
+			i = 0;
 			foreach (DailyUsageModel newDateRecord in datelist)
 			{
-				Debug.WriteLine("************************** ");
+				Debug.WriteLine("");
+				Debug.WriteLine("\\\\\\\\\\\\\\\\\\\\ ");
 				Debug.WriteLine("datelist "+i+" " + newDateRecord.recorded_date);
 				Debug.WriteLine("Room Id " + i + " " + newDateRecord.roomId);
 				Debug.WriteLine("Power consumtion " + i + " " + newDateRecord.power_used +"kWh");
 				Debug.WriteLine("\\\\\\\\\\\\\\\\\\\\ " );
+				Debug.WriteLine("");
 				i++;
 			}
 
