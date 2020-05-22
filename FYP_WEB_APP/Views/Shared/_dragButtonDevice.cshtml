@@ -11,6 +11,9 @@
     String deviceImg = "";
     String displayType = "";
     String value_unit = "";
+    string deviceClass = Model.status ? "device_on" : "device_off";
+    string devImgInv = Model.status ? "invert(100%)" : "";
+
     switch (Model.devicesId.Substring(0, 2))
     {
         case "AC":
@@ -19,25 +22,26 @@
             value_unit = "ºC";
             break;
         case "LT":
-            deviceImg = "light-on64.png";
+            deviceImg = Model.status ? "light-on64.png": "light-off96.png";
             displayType = "Light";
-            value_unit = "";
+            value_unit = "lm";
+            deviceClass = Model.status ? "LightDevice_on " : "LightDevice_off ";
+            devImgInv = "";
             break;
         case "EF":
             deviceImg = "fan96.png";
             displayType = "Fan";
             break;
     }
+    string turnOFstr = Model.status ? "Turning On" : "Turning Off";
+    string turnOFClr = Model.status ? "badge-success" : "badge-danger";
+    string turnOFimg = Model.status ? "power-button-on36.png" : "power-button-off36.png";
+    string textClr = Model.status ? "text-dark" : "text-white";
 
-    String deviceClass = "device_off";
-    if (Model.powerOnOff)
-    {
-        deviceClass = "device_on";
-    }
 }
-<div class="draggable @deviceClass" id="@Model.devicesId">
+<div class="draggable @deviceClass @textClr" id="@Model.devicesId">
     <p style="margin:0; padding:0;">@Model.devicesId</p>
-    <img src="~/img/icon/@deviceImg" height="24px" />
+    <img src="~/img/icon/@deviceImg" style="filter:@devImgInv" height="24px" />
     <p>@Model.current @value_unit</p>
 </div>
 
@@ -47,13 +51,15 @@
         //the id from _SensorDeviceDetail to change those UI
 
         $("#editBtn").attr("onclick", "EditDevices('@Model.devicesId')");
-
+        $("#editBtn").css({ filter: "@devImgInv" });
         $("#typeName").text("@displayType");
-        $("#sdid").text("@Model.devicesId");
+        $("#sdid").text("@Model.devicesId - @Model.devices_Name");
+        $("#desc").text("@Model.desc");
         $("#typeImg").attr('src', '/img/icon/@deviceImg');
+        $("#typeImg").css({ filter: "@devImgInv" });
         $("#current_value").html('@Model.current @value_unit');
-        $("#totalPower").text("@Model.power");
-        $("#avgPower").text("@Model.avgPower");
+        $("#totalPower").text("@Model.power KW");
+        $("#avgPower").text("Avg: @Model.avgPower KW");
         $("#lastUpdateTimes").text('@Model.lastest_checking_time');
         $("#detailDiv").removeClass('HSensor');
         $("#detailDiv").removeClass('TSensor');
@@ -61,13 +67,25 @@
         $("#detailDiv").removeClass('bg-dark');
         $("#detailDiv").removeClass('device_on');
         $("#detailDiv").removeClass('device_off');
+        $("#detailDiv").removeClass('LightDevice_on');
+        $("#detailDiv").removeClass('LightDevice_off');
+        $("#detailDiv").removeClass("text-white");
+        $("#detailDiv").removeClass("text-dark");
         $("#detailDiv").addClass('@deviceClass');
-        $("#turnOnOff").text("Turning off");
+        $("#detailDiv").addClass('@textClr');
+
+        $("#turnOnOff").removeClass("badge-success");
+        $("#turnOnOff").removeClass("badge-danger");
+        $("#turnOnOff").addClass("@turnOFClr");
+        $("#turnOnOff").text("@turnOFstr");
+
         $("#onOff").css("display", "inline");
+        $("#onOff").attr("src", '/img/icon/@turnOFimg');
+        $("#turnOnDateTime").text('@Model.total_run_time');
     });
 
     $("#@Model.devicesId").css({ left: @Model.pos_x +'px', top:  @Model.pos_y +'px' });
-    //var JSdeviceList = [];
+
     $(function () {
         $("#@Model.devicesId").draggable({
 

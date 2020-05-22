@@ -97,7 +97,10 @@
                     <h4>
                         <b style="font-size: .6em;"><img src="~/img/icon/lighting32.png" />Power Usage</b>
                     </h4>
-                    <h3><strong class="pl-sm-2">@ViewData["sumPowerUsage"]</strong><snap class="text-black" style="font-size: .6em;">/ pre month</snap></h3>
+                    @{
+                        var monthName = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(DateTime.Now.Month);
+                    }
+                    <h3><strong class="pl-sm-2">@ViewData["sumPowerUsage"]</strong><snap class="text-black" style="font-size: .6em;">KW - <b>@monthName/@DateTime.Now.Year</b></snap></h3>
                 </div>
             </div>
             <!-- tag -->
@@ -141,24 +144,24 @@
                     var myVar = setInterval(function () {
                         $.when(updateSensorDeviceList()).then(dismissLoader());
                     }, 30000);
-                    
+
                     function updateSensorDeviceList() {
 
                         $(".sensorLoader").show();
                         $(".deviceLoader").show();
 
                         //sensors
-                        $("#devicesView").load("@Url.Action("SearchDevicesByRoomid", "Devices", new { roomID = ViewData["roomID"] })", function () { });
-                        $("#sensorView").load("@Url.Action("SensorsListByRoomid", "Sensors", new { roomID = ViewData["roomID"] })", function () {});
-                        $("#sensorChartTS").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Temperature Sensor Log Record", chartType = "line" ,position ="top" , download = false , time = 6 , timeSpacing = 1 , type = "TS" }))", function () {});
-                        $("#sensorChartHS").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Humidity Sensor Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "HS" }))", function () {});
-                        $("#sensorChartLS").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Luminosity Sensor Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "LS" }))", function () { });
+                        $("#devicesView").load("..@Url.Action("SearchDevicesByRoomid", "Devices", new { roomID = ViewData["roomID"] })", function () { });
+                        $("#sensorView").load("..@Url.Action("SensorsListByRoomid", "Sensors", new { roomID = ViewData["roomID"] })", function () {});
+                        $("#sensorChartTS").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "Temperature Sensor Log Record", chartType = "line" ,position ="top" , download = false , time = 6 , timeSpacing = 1 , type = "TS" }))", function () {});
+                        $("#sensorChartHS").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "Humidity Sensor Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "HS" }))", function () {});
+                        $("#sensorChartLS").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "Luminosity Sensor Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "LS" }))", function () { });
 
                         //devices
-                        $("#DevicesChartAC").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Air Conditioning Log Record", chartType = "line" ,position ="top" , download = false , time = 6 , timeSpacing = 1 , type = "AC" }))", function () {});
-                        $("#DevicesChartLT").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Light Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "LT" }))", function () {});
-                        $("#DevicesChartHD").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Humidifier Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "HD" }))", function () {});
-                        $("#DevicesChartEF").load("@Html.Raw(Url.Action("chart", "chart", new { title = "FAN Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "EF" }))", function () {});
+                        $("#DevicesChartAC").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "Air Conditioning Log Record", chartType = "line" ,position ="top" , download = false , time = 6 , timeSpacing = 1 , type = "AC" }))", function () {});
+                        $("#DevicesChartLT").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "Light Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "LT" }))", function () {});
+                        $("#DevicesChartHD").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "Humidifier Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "HD" }))", function () {});
+                        $("#DevicesChartEF").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "FAN Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "EF" }))", function () {});
 
                     }
 
@@ -172,26 +175,29 @@
             <!-- data end -->
             <!--  chart end   -->
             <!--   floor plan     -->
+
             <div class="card d-flex flex-column mb-2 mx-2 p-2 ">
 
                 <div class="row justify-content-between mb-2">
                     <div class="col">
                         <h3 id="floorPlan">
                             <b>Room Floor Plan </b>
-
-                            <button class="btn btn-outline-secondary px-0 mr-1 ml-2 " type="button" data-toggle="modal" data-target="#roomSetting" style="width: 40px; height: 40px"><img src="https://www.hko.gov.hk/images/icon_setting.png" style="height: 24px;width:24px;"></button>
-                            <button type="button" class="btn btn-outline-secondary px-2" style="width: 40px; height: 40px;" onclick='AddtSensors("@ViewData["roomID"]")'>
-                                <img src="~/img/icon/temp.png" width="24px">
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary px-2" style="width: 40px; height: 40px;" onclick='AddtDevices("@ViewData["roomID"]")'>
-                                <img src="~/img/icon/ACBlack32.png" width="24px">
-                            </button>
-                            <button id="positionSaveBtn" type="button" class="btn btn-outline-secondary px-2" style="width: 40px; height: 40px;" onclick="savePosition()">
-                                <img src="~/img/icon/save64.png" width="24px">
-                            </button>
                         </h3>
                     </div>
-                    <div class="col-4 d-flex ">
+                    <div class="col-12 d-flex ">
+                        <form>
+                            <input style="display:none" type="file" id="imgUpload1" />
+                            <button title="Upload floor plan" class="btn btn-outline-secondary px-0 mr-1 ml-2 " type="button" style="width: 40px; height: 40px" onclick='$("#imgUpload1").click()'><img src="~/img/icon/floor-plans512.png" style="height: auto;width:24px;"></button>
+                        </form>
+                        <button title="Add Sensor" type="button" class="btn btn-outline-secondary px-2" style="width: 40px; height: 40px;" onclick='AddtSensors("@ViewData["roomID"]")'>
+                            <img src="~/img/icon/temp.png" width="24px">
+                        </button>
+                        <button title="Add Device" type="button" class="btn btn-outline-secondary px-2" style="width: 40px; height: 40px;" onclick='AddtDevices("@ViewData["roomID"]")'>
+                            <img src="~/img/icon/ACBlack32.png" width="24px">
+                        </button>
+                        <button title="Save all positions" id="positionSaveBtn" type="button" class="btn btn-outline-secondary px-2" style="width: 40px; height: 40px;" onclick="savePosition()">
+                            <img src="~/img/icon/save64.png" width="24px">
+                        </button>
                     </div>
                 </div>
                 <div class="row mb-2">
@@ -279,18 +285,16 @@
 
                         </div>
 
-                        <script>
-                            //each 1s to referash the sensor status
+                        <script>//each 1s to referash the sensor status
                             var myVar = setInterval(function () {
                                 //$('#ircam').attr('src', $('#ircam').attr('src'));
                                 //$("#ircam").html('<img id="IRCAMimg" src="http://47.56.85.130:18888/simg?n=f348" />');
 
                                 //$("#IRCAMimg").attr("src", "");
-                                 
+
                                 $("#IRCAMimg").attr("src", "http://47.56.85.130:18888/simg?n=f348" + "&x=" + new Date().getTime());
                                 console.log("IRCAMimg ");
-                            }, 1000);
-                        </script>
+                            }, 1000);</script>
                     </div>
 
                 </div>

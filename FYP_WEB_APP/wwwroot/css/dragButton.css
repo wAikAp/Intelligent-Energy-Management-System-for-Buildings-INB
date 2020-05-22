@@ -39,11 +39,12 @@
     background-color: #343a40;
 }
 .device_on {
-    background-color: #f0f0f0;
-} 
+    background-color: #f7f7f7;
+}
 
 .LightDevice_off {
-
+    background-color: #343a40;
 }
 .LightDevice_on {
+    background-color: #fffff0;
 }

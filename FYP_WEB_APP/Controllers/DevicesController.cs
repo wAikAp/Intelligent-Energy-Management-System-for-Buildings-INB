@@ -271,7 +271,7 @@ namespace FYP_APP.Controllers
 			{
 				new DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").InsertOneAsync(insertList);
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				Debug.WriteLine("line 262 error ");
 
@@ -523,50 +523,16 @@ namespace FYP_APP.Controllers
 				"HD" => "HUM",
 				_ => ""
 			};
-			/*
-			switch (Id.Substring(0, 2))
-			{				
-				case "EF":
-					dbStr = "EXH_FAN";
-					break;
-				case "AC":
-					dbStr = "AC";
-					break;
-				case "LT":
-					dbStr = "LIGHT";
-					break;
-				case "HD":
-					dbStr = "HUM";
-					break;
-				default:
-					break;
-			}*/
+
 			collection = database.GetCollection<BsonDocument>(dbStr);
 			filter = Builders<BsonDocument>.Filter.Eq("devicesId", Id);
 
-			var json = collection.Find(filter).FirstOrDefault();
+			var json = collection.Find(filter).Sort(Builders<BsonDocument>.Sort.Descending("latest_checking_time")).FirstOrDefault();
 			if (json != null)
 			{
 				 double value =  Convert.ToDouble(json["current"].ToString());
 				return value;
-				/*		switch (Id.Substring(0, 2))
-						{
-							case "EF":
-								value = Convert.ToDouble(json["current_rmp"].ToString());
-								break;
-							case "AC":
-								value = Convert.ToDouble(json["current_tmp"].ToString());
-								break;
-							case "LT":
-								value = Convert.ToDouble(json["current_lum"].ToString());
-								break;
-							case "HD":
-								value = Convert.ToDouble(json["current_hum"].ToString());
-								break;
-							default:
-								value = 0;
-									break;
-						}*/
+	
 			}
 			else {
 				return 0;
