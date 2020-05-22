@@ -185,7 +185,7 @@
                         </h3>
                     </div>
                     <div class="col-12 d-flex ">
-                        
+
                         <form id="floorPlanSubmit" method="post" action="~/RoomDetail/uploadFloorPlan">
                             <!--upload file-->
                             <input type="hidden" name="roomID" value="@ViewData["roomID"]" />
@@ -206,8 +206,8 @@
                                     $("#floorPlanSubmit").submit();
                                 }
                                 reader.readAsDataURL(file);
-                                
-                                
+
+
 
                             }</script>
                         <button title="Add Sensor" type="button" class="btn btn-outline-secondary px-2" style="width: 40px; height: 40px;" onclick='AddtSensors("@ViewData["roomID"]")'>
@@ -219,9 +219,30 @@
                         <button title="Save all positions" id="positionSaveBtn" type="button" class="btn btn-outline-secondary px-2" style="width: 40px; height: 40px;" onclick="savePosition()">
                             <img src="~/img/icon/save64.png" width="24px">
                         </button>
+                        @{
+                            //update img status
+                            string msgDisply = "display: none;";
+                            string msgStr = "";
+                            string msgColor = "bg-success";
+                            if (TempData["updateSuccess"] != null)
+                            {
+                                Boolean upstatus = TempData["updateSuccess"].Equals("true") ? true : false;
+                                msgStr = upstatus ? "Floor plan updated" : "Floor plan upload fail";
+                                msgDisply = "display: block;";
+                                msgColor = upstatus ? "bg-success" : "bg-danger";
+                            }
+                        }
+
                     </div>
                 </div>
+                <!--upload status-->
+                <div class="col-8 @msgColor" style="border-radius: 5px; height:auto; width:180px; padding:5px; text-align:center; margin-bottom:5px; @msgDisply">
+                    <p class="text-white" style="margin:0"><b>@msgStr</b></p>
+                </div>
+
                 <div class="row mb-2">
+
+                    <!--floor plan-->
                     <div class="col col-lg-4 col-xl-6 col-md-12 ml-4 p-2" style="background-color: lightgrey;  max-width: 510px; max-height: 710px; min-width: 510px; min-height: 710px; overflow: hidden">
                         @{
 
@@ -243,7 +264,7 @@
                                 <div id="heatmapControl" class="heatmap" style="position: relative;">
                                     <div id="heatmap" class="heatmap">
 
-                                        <img id="planImg" src="~/FloorPlansImg/room348.png" width="500px" height="700px" style="background-color: black;">
+                                        <img id="planImg" src="@roomModel.floorPlanImg" width="500px" height="700px" style="background-color: black;">
 
                                     </div>
                                     <canvas id="BlueCanvas" class="heatmap-canvas" style="position: absolute; left: 0px; top: 0px; ></canvas>

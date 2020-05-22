@@ -22,7 +22,7 @@ namespace FYP_WEB_APP.Controllers
         private static DBManger dBManger = new DBManger();
         private readonly IMongoCollection<BsonDocument> SENSORCOLLECTION = dBManger.DataBase.GetCollection<BsonDocument>("SENSOR_LIST");
         private readonly IMongoCollection<BsonDocument> DEVICECOLLECTION = dBManger.DataBase.GetCollection<BsonDocument>("DEVICES_LIST");
-        private readonly IMongoCollection<BsonDocument> ROOMCOLLECTION = dBManger.DataBase.GetCollection<BsonDocument>("ROOM");
+        private readonly IMongoCollection<MongoRoomModel> ROOMCOLLECTION = dBManger.DataBase.GetCollection<MongoRoomModel>("ROOM");
 
         //[Route("RoomDetail/RoomDetail/{roomID}")]
         public IActionResult RoomDetail(String roomID)
@@ -120,19 +120,21 @@ namespace FYP_WEB_APP.Controllers
             {
                 //base 64 img save to db
                 //ROOMCOLLECTION
-                var filter = Builders<BsonDocument>.Filter.Eq("roomId", postFrom["roomId"]);
-                UpdateDefinition<BsonDocument> updteFields = Builders<BsonDocument>.Update.Set("floorPlanImg", floorPlanBase64);
-                var result = ROOMCOLLECTION.FindOneAndUpdate(filter, updteFields);
+                Debug.WriteLine("floorPlanBase64 = " + floorPlanBase64);
+                var filter = Builders<MongoRoomModel>.Filter.Eq("roomId", postFrom["roomID"]);
+                UpdateDefinition<MongoRoomModel> updteFields = Builders<MongoRoomModel>.Update.Set("floorPlanImg", floorPlanBase64.ToString());
+                var result = ROOMCOLLECTION.FindOneAndUpdateAsync(filter, updteFields);
+                Debug.WriteLine("uploadresult  = " + result);
                 if (result != null)
                 {
-                    ViewData["uploadStatus"] = true;
+                    TempData["updateSuccess"] = "true";
                 }
                 else {
-                    ViewData["uploadStatus"] = false;
+                    TempData["updateSuccess"] = "false";
                 }
             }
             catch (Exception ex) {
-                ViewData["uploadStatus"] = false;
+                TempData["updateSuccess"] = "false";
                 Debug.WriteLine("upload floor plan exception:"+ ex);
             }
 
