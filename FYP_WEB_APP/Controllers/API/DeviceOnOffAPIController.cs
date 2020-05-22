@@ -71,7 +71,7 @@ namespace FYP_WEB_APP.Controllers.API
                 DateTime nowTime = DateTime.UtcNow.AddHours(8);
                 if (get.status)//true
                 {
-                    up = Builders<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>.Update.Set(x => x.total_run_time,nowTime);
+                    up = Builders<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>.Update.Set(x => x.turn_on_time,nowTime);
                     new Models.DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").FindOneAndUpdateAsync(u => u.devicesId == get.deviceId, up);
                     isdone= true;
                 }

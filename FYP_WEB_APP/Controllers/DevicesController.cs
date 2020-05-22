@@ -262,7 +262,7 @@ namespace FYP_APP.Controllers
 				insertList.pos_y = postData.pos_y;
 				insertList.desc = postData.desc;
 				insertList.lastest_checking_time = DateTime.UtcNow;
-				insertList.total_run_time = DateTime.UtcNow;
+				insertList.turn_on_time = DateTime.UtcNow;
 				insertList.power = 0;
 				insertList.status = false;
 				insertList.set_value = 25.0;
@@ -355,7 +355,7 @@ namespace FYP_APP.Controllers
 			foreach (var get in query.ToList()) {
 
 				DateTime nowData = DateTime.Now;
-				DateTime runtime = get.total_run_time;
+				DateTime runtime = get.turn_on_time;
 				TimeSpan count = new TimeSpan(nowData.Ticks - runtime.Ticks);
 
 				double currentValue = GetCurrentValue(get.devicesId);
@@ -370,7 +370,7 @@ namespace FYP_APP.Controllers
 					devices_Name= get.devices_Name,
 					power= get.power,
 					lastest_checking_time = get.lastest_checking_time,
-					total_run_time = get.total_run_time,
+					turn_on_time = get.turn_on_time,
 					pos_x=get.pos_x,
 					pos_y=get.pos_y,
 					desc = get.desc,
