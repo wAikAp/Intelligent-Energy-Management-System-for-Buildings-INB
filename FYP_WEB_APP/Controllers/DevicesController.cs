@@ -133,135 +133,84 @@ namespace FYP_APP.Controllers
 		{
 
 			ViewData["Title"] = "Search Devices";
-			var deivcelist = GetAllDevices();
-			List<DevicesListModel> sum = new List<DevicesListModel> { };
-			List<DevicesListModel> newList=new List<DevicesListModel> { };
-			Debug.WriteLine("All device = "+ deivcelist.ToJson().ToString());
-			var roomid = "";
-			if (Request.Query.ContainsKey("roomId")) {
+			
+			var roomid = ""; //get room id if have
+ 			if (Request.Query.ContainsKey("roomId")) {
 				if (Request.Query["roomId"] != string.Empty || Request.Query["roomId"] != "")
 				{
 					roomid = Request.Query["roomId"];
-					//Debug.WriteLine("\n Request ContainsKey roomId");
-                    //deivcelist = deivcelist.Where(ls => ls.roomId.Contains(Request.Query["roomId"])).ToList();
-				    //Debug.WriteLine("search by roomid = "+ deivcelist.ToJson().ToString());
 				}
 			}
-			var dev_id = "";
+			var dev_id = "";//get device id if have
 			if (Request.Query.ContainsKey("device_id"))
 			{
 				if (Request.Query["device_id"] != string.Empty || Request.Query["device_id"] != "")
 				{
 					dev_id = Request.Query["device_id"];
-					//deivcelist = deivcelist.Where(dm => dm.devicesId.Contains(Request.Query["device_id"])).ToList();
-					//Debug.WriteLine("search Device by id = "+ deivcelist.ToJson().ToString());
 				}
 			}
 
-			var de_typeAC = "";
-			var de_typeLT = "";
-			var de_typeHD = "";
-			var de_typeEF = "";
+            //get what type need to search if have
 			List<string> typeList = new List<string>();
-			if (Request.Query.Keys.Count() > 2) { 
-			    foreach (String key in Request.Query.Keys)
+			//record the check box
+			string chkStr = "checked";
+			List<string> typeCheckedList = new List<string>() {"", "", "", "", "" };//last one is all checked
+
+            if (Request.Query.Keys.Count() > 2) { 
+			    foreach (string key in Request.Query.Keys)
 			    {
-				    string skey = key;
-				    string keyValue = Request.Query[key];
-				    switch (skey) {					
-					    case "AC":
-							de_typeAC = "AC";
-							typeList.Add(de_typeAC);
+				    switch (key) {
+                        case "AC":
+							typeCheckedList[0] = chkStr;
+							typeList.Add(key);
 							break;
 						case "LT":
-							de_typeLT = "LT";
-							typeList.Add(de_typeLT);
+							typeCheckedList[1] = chkStr;
+							typeList.Add(key);
 							break;
 						case "HD":
-						    de_typeHD = "HD";
-							typeList.Add(de_typeHD);
+							typeCheckedList[2] = chkStr;
+							typeList.Add(key);
 							break;
 						case "EF":
-							de_typeEF = "EF";
-							typeList.Add(de_typeEF);
+							typeCheckedList[3] = chkStr;
+							typeList.Add(key);
+							break;
+						default:
 							break;
 				    }
-                    
 			    }
 			}
 
-			//if (Request.Query.ContainsKey("All"))
-			//{
-   //             deivcelist = deivcelist.Where(ls =>
-   //             ls.roomId.Contains(roomid) ||
-   //             ls.devicesId.Contains(dev_id) ||
-   //             ls.devicesId.Contains(de_typeAC) ||
-   //             ls.devicesId.Contains(de_typeLT) ||
-   //             ls.devicesId.Contains(de_typeHD) ||
-   //             ls.devicesId.Contains(de_typeEF)
-
-   //             ).ToList();
-   //         }
-
-			if (!roomid.Equals(" ") || roomid.Length > 0)
-            {
-				deivcelist = deivcelist.Where(ls => ls.roomId.Contains(roomid)).ToList();
-            }
-
-            if (!dev_id.Equals(" ") || dev_id.Length > 0)
-            {
-				deivcelist = deivcelist.Where(ls => ls.devicesId.Contains(dev_id)).ToList();
-			}
-
-			foreach (string dtype in typeList) {
-				deivcelist = deivcelist.Where(ls => ls.devicesId.Contains(dtype)).ToList();
-			}
-
-			if (Request.Query.ContainsKey("All")) {
-				if (Request.Query["All"].Equals("on")) {
-					deivcelist = GetAllDevices();
-                    foreach (string dtype in typeList)
-                    {
-                        deivcelist = deivcelist.Where(ls => ls.devicesId.Contains(dtype)).ToList();
-                    }
-					if (!roomid.Equals(" ") || roomid.Length > 0)
-					{
-						deivcelist = deivcelist.Where(ls => ls.roomId.Contains(roomid)).ToList();
-					}
-
-					if (!dev_id.Equals(" ") || dev_id.Length > 0)
-					{
-						deivcelist = deivcelist.Where(ls => ls.devicesId.Contains(dev_id)).ToList();
-					}
-				}
-				//Debug.WriteLine("ALL = "+ Request.Query["All"]);
-            }
+			var deivcelist = GetAllDevices();
+			List<DevicesListModel> newSearchedlist = new List<DevicesListModel>();
+			if (!Request.Query.ContainsKey("All")) {
 				
+				//if not all type need check which type the user selected.
+				foreach (string dtype in typeList)
+				{
+					newSearchedlist.AddRange(deivcelist.Where(ls => ls.devicesId.Contains(dtype)).ToList());
+				}
+			}else {
+				typeCheckedList[4] = chkStr;
+				//if all type, then get all devices
+				newSearchedlist = deivcelist;
+			}
 
+			if (!roomid.Equals(" ") || roomid.Length > 0){
+                //search by room id
+				newSearchedlist = newSearchedlist.Where(ls => ls.roomId.Contains(roomid)).ToList();
+			}
 
-            //if (de_typeAC.Length > 0)
-            //{
-            //	newList = newList.Where(ls => ls.devicesId.Contains(de_typeAC)).ToList();
-            //}
-
-            //if (de_typeHD.Length > 0)
-            //{
-            //	newList = newList.Where(ls => ls.devicesId.Contains(de_typeHD)).ToList();
-            //}
-
-            //if (de_typeHD.Length > 0)
-            //{
-            //	newList = newList.Where(ls => ls.devicesId.Contains(de_typeHD)).ToList();
-            //}
-
-            //if (de_typeLT.Length > 0)
-            //{
-            //	newList = newList.Where(ls => ls.devicesId.Contains(de_typeLT)).ToList();
-            //}
-
-
-            ViewData["MongoDevicesListModel"] = deivcelist;
-			Debug.WriteLine("Find list = " + deivcelist.ToJson().ToString());
+			if (!dev_id.Equals(" ") || dev_id.Length > 0){
+				//search by device id
+				newSearchedlist = newSearchedlist.Where(ls => ls.devicesId.Contains(dev_id)).ToList();
+			}
+			ViewData["searchedRoomId"] = roomid;
+			ViewData["searchedDeviceId"] = dev_id;
+			ViewData["typeCheckedList"] = typeCheckedList;
+			ViewData["MongoDevicesListModel"] = newSearchedlist;
+			//Debug.WriteLine("Find list = " + deivcelist.ToJson().ToString());
 			ViewData["RoomListModel"] = GetRoomData();
 		}
 
@@ -598,16 +547,19 @@ namespace FYP_APP.Controllers
 				"AC" => "AC",
 				"LT" => "LIGHT",
 				"HD" => "HUM",
+                "CA" => "PI_CAM",
 				_ => ""
 			};
-
+			if (dbStr.Equals("")) {//check if not exit this type device
+				return 0;
+            }
 			collection = database.GetCollection<BsonDocument>(dbStr);
 			filter = Builders<BsonDocument>.Filter.Eq("devicesId", Id);
 
 			var json = collection.Find(filter).Sort(Builders<BsonDocument>.Sort.Descending("latest_checking_time")).FirstOrDefault();
 			if (json != null)
 			{
-				 double value =  Convert.ToDouble(json["current"].ToString());
+				double value =  Convert.ToDouble(json["current"].ToString());
 				return value;
 	
 			}
@@ -621,7 +573,7 @@ namespace FYP_APP.Controllers
 			{
 				case "AC":
 					DevicesDataList = DevicesDataList.Where(x => x.devicesId.Contains("AC")).ToList();
-					ViewBag.unit = " ";
+					ViewBag.unit = " C";
 					ViewBag.unitName = "Air Conditioner";
 					break;
 				case "LT":

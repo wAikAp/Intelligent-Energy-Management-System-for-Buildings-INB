@@ -64,10 +64,11 @@
                     string deviceImg = "air-conditioner96.png";
                     string arrowInv = deviceModel.status ? "filter: invert(100%);" : "";
                     string devImgInv = deviceModel.status ? "filter: invert(100%);" : "";
+                    ViewData["cardType"] = deviceModel.status ? "device_on " : "device_off ";
                     @switch (deviceModel.devicesId.Substring(0, 2))
                     {
                         case "AC":
-                            ViewData["cardType"] = deviceModel.status ? "device_on " : "device_off ";
+                            
                             ViewData["devicesType"] = "Air Conditioner";
                             unit = "ºC";
                             deviceImg = "air-conditioner96.png";
@@ -78,15 +79,19 @@
                             devImgInv = "";
                             unit = "lm";
                             deviceImg = deviceModel.status ? "light-on64.png " : "light-off96.png ";
-                            
+
                             break;
                         case "HD":
                             ViewData["devicesType"] = "Humidifier";
                             deviceImg = "humidifier96.png";
                             break;
                         case "EF":
-                            ViewData["devicesType"] = "Extemal Fan";
+                            ViewData["devicesType"] = "Fan";
                             deviceImg = "fan96.png";
+                            break;
+                        case "CA":
+                            ViewData["devicesType"] = "Camera";
+                            deviceImg = "camera96.png";
                             break;
                     }
 
