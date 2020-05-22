@@ -21,7 +21,7 @@ DevicesList = ViewData["MongoDevicesListModel"] as List<FYP_WEB_APP.Models.Mongo
     <script>
 
         $(function () {
-            $('##dt').bootstrapTable()
+            //$('##dt').bootstrapTable()
         })
     </script>
 </head>
@@ -62,53 +62,64 @@ DevicesList = ViewData["MongoDevicesListModel"] as List<FYP_WEB_APP.Models.Mongo
                                     <div class="col align-items-center bg-white  text-dark border border-secondary">
                                         <div class="col-4  d-flex  flex-row py-2">
                                             <div class="d-flex px-3 align-items-center">
-                                                Device Name:
+                                                <b>Search</b>
+                                                <input class="pl-2 ml-2" type="text" id="device_id" name="device_id" placeholder="Device ID" value="" style="border-radius:8px" />
                                             </div>
+                                            
+                                      
+
                                             <div class="d-flex px-3 align-items-center">
-                                                <input type="text" id="device_Name" name="device_Name" placeholder="Device Name" value="" />
-                                            </div>
-                                        </div>
-                                        <div class="col-4  d-flex  flex-row py-2">
-                                            <div class="d-flex px-3 align-items-center">
-                                                location:
-                                            </div>
-                                            <div class="d-flex px-3 align-items-center">
-                                                <select class="form-control bg-white" id="roomId" name="roomId" @ViewBag.SearchRoomIdENorDisable>
-                                                    <option value="">Room.No</option>
+                                                Room
+                                                <select class="form-control bg-white px-2 ml-2" id="roomId" name="roomId" style="width:120px; border-radius:8px" @ViewBag.SearchRoomIdENorDisable>
+                                                    <option value="" >Room.No</option>
                                                     @foreach (var Room in Rooms)
                                                     {
-
                                                         <option value="@Room.roomId">@Room.roomId</option>
-
                                                     }
 
                                                 </select>
                                             </div>
                                         </div>
+
                                         <div class="col  d-flex  flex-row align-items-center py-2">
                                             <div class="d-flex px-3 align-items-center">
-                                                type:
-                                            </div>
-                                            <div class="d-flex px-3 align-items-center">
-
-                                                <input type="checkbox" id="checkAll" />
+                                                <input type="checkbox" id="checkAll" name="All" />
+                                                <label for="checkAll">&nbsp
+                                                <img src="~/img/icon/all.png" width="32" />
                                                 All
+                                                </label>
                                             </div>
                                             <div class="d-flex px-3 align-items-center">
-                                                <input type="checkbox" id="AC" name="AC" value="true" />
-                                                Air Conditioner
+                                                <input type="checkbox" id="AC" name="AC" value="true">
+                                                <label for="AC">&nbsp
+                                                    <img src="~/img/icon/air-conditioner96.png" width="32" style="filter:invert(100%)" />
+                                                    AC
+                                                </label>
                                             </div>
                                             <div class="d-flex px-3 align-items-center">
                                                 <input type="checkbox" id="LT" name="LT" value="true" />
-                                                Light
+                                                <label for="LT">
+                                                    &nbsp
+                                                    <img src="~/img/icon/light-off96.png" width="32" style="filter:invert(100%)" />
+                                                    Light
+                                                </label>
                                             </div>
                                             <div class="d-flex px-3 align-items-center">
                                                 <input type="checkbox" id="HD" name="HD" value="true" />
-                                                Humidifier
+                                                <label for="HD">
+                                                    &nbsp
+                                                    <img src="~/img/icon/humidifier96.png" width="32" style="filter:invert(100%)" />
+                                                    Humidifier
+                                                </label>
+                                                
                                             </div>
                                             <div class="d-flex px-3 align-items-center">
                                                 <input type="checkbox" id="EF" name="EF" value="true" />
-                                                EXH_FAN
+                                                <label for="EF">
+                                                    &nbsp
+                                                    <img src="~/img/icon/fan96.png" width="32" style="filter:invert(100%)" />
+                                                    Fan
+                                                </label>
                                             </div>
                                             <script>
                                                 $("#checkAll").click(function () {
