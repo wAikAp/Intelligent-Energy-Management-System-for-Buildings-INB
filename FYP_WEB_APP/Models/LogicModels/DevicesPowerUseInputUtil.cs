@@ -95,6 +95,7 @@ namespace FYP_WEB_APP.Models.LogicModels
 							Debug.WriteLine("before update : " + room.power);
 							room.power = dailyUsageModel.power_used;
 							Debug.WriteLine("After update : " + room.power);
+
 						}
 					}
 					var filter = Builders<BsonDocument>.Filter.Eq("roomId", room.roomId);
