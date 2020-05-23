@@ -173,7 +173,9 @@ namespace FYP_APP.Controllers
 		{
 			MongoUserModel user = HttpContext.Session.Get<MongoUserModel>("user");
 
-			
+			DevicesPowerUseOutputUtil devicesPowerUseOutputUtil = new DevicesPowerUseOutputUtil();
+
+			Debug.WriteLine( "devicesPowerUseOutputUtil.getSpecApplianceMonthlyPowerUse(AC011) +" + devicesPowerUseOutputUtil.getSpecApplianceTurnOnPowerUse("AC011"));
 
 			return View();
 		}

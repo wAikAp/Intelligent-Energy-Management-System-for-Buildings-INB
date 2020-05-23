@@ -11,6 +11,7 @@ using System.Diagnostics;
 using FYP_WEB_APP.Models.MongoModels;
 using MongoDB.Driver;
 using Newtonsoft.Json.Linq;
+using MongoDB.Bson.Serialization;
 
 namespace FYP_WEB_APP.Models.LogicModels
 {
@@ -237,6 +238,124 @@ namespace FYP_WEB_APP.Models.LogicModels
 			return monthlyUse;
 		}
 
+
+		//
+		//
+		// for Wai get spec devices data
+		public double getSpecApplianceMonthlyPowerUse(String devicesId)// get Specific Appliance Monthly Power Use
+		{
+			PowerUsesList = getPowerUseList();
+			double monthlyUse = 0; //kWh
+			DateTime localDate = DateTime.Now;
+			String currentMonthly = localDate.ToString("yyyy-MM");
+
+			foreach (MongoDevicesPowerUse powerUse in PowerUsesList)
+			{
+				var date = powerUse.recorded_time.ToString("yyyy-MM");
+				if (currentMonthly == date)
+				{
+					if (powerUse.devicesId == devicesId)
+					{
+						Debug.WriteLine("This record is " + powerUse.devicesId + " " + powerUse.recorded_time +" power used : "+ powerUse.power_used);
+						monthlyUse += powerUse.power_used;
+					}
+				}
+
+			}
+			Debug.WriteLine("This month Id: " +devicesId+ " monthly Use is "+ monthlyUse + "(kWh)");	
+			return Math.Round(monthlyUse, 2);
+		}
+
+		public double getSpecApplianceTurnOnPowerUse(String devicesId) //get switched on devices current power using
+		{
+			List<DevicesListModel> devicesListModel = new List<DevicesListModel>();
+			DateTime currentTime = DateTime.Now;
+			double devicePower = 0;
+			double usedTime = 0;
+			double powerUse;
+			
+
+			//fetch collection data
+			var DEVICES_LISTCollection = dbManager.DataBase.GetCollection<BsonDocument>("DEVICES_LIST");
+			var devices_listDocs = DEVICES_LISTCollection.Find(new BsonDocument()).ToList();
+			foreach (BsonDocument bsonElements in devices_listDocs)
+			{
+				devicesListModel.Add(BsonSerializer.Deserialize<DevicesListModel>(bsonElements));
+			}
+			
+			foreach(DevicesListModel device in devicesListModel)
+			{
+				if(device.devicesId == devicesId && device.status == true)
+				{
+					devicePower = device.power;
+					usedTime = new TimeSpan(currentTime.Ticks - device.turn_on_time.Ticks).TotalSeconds;
+					Debug.WriteLine("Used time = :" + usedTime);
+				}
+			}
+			powerUse = Math.Round((usedTime * 0.000277777778 )* devicePower,2);
+			Debug.WriteLine("powerUse = :" + powerUse);
+			return powerUse;
+		}
+
+		public double getSpecApplianceMonthlyPowerUseTime(String devicesId)// get Specific Appliance Monthly Power Use time
+		{
+			PowerUsesList = getPowerUseList();
+			double monthlyUse = 0; //kWh
+			DateTime localDate = DateTime.Now;
+			String currentMonthly = localDate.ToString("yyyy-MM");
+
+			foreach (MongoDevicesPowerUse powerUse in PowerUsesList)
+			{
+				var date = powerUse.recorded_time.ToString("yyyy-MM");
+				if (currentMonthly == date)
+				{
+					if (powerUse.devicesId == devicesId)
+					{
+						Debug.WriteLine("This record is " + powerUse.devicesId + " " + powerUse.recorded_time + " power used : " + powerUse.power_used);
+						monthlyUse += powerUse.recorded_used_time;
+					}
+				}
+
+			}
+			Debug.WriteLine("This month Id: " + devicesId + " monthly Use is " + monthlyUse + "(seconds)");
+			return monthlyUse;
+		}
+
+		public double getSpecApplianceTurnOnPowerUseTime(String devicesId) //get switched on devices current turn on use time
+		{
+			List<DevicesListModel> devicesListModel = new List<DevicesListModel>();
+			DateTime currentTime = DateTime.Now;
+			double devicePower = 0;
+			double usedTime = 0;
+
+
+			//fetch collection data
+			var DEVICES_LISTCollection = dbManager.DataBase.GetCollection<BsonDocument>("DEVICES_LIST");
+			var devices_listDocs = DEVICES_LISTCollection.Find(new BsonDocument()).ToList();
+			foreach (BsonDocument bsonElements in devices_listDocs)
+			{
+				devicesListModel.Add(BsonSerializer.Deserialize<DevicesListModel>(bsonElements));
+			}
+
+			foreach (DevicesListModel device in devicesListModel)
+			{
+				if (device.devicesId == devicesId && device.status == true)
+				{
+					devicePower = device.power;
+					usedTime = new TimeSpan(currentTime.Ticks - device.turn_on_time.Ticks).TotalSeconds;
+					Debug.WriteLine("Used time = :" + usedTime);
+				}
+			}
+			usedTime = Math.Round((usedTime * 0.000277777778), 2);
+			return usedTime;
+		}
+
+		//
+		//
+		//
+		//
+		//
+		//
 		//get power use time (second not minute).
 
 		public double getACPowerUseTime()//get the total power usage time of the AC in the current month.
@@ -348,7 +467,6 @@ namespace FYP_WEB_APP.Models.LogicModels
 			double monthlyUse = getACPowerUseTime() + getLPowerUseTime() + getHUMPowerUseTime() + getEXHFPowerUseTime();
 			return monthlyUse;
 		}
-
 
 		public JObject getRoomPowerTrend()// gen a json for the chart.
 		{
