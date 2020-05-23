@@ -1,6 +1,13 @@
-﻿
+﻿@using Microsoft.AspNetCore.Http
+@using FYP_WEB_APP.Models.MongoModels;
 @{
     Layout = "_Layout";
+    var userPlanList = (List<MongoPersonalUsagePlanModel>)ViewData["userPlan"];
+    String fName = (String)ViewData["fName"];
+    String lName = (String)ViewData["lName"];
+    String userName = (String)ViewData["userName"];
+
+    var i = 0;
 }
 
 <!DOCTYPE html>
@@ -15,31 +22,40 @@
     <script>
         $(document).ready(function () {
             $("#EditUser").show();
+            $("#PersonalUsagePlan").hide();
+            $("#ChangePassword").hide();
 
             $("#userSettingButton").click(function () {
                 $("#PersonalUsagePlan").hide();
                 $("#EditUser").show();
+                $("#ChangePassword").hide();
             });
 
             $("#userPrefereceButton").click(function () {
                 $("#EditUser").hide();
                 $("#PersonalUsagePlan").show();
-                
+                $("#ChangePassword").hide();
             });
 
-
+            $("#changePasswordButton").click(function () {
+                $("#EditUser").hide();
+                $("#PersonalUsagePlan").hide();
+                $("#ChangePassword").show();
+            }); 
         });
     </script>
 
 </head>
 <body>
+    @Html.Raw(TempData["msg"])
     <div class="row mt-4">
         <div class="col-sm-3">
             <div class="col-12">
                 <div class="dropdown w-100">
                     <button type="button" class="btn btn-secondary w-25 mx-auto dropdown-toggle w-100" data-toggle="dropdown" aria-expanded="false">User Setting</button>
                     <div class="dropdown-menu w-100" style="">
-                        <a class="dropdown-item " id="userSettingButton">User setting</a>
+                        <a class="dropdown-item " id="userSettingButton">User Infomation</a>
+                        <a class="dropdown-item " id="changePasswordButton">Password</a>
                         <a class="dropdown-item " id="userPrefereceButton">User preferece use plan</a>
                     </div>
                 </div>
@@ -49,80 +65,188 @@
         <div class="col-sm-8">
             <div class="col-12" id="EditUser">
                 <h4 class="mb-3">User setting</h4>
-                <form class="needs-validation" novalidate="">
-
-                    <div class="mb-3">
-                        <label for="username">Username</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="username" placeholder="Username" required="">
-                            <div class="invalid-feedback" style="width: 100%;">
-                                Your username is required.
-                            </div>
-                        </div>
-                    </div>
-
+                <form class="needs-validation" novalidate="" action="~/Administration/UpdateInfo" method="post">
                     <div class="row">
                         <div class="col-md-6 mb-3">
+                            <input type="hidden" value="@userName" id="userName" name="userName">
                             <label for="firstName">First name</label>
-                            <input type="text" class="form-control" id="firstName" placeholder="" value="" required="">
+                            <input type="text" class="form-control" id="firstName" placeholder="" name="fName" value="@fName" required>
                             <div class="invalid-feedback">
                                 Valid first name is required.
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="lastName">Last name</label>
-                            <input type="text" class="form-control" id="lastName" placeholder="" value="" required="">
+                            <input type="text" class="form-control" id="lastName" placeholder="" name="lName"value="@lName" required>
                             <div class="invalid-feedback">
                                 Valid last name is required.
                             </div>
                         </div>
                     </div>
+                    <hr class="mb-4">
+                    <input type="submit" class="btn  btn-success w-25 mx-auto" value="Save">
+                </form>
 
+            </div>
+
+            <div class="col-12" id="ChangePassword">
+                <h4 class="mb-3">Change password</h4>
+                <form class="needs-validation" novalidate="" action="~/Administration/UpdatePwd" method="post">
+                    <input type="hidden" value="@userName" id="userName" name="userName">
                     <div class="mb-3">
                         <label for="password">New Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="Password">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
 
                     </div>
-
                     <div class="mb-3">
                         <label for="password">Confirm Password</label>
-                        <input type="password" class="form-control" id="cPassword" placeholder="Confirm password">
+                        <input type="password" class="form-control" id="cPassword" name="cPassword" placeholder="Confirm password" required>
                     </div>
-
-
                     <hr class="mb-4">
-                    <input type="submit" class="btn  btn-secondary w-25 mx-auto" value="Save">
+                    <input type="submit" class="btn  btn-success w-25 mx-auto" value="Save">
                 </form>
 
             </div>
 
             <div class="col-12" id="PersonalUsagePlan">
                 <h4 class="mb-3">Personal Usage Plan</h4>
-
                 <div class="overflow-auto">
+                    <button type="button" class="btn btn-primary float-right mb-3" data-toggle="modal" data-target="#AddPlanModal">Add usage plan</button>
                     <table class="table table-striped table-hover" id="RoomsTable">
                         <thead>
                             <tr>
-                                <th class="th-sm" scope="col">Plan name</th>
+                                <th class="th-sm" scope="col">Plan Name</th>
                                 <th scope="col">Preferred Temperature</th>
                                 <th scope="col">Preferred Humidity</th>
                                 <th scope="col">Preferred Lighting</th>
- 
-      
-
+                                <th scope="col" colspan="2">Options</th>
                             </tr>
                         </thead>
-
                         <tbody>
-                           
+                            @if (userPlanList != null)
+                            {
+                                @foreach (MongoPersonalUsagePlanModel userPlan in userPlanList)
+                                {
+                                    <tr class='clickable-row' data-href='@userPlan.userName' style="cursor: pointer;">
+                                        <td>@userPlan.name </td>
+                                        <td>@userPlan.pTemp °C</td>
+                                        <td>@userPlan.pHum %</td>
+                                        <td>@userPlan.pLig lm</td>
+                                        <td><button type="button" class="btn btn-success" data-toggle="modal" data-target="#Modal_@i">Edit</button></td>
+                                        <td><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#DeleteModal_@i">Delete</button></td>
+                                    </tr>
+
+                                    <div id="Modal_@i" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <form action="~/Administration/UserSetting" method="post">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">@userPlan.name</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <input type="hidden" value="@userPlan.userName" id="userName" name="userName">
+                                                        <div class="form-group">
+                                                            <label for="pTemp">Preferred Temperature(16°C-30°C):</label>
+                                                            <input class="form-control" type="number" id="pTemp" name="pTemp" value="@userPlan.pTemp" min="16" max="30">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="pHum">Preferred Humidity(80%-95%):</label>
+                                                            <input class="form-control" type="number" id="pHum" name="pHum" value="@userPlan.pHum" min="80" max="95">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="pLig">Preferred Lighting(2500lm-5000lm):</label>
+                                                            <input class="form-control" type="number" id="pLig" name="pLig" value="@userPlan.pLig" min="2500" max="5000">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="comment">Description:</label>
+                                                            <textarea class="form-control" rows="5" id="desc" name="desc">@userPlan.desc</textarea>
+                                                        </div>
+                                                        <input type="hidden" value="@userPlan.name" id="name" name="name">
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <input type="submit" class="btn btn-success" value="Save">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- delete plan-->
+                                    <div id="DeleteModal_@i" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <form action="~/Administration/DeletePlan" method="get">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">Delete usage plan</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <input type="hidden" value="@userName" id="userName" name="userName">
+                                                        <input type="hidden" value="@userPlan.name" id="name" name="name">
+                                                        <h4>Are you sure to delete Plan :@userPlan.name ?</h4>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <input type="submit" class="btn btn-danger" value="Delete">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- delete plan-->
+                                    i++;
+                                }
+                            }
                         </tbody>
                     </table>
 
                 </div>
+                <!-- add plan-->
+                <div id="AddPlanModal" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <form action="~/Administration/AddPlan" method="get">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">New usage plan</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="hidden" value="@userName" id="userName" name="userName">
+                                    <div class="form-group">
+                                        <label for="name">Plan name</label>
+                                        <input type="text" id="name" name="name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="pTemp">Preferred Temperature(16°C-30°C):</label>
+                                        <input class="form-control" type="number" id="pTemp" name="pTemp" min="16" max="30" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="pHum">Preferred Humidity(80%-95%):</label>
+                                        <input class="form-control" type="number" id="pHum" name="pHum" min="80" max="95" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="pLig">Preferred Lighting(2500lm-5000lm):</label>
+                                        <input class="form-control" type="number" id="pLig" name="pLig" min="2500" max="5000" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="comment">Description:</label>
+                                        <textarea class="form-control" rows="5" id="desc" name="desc" required></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <input type="submit" class="btn btn-success" value="Create">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- add plan-->
+
+
             </div>
-
-    </div>
-    
-
+        </div>
 </body>
 </html>

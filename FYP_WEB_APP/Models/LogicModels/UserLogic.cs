@@ -1,5 +1,6 @@
 ﻿using FYP_APP.Models.MongoModels;
 using FYP_WEB_APP.Models;
+using FYP_WEB_APP.Models.MongoModels;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -18,7 +19,7 @@ namespace FYP_APP.Models.LogicModels
 		string userName,pwd;
 		DBManger dbManager;
 
-		
+
 		public UserLogic()
 		{
 			dbManager = new DBManger();
@@ -35,7 +36,23 @@ namespace FYP_APP.Models.LogicModels
 			var document = collection.Find(filter).FirstOrDefault();
 			if(document != null)
 			{
+				return document;
+			}
+			else
+			{
+				Debug.WriteLine("not find");
+				return null;
+			}			
+		}
 
+		public MongoUserModel getUserModel(string userName)
+		{
+			var collection = dbManager.DataBase.GetCollection<MongoUserModel>("USER");
+			var filterBuilder = Builders<MongoUserModel>.Filter;
+			var filter = filterBuilder.Eq("userName", userName);
+			var document = collection.Find(filter).FirstOrDefault();
+			if (document != null)
+			{
 				return document;
 			}
 			else
@@ -43,20 +60,132 @@ namespace FYP_APP.Models.LogicModels
 				Debug.WriteLine("not find");
 				return null;
 			}
+		}
 
-
-
+		public List<MongoPersonalUsagePlanModel> getPersonalUsagePlan(String userName)
+		{
+			var collection = dbManager.DataBase.GetCollection<MongoPersonalUsagePlanModel>("PERSONAL_USAGE_PLAN");
+			var filterBuilder = Builders<MongoPersonalUsagePlanModel>.Filter;
+			var filter = filterBuilder.Eq("userName", userName);
+			List<MongoPersonalUsagePlanModel> documentList = collection.Find(filter).ToList();
+			foreach (MongoPersonalUsagePlanModel m in documentList)
 			{
-				/*
-			 if (string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyName)))
+				Debug.WriteLine("m :" + m.userName);
+			}
+			if (documentList != null)
 			{
-				HttpContext.Session.SetString(SessionKeyName, "The Doctor");
-				HttpContext.Session.SetInt32(SessionKeyAge, 773);
+				return documentList;
+			}
+			else
+			{
+				Debug.WriteLine("not find");
+				return null;
+			}
+		}
+
+		public Boolean updatePersonalUsagePlan(String userName, double pTemp, double pHum, double pLig, String desc, String name)
+		{
+			try
+			{
+				var collection = dbManager.DataBase.GetCollection<MongoPersonalUsagePlanModel>("PERSONAL_USAGE_PLAN");
+				var filterBuilder = Builders<MongoPersonalUsagePlanModel>.Filter;
+				var filter = filterBuilder.Eq("userName", userName) & filterBuilder.Eq("name", name);
+
+				var update = Builders<MongoPersonalUsagePlanModel>.Update.Set("pTemp", pTemp).Set("pHum", pHum).Set("pLig", pLig).Set("desc", desc);
+				collection.UpdateOne(filter, update);
+			}
+			catch(Exception e)
+			{
+				Debug.WriteLine(e);
+				return false;
+			}
+			
+
+			return true;
+		}
+
+		public Boolean createPersonalUsagePlan(String userName, double pTemp, double pHum, double pLig, String desc, String name)
+		{
+			try
+			{
+				var collection = dbManager.DataBase.GetCollection<MongoPersonalUsagePlanModel>("PERSONAL_USAGE_PLAN");
+				var filterBuilder = Builders<MongoPersonalUsagePlanModel>.Filter;
+				var filter = filterBuilder.Eq("userName", userName) & filterBuilder.Eq("name", name);
+				var Document = collection.Find(filter).FirstOrDefault();
+				if(Document == null)
+				{
+					MongoPersonalUsagePlanModel mongoPersonalUsagePlanModel = new MongoPersonalUsagePlanModel();
+					mongoPersonalUsagePlanModel.userName = userName;
+					mongoPersonalUsagePlanModel.pTemp = pTemp;
+					mongoPersonalUsagePlanModel.pHum = pHum;
+					mongoPersonalUsagePlanModel.pLig = pLig;
+					mongoPersonalUsagePlanModel.desc = desc;
+					mongoPersonalUsagePlanModel.name = name;
+					collection.InsertOne(mongoPersonalUsagePlanModel);
+					return true;
+					//Debug.WriteLine("Document "+ Document.name);
+				}
+				
+			}
+			catch (Exception e)
+			{
+				Debug.WriteLine(e);
+				return false;
 			}
 
-			var name = HttpContext.Session.GetString(SessionKeyName);
-			var age = HttpContext.Session.GetInt32(SessionKeyAge);
-		*/
+			return false;
+		}
+
+		public Boolean deletePersonalUsagePlan(String userName, String name)
+		{
+			try
+			{
+				var collection = dbManager.DataBase.GetCollection<MongoPersonalUsagePlanModel>("PERSONAL_USAGE_PLAN");
+				var filterBuilder = Builders<MongoPersonalUsagePlanModel>.Filter;
+				var filter = filterBuilder.Eq("userName", userName) & filterBuilder.Eq("name", name);
+				collection.DeleteOne(filter);
+				return true;
+			}
+			catch (Exception e)
+			{
+				Debug.WriteLine(e);
+				return false;
+			}
+		}
+
+		public Boolean updateUserPassword(String userName, String password)
+		{
+			try
+			{
+				var collection = dbManager.DataBase.GetCollection<MongoUserModel>("USER");
+				var filterBuilder = Builders<MongoUserModel>.Filter;
+				var filter = filterBuilder.Eq("userName", userName);
+				var update = Builders<MongoUserModel>.Update.Set("password", password);
+				collection.UpdateOne(filter, update);
+				return true;
+			}
+			catch (Exception e)
+			{
+				Debug.WriteLine(e);
+				return false;
+			}
+		}
+
+		public Boolean updateUserInfo(String userName, String fName, String lName)
+		{
+			try
+			{
+				var collection = dbManager.DataBase.GetCollection<MongoUserModel>("USER");
+				var filterBuilder = Builders<MongoUserModel>.Filter;
+				var filter = filterBuilder.Eq("userName", userName);
+				var update = Builders<MongoUserModel>.Update.Set("fName", fName).Set("lName", lName);
+				collection.UpdateOne(filter, update);
+				return true;
+			}
+			catch (Exception e)
+			{
+				Debug.WriteLine(e);
+				return false;
 			}
 		}
 	}

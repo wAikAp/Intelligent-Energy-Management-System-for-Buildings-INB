@@ -279,21 +279,29 @@ namespace FYP_APP.Controllers
 
 				// code block to be executed
 			}
-							//sensortype = postData.Sensortype;
-				insertList.roomId = postData.roomId;
-				insertList.devicesId = postData.devicesId + count;
-				insertList.devices_Name = postData.devices_Name;
-				insertList.pos_x = postData.pos_x;
-				insertList.pos_y = postData.pos_y;
-				insertList.desc = postData.desc;
-				insertList.lastest_checking_time = DateTime.UtcNow;
-				insertList.turn_on_time = DateTime.UtcNow;
-				insertList.power = 0;
-				insertList.status = false;
-				insertList.set_value = 25.0;
+			string desc = "";
+			if (postData.desc != null) {
+				desc = postData.desc;
+			}
+			var iso8601String = "00010101T00:00:00Z";
+			DateTime dateISO8602 = DateTime.ParseExact(iso8601String, "yyyyMMddTHH:mm:ssZ",
+								System.Globalization.CultureInfo.InvariantCulture);
+			//DateTime turnOnDate = Convert.ToDateTime(datestr);
+			//new Date('0001-01-01 00:00:00');
+			//DateTime.UtcNow
+			insertList.roomId = postData.roomId;
+			insertList.devicesId = postData.devicesId + count;
+			insertList.devices_Name = postData.devices_Name;
+			insertList.pos_x = postData.pos_x;
+			insertList.pos_y = postData.pos_y;
+			insertList.desc = desc;
+			insertList.lastest_checking_time = dateISO8602;
+			insertList.turn_on_time = dateISO8602;
+			insertList.power = 0;
+			insertList.status = false;
+			insertList.set_value = 0.0;
 
-
-			try
+            try
 			{
 				new DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").InsertOneAsync(insertList);
 			}
@@ -305,6 +313,7 @@ namespace FYP_APP.Controllers
 			};
 			return ReturnUrl();
 		}
+
 		[Route("Devices/DropDevicesData")]
 		[HttpPost]
 		public ActionResult DropDevicesData(MongoDevicesListModel postData)//post
