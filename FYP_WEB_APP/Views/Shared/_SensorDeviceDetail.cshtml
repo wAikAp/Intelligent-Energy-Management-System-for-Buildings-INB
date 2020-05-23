@@ -24,16 +24,23 @@
                 <h3 class="card-title">
                     <img id="typeImg" class="mr-2" style="width: 64px;" src="~/img/icon/air-conditioner96.png" />
                     <b id="current_value"> -- </b>
+                    <snap class="float-right">
+                        <img style="width: 24px;" src="~/img/icon/efficiency96.png" />
+                        <b id="device_power" style="font-size:12px">--</b>
+                    </snap>
                 </h3>
                 <p class="card-text">
                     <img style="width: 24px;" src="~/img/icon/lighting32.png" />
-                    <b id="totalPower">--</b> -
-                    <snap class="card-text"><small id="avgPower"> Avg: -- / dy</small></snap>
+                    <b id="totalPower">--</b>
+                    <snap class="card-text"><small>📊 Avg <b id="avgPower">--</b> / dy</small></snap>
                 </p>
+                <p class="card-text">🕝Turned on-<b id="turnOnTime">--</b>hr ⚡Period Usage-<b id="turnedOnUsage">--</b>kW </p>
+
 
                 <a id="turnOnOff" class="shadow badge badge-pill badge-danger" href="#" style="font-size: 14px">--</a>
-                <p class="card-text" style="margin-bottom:2px; margin-top:10px">🏁 Last update - <b id="lastUpdateTimes">--</b></p>
-                <p class="card-text">⏰ Turned on   - <b id="turnOnDateTime">--</b></p>
+                <p class="card-text" style="margin-bottom:2px; margin-top:10px">🔄 Last update - <b id="lastUpdateTimes">--</b></p>
+                <p class="card-text">📅Turned on   - <b id="turnOnDate">--</b></p>
+
                 <!--
     <p class="card-text"><b>Log</b></p>
     <p class="card-text">01-02-2020 11:00:00 <b>25C</b></p>

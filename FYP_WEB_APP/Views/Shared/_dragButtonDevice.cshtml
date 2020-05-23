@@ -62,8 +62,10 @@
         $("#typeImg").attr('src', '/img/icon/@deviceImg');
         $("#typeImg").css({ filter: "@devImgInv" });
         $("#current_value").html('@Model.current @value_unit');
-        $("#totalPower").text("@Model.power KW");
-        $("#avgPower").text("Avg: @Model.avgPower KW");
+        $("#totalPower").text("@Model.currentMonthUsage"+"kW");
+        $("#avgPower").text("@Model.avgPower" + "kW");
+        $("#device_power").text("@Model.power"+"kW");
+
         $("#lastUpdateTimes").text('@Model.lastest_checking_time');
         $("#detailDiv").removeClass('HSensor');
         $("#detailDiv").removeClass('TSensor');
@@ -85,7 +87,10 @@
 
         $("#onOff").css("display", "inline");
         $("#onOff").attr("src", '/img/icon/@turnOFimg');
-        $("#turnOnDateTime").text('@Model.turn_on_time');
+        $("#turnOnDate").text('@Model.turn_on_time');
+        $("#turnOnTime").text('@Model.turnedOnTime');
+        $("#turnedOnUsage").text('@Model.turnedOnUsage');
+        
     });
 
     $("#@Model.devicesId").css({ left: @Model.pos_x +'px', top:  @Model.pos_y +'px' });

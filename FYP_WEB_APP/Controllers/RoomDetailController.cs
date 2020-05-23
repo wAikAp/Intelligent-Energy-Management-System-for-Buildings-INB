@@ -44,16 +44,6 @@ namespace FYP_WEB_APP.Controllers
                 totalPowerUsage += mpu.power_used;
             }
 
-            double dailyPowerUsage = 0;//this month of total power usage for this room
-            string today = DateTime.Now.ToString("yyyy-MM-dd");//get today date
-            foreach (DailyUsageModel dum in dailyUsageModelList)
-            {   
-                if (today.Equals(dum.recorded_date)) {//only record today usage
-                    dailyPowerUsage += dum.power_used;
-                }
-                //Debug.WriteLine("DailyUsageModel = "+dum.recorded_date);
-            }
-            ViewData["dailyPowerUsage"] = Math.Round(dailyPowerUsage, 2, MidpointRounding.AwayFromZero);
             double monthPowerUsage = devicesPowerUseOutputUtil.getTotalPowerUse();
             ViewData["monthPowerUsage"] = Math.Round(monthPowerUsage, 2, MidpointRounding.AwayFromZero); 
 

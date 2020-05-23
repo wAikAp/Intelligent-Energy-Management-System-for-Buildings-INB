@@ -10,6 +10,7 @@ using FYP_WEB_APP.Models;
 using System;
 using System.Diagnostics;
 using FYP_WEB_APP.Controllers;
+using FYP_WEB_APP.Models.LogicModels;
 
 namespace FYP_APP.Controllers
 {
@@ -376,14 +377,27 @@ namespace FYP_APP.Controllers
 			var collection = Getconn();
 			IQueryable<DevicesListModel> query = from d in collection.AsQueryable<DevicesListModel>() select d;
 			List<DevicesListModel> list=new List<DevicesListModel>();
+
+            DevicesPowerUseOutputUtil devicesPowerUseOutputUtil = new DevicesPowerUseOutputUtil();
+
 			foreach (var get in query.ToList()) {
 
-				DateTime nowData = DateTime.Now;
-				DateTime runtime = get.turn_on_time;
-				TimeSpan count = new TimeSpan(nowData.Ticks - runtime.Ticks);
+                DateTime nowData = DateTime.Now;
+                DateTime runtime = get.turn_on_time;
+                TimeSpan count = new TimeSpan(nowData.Ticks - runtime.Ticks);
 
-				double currentValue = GetCurrentValue(get.devicesId);
-				double avgPowers = get.power/ count.TotalDays;
+                double currentValue = GetCurrentValue(get.devicesId);
+				double currentMonth_Usage = devicesPowerUseOutputUtil.getSpecApplianceTurnOnPowerUse(get.devicesId);
+				double monthTotalUseTime = devicesPowerUseOutputUtil.getSpecApplianceMonthlyPowerUseTime(get.devicesId) * 0.00027777777777778;
+				monthTotalUseTime = Convert.ToDouble(monthTotalUseTime.ToString("0.000"));
+
+
+				double turnedOnUsage = devicesPowerUseOutputUtil.getSpecApplianceTurnOnPowerUse(get.devicesId);
+				double turnedOnTime = devicesPowerUseOutputUtil.getSpecApplianceTurnOnPowerUseTime(get.devicesId) * 0.00027777777777778;
+				turnedOnTime = Convert.ToDouble(turnedOnTime.ToString("0.000"));
+
+				//double avgPowers = currentMonth_Usage / count.TotalDays;
+				double avgPowers = currentMonth_Usage / 30;
 				avgPowers = Convert.ToDouble(avgPowers.ToString("0.00"));
 
 				var data = new DevicesListModel()
@@ -391,18 +405,22 @@ namespace FYP_APP.Controllers
 					_id = get._id,
 					roomId = get.roomId,
 					devicesId = get.devicesId,
-					devices_Name= get.devices_Name,
-					power= get.power,
+					devices_Name = get.devices_Name,
+					power = get.power,
 					lastest_checking_time = get.lastest_checking_time,
 					turn_on_time = get.turn_on_time,
-					pos_x=get.pos_x,
-					pos_y=get.pos_y,
+					pos_x = get.pos_x,
+					pos_y = get.pos_y,
 					desc = get.desc,
-					current= currentValue,
+					current = currentValue,
 					powerOnOff = false,
-					avgPower= avgPowers,
-					status=get.status,
-					set_value = get.set_value
+					avgPower = avgPowers,
+					status = get.status,
+					set_value = get.set_value,
+					currentMonthTotalUseTime = monthTotalUseTime,
+					currentMonthUsage = currentMonth_Usage,
+					turnedOnTime = turnedOnTime,
+					turnedOnUsage = turnedOnUsage
 				};
 				//Debug.WriteLine(data.current);
 				list.Add(data);

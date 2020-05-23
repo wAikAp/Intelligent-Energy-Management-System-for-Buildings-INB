@@ -84,17 +84,20 @@
                         <!--load data from ViewData:List<MongoRoomModel> -->
                         @foreach (MongoRoomModel roomModel in roomsDatalist)
                         {
-                            <tr class='clickable-row' data-href='@roomModel.roomId' style="cursor: pointer;">
-                                <td>@roomModel.roomName </td>
-                                <td>@roomModel.type </td>
-                                <td>@roomModel.roomId</td>
-                                <td>@roomModel.floor</td>
-                                <td>@roomModel.power</td>
-                                <td>@roomModel.hum</td>
-                                <td>@roomModel.lig</td>
-                                <td>@roomModel.temp C</td>
-                                <td>@roomModel.desc</td>
-                            </tr>
+                        <tr class='clickable-row' data-href='@roomModel.roomId' style="cursor: pointer;">
+                            <td>@roomModel.roomName </td>
+                            <td>@roomModel.type </td>
+                            <td>@roomModel.roomId</td>
+                            <td>@roomModel.floor</td>
+                            @{
+                                double power = Convert.ToDouble(roomModel.power.ToString("0.00"));
+                            }
+                            <td>@power kW</td>
+                            <td>@roomModel.hum %</td>
+                            <td>@roomModel.lig lm</td>
+                            <td>@roomModel.temp C</td>
+                            <td>@roomModel.desc</td>
+                        </tr>
 
                         }
                     </tbody>

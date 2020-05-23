@@ -102,7 +102,7 @@
                     ViewData["text"] = deviceModel.status ? "text-dark" : "text-white";
                     
 
-                    <div class="card  @ViewData["cardType"] @ViewData["text"] mb-3" style="max-width: 15rem; min-width: 15rem">
+                    <div class="card  @ViewData["cardType"] @ViewData["text"] mb-3" style="max-width: 16rem; min-width: 16rem">
                         @Html.Partial("_loader", "deviceLoader")
                         <div class="card-header pr-1">
                             <div class="d-flex bd-highlight align-items-center">
@@ -137,49 +137,34 @@
 
                             <p class="ard-text p-0 m-0">@deviceModel.roomId - <b>@deviceModel.devicesId</b> - @deviceModel.devices_Name</p>
 
-                            <h3 class="card-title">
-                                <img class="mr-2" style="width: 32px; @devImgInv" src="~/img/icon/@deviceImg" />
-                                @deviceModel.current@unit
-                            </h3>
-                            <p class="card-text" style="margin-bottom: 0px">
+                            <div class="card-title">
+                                <h3 class="card-text">
+                                    <img class="mr-2" style="width: 32px; @devImgInv" src="~/img/icon/@deviceImg" />
+                                    @deviceModel.current@unit
+                                    <snap class="float-right">
 
-                                <img style="width: 24px;" src="~/img/icon/lighting32.png" />
-                                <b>@deviceModel.power</b> KW
-                            </p>
-                            <p class="card-text" style="margin-top: 0px"><small> Avg @deviceModel.avgPower kw / day</small></p>
+                                        <img style="width: 16px;" src="~/img/icon/efficiency96.png" />
+                                        <b style="font-size:10px">@deviceModel.power kWh</b>
+
+                                    </snap>
+                                </h3>
+
+                            </div>
+                            <p class="card-text" style="margin-bottom: 1px; margin-top: 5px"> <img style="width: 24px;" src="~/img/icon/lighting32.png" /><b> @deviceModel.currentMonthUsage kW </b> <small>/M - <b>@deviceModel.currentMonthTotalUseTime</b> /hr</small></p>
+                            <p class="card-text" style="margin-top: 3px"><small> 📊 Avg <b>@deviceModel.avgPower</b> kW /day</small></p>
                             <a class="shadow badge badge-pill  @turnOFClr" style="margin-left:-2px; font-size: 14px; margin-top:-5px; margin-bottom:5px" href="#">@turnOFstr</a>
-                            <p class="card-text" ><small> <b style="font-size:14px;">@deviceModel.lastest_checking_time</b></small></p>
+                            <p class="card-text" style="margin-bottom:0px; margin-top:5px"><small> <b style="font-size:14px;"> 🔄 @deviceModel.lastest_checking_time</b></small></p>
+                            <p class="card-text" style="margin-top: 1px"><small> 🕝 Turned on</small><b> @deviceModel.turnedOnTime </b><small>hrs ago</small></p>
+                            
                         </div>
                     </div>
 
-                    <!--    <div class="card bg-light mb-3 shadow-sm" style="max-width: 15rem;">
-            <div class="card-header">
-                Light
-                <a href="#">
-                    <img class="float-right mt-1" style="width: 24px;" src="~/img/icon/power-button-off36.png" />
-                </a>
-            </div>
-            <div class="card-body">
-                <p class="ard-text p-0 m-0">l01 - 3100002a</p>
-                <h3 class="card-title">
-                    <img class="mr-2" style="width: 32px;" src="~/img/icon/light-on32.png" />
-                    N/A
-                </h3>
-                <p class="card-text">
-                    <img style="width: 24px;" src="~/img/icon/lighting32.png" />90KW -
-                    <snap class="card-text"><small> Avg: 9kw / dy</small></snap>
-                </p>
-                <a class="badge badge-pill badge-success" style="font-size: 14px">Turning on</a>
-                <p class="card-text"><small>updated 3 mins ago</small></p>
-            </div>
-        </div>
-        -->
                 }
             </div>
+        </div>
+        }
+</div>
 
-
-                    </div>}
-            </div>
 <script>
     var EditDevices = function (Id) {
 
