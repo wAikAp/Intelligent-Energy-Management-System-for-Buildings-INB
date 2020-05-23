@@ -1,0 +1,27 @@
+﻿
+@{ 
+    FYP_WEB_APP.Models.RegionalWeatherModel Weather =new FYP_WEB_APP.Controllers.WeatherDataController().GetWeather();
+}}
+<li class="nav-item">
+    <a class="nav-link " href="#">
+        <img src="~/img/icon/weather24.png">
+        <span id="" class="statusTxt">@Weather.Temperature &#8451;</span>
+    </a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="#">
+        <img src="~/img/icon/humidity24.png">
+        <span id="" class="statusTxt">@Weather.Humidity %</span>
+
+    </a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="#">
+        <img src="~/img/icon/sun24.png">
+        <span id="" class="statusTxt">@Weather.Description</span>
+
+    </a>
+</li>
+        </ul>
