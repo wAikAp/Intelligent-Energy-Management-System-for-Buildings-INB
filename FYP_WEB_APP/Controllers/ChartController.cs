@@ -133,9 +133,9 @@ namespace FYP_WEB_APP.Controllers
 		}
 		public string SensorsCurrectLineChart(string type,string roomId)
 		{
-			FYP_APP.Controllers.SensorsController SensorsControl = new FYP_APP.Controllers.SensorsController();
-					
-			var SensorsDataList = SensorsControl.GetSensorsData().Where(s => s.roomId.Contains(roomId)).ToList();
+			SensorsController SensorsControl = new SensorsController();
+            //var SensorsDataList = SensorsControl.GetSensorsData().Where(s => s.roomId.Contains(roomId)).ToList();
+			var SensorsDataList = SensorsControl.GetAllSensors().Where(s => s.roomId.Contains(roomId)).ToList();
 
 			string tableName = "";
 
@@ -149,7 +149,7 @@ namespace FYP_WEB_APP.Controllers
 			{
 				case "TS":
 					SensorsDataList = SensorsDataList.Where(x => x.sensorId.Contains("TS")).ToList();
-					ViewBag.unit = " ";
+					ViewBag.unit = " C";
 					ViewBag.unitName = "Temperature";
 					tableName = "TMP_SENSOR";
 
@@ -172,7 +172,7 @@ namespace FYP_WEB_APP.Controllers
 					switch (iid.Substring(0,2))
 					{
 						case "TS":
-							ViewBag.unit = " ";
+							ViewBag.unit = " C";
 							ViewBag.unitName = "Temperature";
 							tableName = "TMP_SENSOR";
 
@@ -234,29 +234,29 @@ namespace FYP_WEB_APP.Controllers
 			{
 				case "AC":
 					DevicesDataList = DevicesDataList.Where(x => x.devicesId.Contains("AC")).ToList();
-					ViewBag.unit = " ";
-					ViewBag.unitName = "Air Conditioning";
+					ViewBag.unit = " C";
+					ViewBag.unitName = "Air Conditioner Temperature";
 					tableName = "AC";
 
 					break;
 				case "LT":
 					DevicesDataList = DevicesDataList.Where(x => x.devicesId.Contains("LT")).ToList();
 					ViewBag.unit = " lm";
-					ViewBag.unitName = "Light";
+					ViewBag.unitName = "Light Luminosity";
 					tableName = "LIGHT";
 
 					break;
 				case "HD":
 					DevicesDataList = DevicesDataList.Where(x => x.devicesId.Contains("HD")).ToList();
 					ViewBag.unit = " %";
-					ViewBag.unitName = "Humidifier"; 
+					ViewBag.unitName = "Humidifier Humidity"; 
 					tableName = "HUM";
 
 					break;
 				case "EF":
 					DevicesDataList = DevicesDataList.Where(x => x.devicesId.Contains("EF")).ToList();
 					ViewBag.unit = " rpm";
-					ViewBag.unitName = "FAN"; 
+					ViewBag.unitName = "FAN Revolution(s)"; 
 					tableName = "EXH_FAN";
 
 					break;
@@ -308,7 +308,7 @@ namespace FYP_WEB_APP.Controllers
 		{
 			if (label.Count()<1 &  data.Count() < 1)
 			{
-				throw new System.InvalidOperationException("The List and labels and data .count Not match !! ");
+				throw new System.InvalidOperationException("The List, labels and data .count Not match !! ");
 			}
 			else
 			{
@@ -532,7 +532,7 @@ namespace FYP_WEB_APP.Controllers
 
 				//	Debug.WriteLine("*****************************************************");
             }catch (Exception e) {
-						error("line 552:" + e.Message);
+						error("ChartController-Error-line 552:" + e.Message);
 				}
 				ca = ca.AddMinutes(timeSpacing);
 

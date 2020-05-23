@@ -31,66 +31,66 @@
     getUsageRecordData();
 
     async function getUsageRecordData() {
-           chartID = '@ViewBag.divId';
 
-            charttitle = '@ViewBag.charttitle';
-            chartType = '@ViewBag.chartType';
-            position ='@ViewBag.position';
+        chartID = '@ViewBag.divId';
+        charttitle = '@ViewBag.charttitle';
+        chartType = '@ViewBag.chartType';
+        position ='@ViewBag.position';
 
-            var time =@Html.Raw(ViewBag.day);
+        var time =@Html.Raw(ViewBag.day);
 
-            var jdatasets =@Html.Raw(ViewBag.datasets);
+        var jdatasets =@Html.Raw(ViewBag.datasets);
 
         //set chart data
+
         dataop = {
             labels: time,
             datasets: jdatasets
         };
+
         //set chart option
-goption = {
-                    title: {
-                        display: true,
-                        text: charttitle,
-                        fontSize: 25,
-                    },
-                    legend: {
-                        display: true,
-                        position: position,
-                        labels: {
-                            boxWidth: 20,
-                            fontColor: '#111',
-                            padding: 15
+
+        goption = {
+            title: {
+                display: true,
+                text: charttitle,
+                fontSize: 25,
+            },
+            legend: {
+                display: true,
+                position: position,
+                labels: {
+                    boxWidth: 20,
+                    fontColor: '#111',
+                    padding: 15
+                }
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        callback: function (label, index, labels) {
+                            return label + '@ViewBag.unit';
                         }
                     },
-                    scales: {
-                        yAxes: [
-                            {
-                                ticks: {
-                                    callback: function (label, index, labels) {
-                                        return label + '@ViewBag.unit';
-                                    }
-                                },
-                                scaleLabel: {
-                                    display: true,
-                                    labelString: '@ViewBag.unitName'
-                                }
-                            }
-                        ],
-                        xAxes: [
-                            {
-                                ticks: {
-                                    callback: function (label, index, labels) {
-                                        return label + ':00';
-                                    }
-                                },
-                                scaleLabel: {
-                                    display: true,
-                                    labelString: 'TIME'
-                                }
-                            }
-                        ]
+                    scaleLabel: {
+                        display: true,
+                        labelString: '@ViewBag.unitName'
                     }
-                };
+                }],
+                xAxes: [{
+                    ticks: {
+                        callback: function (label, index, labels) {
+                            return label + ':00';
+                        }
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'TIME'
+                    }
+                }]
+            }
+        };
+
         draw();
 
     }

@@ -180,10 +180,10 @@ DevicesList = ViewData["MongoDevicesListModel"] as List<FYP_WEB_APP.Models.Mongo
                         <div id="DevicesChartEF" class="flex-fill bd-highlight col-12 h-100"></div>
                         <script>
                 $(document).ready(function () {
-                    $("#DevicesChartAC").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "Air Conditioning Log Record", chartType = "line" ,position ="top" , download = true , time = 6 , timeSpacing = 1 , type = "AC" }))", function () {});
-                    $("#DevicesChartLT").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "Light Log Record", chartType = "line" ,position ="top" , download = true, time = 6 , timeSpacing = 1 , type = "LT" }))", function () {});
-                    $("#DevicesChartHD").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "Humidifier Log Record", chartType = "line" ,position ="top" , download = true, time = 6 , timeSpacing = 1 , type = "HD" }))", function () {});
-                    $("#DevicesChartEF").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "FAN Log Record", chartType = "line" ,position ="top" , download = true, time = 6 , timeSpacing = 1 , type = "EF" }))", function () {});
+                    $("#DevicesChartAC").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "Air Conditioner Temperature Log Record", chartType = "line" ,position ="top" , download = true , time = 6 , timeSpacing = 1 , type = "AC" }))", function () {});
+                    $("#DevicesChartLT").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "Light Luminosity Log Record", chartType = "line" ,position ="top" , download = true, time = 6 , timeSpacing = 1 , type = "LT" }))", function () {});
+                    $("#DevicesChartHD").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "Humidifier Humidity Log Record", chartType = "line" ,position ="top" , download = true, time = 6 , timeSpacing = 1 , type = "HD" }))", function () {});
+                    $("#DevicesChartEF").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "FAN Revolution(s) Log Record", chartType = "line" ,position ="top" , download = true, time = 6 , timeSpacing = 1 , type = "EF" }))", function () {});
 
                 });
 
