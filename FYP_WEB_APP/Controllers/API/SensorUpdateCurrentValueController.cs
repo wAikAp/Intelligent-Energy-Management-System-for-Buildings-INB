@@ -20,7 +20,7 @@ namespace FYP_WEB_APP.Controllers.API
     public class SensorUpdateCurrentValueController : ControllerBase
     {
         DateTime utcNow = DateTime.UtcNow.AddHours(8);
-        
+
         [HttpPost]
         public string Post(object SensorJson)
         {
@@ -31,37 +31,42 @@ namespace FYP_WEB_APP.Controllers.API
             try
             {
                 var json = System.Text.Json.JsonSerializer.Serialize(SensorJson);
-          
-            var data = JsonConvert.DeserializeObject<List<SensorUpdateCurrentValueModel>> (json);
-            
+
+                var data = JsonConvert.DeserializeObject<List<SensorUpdateCurrentValueModel>>(json);
+
 
                 if (SensorJson != null)
-            {
-
-                foreach (var S in data)
                 {
+
+                    foreach (var S in data)
+                    {
                         if (string.IsNullOrEmpty(S.sensorId))
                         {
                             throw new System.ArgumentException("Parameter error", "original");
 
                         }
-                        else {
+                        else
+                        {
                             //  string id = S.sensorId;
                             //  string Value = S.value;
-                           
-                            switch (S.sensorId.Substring(0, 2)) {
+
+                            switch (S.sensorId.Substring(0, 2))
+                            {
                                 case "TS":
                                     dbname = "TMP_SENSOR";
-                                    if (Convert.ToDouble(S.values.First()) <= -120) {
+                                    if (Convert.ToDouble(S.values.First()) <= -120)
+                                    {
                                         isErrorData = true;
                                         doException(S.sensorId, false, "The Sensor is disConnnection");
                                     }
-                                    else if (Convert.ToDouble(S.values.First()) < 0) {
+                                    else if (Convert.ToDouble(S.values.First()) < 0)
+                                    {
                                         isErrorData = true;
 
                                         doException(S.sensorId, "Sensor value error, value < 0");
                                     }
-                                    else if (Convert.ToDouble(S.values.First()) > 50) {
+                                    else if (Convert.ToDouble(S.values.First()) > 50)
+                                    {
                                         isErrorData = true;
 
                                         doException(S.sensorId, "Sensor value error, value > 50");
@@ -69,13 +74,15 @@ namespace FYP_WEB_APP.Controllers.API
                                     break;
                                 case "HS":
                                     dbname = "HUM_SENSOR";
-                                    if (Convert.ToDouble(S.values.First()) == -999) {
+                                    if (Convert.ToDouble(S.values.First()) == -999)
+                                    {
                                         isErrorData = true;
 
                                         doException(S.sensorId, false, "The Sensor is disConnnection");
 
                                     }
-                                    else if (Convert.ToDouble(S.values.First()) < 0) {
+                                    else if (Convert.ToDouble(S.values.First()) < 0)
+                                    {
                                         isErrorData = true;
 
                                         doException(S.sensorId, "Sensor value error,  value  " + S.values.First() + " < 0");
@@ -88,12 +95,14 @@ namespace FYP_WEB_APP.Controllers.API
                                     break;
                                 case "LS":
                                     dbname = "LIGHT_SENSOR";
-                                    if (Convert.ToDouble(S.values.First()) < 0) {
+                                    if (Convert.ToDouble(S.values.First()) < 0)
+                                    {
                                         isErrorData = true;
 
                                         doException(S.sensorId, false, "The Sensor is disConnnection");
                                     }
-                                    else if (Convert.ToDouble(S.values.First()) < 0) {
+                                    else if (Convert.ToDouble(S.values.First()) < 0)
+                                    {
                                         isErrorData = true;
 
                                         doException(S.sensorId, "Sensor value error,  value  " + S.values.First() + " < 0");
@@ -116,16 +125,16 @@ namespace FYP_WEB_APP.Controllers.API
                             }
                             FYP_APP.Controllers.SensorsController sensorC = new FYP_APP.Controllers.SensorsController();
                             var hasSensorInList = sensorC.GetAllSensors().Where(s => s.sensorId.Contains(S.sensorId));
-                            if (S.values.Length > 0 && isdone != false && isErrorData != true && hasSensorInList.Count() != 0) 
+                            if (S.values.Length > 0 && isdone != false && isErrorData != true && hasSensorInList.Count() != 0)
                             {
                                 if (S.values.Length == 1 && S.sensorId.Substring(0, 2) != "AS")
                                 {
                                     Debug.WriteLine(S.values.First());
 
-                                    if (S.sensorId.Substring(0,2)!="AS")
+                                    if (S.sensorId.Substring(0, 2) != "AS")
                                     {
                                         double v = S.values.First();
-                                       new DBManger().DataBase.GetCollection<BsonDocument>(dbname).InsertOne(new BsonDocument { { "sensorId", S.sensorId }, { "current", v }, { "latest_checking_time", utcNow } });
+                                        new DBManger().DataBase.GetCollection<BsonDocument>(dbname).InsertOne(new BsonDocument { { "sensorId", S.sensorId }, { "current", v }, { "latest_checking_time", utcNow } });
                                         trueStatus(S.sensorId);
                                         str += "{ sensorId , " + S.sensorId + "},{ value," + S.values.ToJson().ToString() + "},{ latest_checking_time," + utcNow + "}\n";
 
@@ -150,10 +159,10 @@ namespace FYP_WEB_APP.Controllers.API
                                    { "C_VOC", S.values[11] },
                                     { "C_AVG_PM25", S.values[12] },
                                     { "latest_checking_time", utcNow } });
-                                    
+
                                     str += S.values.ToJson().ToString();
                                 }
-                               else
+                                else
                                 {
                                     isdone = false;
 
@@ -161,21 +170,22 @@ namespace FYP_WEB_APP.Controllers.API
 
                                 }
                             }
-                            else {
+                            else
+                            {
                                 Debug.WriteLine("else");
                             }
-                 
+
                         }
                     }
 
-            }
-            else
-            {
-                isdone = false;
+                }
+                else
+                {
+                    isdone = false;
 
-                str = isdone+": Parameter cannot be null ";
+                    str = isdone + ": Parameter cannot be null ";
 
-                   throw new System.ArgumentException("Parameter cannot be null", "original");
+                    throw new System.ArgumentException("Parameter cannot be null", "original");
                 }
                 //return utcNow+" => "+isdone + ": "+str;
             }
@@ -183,14 +193,15 @@ namespace FYP_WEB_APP.Controllers.API
             return utcNow + " => " + isdone + ": " + str;
 
         }
-        public void doException(string id,string error) {
+        public void doException(string id, string error)
+        {
             var filter = Builders<MongoSensorsListModel>.Filter.Eq("sensorId", id);
             var up = Builders<MongoSensorsListModel>.Update.Set("Exception", error);
             var Updated = new DBManger().DataBase.GetCollection<MongoSensorsListModel>("SENSOR_LIST").UpdateOne(filter, up);
-            up = Builders<MongoSensorsListModel>.Update.Set("latest_checking_time", utcNow);
+            up = Builders<Models.MongoModels.MongoSensorsListModel>.Update.Set("latest_checking_time", utcNow);
             Updated = new DBManger().DataBase.GetCollection<MongoSensorsListModel>("SENSOR_LIST").UpdateOne(filter, up);
         }
-        public void doException(string id,bool status, string error)
+        public void doException(string id, bool status, string error)
         {
             var filter = Builders<MongoSensorsListModel>.Filter.Eq("sensorId", id);
             var up = Builders<MongoSensorsListModel>.Update.Set("Exception", error);
