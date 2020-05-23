@@ -142,7 +142,7 @@ namespace FYP_APP.Controllers
 		}
 
 		[Route("Home/MonthlyReport")]
-		public void MonthlyReport()
+		public IActionResult MonthlyReport()
 		{
 			try
 			{
@@ -150,12 +150,12 @@ namespace FYP_APP.Controllers
 				var output = PrintOutInExcel.Run();
 				Debug.WriteLine("Sample 8 created: {0}", output);
 				Debug.WriteLine("");
-
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine("Error: {0}", ex.Message);
 			}
+			return RedirectToAction("Dashboard", "Home");
 		}
 
 
