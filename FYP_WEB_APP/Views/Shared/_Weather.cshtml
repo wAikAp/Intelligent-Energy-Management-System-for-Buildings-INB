@@ -1,6 +1,6 @@
 ﻿
-@{ 
-    FYP_WEB_APP.Models.RegionalWeatherModel Weather =new FYP_WEB_APP.Controllers.WeatherDataController().GetWeather();
+@{
+    FYP_WEB_APP.Models.RegionalWeatherModel Weather = new FYP_WEB_APP.Controllers.WeatherDataController().GetWeather();
 }}
 <li class="nav-item">
     <a class="nav-link " href="#">
@@ -24,4 +24,12 @@
 
     </a>
 </li>
-        </ul>
+
+<li class="nav-item">
+    <a class="nav-link" href="#">
+        Last Update : 
+        <span id="" class="statusTxt">@Weather.LastUpdate @Weather.Location</span>
+       
+    </a>
+</li>
+
