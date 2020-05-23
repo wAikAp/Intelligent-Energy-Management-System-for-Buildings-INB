@@ -23,6 +23,7 @@ namespace FYP_WEB_APP.Controllers
         private readonly IMongoCollection<BsonDocument> SENSORCOLLECTION = dBManger.DataBase.GetCollection<BsonDocument>("SENSOR_LIST");
         private readonly IMongoCollection<BsonDocument> DEVICECOLLECTION = dBManger.DataBase.GetCollection<BsonDocument>("DEVICES_LIST");
         private readonly IMongoCollection<MongoRoomModel> ROOMCOLLECTION = dBManger.DataBase.GetCollection<MongoRoomModel>("ROOM");
+        DevicesPowerUseOutputUtil devicesPowerUseOutputUtil = new DevicesPowerUseOutputUtil();
 
         //[Route("RoomDetail/RoomDetail/{roomID}")]
         public IActionResult RoomDetail(String roomID)
@@ -35,17 +36,28 @@ namespace FYP_WEB_APP.Controllers
             List<DevicesListModel> devicesList = DevicesController.GetDevicesListByRoomid(roomID);
 
             //power list
-            DevicesPowerUseOutputUtil devicesPowerUseOutputUtil = new DevicesPowerUseOutputUtil();
             List<DailyUsageModel> dailyUsageModelList = devicesPowerUseOutputUtil.Dailyusage();
             List<MongoDevicesPowerUse> totalPowerUsageList = devicesPowerUseOutputUtil.getPowerUseList();
 
             double totalPowerUsage = 0;//total power usage of this room
             foreach (MongoDevicesPowerUse mpu in totalPowerUsageList) {
-                totalPowerUsage += mpu.power_used;
+                if (mpu.roomId == roomID) {
+                    totalPowerUsage += mpu.power_used;
+                }
             }
 
-            double monthPowerUsage = devicesPowerUseOutputUtil.getTotalPowerUse();
-            ViewData["monthPowerUsage"] = Math.Round(monthPowerUsage, 2, MidpointRounding.AwayFromZero); 
+            double monthPowerUsage = 0;//total power usage of this room
+            foreach (DailyUsageModel dum in dailyUsageModelList) {
+                if (dum.roomId == roomID)
+                {
+                    monthPowerUsage += dum.power_used;
+                }
+            }
+            double thisMonthAcUsage = getRoomACPowerUse(roomID);
+            //double monthPowerUsage = devicesPowerUseOutputUtil.getTotalPowerUse();//all device this month usage
+            ViewData["monthPowerUsage"] = Math.Round(monthPowerUsage, 2, MidpointRounding.AwayFromZero);
+            ViewData["totalPowerUsage"] = Math.Round(totalPowerUsage, 2, MidpointRounding.AwayFromZero);
+            ViewData["thisMonthAcUsage"] = Math.Round(thisMonthAcUsage, 2, MidpointRounding.AwayFromZero);
 
             //get room model
             var collection = dBManger.DataBase.GetCollection<MongoRoomModel>("ROOM");
@@ -64,8 +76,8 @@ namespace FYP_WEB_APP.Controllers
             //Debug.WriteLine("Devices list = " + deviceslist.ToJson().ToString());
             ViewData["sensorsList"] = sensorsList;
             ViewData["devicesList"] = devicesList;
-            ViewData["powerUsageList"] = totalPowerUsageList;
-            ViewData["totalPowerUsage"] = Math.Round(totalPowerUsage, 2, MidpointRounding.AwayFromZero);
+            //ViewData["powerUsageList"] = totalPowerUsageList;
+            
             //Debug.WriteLine("powerUsageList list = " + powerUsageList.ToJson().ToString());
             return View();
         }
@@ -144,6 +156,30 @@ namespace FYP_WEB_APP.Controllers
 
             
             return Redirect("RoomDetail?roomID=" + ViewData["roomID"] + "#floorPlan");
+        }
+
+        public double getRoomACPowerUse(string roomID)//get the total power usage of the AC in the current month.
+        {
+            List<MongoDevicesPowerUse> totalPowerUsageList = devicesPowerUseOutputUtil.getPowerUseList();
+            double monthlyAcUse = 0; //kWh
+            DateTime localDate = DateTime.Now;
+            String currentMonthly = localDate.ToString("yyyy-MM");
+
+
+            foreach (MongoDevicesPowerUse powerUse in totalPowerUsageList)
+            {
+                var date = powerUse.recorded_time.ToString("yyyy-MM");
+                if (currentMonthly == date)
+                {
+                    //Debug.WriteLine("Is the current month record" + powerUse.recorded_time);
+                    if (powerUse.devicesId.Contains("AC") && powerUse.roomId == roomID)
+                    {
+                        monthlyAcUse += powerUse.power_used;
+                    }
+                }
+
+            }
+            return monthlyAcUse;
         }
 
 

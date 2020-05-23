@@ -83,7 +83,6 @@
     <body>
 
 
-        @Html.Partial("_addDragButton")
         @Html.Partial("_loader", "roomDetailLoader")
         <!--page title-->
         <div class="container-fluid p-4 ">
@@ -120,15 +119,33 @@
                         @{
                             var monthName = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(DateTime.Now.Month);
                         }
-                        <h3><strong class="pl-sm-2">@ViewData["monthPowerUsage"]</strong><snap class="text-black" style="font-size: .6em;">KW - <b>@monthName/@DateTime.Now.Year</b></snap></h3>
+                        <h3><strong class="pl-sm-2">@ViewData["monthPowerUsage"]</strong><snap class="text-black" style="font-size: .6em;">KW <small style="font-size:6px"><b>/@monthName</b></small></snap></h3>
                     </div>
 
-                    <!-- dailyPowerUsage -->
+                    <!-- TodayPowerUsage -->
+                    <div class="col bd-callout bd-callout-info py-2 shadow-sm m-0 ml-sm-4 " style="max-width: 300px; min-width: 220px; max-height: 100px;">
+                        <h4>
+                            <b style="font-size: .6em;"><img src="~/img/icon/lighting32.png" />Today Power Usage</b>
+                        </h4>
+                        <h3><strong class="pl-sm-2">@Math.Round(roomModel.power, 2, MidpointRounding.AwayFromZero)</strong><snap class="text-black" style="font-size: .6em;">KW </snap></h3>
+                    </div>
+
                     <div class="col bd-callout bd-callout-info py-2 shadow-sm m-0 ml-sm-4 " style="max-width: 300px; min-width: 220px; max-height: 100px;">
                         <h4>
                             <b style="font-size: .6em;"><img src="~/img/icon/lighting32.png" />Daily Power Usage</b>
                         </h4>
-                        <h3><strong class="pl-sm-2">@roomModel.power</strong><snap class="text-black" style="font-size: .6em;">KW </snap></h3>
+                        @{
+                            double avgDayUsage = (double)ViewData["monthPowerUsage"];
+                        }
+                        <h3><small style="font-size:6px">Average</small><strong class="pl-sm-2">@Math.Round(avgDayUsage / 30, 2, MidpointRounding.AwayFromZero)</strong><snap class="text-black" style="font-size: .6em;">KW </snap><small style="font-size:8px">of 30 days</small></h3>
+                    </div>
+
+
+                    <div class="col bd-callout bd-callout-warning py-2 shadow-sm m-0 ml-sm-4 " style="max-width: 300px; min-width: 220px; max-height: 100px;">
+                        <h4>
+                            <b style="font-size: .6em;"><img src="~/img/icon/lighting32.png" />AC Power Usage</b>
+                        </h4>
+                        <h3><strong class="pl-sm-2">@ViewData["thisMonthAcUsage"]</strong><snap class="text-black" style="font-size: .6em;">KW <small style="font-size:6px">/@monthName</small></snap></h3>
                     </div>
                 </div>
             </div>
