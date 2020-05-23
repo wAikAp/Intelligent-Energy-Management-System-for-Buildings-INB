@@ -56,9 +56,11 @@ namespace FYP_WEB_APP.Controllers.API
         public string Post(object PostJson)
         {
             bool isdone = false;
+            OnOffModel retrunModel = new OnOffModel();
             try { 
             var json = System.Text.Json.JsonSerializer.Serialize(PostJson);
             var data = JsonConvert.DeserializeObject<List<OnOffModel>>(json);
+
             foreach (var get in data)
             {
 
@@ -75,11 +77,15 @@ namespace FYP_WEB_APP.Controllers.API
                     up = Builders<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>.Update.Set(x => x.turn_on_time,nowTime);
                     new Models.DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").FindOneAndUpdateAsync(u => u.devicesId == get.deviceId, up);
                     isdone= true;
-
+                        retrunModel = get;
                 }
                 else {
-                        if (!new DevicesPowerUseInputUtil().insertDevicesPowerUse(get.deviceId)) {
+                        if (!new DevicesPowerUseInputUtil().insertDevicesPowerUse(get.deviceId))
+                        {
                             throw new System.ArgumentException("insertDevicesPowerUse error", get.deviceId + " insert Devices Power Use");
+                        }
+                        else {
+                            retrunModel = get;
                         }
                     }
             }
@@ -87,7 +93,7 @@ namespace FYP_WEB_APP.Controllers.API
             catch (Exception e) {
                 return e.Message.ToString();
             }
-            return isdone.ToString();
+            return retrunModel.ToJson();
         }
     }
     public class OnOffModel
