@@ -12,17 +12,20 @@ using FYP_WEB_APP.Models.MongoModels;
 using MongoDB.Driver;
 using Newtonsoft.Json.Linq;
 using MongoDB.Bson.Serialization;
+using Microsoft.AspNetCore.Routing.Patterns;
 
 namespace FYP_WEB_APP.Models.LogicModels
 {
 	public class DevicesPowerUseInputUtil
 	{
 		DBManger dbManager;
+		String currentDate;
 
 
 		public DevicesPowerUseInputUtil()
 		{
 			dbManager = new DBManger();
+			currentDate = DateTime.Now.ToString("yyyy-MM-dd");
 		}
 
 		public Boolean insertDevicesPowerUse(String devicesId)// requested devicesId //if insert successfully, return true;
@@ -65,5 +68,46 @@ namespace FYP_WEB_APP.Models.LogicModels
 
 		}
 
+		public Boolean updateRoomPower() //if update success return true;
+		{
+			List<MongoRoomModel> roomModels = new List<MongoRoomModel>();
+			try
+			{
+				var ROOMcollection = dbManager.DataBase.GetCollection<BsonDocument>("ROOM");
+				var tempDoc = ROOMcollection.Find(new BsonDocument()).ToList();
+				DevicesPowerUseOutputUtil devicesPowerUseOutputUtil = new DevicesPowerUseOutputUtil();
+				List<DailyUsageModel> dailyusage = devicesPowerUseOutputUtil.Dailyusage();
+
+				foreach (BsonDocument bsonElements in tempDoc)
+				{
+					roomModels.Add(BsonSerializer.Deserialize<MongoRoomModel>(bsonElements));
+				}
+
+
+				foreach (MongoRoomModel room in roomModels)
+				{
+					Debug.WriteLine("Room id = :" + room.roomId);
+					foreach(DailyUsageModel dailyUsageModel in dailyusage)
+					{
+						if(room.roomId == dailyUsageModel.roomId && currentDate == dailyUsageModel.recorded_date)
+						{
+							Debug.WriteLine("dailyUsageModel id =  "+ dailyUsageModel.roomId + "room.roomId " + room.roomId);
+							Debug.WriteLine("before update : " + room.power);
+							room.power = dailyUsageModel.power_used;
+							Debug.WriteLine("After update : " + room.power);
+						}
+					}
+					var filter = Builders<BsonDocument>.Filter.Eq("roomId", room.roomId);
+					var update = Builders<BsonDocument>.Update.Set("power", room.power);
+					ROOMcollection.UpdateOne(filter, update);
+				}
+				return true;
+			}
+			catch (Exception e)
+			{
+				Debug.WriteLine("Exception :" + e);
+				return false;
+			}
+		}
 	}
 }

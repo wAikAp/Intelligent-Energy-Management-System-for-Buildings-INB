@@ -28,7 +28,7 @@ namespace FYP_WEB_APP.Models.LogicModels
 			roomList = collection.AsQueryable<MongoDevicesPowerUse>().Select(c => c.roomId).Distinct().ToList();
 			foreach (var element in roomList)
 			{
-				Debug.WriteLine("Count: " + element);
+				//Debug.WriteLine("Count: " + element);
 				count++;
 			}
 		}
@@ -41,12 +41,12 @@ namespace FYP_WEB_APP.Models.LogicModels
 			{
 				foreach(MongoDevicesPowerUse element in PowerUsesList)
 				{
-					Debug.WriteLine("room Id: "+ element.roomId + " recoded_time: "+ element.recorded_time + " power use : " + element.power_used);
+					//Debug.WriteLine("room Id: "+ element.roomId + " recoded_time: "+ element.recorded_time + " power use : " + element.power_used);
 				}
 			}
 			else
 			{
-				Debug.WriteLine("not find");
+				//Debug.WriteLine("not find");
 			}
 			return PowerUsesList;
 		}
@@ -85,15 +85,15 @@ namespace FYP_WEB_APP.Models.LogicModels
 					foreach (MongoDevicesPowerUse sencondCheckPowerUse in PowerUsesList)
 					{
 						var sencondCheckRecordDate = sencondCheckPowerUse.recorded_time.ToString("yyyy-MM-dd");
-						Debug.WriteLine("Comparing tempRecordDate " + tempRecordDate + " -- " + "sencondCheckRecordDate " + sencondCheckRecordDate);
-						Debug.WriteLine("And tempRecord.roomId " + tempRecord.roomId + " -- " + "sencondCheckPowerUse.roomId " + sencondCheckPowerUse.roomId);
-						Debug.WriteLine("y " + y + " -- " + "i " + i);
+						//Debug.WriteLine("Comparing tempRecordDate " + tempRecordDate + " -- " + "sencondCheckRecordDate " + sencondCheckRecordDate);
+						//Debug.WriteLine("And tempRecord.roomId " + tempRecord.roomId + " -- " + "sencondCheckPowerUse.roomId " + sencondCheckPowerUse.roomId);
+						//Debug.WriteLine("y " + y + " -- " + "i " + i);
 						if (tempRecordDate == sencondCheckRecordDate && tempRecord.roomId == sencondCheckPowerUse.roomId && y > i && isChecked != true)
 						{
-							Debug.WriteLine("ADDD ");
-							Debug.WriteLine("tempRecord.power_used " + tempRecord.power_used + "sencondCheckPowerUse.power_used " + sencondCheckPowerUse.power_used);
+							//Debug.WriteLine("ADDD ");
+							//Debug.WriteLine("tempRecord.power_used " + tempRecord.power_used + "sencondCheckPowerUse.power_used " + sencondCheckPowerUse.power_used);
 							tempRecord.power_used += sencondCheckPowerUse.power_used;
-							Debug.WriteLine("Sum =  " + tempRecord.power_used);
+							//Debug.WriteLine("Sum =  " + tempRecord.power_used);
 						}
 						y++;
 					}
@@ -102,15 +102,15 @@ namespace FYP_WEB_APP.Models.LogicModels
 					newDateRecord.roomId = tempRecord.roomId;
 					newDateRecord.power_used = tempRecord.power_used;
 
-					Debug.WriteLine("datelist " + newDateRecord.recorded_date);
-					Debug.WriteLine("Room Id " + newDateRecord.roomId);
-					Debug.WriteLine("Power consumtion " + newDateRecord.power_used + "kWh");
+					//Debug.WriteLine("datelist " + newDateRecord.recorded_date);
+					//Debug.WriteLine("Room Id " + newDateRecord.roomId);
+					//Debug.WriteLine("Power consumtion " + newDateRecord.power_used + "kWh");
 					datelist.Add(newDateRecord);
 				}
 				
 				i++;
 			}
-			i = 0;
+			/*i = 0;
 			foreach (DailyUsageModel newDateRecord in datelist)
 			{
 				Debug.WriteLine("");
@@ -121,7 +121,7 @@ namespace FYP_WEB_APP.Models.LogicModels
 				Debug.WriteLine("\\\\\\\\\\\\\\\\\\\\ " );
 				Debug.WriteLine("");
 				i++;
-			}
+			}*/
 
 
 			return datelist;

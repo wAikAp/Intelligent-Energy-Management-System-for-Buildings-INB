@@ -20,13 +20,16 @@ namespace FYP_APP.Controllers
 {
 	public class HomeController : Controller
 	{
-		[HttpGet]
 		public IActionResult Index()
 		{
 			if (HttpContext.Session.Get<MongoUserModel>("user")!= null)
 			{
 				return RedirectToAction("Home", "Home");
 			}
+
+			DevicesPowerUseInputUtil devicesPowerUseInputUtil = new DevicesPowerUseInputUtil();
+
+			RecurringJob.AddOrUpdate(() => devicesPowerUseInputUtil.updateRoomPower(), "* * * * *");
 
 			return View();
 		}
@@ -170,9 +173,7 @@ namespace FYP_APP.Controllers
 		{
 			MongoUserModel user = HttpContext.Session.Get<MongoUserModel>("user");
 
-			DevicesPowerUseInputUtil inputUtil = new DevicesPowerUseInputUtil();
-			inputUtil.insertDevicesPowerUse("000000");
-
+			
 
 			return View();
 		}
