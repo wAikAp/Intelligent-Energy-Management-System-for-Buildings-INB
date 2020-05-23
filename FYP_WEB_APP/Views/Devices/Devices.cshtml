@@ -75,7 +75,7 @@ DevicesList = ViewData["MongoDevicesListModel"] as List<FYP_WEB_APP.Models.Mongo
                                             <div class="d-flex px-3 align-items-center">
                                                 Room
                                                 <select class="form-control bg-white px-2 ml-2" id="roomIdSelecter" name="roomId" style="width:120px; border-radius:8px" @ViewBag.SearchRoomIdENorDisable>
-                                                    <option value="" >Room .No All</option>
+                                                    <option value="">All Room No. </option>
                                                     @foreach (var Room in Rooms)
                                                     {
                                                         <option value="@Room.roomId">@Room.roomId</option>

@@ -41,6 +41,18 @@
                     </div>
                 </div>
                 <div class="p-2 bd-highlight">
+                    @{
+                        //if searched get the searched input record
+                        var searchedRoomId = ViewData["searchedRoomId"];
+                        var searchedSensorId = ViewData["searchedSensorId"];
+                        List<string> typeCheckedList = ViewData["typeCheckedList"] as List<string>;
+                        if (searchedRoomId == null)
+                        {
+                            searchedRoomId = "";
+                            searchedSensorId = "";
+                            typeCheckedList = new List<string>() { "checked", "checked", "checked", "checked" };
+                        }
+                    }
                     @using (Html.BeginForm("Sensors", "Sensors", FormMethod.Get))
 
                     {
@@ -64,12 +76,12 @@
                                         <div class="col-4  d-flex  flex-row py-2">
                                             <div class="d-flex px-3 align-items-center">
                                                 Sensor
-                                                <input class="pl-2 ml-2" type="text" id="sensorName" name="sensorId" placeholder="Sensor ID" value="" style="border-radius:8px" />
+                                                <input class="pl-2 ml-2" type="text" id="sensorName" name="sensorId" placeholder="Sensor ID" value="@searchedSensorId" style="border-radius:8px" />
                                             </div>
                                             <div class="d-flex px-3 align-items-center">
                                                 Room
-                                                <select class="form-control bg-white px-2 ml-2" id="roomId" name="roomId" style="width:120px; border-radius:8px" @ViewBag.SearchRoomIdENorDisable>
-                                                    <option value="">Room.No</option>
+                                                <select class="form-control bg-white px-2 ml-2" id="roomIdSelecter" name="roomId" style="width:120px; border-radius:8px" @ViewBag.SearchRoomIdENorDisable>
+                                                    <option value="">All Room No.</option>
                                                     @foreach (var Room in Rooms)
                                                     {
                                                         <option value="@Room.roomId">@Room.roomId</option>
@@ -81,61 +93,65 @@
                                         </div>
                                         <div class="col  d-flex  flex-row align-items-center py-2">
                                             <div class="d-flex px-3 align-items-center">
-                                                <input type="checkbox" id="checkAll" name="All"/>
-                                                <label for="checkAll">
+                                                <input type="checkbox" id="typeSelecter3" name="All" />
+                                                <label for="typeSelecter3">
                                                     &nbsp
-                                                    <img src="~/img/icon/all.png" width="32"/>
+                                                    <img src="~/img/icon/all.png" width="32" />
                                                     All
                                                 </label>
                                             </div>
                                             <div class="d-flex px-3 align-items-center">
-                                                <input type="checkbox" id="TS" name="TS" value="true" />
-                                                
-                                                <label for="TS">
+                                                <input class="typeSelecter" type="checkbox" id="typeSelecter0" name="TS" value="true" />
+                                                <label for="typeSelecter0">
                                                     &nbsp
                                                     <img src="~/img/icon/temperature96.png" width="32" style="filter:invert(100%)" />
                                                     Temperature
                                                 </label>
                                             </div>
                                             <div class="d-flex px-3 align-items-center">
-                                                <input type="checkbox" id="HS" name="HS" value="true" />
-                                                
-                                                <label for="HS">
+                                                <input class="typeSelecter" type="checkbox" id="typeSelecter1" name="HS" value="true" />
+                                                <label for="typeSelecter1">
                                                     &nbsp
                                                     <img src="~/img/icon/humidifier96.png" width="32" style="filter:invert(100%)" />
                                                     Humidity
                                                 </label>
                                             </div>
                                             <div class="d-flex px-3 align-items-center">
-                                                <input type="checkbox" id="LS" name="LS" value="true" />
-                                                
-                                                <label for="LS">
+                                                <input class="typeSelecter" type="checkbox" id="typeSelecter2" name="LS" value="true"  />
+                                                <label for="typeSelecter2">
                                                     &nbsp
                                                     <img src="~/img/icon/lightSensor96.png" width="32" style="filter:invert(100%)" />
                                                     Luminosity
                                                 </label>
                                             </div>
+
                                             <script>
-                                                $("#checkAll").click(function () {
-                                                    if ($("#checkAll").prop("checked")) {
-                                                        $("input[name='TS']").each(function () {
-                                                            $(this).prop("checked", true);
-                                                        }); $("input[name='HS']").each(function () {
-                                                            $(this).prop("checked", true);
-                                                        }); $("input[name='LS']").each(function () {
-                                                            $(this).prop("checked", true);
-                                                        });
-                                                    } else {
-                                                        $("input[name='TS']").each(function () {
-                                                            $(this).prop("checked", false);
-                                                        }); $("input[name='HS']").each(function () {
-                                                            $(this).prop("checked", false);
-                                                        }); $("input[name='LS']").each(function () {
-                                                            $(this).prop("checked", false);
-                                                        });
-                                                    }
+                                                //assign check box cheked
+                                                @for (int i = 0; i < typeCheckedList.Count; i++) {
+                                                    string str = typeCheckedList[i];
+                                                    int check = str.Equals("checked") ? 1 : 0;
+                                                    <Text>
+
+                                                    console.log("check? " + @check);
+                                                    $("#typeSelecter" +@i).prop("checked",@check);
+                                                    </Text>
+                                                }
+
+                                                $("#roomIdSelecter").val('@searchedRoomId');
+
+                                                $(".typeSelecter").click(function () {
+                                                    $("#typeSelecter3").prop("checked", false);
                                                 });
 
+                                                //typeSelecter3 is all check box
+                                                $("#typeSelecter3").click(function () {
+                                                    if ($("#typeSelecter3").prop("checked")) {
+                                                        $(".typeSelecter").prop("checked", true);
+
+                                                    } else {
+                                                        $(".typeSelecter").prop("checked", false);
+                                                    }
+                                                });
                                             </script>
                                         </div>
 
