@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FYP_WEB_APP.Models.MongoModels
 {
-    public class MongoSensorsListModel
+    public class  MongoSensorsListModel
     {
         public ObjectId _id { get; set; }
         public string roomId { get; set; }

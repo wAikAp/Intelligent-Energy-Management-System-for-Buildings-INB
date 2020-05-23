@@ -295,16 +295,106 @@ namespace FYP_APP.Controllers
 		//form
 		public List<SensorsListModel> FindSensors(List<SensorsListModel> SensorsDataList)
 		{
-			List<SensorsListModel> EndDataList = new List<SensorsListModel> { };
-			List<SensorsListModel> FDataList = new List<SensorsListModel> { };
-			List<SensorsListModel> roomSensorsDataList = new List<SensorsListModel> { };
+
+			List<SensorsListModel> sensorsDataList = new List<SensorsListModel> { };
+			List<SensorsListModel> newSearchedlist = new List<SensorsListModel> { };
 			if (HttpContext != null) {
-				//var filterName = Builders<SensorsListModel>.Filter.Eq(x => x.sensor_name, Request.Query["sensorName"].ToString());
-				string QueryString = Request.QueryString.ToString();
+                //search sensor
+				var roomid = ""; //get room id if have
+				if (Request.Query.ContainsKey("roomId"))
+				{
+					if (Request.Query["roomId"] != string.Empty || Request.Query["roomId"] != "")
+					{
+						roomid = Request.Query["roomId"];
+					}
+				}
+				var sen_id = "";//get device id if have
+				if (Request.Query.ContainsKey("sensorId"))
+				{
+					if (Request.Query["sensorId"] != string.Empty || Request.Query["sensorId"] != "")
+					{
+						sen_id = Request.Query["sensorId"];
+					}
+				}
+
+
+				//get what type need to search if have
+				List<string> typeList = new List<string>();
+				//record the check box
+				string chkStr = "checked";
+				List<string> typeCheckedList = new List<string>() { "", "", "", "" };//last one is all checked
+
+				if (Request.Query.Keys.Count() > 2)
+				{
+					foreach (string key in Request.Query.Keys)
+					{
+						Debug.WriteLine("key! = " + key);
+						switch (key)
+						{
+							case "TS":
+								typeCheckedList[0] = chkStr;
+								typeList.Add(key);
+								break;
+							case "HS":
+								typeCheckedList[1] = chkStr;
+								typeList.Add(key);
+								break;
+							case "LS":
+								typeCheckedList[2] = chkStr;
+								typeList.Add(key);
+								break;
+							default:
+								break;
+						}
+					}
+				}
+				
+				
+				//var filter = Builders<SensorsListModel>.Filter.Regex("roomId", new BsonRegularExpression(".*"+ roomid+".*"));
+                
+                //all sensor list
+                sensorsDataList = database.GetCollection<SensorsListModel>("SENSOR_LIST").Find(_ => true).ToList();
+				Debug.WriteLine("sensorsDataList! = "+sensorsDataList.ToJson().ToString());
+				//List<DevicesListModel> newSearchedlist = new List<DevicesListModel>();
+				if (!Request.Query.ContainsKey("All"))
+				{
+					
+					//if not all type need check which type the user selected.
+					foreach (string stype in typeList)
+					{
+						newSearchedlist.AddRange(sensorsDataList.Where(ls => ls.sensorId.Contains(stype)).ToList());
+					}
+					Debug.WriteLine("Not all! = "+ newSearchedlist.ToJson().ToString());
+				}else{
+					typeCheckedList[3] = chkStr;
+					//if all type, then get sensor devices
+					newSearchedlist = sensorsDataList;
+				}
+
+				if (!roomid.Equals(" ") || roomid.Length > 0)
+				{
+					//search by room id
+					newSearchedlist = newSearchedlist.Where(ls => ls.roomId.Contains(roomid)).ToList();
+				}
+
+				if (!sen_id.Equals(" ") || sen_id.Length > 0)
+				{
+					//search by sensor id
+					newSearchedlist = newSearchedlist.Where(ls => ls.sensorId.Contains(sen_id)).ToList();
+				}
+
+
+                //rik
+                /*
+                List<SensorsListModel> EndDataList = new List<SensorsListModel> { };
+                List<SensorsListModel> FDataList = new List<SensorsListModel> { };
+                List<SensorsListModel> roomSensorsDataList = new List<SensorsListModel> { };
+                //var filterName = Builders<SensorsListModel>.Filter.Eq(x => x.sensor_name, Request.Query["sensorName"].ToString());
+                string QueryString = Request.QueryString.ToString();
 				if (!string.IsNullOrEmpty(Request.Query["roomId"].ToString()) && QueryString.Contains("roomId"))
 				{
-					var filterRoomid = Builders<SensorsListModel>.Filter.Eq(x => x.roomId, Request.Query["roomId"].ToString());
-					roomSensorsDataList = new DBManger().DataBase.GetCollection<SensorsListModel>("SENSOR_LIST").Find(filterRoomid).ToList();
+					//var filterRoomid = Builders<SensorsListModel>.Filter.Eq(x => x.roomId, Request.Query["roomId"].ToString());
+					//roomSensorsDataList = new DBManger().DataBase.GetCollection<SensorsListModel>("SENSOR_LIST").Find(filterRoomid).ToList();
 					Debug.WriteLine("find sensor oList" + roomSensorsDataList.ToJson().ToString());
 				}
 				else {
@@ -319,67 +409,54 @@ namespace FYP_APP.Controllers
 					Debug.WriteLine("find sensor Name" + roomSensorsDataList.ToJson().ToString());
 					SensorsDataList = roomSensorsDataList;
 				}
-
-
-			
-			
-
 				
-				Debug.WriteLine(Request.QueryString);
-				Debug.WriteLine(Request.QueryString.Equals("TS") +"\n"+ Request.QueryString.Equals("LS") + "\n" + Request.QueryString.Equals("HS") + "\n" + Request.QueryString.Equals("AS"));
+				//Debug.WriteLine(Request.QueryString.Equals("TS") +"\n"+ Request.QueryString.Equals("LS") + "\n" + Request.QueryString.Equals("HS") + "\n" + Request.QueryString.Equals("AS"));
 
 				if (QueryString.Contains("TS") || QueryString.Contains("LS") || QueryString.Contains("HS") || QueryString.Contains("AS")) {
-				
-				foreach (string key in Request.Query.Keys)
-				{
-					string skey = key;
-					string keyValue = Request.Query[key];
+                    foreach (string key in Request.Query.Keys){
+				        string skey = key;
+				        string keyValue = Request.Query[key];
 
-					switch (skey)
-					{
-						case "TS":
-						case "LS":
-						case "HS":
-						case "AS":
-								FDataList = roomSensorsDataList.Where(x => x.sensorId.Contains(skey)).ToList();
-								Debug.WriteLine(FDataList.ToJson().ToString());
-							break;
-					}
-					if (skey != "sortOrder" || FDataList.Count>0)
-					{
-						EndDataList.AddRange(FDataList);//B list add in A list
+				        switch (skey)
+				        {
+					        case "TS":
+					        case "LS":
+					        case "HS":
+					        case "AS":
+							        FDataList = roomSensorsDataList.Where(x => x.sensorId.Contains(skey)).ToList();
+						        break;
+				        }
+				        if (skey != "sortOrder" || FDataList.Count>0)
+				        {
+					        EndDataList.AddRange(FDataList);//B list add in A list
 
-						EndDataList = EndDataList.Distinct().ToList();//delet double data
+					        EndDataList = EndDataList.Distinct().ToList();//delet double data
 
-					}
-				}
-					//get B & A list Intersect data
-					if (roomSensorsDataList.Count > 0 || FDataList.Count > 0)
-					{
-						if (Request.Query["TS"]!=false || Request.Query["LS"] != false || Request.Query["HS"] != false || Request.Query["AS"] != false )
+				        }
+                    }
+                    //get B & A list Intersect data
+                    if (roomSensorsDataList.Count > 0 || FDataList.Count > 0){
+                        if (Request.Query["TS"]!=false || Request.Query["LS"] != false || Request.Query["HS"] != false || Request.Query["AS"] != false )
 						{
 
 							SensorsDataList = roomSensorsDataList.Intersect(EndDataList).ToList();
 						}
-						else {
-
-							}
-						}					
-					else if (this.PageRoomId.Length > 0 || FDataList.Count > 0)
-					{//Sensors/{id}
+                    }else if (this.PageRoomId.Length > 0 || FDataList.Count > 0){//Sensors/{id}
 						Debug.WriteLine("if (this.PageRoomId.Length > 0 || FDataList.Count > 0)");
 
 						roomSensorsDataList = SensorsDataList;
 						SensorsDataList = roomSensorsDataList.Intersect(EndDataList).ToList();
 					}
-					
-			}
-		}
-			
 
-			return SensorsDataList;
+                }*/
+			}
+
+
+			return newSearchedlist;
 		}
-		public List<SensorsListModel> SortList(List<SensorsListModel> DataList)
+
+
+        public List<SensorsListModel> SortList(List<SensorsListModel> DataList)
 		{
 			if (HttpContext!=null) { 
 			string sortOrder = Request.Query["sortOrder"];
