@@ -72,6 +72,7 @@ namespace FYP_WEB_APP.Models.LogicModels
 		{
 			List<MongoRoomModel> roomModels = new List<MongoRoomModel>();
 			List<DevicesListModel> devicesListModel = new List<DevicesListModel>();
+			double RoomPower = 0;
 			try
 			{
 				//Fetch daily use data
@@ -94,9 +95,6 @@ namespace FYP_WEB_APP.Models.LogicModels
 					devicesListModel.Add(BsonSerializer.Deserialize<DevicesListModel>(bsonElements));
 				}
 
-				
-
-
 				foreach (MongoRoomModel room in roomModels)
 				{
 					Debug.WriteLine("Room id = :" + room.roomId);
@@ -111,13 +109,18 @@ namespace FYP_WEB_APP.Models.LogicModels
 
 							foreach(DevicesListModel deviceRecord in devicesListModel)
 							{
-								/*if(deviceRecord.roomId == )
+								if(deviceRecord.roomId == room.roomId && deviceRecord.status == true )
 								{
-
-								} */
+									RoomPower += devicesPowerUseOutputUtil.getSpecApplianceTurnOnPowerUse(deviceRecord.devicesId);
+								} 
 							}
+							Debug.WriteLine("turn on power use: " + RoomPower);
 						}
 					}
+
+					room.power = room.power + RoomPower;
+					Debug.WriteLine("RoomPower update : " + room.power);
+
 					var filter = Builders<BsonDocument>.Filter.Eq("roomId", room.roomId);
 					var update = Builders<BsonDocument>.Update.Set("power", room.power);
 					ROOMcollection.UpdateOne(filter, update);

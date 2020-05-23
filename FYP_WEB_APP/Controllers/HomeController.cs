@@ -20,47 +20,13 @@ namespace FYP_APP.Controllers
 {
 	public class HomeController : Controller
 	{
-		public IActionResult Index()
-		{
-			if (HttpContext.Session.Get<MongoUserModel>("user")!= null)
-			{
-				return RedirectToAction("Home", "Home");
-			}
-
-			DevicesPowerUseInputUtil devicesPowerUseInputUtil = new DevicesPowerUseInputUtil();
-
-			RecurringJob.AddOrUpdate(() => devicesPowerUseInputUtil.updateRoomPower(), "* * * * *");
-
-			return View();
-		}
 		
-		[HttpPost]
-		public IActionResult Index(string loginUserName, string loginPass)
-		{
-			
-			UserLogic userLogic = new UserLogic();
-			MongoUserModel user = userLogic.login(loginUserName, loginPass);
-
-			if(user != null)
-			{
-				HttpContext.Session.Set<MongoUserModel>("user", user);
-				HttpContext.Session.SetString("userName", user.lName);
-				//Debug.WriteLine("json " + HttpContext.Session.Get<MongoUserModel>("user"));
-				return RedirectToAction("Dashboard", "Home");
-			}
-			else
-			{
-				ViewData["message"] = "Wrong user name or password!";
-				
-			}
-			
-
-			return View();
-		}
-
-
 		public IActionResult Dashboard()
 		{
+			//batch
+			DevicesPowerUseInputUtil devicesPowerUseInputUtil = new DevicesPowerUseInputUtil();
+			RecurringJob.AddOrUpdate(() => devicesPowerUseInputUtil.updateRoomPower(), "* * * * *");
+			//
 
 			DevicesPowerUseOutputUtil powerUseOutputUtil = new DevicesPowerUseOutputUtil();
 
@@ -172,11 +138,6 @@ namespace FYP_APP.Controllers
 		public IActionResult UserSetting()
 		{
 			MongoUserModel user = HttpContext.Session.Get<MongoUserModel>("user");
-
-			DevicesPowerUseOutputUtil devicesPowerUseOutputUtil = new DevicesPowerUseOutputUtil();
-
-			Debug.WriteLine( "devicesPowerUseOutputUtil.getSpecApplianceMonthlyPowerUse(AC011) +" + devicesPowerUseOutputUtil.getSpecApplianceTurnOnPowerUse("AC011"));
-
 			return View();
 		}
 
