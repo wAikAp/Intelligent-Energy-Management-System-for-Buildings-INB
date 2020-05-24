@@ -15,27 +15,26 @@ namespace FYP_WEB_APP.Controllers
 {
     public class WeatherController : Controller
     {
-        private string dbName = "mydb";
         private string CollectionName = "regional_weather";
-        private string ConnectionString = "mongodb+srv://hkteam1:IUXsr2ZYKQuPu0Sj@issf2020hk-la5xb.gcp.mongodb.net/test?retryWrites=true&w=majority";
-
-
-
-
+        RegionalWeatherModel model = new RegionalWeatherModel();
 
         // GET: api/<WeatherDataController>
         [HttpGet]
         public RegionalWeatherModel GetWeather()
         {
 
-            MongoClient dbClient = new MongoClient(ConnectionString);
+            try
+            {
+                var sort = Builders<RegionalWeatherModel>.Sort.Descending("_id");
 
-            IMongoDatabase database = dbClient.GetDatabase(dbName);
+                model = new DBManger().Weatherdatabase.GetCollection<RegionalWeatherModel>(CollectionName).Find<RegionalWeatherModel>(schedule => true).Sort(sort).FirstOrDefault();
 
-
-            var sort = Builders<RegionalWeatherModel>.Sort.Descending("_id");
-            return database.GetCollection<RegionalWeatherModel>(CollectionName).Find<RegionalWeatherModel>(schedule => true).Sort(sort).FirstOrDefault(); ;
-
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+            return model;
         }
         [Route("Weather/Weather")]
             public ActionResult Weather()
