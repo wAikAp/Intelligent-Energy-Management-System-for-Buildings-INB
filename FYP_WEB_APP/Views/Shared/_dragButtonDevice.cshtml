@@ -90,7 +90,11 @@
         $("#turnOnDate").text('@Model.turn_on_time');
         $("#turnOnTime").text('@Model.turnedOnTime');
         $("#turnedOnUsage").text('@Model.turnedOnUsage');
-        
+
+        //turnOFDeviceID and turnOFDeviceStatus for form post data tp update db
+        $("#turnOFDeviceID").val("@Model.devicesId");
+        $("#turnOFDeviceStatus").val("@turnOFstr");
+
     });
 
     $("#@Model.devicesId").css({ left: @Model.pos_x +'px', top:  @Model.pos_y +'px' });

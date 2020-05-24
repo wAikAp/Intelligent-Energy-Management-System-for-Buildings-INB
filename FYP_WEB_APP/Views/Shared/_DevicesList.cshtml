@@ -111,18 +111,21 @@
                                         @ViewData["devicesType"]
                                     </a>
                                 </div>
-                                <div class=" bd-highlight">
-                                    <a class="bd-highlight mt-1 align-middle h-100" href="#">
+                                <form method="post" action="~/Devices/turnOnOffDevice">
+                                    <input type="hidden" name="deviceID" value="@deviceModel.devicesId" />
+                                    <input type="hidden" name="deviceCurrentStatus" value="@turnOFstr" />
 
-                                        <img class="mt-1" style="width: 24px;" src="~/img/icon/@turnOFimg" />
+                                    <button class="btn align-middle p-0" type="submit" >
 
-                                    </a>
-                                </div>
+                                        <img style="width: 24px;" src="~/img/icon/@turnOFimg" />
+
+                                    </button>
+                                </form>
                                 <div class="dropdown  bd-highlight">
 
-                                    <button role="button" class="btn  float-right mt-1 ml-2" type="button" id="dropdownMenuButton0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button role="button" class="btn  float-right ml-2" type="button" id="dropdownMenuButton0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
-                                        <img class=" mt-1" style="width: 16px; @arrowInv" src="~/img/icon/rightArrow.png" />
+                                        <img style="width: 16px; @arrowInv" src="~/img/icon/rightArrow.png" />
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton0">
                                         <a href="#" class="dropdown-item text-success " onclick="EditDevices('@deviceModel.devicesId')">Edit </a>
@@ -150,12 +153,15 @@
                                 </h3>
 
                             </div>
+                            <!--this month usage stauts-->
                             <p class="card-text" style="margin-bottom: 1px; margin-top: 5px"> <img style="width: 24px;" src="~/img/icon/lighting32.png" /><b> @deviceModel.currentMonthUsage kW </b> <small>/M - <b>@deviceModel.currentMonthTotalUseTime</b> /hr</small></p>
                             <p class="card-text" style="margin-top: 3px"><small> 📊 Avg <b>@deviceModel.avgPower</b> kW /day</small></p>
                             <a class="shadow badge badge-pill  @turnOFClr" style="margin-left:-2px; font-size: 14px; margin-top:-5px; margin-bottom:5px" href="#">@turnOFstr</a>
                             <p class="card-text" style="margin-bottom:0px; margin-top:5px"><small> <b style="font-size:14px;"> 🔄 @deviceModel.lastest_checking_time</b></small></p>
+                            <p class="card-text" style="margin-top: 1px; margin-bottom:0px;"><b style="font-size:14px;"> 📅 @deviceModel.turn_on_time  </b><small>Turned on</small></p>
                             <p class="card-text" style="margin-top: 1px"><small> 🕝 Turned on</small><b> @deviceModel.turnedOnTime </b><small>hrs ago</small></p>
-                            
+
+
                         </div>
                     </div>
 
@@ -166,6 +172,11 @@
 </div>
 
 <script>
+    function turnOnOffDevice(deviceID) {
+        alert(deviceID);
+    }
+
+
     var EditDevices = function (Id) {
 
         var url = "/Devices/EditDevices/" + Id;
