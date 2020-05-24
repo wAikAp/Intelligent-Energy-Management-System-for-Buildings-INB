@@ -52,7 +52,10 @@ namespace FYP_WEB_APP.Controllers.API
                         var up = Builders<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>.Update.Set(x => x.status, bool.Parse(data.First().status));
                     var UpdateResult = new Models.DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").FindOneAndUpdateAsync(u => u.devicesId == data.First().deviceId, up);
 
-                        if (data.First().deviceId.Contains("AC") && !data.First().status.Contains("false") && data.First().set_value != null)
+                        if (data.First().deviceId.Contains("AC")){ 
+                        
+                       
+                        if (!data.First().status.Contains("false") && data.First().set_value != null)
                         {
                             up = Builders<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>.Update.Set(x => x.set_value, data.First().set_value);
                             new Models.DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").FindOneAndUpdateAsync(u => u.devicesId == data.First().deviceId, up);
@@ -61,7 +64,7 @@ namespace FYP_WEB_APP.Controllers.API
                             Debug.WriteLine("line 61 id done");
 
                         }
-                        else if (data.First().status.Contains("false") && data.First().deviceId.Contains("AC") && data.First().set_value != null) {
+                        else if (data.First().status.Contains("false") && data.First().set_value != null) {
                             DateTime utcNow = DateTime.UtcNow.AddHours(8);
                             new DBManger().DataBase.GetCollection<BsonDocument>("AC").InsertOne(new BsonDocument { { "deviceId", data.First().deviceId }, { "current", data.First().set_value }, { "latest_checking_time", utcNow } });
                             Debug.WriteLine("line 67 id done");
@@ -72,7 +75,7 @@ namespace FYP_WEB_APP.Controllers.API
                         else {
 
                         }
-
+                        }
                         DateTime nowTime = DateTime.UtcNow.AddHours(8);
                     if (bool.Parse(data.First().status))//true
                     {

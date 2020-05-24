@@ -155,8 +155,10 @@
             @{
                 double AT = 0; double HI = 0;
                 ApparenTemperatureUtil atUtil = new ApparenTemperatureUtil();
-                AT = atUtil.getAvgTemp(roomModel.roomId);
-                AT = atUtil.getAvgHum(roomModel.roomId);
+                double temp = atUtil.getAvgTemp(roomModel.roomId);
+                double hum = atUtil.getAvgHum(roomModel.roomId);
+                HI = atUtil.calHeatIndex(temp, hum);
+                AT = atUtil.calApparenTemperature(temp, hum, 0.15);
                 var ATColStr = atUtil.getUIColor(AT);
                 var HIColStr = atUtil.getUIColor(HI);
             }
@@ -165,6 +167,9 @@
             </button>
             <button type="button" class="btn mx-1 h-50 @HIColStr" style="font-weight:bold">
                 Heat Index <span class="badge badge-light" style="font-size:16px">@HI °C</span>
+            </button>
+            <button type="button" class="btn mx-1 h-50 @HIColStr" style="font-weight:bold">
+                Avg Temp <span class="badge badge-light" style="font-size:16px">@temp °C</span>
             </button>
         </div>
 
