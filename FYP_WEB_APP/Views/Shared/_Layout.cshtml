@@ -41,10 +41,6 @@ else
                 resizeNav();
             });
             $('.navbar-nav .nav-link').removeClass('active');
-            $("#index").addClass('active');
-            $(window).on("load", function () {
-                $("#perloaddiv").delay(200).fadeOut("fast");
-            });
         });
         function resizeNav() {
             $("#nav2").css({ "margin-top": $("#nav1").height() });
@@ -76,14 +72,14 @@ else
 
 <header>
 
-    <nav class="statusBar navbar navbar-expand-sm py-0 py-md-0 navbar-dark fixed-top" id="nav1">
+    <nav class="statusBar navbar navbar-expand-lg py-0 py-md-0 navbar-dark fixed-top" id="nav1">
         <ul class="navbar-nav mr-auto" id="partialView">
         </ul>
         <script>
 
-        $(document).ready(function() {
-        $("#partialView").load('@Url.Action("Weather","Weather")');
-        });
+            $(document).ready(function () {
+                $("#partialView").load('@Url.Action("Weather","Weather")');
+            });
         </script>
         <ul class="navbar-nav">
             <li class="nav-item">

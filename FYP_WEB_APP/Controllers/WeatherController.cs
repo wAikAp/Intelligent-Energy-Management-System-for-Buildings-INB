@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using FYP_WEB_APP.Models;
@@ -26,16 +27,16 @@ namespace FYP_WEB_APP.Controllers
             try
             {
                 var sort = Builders<RegionalWeatherModel>.Sort.Descending("_id");
-
-                model = new DBManger().Weatherdatabase.GetCollection<RegionalWeatherModel>(CollectionName).Find<RegionalWeatherModel>(schedule => true).Sort(sort).FirstOrDefault();
-
+                model = new DBManger().DataBase.GetCollection<RegionalWeatherModel>(CollectionName).Find<RegionalWeatherModel>(schedule => true).Sort(sort).FirstOrDefault();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
+                Debug.WriteLine("Weather controller get data error: " + ex);
                 return null;
             }
             return model;
         }
+
         [Route("Weather/Weather")]
             public ActionResult Weather()
         {
