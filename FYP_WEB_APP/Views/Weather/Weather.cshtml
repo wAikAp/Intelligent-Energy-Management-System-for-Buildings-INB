@@ -3,38 +3,78 @@
 
     FYP_WEB_APP.Models.RegionalWeatherModel Weather = ViewData["RegionalWeatherModel"] as FYP_WEB_APP.Models.RegionalWeatherModel;
 }
-<li class="nav-item">
-    <a class="nav-link" href="#"><span id="" class="statusTxt"><b>OUT DOOR</b></span></a>
-</li>
+@if (Weather != null)
+{
+    <li class="nav-item">
+        <a class="nav-link" href="#"><span id="" class="statusTxt"><b>OUT DOOR</b></span></a>
+    </li>
 
-<li class="nav-item">
-    <a class="nav-link " href="#">
-        <img src="~/img/icon/weather24.png">
-        <span id="" class="statusTxt">@Weather.Temperature &#8451;</span>
-    </a>
-</li>
+    <li class="nav-item">
+        <a class="nav-link " href="#">
+            <img src="~/img/icon/weather24.png">
+            <span id="" class="statusTxt">@Weather.Temperature &#8451;</span>
+        </a>
+    </li>
 
-<li class="nav-item">
-    <a class="nav-link" href="#">
-        <img src="~/img/icon/humidity24.png">
-        <span id="" class="statusTxt">@Weather.Humidity %</span>
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <img src="~/img/icon/humidity24.png">
+            <span id="" class="statusTxt">@Weather.Humidity %</span>
 
-    </a>
-</li>
+        </a>
+    </li>
 
-<li class="nav-item">
-    <a class="nav-link" href="#">
-        <img src="~/img/icon/sun24.png">
-        <span id="" class="statusTxt">@Weather.Description</span>
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <img src="~/img/icon/sun24.png">
+            <span id="" class="statusTxt">@Weather.Description</span>
 
-    </a>
-</li>
+        </a>
+    </li>
 
-<li class="nav-item">
-    <a class="nav-link" href="#">
-        Last Update :
-        <span id="" class="statusTxt">@Weather.LastUpdate @Weather.Location</span>
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            Last Update :
+            <span id="" class="statusTxt">@Weather.LastUpdate @Weather.Location</span>
 
-    </a>
-</li>
+        </a>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link" href="#"><span id="" class="statusTxt"><b>OUT DOOR</b></span></a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link " href="#">
+            <img src="~/img/icon/weather24.png">
+            <span id="" class="statusTxt">N/A &#8451;</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <img src="~/img/icon/humidity24.png">
+            <span id="" class="statusTxt">N/A %</span>
+
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <img src="~/img/icon/sun24.png">
+            <span id="" class="statusTxt">N/A</span>
+
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            Last Update :
+            <span id="" class="statusTxt">N/A</span>
+
+        </a>
+    </li>
+}
 
