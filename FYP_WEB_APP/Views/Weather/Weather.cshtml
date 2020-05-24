@@ -1,7 +1,12 @@
 ﻿
 @{
-    FYP_WEB_APP.Models.RegionalWeatherModel Weather = new FYP_WEB_APP.Controllers.WeatherDataController().GetWeather();
-}}
+
+    FYP_WEB_APP.Models.RegionalWeatherModel Weather = ViewData["RegionalWeatherModel"] as FYP_WEB_APP.Models.RegionalWeatherModel;
+}
+<li class="nav-item">
+    <a class="nav-link" href="#"><span id="" class="statusTxt"><b>OUT DOOR</b></span></a>
+</li>
+
 <li class="nav-item">
     <a class="nav-link " href="#">
         <img src="~/img/icon/weather24.png">
@@ -27,9 +32,9 @@
 
 <li class="nav-item">
     <a class="nav-link" href="#">
-        Last Update : 
+        Last Update :
         <span id="" class="statusTxt">@Weather.LastUpdate @Weather.Location</span>
-       
+
     </a>
 </li>
 

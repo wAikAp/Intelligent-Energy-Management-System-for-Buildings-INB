@@ -77,13 +77,14 @@ else
 <header>
 
     <nav class="statusBar navbar navbar-expand-sm py-0 py-md-0 navbar-dark fixed-top" id="nav1">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="#"><span id="" class="statusTxt"><b>OUT DOOR</b></span></a>
-            </li>
-
-    <partial name="_Weather"/>
+        <ul class="navbar-nav mr-auto" id="partialView">
         </ul>
+        <script>
+
+        $(document).ready(function() {
+        $("#partialView").load('@Url.Action("Weather","Weather")');
+        });
+        </script>
         <ul class="navbar-nav">
             <li class="nav-item">
                 <a class="nav-link" href="#">
@@ -161,7 +162,7 @@ else
         </div>
         <script>
             $('.nav-item').removeClass('active');
-            
+
             $('#@ViewData["Title"]' ).addClass('active');
 
         </script>

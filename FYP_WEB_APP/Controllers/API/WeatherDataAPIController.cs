@@ -21,7 +21,7 @@ namespace FYP_WEB_APP.Controllers.API
         [HttpGet]
         public string Get()
         {
-            return new WeatherDataController().GetWeather().ToJson();
+            return new WeatherController().GetWeather().ToJson();
         }
 
     }

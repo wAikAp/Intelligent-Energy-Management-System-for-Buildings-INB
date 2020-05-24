@@ -13,7 +13,7 @@ using MongoDB.Driver;
 
 namespace FYP_WEB_APP.Controllers
 {
-    public class WeatherDataController : Controller
+    public class WeatherController : Controller
     {
         private string dbName = "mydb";
         private string CollectionName = "regional_weather";
@@ -30,13 +30,12 @@ namespace FYP_WEB_APP.Controllers
             return database.GetCollection<RegionalWeatherModel>(CollectionName).Find<RegionalWeatherModel>(schedule => true).Sort(sort).FirstOrDefault(); ;
 
         }
-        
+        [Route("Weather/Weather")]
             public ActionResult Weather()
         {
 
             ViewData["RegionalWeatherModel"] = GetWeather();
-
-            return View("_Weather");
+            return PartialView("Weather");
         }
     }
 
