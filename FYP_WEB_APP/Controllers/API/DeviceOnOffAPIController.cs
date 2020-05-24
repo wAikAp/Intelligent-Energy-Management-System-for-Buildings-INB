@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using FYP_WEB_APP.Models;
 using FYP_WEB_APP.Models.API;
 using FYP_WEB_APP.Models.LogicModels;
 using FYP_WEB_APP.Models.MongoModels;
@@ -46,43 +49,57 @@ namespace FYP_WEB_APP.Controllers.API
                     DList = new FYP_WEB_APP.Models.DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").Find(d => d.devicesId.Contains(data.First().deviceId)).ToList();
                     if (DList.Count() > 0)
                     {
-                        var up = Builders<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>.Update.Set(x => x.status, data.First().status);
+                        var up = Builders<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>.Update.Set(x => x.status, bool.Parse(data.First().status));
                     var UpdateResult = new Models.DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").FindOneAndUpdateAsync(u => u.devicesId == data.First().deviceId, up);
 
-                        if (data.First().deviceId.Contains("AC") && data.First().status && data.First().set_value != null)
+                        if (data.First().deviceId.Contains("AC") && !data.First().status.Contains("false") && data.First().set_value != null)
                         {
                             up = Builders<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>.Update.Set(x => x.set_value, data.First().set_value);
                             new Models.DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").FindOneAndUpdateAsync(u => u.devicesId == data.First().deviceId, up);
+                            DateTime utcNow = DateTime.UtcNow.AddHours(8);
+                            new DBManger().DataBase.GetCollection<BsonDocument>("AC").InsertOne(new BsonDocument { { "deviceId", data.First().deviceId }, { "current", data.First().set_value }, { "latest_checking_time", utcNow } });
+                            Debug.WriteLine("line 61 id done");
+
                         }
-                        else if (data.First().set_value == null) {
+                        else if (data.First().status.Contains("false") && data.First().deviceId.Contains("AC") && data.First().set_value != null) {
+                            DateTime utcNow = DateTime.UtcNow.AddHours(8);
+                            new DBManger().DataBase.GetCollection<BsonDocument>("AC").InsertOne(new BsonDocument { { "deviceId", data.First().deviceId }, { "current", data.First().set_value }, { "latest_checking_time", utcNow } });
+                            Debug.WriteLine("line 67 id done");
+                        }
+                        else if (data.First().deviceId.Contains("AC") && !data.First().status.Contains("false") && data.First().set_value == null) {
                             throw new System.ArgumentException("set_value error", "not set value");
                         }
                         else {
-                            throw new System.ArgumentException("set_value error", " Device can not set value");
 
                         }
 
                         DateTime nowTime = DateTime.UtcNow.AddHours(8);
-                    if (data.First().status)//true
+                    if (bool.Parse(data.First().status))//true
                     {
                         up = Builders<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>.Update.Set(x => x.turn_on_time, nowTime);
                         new Models.DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").FindOneAndUpdateAsync(u => u.devicesId == data.First().deviceId, up);
-                        isdone = true;
+                           
+                            isdone = true;
 
                     }
-                    else{
-                            if (!new DevicesPowerUseInputUtil().insertDevicesPowerUse(data.First().deviceId))
+                    else{                          
+                            bool check = new DevicesPowerUseInputUtil().insertDevicesPowerUse(data.First().deviceId);
+                            Debug.WriteLine("false check : "+check);
+                            if (!check)
                         {
                             throw new System.ArgumentException("insertDevicesPowerUse error", data.First().deviceId + " insert Devices Power Use");
                         }
                     }
 
+                        Thread.Sleep(2000);
+
+                        DList = new FYP_WEB_APP.Models.DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").Find(d => d.devicesId.Contains(data.First().deviceId)).ToList();
                         System.Diagnostics.Debug.WriteLine(DList.Count());
                         returnModel = new StatusModel()
                         {
                             deviceId = DList.First().devicesId,
                             set_value = DList.First().set_value,
-                            status = DList.First().status,
+                            status = DList.First().status.ToString(),
                             lastest_checking_time = DList.First().lastest_checking_time
                         };
 

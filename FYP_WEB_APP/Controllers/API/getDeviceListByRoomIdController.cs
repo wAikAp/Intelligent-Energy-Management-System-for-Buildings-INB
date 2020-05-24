@@ -27,7 +27,7 @@ namespace FYP_WEB_APP.Controllers.API
             foreach (var get in getlist) {
                 var data = new StatusModel {
                     deviceId = get.devicesId,
-                    status = get.status,
+                    status = get.status.ToString(),
                     set_value = get.set_value
                 };
                 Statuslist.Add(data);

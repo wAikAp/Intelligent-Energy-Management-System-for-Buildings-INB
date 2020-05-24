@@ -241,7 +241,7 @@ namespace FYP_APP.Controllers
 		public ActionResult EditDevices(string id)
 		{
 			ViewData["EditDevicesListModel"] = GetAllDevices().Where(t => t.devicesId == id).ToList();
-			Debug.WriteLine(GetAllDevices().Where(t => t.devicesId == id).ToList().ToJson().ToString());
+			//Debug.WriteLine(GetAllDevices().Where(t => t.devicesId == id).ToList().ToJson().ToString());
 			ViewBag.viewType = "Edit";
 			ViewBag.action = "UpdateDevicesData";
 
@@ -308,7 +308,7 @@ namespace FYP_APP.Controllers
 			}
 			catch (Exception)
 			{
-				Debug.WriteLine("line 262 error ");
+				//Debug.WriteLine("line 262 error ");
 
 				return ReturnUrl();
 			};
@@ -343,7 +343,7 @@ namespace FYP_APP.Controllers
 		[HttpPost]
 		public ActionResult UpdateDevicesData(MongoDevicesListModel postData)
 		{
-			Debug.WriteLine("postData :==>>" + postData.ToJson().ToString());
+			//Debug.WriteLine("postData :==>>" + postData.ToJson().ToString());
 			var filter = Builders<MongoDevicesListModel>.Filter.Eq(d=>d.devicesId, postData.devicesId);
 			var type = postData.GetType();
 			var props = type.GetProperties();
@@ -364,7 +364,7 @@ namespace FYP_APP.Controllers
 							up = Builders<MongoDevicesListModel>.Update.Set(property.Name.ToString(), property.GetValue(postData).ToString());
 
 						}
-						Debug.WriteLine("error: line 303 =>> " + property.Name + ":" + property.GetValue(postData));
+						//Debug.WriteLine("error: line 303 =>> " + property.Name + ":" + property.GetValue(postData));
 
 						var UpdateResult = new DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").FindOneAndUpdateAsync(u => u.devicesId== postData.devicesId, up);
 						if (UpdateResult == null)
@@ -400,7 +400,7 @@ namespace FYP_APP.Controllers
 
 			}
 			catch (Exception ex){
-				Debug.WriteLine("DevicesController turnOnOffDevice error: "+ex);
+				//Debug.WriteLine("DevicesController turnOnOffDevice error: "+ex);
 				return ReturnUrl();
 			}
 		}
@@ -418,8 +418,10 @@ namespace FYP_APP.Controllers
                 DateTime nowData = DateTime.Now;
                 DateTime runtime = get.turn_on_time;
                 TimeSpan count = new TimeSpan(nowData.Ticks - runtime.Ticks);
+				//Debug.WriteLine("currentValue " + get.devicesId + ":");
 
-                double currentValue = GetCurrentValue(get.devicesId);
+				double currentValue = GetCurrentValue(get.devicesId);
+				//Debug.WriteLine("currentValue "+ get.devicesId+ ":"+currentValue);
 				double currentMonth_Usage = devicesPowerUseOutputUtil.getSpecApplianceTurnOnPowerUse(get.devicesId);
 				double monthTotalUseTime = devicesPowerUseOutputUtil.getSpecApplianceMonthlyPowerUseTime(get.devicesId) * 0.00027777777777778;
 				monthTotalUseTime = Convert.ToDouble(monthTotalUseTime.ToString("0.000"));
@@ -605,20 +607,17 @@ namespace FYP_APP.Controllers
                 "CA" => "PI_CAM",
 				_ => ""
 			};
-			if (dbStr.Equals("")) {//check if not exit this type device
-				return 0;
-            }
-			collection = database.GetCollection<BsonDocument>(dbStr);
-			filter = Builders<BsonDocument>.Filter.Eq("devicesId", Id);
+			var json=new DBManger().DataBase.GetCollection<CurrentDataModel>(dbStr).Find(Builders<CurrentDataModel>.Filter.Eq("devicesId", Id)).Sort(Builders<CurrentDataModel>.Sort.Descending(s => s.latest_checking_time)).ToList();
 
-			var json = collection.Find(filter).Sort(Builders<BsonDocument>.Sort.Descending("latest_checking_time")).FirstOrDefault();
-			if (json != null)
+			if (json.Count()>0 && json!=null)
 			{
-				double value =  Convert.ToDouble(json["current"].ToString());
-				return value;
+				//Debug.WriteLine("current =="+ json.First().current+"   "+ json.First().latest_checking_time);
+				return json.First().current;
 	
 			}
 			else {
+				//Debug.WriteLine("current ==0" );
+
 				return 0;
 			}
 		}
@@ -680,7 +679,7 @@ namespace FYP_APP.Controllers
 						Color.Add(chart.GetRandomColor());
 						labelss.Add(get.devicesId);
 						DevicesCurrentList = GetChartDataList(get.devicesId).Where(x => x.latest_checking_time > today.AddDays(-1)).OrderBy(x => x.latest_checking_time).ToList();
-						Debug.WriteLine(get.devicesId+" line 596 :" + DevicesCurrentList.ToJson().ToString());
+						//Debug.WriteLine(get.devicesId+" line 596 :" + DevicesCurrentList.ToJson().ToString());
 
 						DateTime ca = today;
 				//TimeSpan catime = ca - ca.AddDays(-1);
@@ -694,13 +693,13 @@ namespace FYP_APP.Controllers
 							data.Add(0);
 
 						}
-				Debug.WriteLine("line 603 : " + DevicesCurrentList.Count());
+				//Debug.WriteLine("line 603 : " + DevicesCurrentList.Count());
 
 				if (DevicesCurrentList.Count() != 0)
 						{
 					foreach (CurrentDataModel getCurrent in DevicesCurrentList)
 							{
-						Debug.WriteLine("line 615 : "+ DevicesCurrentList.ToJson().ToString());
+						//Debug.WriteLine("line 615 : "+ DevicesCurrentList.ToJson().ToString());
 
 						var value = Convert.ToDouble(Convert.ToDouble(getCurrent.current).ToString("0.00"));
 
@@ -730,7 +729,7 @@ namespace FYP_APP.Controllers
 					}
 
 					foreach (var get in datas) {
-						Debug.WriteLine(get.ToJson());
+						//Debug.WriteLine(get.ToJson());
 
 					}
 			return chart.LineChart(DevicesDataList.Count, labelss, datas);
