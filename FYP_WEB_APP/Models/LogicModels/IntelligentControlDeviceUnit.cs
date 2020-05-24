@@ -51,7 +51,7 @@ namespace FYP_WEB_APP.Models.LogicModels
             {
                 AC1 = 30;
             }
-            //apparenTemperatureUtil.setAcCurrent('F348',AC1);
+            apparenTemperatureUtil.setAcCurrent("F348",AC1);
             Debug.WriteLine("feels like:" + cT + "AC temp:"+AC1);
         }
     }
