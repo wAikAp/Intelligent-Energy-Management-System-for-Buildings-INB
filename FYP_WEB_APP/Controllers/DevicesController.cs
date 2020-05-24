@@ -11,6 +11,7 @@ using System;
 using System.Diagnostics;
 using FYP_WEB_APP.Controllers;
 using FYP_WEB_APP.Models.LogicModels;
+using Microsoft.AspNetCore.Http;
 
 namespace FYP_APP.Controllers
 {
@@ -381,6 +382,29 @@ namespace FYP_APP.Controllers
 			return ReturnUrl();
 		}
 
+		public ActionResult turnOnOffDevice(IFormCollection postFrom) {
+
+            
+            var deviceID = postFrom["deviceID"];
+			var statusStr = postFrom["deviceCurrentStatus"];//"Turning On" or "Turning Off" 
+			Boolean status = statusStr.Equals("Turning On") ? false : true; // if is turning on then turn off the device
+			try
+			{
+				DateTime nowTime = DateTime.UtcNow.AddHours(8);
+				var update = Builders<MongoDevicesListModel>.Update
+					.Set(x => x.status, status)
+					.Set(x => x.turn_on_time, nowTime);
+				var UpdateResult = new DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST")
+					.FindOneAndUpdateAsync(u => u.devicesId == deviceID, update);
+				return ReturnUrl();
+
+			}
+			catch (Exception ex){
+				Debug.WriteLine("DevicesController turnOnOffDevice error: "+ex);
+				return ReturnUrl();
+			}
+		}
+
 
 		public List<DevicesListModel> GetAllDevices() {			
 			var collection = Getconn();
@@ -535,6 +559,10 @@ namespace FYP_APP.Controllers
 			}*/
 			return sortOrder;
 		}
+
+
+
+
 		public List<RoomsListModel> GetRoomData()
 		{
 			ConnectDB conn = new ConnectDB();

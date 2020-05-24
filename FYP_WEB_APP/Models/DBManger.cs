@@ -16,7 +16,8 @@ namespace FYP_WEB_APP.Models
         private string UKdbName = "mydb";
         private string UKConnectionString = "mongodb://hkteam1:IUXsr2ZYKQuPu0Sj@issf2020hk-shard-00-00-la5xb.gcp.mongodb.net:27017,issf2020hk-shard-00-01-la5xb.gcp.mongodb.net:27017,issf2020hk-shard-00-02-la5xb.gcp.mongodb.net:27017/test?ssl=true&replicaSet=ISSF2020HK-shard-0&authSource=admin&retryWrites=true&w=majority";
         public MongoClient UKdbClient ;
-        public IMongoDatabase Weatherdatabase;
+        public IMongoDatabase WeatherDatabase;
+        public IMongoDatabase ScheduleDatabase;
 
         public DBManger()
         {
@@ -26,7 +27,8 @@ namespace FYP_WEB_APP.Models
             this.DataBase = dbClient.GetDatabase(this.dbName);
             //var collection = database.GetCollection<MongoLightListModel>("LIGHT_LIST");
             this.UKdbClient = new MongoClient(UKConnectionString);
-            this.Weatherdatabase = UKdbClient.GetDatabase(UKdbName);
+            this.WeatherDatabase = UKdbClient.GetDatabase(UKdbName);
+            this.ScheduleDatabase = UKdbClient.GetDatabase(UKdbName);
         }
 
  

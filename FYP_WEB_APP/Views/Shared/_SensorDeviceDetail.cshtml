@@ -7,13 +7,21 @@
     
         <div id="detailDiv" class="card text-white bg-dark mb-3" style="max-width: 30rem;">
             <div class="card-header" style="padding-bottom:0">
-                <h4>
-                    <p style="padding:0">
-                        <b id="typeName">Sensor and Device Detail</b>
-                        <img id="onOff" class="float-right mt-1" style="width: 24px;" src="~/img/icon/power-button-on36.png" display="inline" />
-                    </p>
-                    
-                </h4>
+                <form method="post" action="~/Devices/turnOnOffDevice">
+                    <h4>
+                        <div class="mr-auto" style="padding:0">
+                            <a id="typeName">Sensor and Device Detail</a>
+                            <button class="btn align-middle p-0 float-right" type="submit">
+                                <img id="onOff" style="width: 24px;" src="~/img/icon/power-button-on36.png" display="inline" />
+                            </button>
+                        </div>
+
+                        <input type="hidden" name="deviceID" id="turnOFDeviceID" value="" />
+                        <input type="hidden" name="deviceCurrentStatus" id="turnOFDeviceStatus" value="" />
+                        
+
+                    </h4>
+                </form>
             </div>
             <div class="card-body" style="margin-top:-20px">
                 <button id="editBtn" class="btn mt-0 px-0 float-right" type="button" style="width: 40px; height: 40px; padding-left:10px">

@@ -4,47 +4,53 @@
     FYP_WEB_APP.Models.RegionalWeatherModel Weather = ViewData["RegionalWeatherModel"] as FYP_WEB_APP.Models.RegionalWeatherModel;
 }
 <style>
+
     .nav-link {
-        padding-top: 15px;
+        /*padding-top: 15px;*/
     }
 
+    .tempShow {
+       
+    }
 </style>
 @if (Weather != null)
 {
     <li class="nav-item">
-        <a class="nav-link" href="#"><span id="" class="statusTxt"><b>OUT DOOR</b></span></a>
+        <a class="nav-link" href="#" style="padding-top:10px"><span class="statusTxt"><b>@Weather.Location</b></span></a>
+    </li>
+
+    <li class="nav-item" style="padding-top: 5px; margin-left: -10px; margin-right: 10px;">
+        <a href="#">
+            @{ string icon = @Weather.icon + ".png"; }
+            <img width="36px" src="http://openweathermap.org/img/wn/@icon">
+            <span class="statusTxt" style="margin-left: -5px;">@Weather.Description</span>
+        </a>
     </li>
 
     <li class="nav-item">
-        <a class="nav-link " href="#">
+        <a class="nav-link tempShow" href="#">
             <img src="~/img/icon/weather24.png">
             <span id="" class="statusTxt">@Weather.Temperature &#8451;</span>
         </a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="#">
+    <li class="nav-item ">
+        <a class="nav-link tempShow" href="#">
             <img src="~/img/icon/humidity24.png">
             <span id="" class="statusTxt">@Weather.Humidity %</span>
 
         </a>
     </li>
 
-    <li class="nav-item" style="padding-top: 2px;margin-left: -10px;margin-right: 10px;">
-        <a href="#" >
-            @{ string icon = @Weather.icon+".png"; }
-            <img width="36px" src="http://openweathermap.org/img/wn/@icon">
-            <span id="" class="statusTxt">@Weather.Description</span>
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="#">
+
+    <li class="nav-item ">
+        <a class="nav-link tempShow" href="#">
             <b>Maximun</b>
             <span id="" class="statusTxt">@Weather.Details.TempMax &#8451;</span>
         </a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link" href="#">
+    <li class="nav-item ">
+        <a class="nav-link tempShow" href="#">
             <b>Minimun</b>
             <span id="" class="statusTxt">@Weather.Details.TempMin &#8451;</span>
         </a>
@@ -52,7 +58,7 @@
     <li class="nav-item">
         <a class="nav-link" href="#">
             <b>Last Update</b>
-            <span id="" class="statusTxt">@Weather.LastUpdate @Weather.Date @Weather.Location</span>
+            <span id="" class="statusTxt">@Weather.LastUpdate @Weather.Date</span>
         </a>
     </li>
 }
