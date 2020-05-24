@@ -29,7 +29,7 @@ namespace FYP_APP.Controllers
 		{
 
 			IntelligentControlDeviceUnit intelligentControlDeviceUnit = new IntelligentControlDeviceUnit();
-			RecurringJob.AddOrUpdate(() => intelligentControlDeviceUnit.IntelligentControlDevice(), "* * * * *");
+			RecurringJob.AddOrUpdate(() => intelligentControlDeviceUnit.IntelligentControlDevice(), "5 * * * *");
 
 
 
