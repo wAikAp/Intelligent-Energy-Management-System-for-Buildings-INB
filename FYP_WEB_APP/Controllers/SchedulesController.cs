@@ -4,6 +4,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using FYP_APP.Models.MongoModels;
 using FYP_WEB_APP.Models;
 using FYP_WEB_APP.Models.MongoModels;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +21,8 @@ namespace FYP_APP.Controllers
         List<ScheduleSectionsViewModel> _Sections;
         List<ScheduleSectionsViewModel> _plan;
         List<ScheduleViewModel> _ScheduleList;
+        List<MongoRoomModel> _roomList;
+        
 
         public IActionResult Schedules()
         {
@@ -32,7 +35,7 @@ namespace FYP_APP.Controllers
             ViewBag.y = today.Year;
             ViewBag.m = today.AddMonths(-1).Month;
             ViewBag.d = today.Day;
-
+            ViewBag.roomList = _roomList;
             return View();
         }
         public List<ScheduleModel> GetScheduleList() {
@@ -75,7 +78,8 @@ namespace FYP_APP.Controllers
         public void SetSections() {
             _Sections = new List<ScheduleSectionsViewModel>();
 
-            var roomList = new RoomsController().getRoomListFromDB();
+            var roomList = _roomList= new RoomsController().getRoomListFromDB();
+            
             ViewData["RoomList"] = roomList;
 
             int x = 0;
@@ -154,14 +158,3 @@ namespace FYP_APP.Controllers
 
 }
 
-/*
- { "_id" : ObjectId("5ec892d59422fd3bd08bb252"),
- "Date" : "2020-05-24",
- "Time" : "00:00",
- "Duration" : "60",
- "EventName" : "123", 
- "EventType" : "abc", 
- "Location" : "348",
- "UsagePlan" : "smallclass",
- "User" : null }
-     */

@@ -44,7 +44,11 @@
     </style>
 
     <script charset="utf-8">
-		function init() {
+        function init() {
+            scheduler.config.drag_resize = false;
+            scheduler.config.drag_move = false;
+            scheduler.config.drag_create = false;
+
 			scheduler.config.collision_limit = 1;
 
 			scheduler.config.multi_day = true;
@@ -111,17 +115,30 @@
 			});
 
             scheduler.config.lightbox.sections = [
-                { name: "Event Name", height: 30, map_to: "EventName", type: "textarea", focus: true },
-                { name: "custom", height: 30, map_to: "section_id", type: "select", options: sections, vertical: "false" },
-                { name: "user", height: 30, map_to: "user",      type: "textarea", focus: true },
+                { name: "Event Name", height: 30,       map_to: "EventName", type: "textarea", focus: true },
+                { name: "custom",        height: 30, map_to: "section_id", type: "select", options: sections, vertical: "false" },
+                { name: "user",         height: 30, map_to: "user",      type: "textarea", focus: true },
                 { name: "UsagePlan",   height: 30,  map_to: "powerPlan", type: "select",   options: plan, vertical: "false" },
-				{ name: "recurring",    height: 115, type: "recurring",     map_to: "rec_type", button: "recurring" },
-				{ name: "time",         height: 72,  type: "time",          map_to: "auto" }
+                { name: "recurring", height: 115, map_to: "rec_type", type: "recurring", button: "recurring" },
+                { name: "time", height: 72, map_to: "auto", type: "time"}
             ];
 
             scheduler.init('scheduler_here', new Date(@ViewBag.y, @ViewBag.m, @ViewBag.d), "timeline");
 
             scheduler.parse(@Html.Raw(ViewBag.ScheduleList));
+            scheduler.attachEvent("onEventSave", function (id, ev) {
+                if (!ev.text) {
+                    dhtmlx.alert("Do not create");
+                    return false;
+                }
+                if (ev.text.length < 20) {
+                    dhtmlx.alert("Do not create");
+                    return false;
+                }
+                return true;
+            });
+            scheduler.deleteEvent(2);
+
 		}
     </script>
     <script>
@@ -163,75 +180,22 @@
             <div id="search-panel" class="col-2">
                 <form>
                     <div class="search_form">
-                        <div class="controls">
-                            <fieldset class="type_filter">
-                                <legend>floor:</legend>
-                                <div id="type-options">
-                                    <label>
-                                        <div class="checkbox">
-                                            <input type="checkbox" name="type" value="1" onchange="updateSections()" checked="">
-                                            <span class="checkbox_marker">
-                                            </span>
-                                        </div>
-                                        <span class="checkbox_text">G</span>
-                                    </label><br><label>
-                                        <div class="checkbox">
-                                            <input type="checkbox" name="type" value="2" onchange="updateSections()" checked="">
-                                            <span class="checkbox_marker">
-
-                                            </span>
-                                        </div><span class="checkbox_text">1</span>
-                                    </label>
-                                    <br>
-                                    <label>
-                                        <div class="checkbox">
-                                            <input type="checkbox" name="type" value="3" onchange="updateSections()" checked="">
-                                            <span class="checkbox_marker"></span>
-                                        </div><span class="checkbox_text">2</span>
-                                    </label><br>
-                                    <label>
-                                        <div class="checkbox">
-                                            <input type="checkbox" name="type" value="4" onchange="updateSections()" checked="">
-                                            <span class="checkbox_marker">
-                                            </span>
-                                        </div>
-                                        <span class="checkbox_text">3</span>
-                                    </label>
-                                </div>
-                            </fieldset>
+                        <div class="controls">                           
                             <fieldset class="type_filter">
                                 <legend>Room:</legend>
                                 <div id="type-options">
+                                    @foreach (var get in ViewBag.roomList) {
+
                                     <label>
                                         <div class="checkbox">
                                             <input type="checkbox" name="type" value="1" onchange="updateSections()" checked="">
                                             <span class="checkbox_marker">
+                                                @get.roomId
                                             </span>
                                         </div>
-                                        <span class="checkbox_text">309</span>
-                                    </label><br><label>
-                                        <div class="checkbox">
-                                            <input type="checkbox" name="type" value="2" onchange="updateSections()" checked="">
-                                            <span class="checkbox_marker">
-
-                                            </span>
-                                        </div><span class="checkbox_text">348</span>
                                     </label>
                                     <br>
-                                    <label>
-                                        <div class="checkbox">
-                                            <input type="checkbox" name="type" value="3" onchange="updateSections()" checked="">
-                                            <span class="checkbox_marker"></span>
-                                        </div><span class="checkbox_text">308</span>
-                                    </label><br>
-                                    <label>
-                                        <div class="checkbox">
-                                            <input type="checkbox" name="type" value="4" onchange="updateSections()" checked="">
-                                            <span class="checkbox_marker">
-                                            </span>
-                                        </div>
-                                        <span class="checkbox_text">350</span>
-                                    </label>
+                                    }
                                 </div>
                             </fieldset>
                             <div class="pick_up_filter">
