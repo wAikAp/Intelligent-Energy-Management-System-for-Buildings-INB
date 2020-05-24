@@ -5,12 +5,14 @@
 }
 <style>
 
+
+
+
     .nav-link {
         /*padding-top: 15px;*/
     }
 
     .tempShow {
-       
     }
 </style>
 @if (Weather != null)
@@ -45,20 +47,41 @@
 
     <li class="nav-item ">
         <a class="nav-link tempShow" href="#">
-            <b>Maximun</b>
+            <b>Max</b>
             <span id="" class="statusTxt">@Weather.Details.TempMax &#8451;</span>
         </a>
     </li>
     <li class="nav-item ">
         <a class="nav-link tempShow" href="#">
-            <b>Minimun</b>
+            <b>Min</b>
             <span id="" class="statusTxt">@Weather.Details.TempMin &#8451;</span>
         </a>
     </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="#" title="Apparent Temperature">
+            <b>AT</b>
+            @{
+                FYP_WEB_APP.Models.LogicModels.ApparenTemperatureUtil atUtil = new FYP_WEB_APP.Models.LogicModels.ApparenTemperatureUtil();
+                var at = atUtil.calApparenTemperature(Weather.Temperature, Weather.Humidity, Weather.Wind);
+            }
+            <span id="" class="statusTxt">@at</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#" title="Heat Index">
+            <b>HI</b>
+            @{
+                var hi = atUtil.calHeatIndex(Weather.Temperature, Weather.Humidity);
+            }
+            <span id="" class="statusTxt">@hi</span>
+        </a>
+    </li>
+
     <li class="nav-item">
         <a class="nav-link" href="#">
-            <b>Last Update</b>
-            <span id="" class="statusTxt">@Weather.LastUpdate @Weather.Date</span>
+            <b>Updated</b>
+            <span id="" class="statusTxt">@Weather.LastUpdate</span>
         </a>
     </li>
 }
