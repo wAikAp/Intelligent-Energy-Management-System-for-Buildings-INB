@@ -17,37 +17,6 @@
     <meta name="viewport" content="width=device-width" />
     <title>UserSetting</title>
     <script src="~/js/jquery/jquery-3.5.1.min.js"></script>
-    <script>alert("@currentOpen");</script>
-    @if (currentOpen == "EditUser")
-    {
-        <script>
-            $(document).ready(function () {
-                $("#EditUser").show();
-                $("#PersonalUsagePlan").hide();
-                $("#ChangePassword").hide();
-            });
-        </script>
-    }
-    else if (currentOpen == "ChangePassword")
-    {
-        <script>
-            $(document).ready(function () {
-                $("#EditUser").hide();
-                $("#PersonalUsagePlan").hide();
-                $("#ChangePassword").show();
-            });
-        </script>
-    }
-    else if (currentOpen == "PersonalUsagePlan")
-    {
-        <script>
-            $(document).ready(function () {
-                $("#EditUser").hide();
-                $("#PersonalUsagePlan").show();
-                $("#ChangePassword").hide();
-            });
-        </script>
-    }
     <script>
         $(document).ready(function () {
 

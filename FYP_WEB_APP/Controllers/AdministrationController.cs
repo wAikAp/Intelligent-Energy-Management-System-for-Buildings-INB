@@ -83,6 +83,7 @@ namespace FYP_WEB_APP.Controllers
 				ViewData["userName"] = user.userName;
 				ViewData["fName"] = user.fName;
 				ViewData["lName"] = user.lName;
+				ViewData["currentOpen"] = "ChangePassword";
 			}
 
 			return View();
