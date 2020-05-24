@@ -48,12 +48,21 @@ namespace FYP_WEB_APP.Controllers.API
                     {
                         var up = Builders<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>.Update.Set(x => x.status, data.First().status);
                     var UpdateResult = new Models.DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").FindOneAndUpdateAsync(u => u.devicesId == data.First().deviceId, up);
-                    if (data.First().deviceId.Contains("AC"))
-                    {
-                        up = Builders<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>.Update.Set(x => x.set_value, data.First().set_value);
-                        new Models.DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").FindOneAndUpdateAsync(u => u.devicesId == data.First().deviceId, up);
-                    }
-                    DateTime nowTime = DateTime.UtcNow.AddHours(8);
+
+                        if (data.First().deviceId.Contains("AC") && data.First().status && data.First().set_value != null)
+                        {
+                            up = Builders<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>.Update.Set(x => x.set_value, data.First().set_value);
+                            new Models.DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").FindOneAndUpdateAsync(u => u.devicesId == data.First().deviceId, up);
+                        }
+                        else if (data.First().set_value == null) {
+                            throw new System.ArgumentException("set_value error", "not set value");
+                        }
+                        else {
+                            throw new System.ArgumentException("set_value error", " Device can not set value");
+
+                        }
+
+                        DateTime nowTime = DateTime.UtcNow.AddHours(8);
                     if (data.First().status)//true
                     {
                         up = Builders<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>.Update.Set(x => x.turn_on_time, nowTime);

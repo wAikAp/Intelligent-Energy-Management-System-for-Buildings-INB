@@ -25,7 +25,7 @@ namespace FYP_APP.Controllers
 		{
 			//batch
 			DevicesPowerUseInputUtil devicesPowerUseInputUtil = new DevicesPowerUseInputUtil();
-			RecurringJob.AddOrUpdate(() => devicesPowerUseInputUtil.updateRoomPower(), "* * * * *");
+			//RecurringJob.AddOrUpdate(() => devicesPowerUseInputUtil.updateRoomPower(), "* * * * *");
 			//
 
 			DevicesPowerUseOutputUtil powerUseOutputUtil = new DevicesPowerUseOutputUtil();
