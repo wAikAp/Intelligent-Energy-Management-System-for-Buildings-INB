@@ -31,7 +31,7 @@ namespace FYP_WEB_APP.Models.LogicModels
                 }
             }
             HI = Math.Round((HI - 32) / 1.8, 2);
-            Debug.WriteLine("HeatIndex = " + HI);
+           // Debug.WriteLine("HeatIndex = " + HI);
             return HI;
             
         }
@@ -43,7 +43,7 @@ namespace FYP_WEB_APP.Models.LogicModels
             var e = RH / 100 * 6.105 * Math.Exp((17.26 * T) / (237.7 + T));
             var AT = 1.07 * T + 0.2 * e - 0.65 * V - 2.7;
             AT = Math.Round(AT, 2);
-            Debug.WriteLine("calApparenTemperature = " + AT);
+           // Debug.WriteLine("calApparenTemperature = " + AT);
             return AT;
         }
 
@@ -60,7 +60,7 @@ namespace FYP_WEB_APP.Models.LogicModels
                 var documents = SensorsListcollection.Find(filter).ToList();
                 foreach (MongoSensorsListModel document in documents)
                 {
-                    Debug.WriteLine(document.sensorId);
+                  //  Debug.WriteLine(document.sensorId);
                     if (document.sensorId.Contains("TS"))
                     {
                         count.Add(document.sensorId);
@@ -68,7 +68,7 @@ namespace FYP_WEB_APP.Models.LogicModels
                 }
                 foreach (String sensorId in count)
                 {
-                    Debug.WriteLine("Matched sensors:" + sensorId);
+                   // Debug.WriteLine("Matched sensors:" + sensorId);
                     var Tcollection = dbManager.DataBase.GetCollection<MongoTmpSensor_Model>("TMP_SENSOR");
                     var sort = Builders<MongoTmpSensor_Model>.Sort.Descending("latest_checking_time");
                     var Tfilter = Builders<MongoTmpSensor_Model>.Filter.Eq("sensorId", sensorId);
@@ -105,7 +105,7 @@ namespace FYP_WEB_APP.Models.LogicModels
                 var documents = SensorsListcollection.Find(filter).ToList();
                 foreach (MongoSensorsListModel document in documents)
                 {
-                    Debug.WriteLine(document.sensorId);
+                   // Debug.WriteLine(document.sensorId);
                     if (document.sensorId.Contains("HS"))
                     {
                         count.Add(document.sensorId);
@@ -113,20 +113,20 @@ namespace FYP_WEB_APP.Models.LogicModels
                 }
                 foreach (String sensorId in count)
                 {
-                    Debug.WriteLine("Matched sensors:" + sensorId);
+                  //  Debug.WriteLine("Matched sensors:" + sensorId);
                     var Tcollection = dbManager.DataBase.GetCollection<MongoHumSemsor_Model>("HUM_SENSOR");
                     var sort = Builders<MongoHumSemsor_Model>.Sort.Descending("latest_checking_time");
                     var Tfilter = Builders<MongoHumSemsor_Model>.Filter.Eq("sensorId", sensorId);
                     var Tdocuments = Tcollection.Find(Tfilter).Sort(sort).FirstOrDefault();
                     if (Tdocuments != null)
                     {
-                        Debug.WriteLine(Tdocuments.sensorId + " current " + Tdocuments.current + " record time:" + Tdocuments.latest_checking_time);
+                    //    Debug.WriteLine(Tdocuments.sensorId + " current " + Tdocuments.current + " record time:" + Tdocuments.latest_checking_time);
                         avgHum += Tdocuments.current;
                         sensorsCount++;
                     }
                 }
 
-                Debug.WriteLine("avg current " + avgHum + "/" + sensorsCount + "=" + avgHum / sensorsCount);
+              //  Debug.WriteLine("avg current " + avgHum + "/" + sensorsCount + "=" + avgHum / sensorsCount);
             }
             catch(Exception e)
             {
@@ -148,7 +148,7 @@ namespace FYP_WEB_APP.Models.LogicModels
                 var documents = SensorsListcollection.Find(filter).ToList();
                 foreach (MongoSensorsListModel document in documents)
                 {
-                    Debug.WriteLine(document.sensorId);
+                  //  Debug.WriteLine(document.sensorId);
                     if (document.sensorId.Contains("LS"))
                     {
                         count.Add(document.sensorId);
@@ -156,20 +156,20 @@ namespace FYP_WEB_APP.Models.LogicModels
                 }
                 foreach (String sensorId in count)
                 {
-                    Debug.WriteLine("Matched sensors:" + sensorId);
+                  //  Debug.WriteLine("Matched sensors:" + sensorId);
                     var Tcollection = dbManager.DataBase.GetCollection<MongoLigSensor_Model>("LIGHT_SENSOR");
                     var sort = Builders<MongoLigSensor_Model>.Sort.Descending("latest_checking_time");
                     var Tfilter = Builders<MongoLigSensor_Model>.Filter.Eq("sensorId", sensorId);
                     var Tdocuments = Tcollection.Find(Tfilter).Sort(sort).FirstOrDefault();
                     if (Tdocuments != null)
                     {
-                        Debug.WriteLine(Tdocuments.sensorId + " current " + Tdocuments.current + " record time:" + Tdocuments.latest_checking_time);
+                   //     Debug.WriteLine(Tdocuments.sensorId + " current " + Tdocuments.current + " record time:" + Tdocuments.latest_checking_time);
                         avg += Tdocuments.current;
                         sensorsCount++;
                     }
                 }
 
-                Debug.WriteLine("avg current " + avg + "/" + sensorsCount + "=" + avg / sensorsCount);
+             //   Debug.WriteLine("avg current " + avg + "/" + sensorsCount + "=" + avg / sensorsCount);
             }
             catch (Exception e)
             {
@@ -181,45 +181,69 @@ namespace FYP_WEB_APP.Models.LogicModels
         public Boolean setAcCurrent(String roomId, double current)//set data
         {
             DBManger dbManager = new DBManger();
-            int sensorsCount = 0;
             List<String> count = new List<String>();
             try
             {
-                var SensorsListcollection = dbManager.DataBase.GetCollection<MongoSensorsListModel>("DEVICES_LIST");
-                var filter = Builders<MongoSensorsListModel>.Filter.Eq("roomId", roomId);
-                var documents = SensorsListcollection.Find(filter).ToList();
-                foreach (MongoSensorsListModel document in documents)
+                var devicesListcollection = dbManager.DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST");
+                var ACCollection = dbManager.DataBase.GetCollection<MongoAC_Model>("AC");
+                var filter = Builders<MongoDevicesListModel>.Filter.Eq("roomId", roomId) & Builders<MongoDevicesListModel>.Filter.Regex("devicesId","AC");
+                var documents = devicesListcollection.Find(filter).ToList();
+                foreach (MongoDevicesListModel document in documents)
                 {
-                    Debug.WriteLine(document.sensorId);
-                    if (document.sensorId.Contains("LS"))
-                    {
-                        count.Add(document.sensorId);
-                    }
-                }
-                foreach (String sensorId in count)
-                {
-                    Debug.WriteLine("Matched sensors:" + sensorId);
-                    var Tcollection = dbManager.DataBase.GetCollection<MongoLigSensor_Model>("LIGHT_SENSOR");
-                    var sort = Builders<MongoLigSensor_Model>.Sort.Descending("latest_checking_time");
-                    var Tfilter = Builders<MongoLigSensor_Model>.Filter.Eq("sensorId", sensorId);
-                    var Tdocuments = Tcollection.Find(Tfilter).Sort(sort).FirstOrDefault();
-                    if (Tdocuments != null)
-                    {
-                        Debug.WriteLine(Tdocuments.sensorId + " current " + Tdocuments.current + " record time:" + Tdocuments.latest_checking_time);
-                        avg += Tdocuments.current;
-                        sensorsCount++;
-                    }
-                }
+                    Debug.WriteLine(document.devicesId);
+                    var filter2 = Builders<MongoDevicesListModel>.Filter.Eq("devicesId", document.devicesId);
+                    var update = Builders<MongoDevicesListModel>.Update.Set("set_value", current);
+                    devicesListcollection.UpdateOne(filter2, update);
 
-                Debug.WriteLine("avg current " + avg + "/" + sensorsCount + "=" + avg / sensorsCount);
+                    MongoAC_Model mongoAC_Model = new MongoAC_Model();
+                    mongoAC_Model.devicesId = document.devicesId;
+                    mongoAC_Model.current = current;
+                    mongoAC_Model.latest_checking_time = DateTime.Now;
+                    ACCollection.InsertOne(mongoAC_Model);
+                }
+                return true;
+                
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e);
+                return false;
             }
-            return Math.Round(avg / sensorsCount, 2);
+            
         }
 
+        public Boolean setLTCurrent(String roomId, double current)//set data
+        {
+            DBManger dbManager = new DBManger();
+            List<String> count = new List<String>();
+            try
+            {
+                var devicesListcollection = dbManager.DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST");
+                var Collection = dbManager.DataBase.GetCollection<MongoLig_Model>("LIGHT");
+                var filter = Builders<MongoDevicesListModel>.Filter.Eq("roomId", roomId) & Builders<MongoDevicesListModel>.Filter.Regex("devicesId", "LT");
+                var documents = devicesListcollection.Find(filter).ToList();
+                foreach (MongoDevicesListModel document in documents)
+                {
+                    //Debug.WriteLine(document.devicesId);
+                    var filter2 = Builders<MongoDevicesListModel>.Filter.Eq("devicesId", document.devicesId);
+                    var update = Builders<MongoDevicesListModel>.Update.Set("set_value", current);
+                    devicesListcollection.UpdateOne(filter2, update);
+
+                    MongoLig_Model mongo_Model = new MongoLig_Model();
+                    mongo_Model.devicesId = document.devicesId;
+                    mongo_Model.current = current;
+                    mongo_Model.latest_checking_time = DateTime.Now;
+                    Collection.InsertOne(mongo_Model);
+                }
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+                return false;
+            }
+        }
 
         public string getUIColor(double AT) {
             

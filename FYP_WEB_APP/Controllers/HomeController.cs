@@ -30,10 +30,10 @@ namespace FYP_APP.Controllers
 
 
 			ApparenTemperatureUtil apparenTemperatureUtil = new ApparenTemperatureUtil();
-			apparenTemperatureUtil.getAvgTemp("F348");
-			apparenTemperatureUtil.getAvgHum("F348");
-			apparenTemperatureUtil.getAvgLig("F348");
-
+			//apparenTemperatureUtil.getAvgTemp("F348");
+			//apparenTemperatureUtil.getAvgHum("F348");
+			//apparenTemperatureUtil.getAvgLig("F348");
+			//apparenTemperatureUtil.setLTCurrent("F348",30);
 
 
 
