@@ -4,7 +4,7 @@ namespace FYP_WEB_APP.Models.LogicModels
     public class IntelligentControlDeviceUnit
     {
         static ApparenTemperatureUtil apUtil = new ApparenTemperatureUtil();
-        public void IntelligentControlDevice() {
+        /*public void IntelligentControlDevice() {
 
             var T = 0;//room temp
             var H = 0;//room hum
@@ -47,6 +47,6 @@ namespace FYP_WEB_APP.Models.LogicModels
                 AC1 = AC2 = 30;
             }
 
-        }
+        }*/
     }
 }

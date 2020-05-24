@@ -34,7 +34,8 @@ namespace FYP_APP.Controllers
 			//apparenTemperatureUtil.getAvgHum("F348");
 			//apparenTemperatureUtil.getAvgLig("F348");
 			//apparenTemperatureUtil.setLTCurrent("F348",30);
-
+			//apparenTemperatureUtil.getRoomList()
+			
 
 
 

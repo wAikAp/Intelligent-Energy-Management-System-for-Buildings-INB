@@ -270,5 +270,19 @@ namespace FYP_WEB_APP.Models.LogicModels
             return ATbgCol;
         }
 
+        public List<String> getRoomList()
+        {
+            DBManger dbManager = new DBManger();
+            List<String> roomlist = new List<string>();
+            var collection = dbManager.DataBase.GetCollection<RoomsListModel>("ROOM");
+			var documents = collection.Find(new BsonDocument()).ToList();
+			foreach (var element in documents)
+			{
+                roomlist.Add(element.roomId);
+                //Debug.WriteLine("Room list" + element.roomId);
+            }
+            return roomlist;
+
+        }
     }
 }
