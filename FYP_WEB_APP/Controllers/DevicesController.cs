@@ -632,7 +632,7 @@ namespace FYP_APP.Controllers
 					break;
 				case "LT":
 					DevicesDataList = DevicesDataList.Where(x => x.devicesId.Contains("LT")).ToList();
-					ViewBag.unit = " lm";
+					ViewBag.unit = " ";
 					ViewBag.unitName = "Light";
 					break;
 				case "HD":

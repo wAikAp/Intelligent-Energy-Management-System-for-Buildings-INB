@@ -24,7 +24,7 @@
         case "LT":
             deviceImg = Model.status ? "light-on64.png": "light-off96.png";
             displayType = "Light";
-            value_unit = "lm";
+            value_unit = "";
             deviceClass = Model.status ? "LightDevice_on " : "LightDevice_off ";
             devImgInv = "";
             break;
@@ -46,7 +46,7 @@
 <div class="draggable @deviceClass @textClr" id="@Model.devicesId">
     <p style="margin:0; padding:0;">@Model.devicesId</p>
     <img src="~/img/icon/@deviceImg" style="filter:@devImgInv" height="24px" />
-    <p>@Model.current @value_unit</p>
+    <p>@Model.set_value @value_unit</p>
 </div>
 
 
@@ -61,7 +61,7 @@
         $("#desc").text("@Model.desc");
         $("#typeImg").attr('src', '/img/icon/@deviceImg');
         $("#typeImg").css({ filter: "@devImgInv" });
-        $("#current_value").html('@Model.current @value_unit');
+        $("#current_value").html('@Model.set_value @value_unit');
         $("#totalPower").text("@Model.currentMonthUsage"+"kW");
         $("#avgPower").text("@Model.avgPower" + "kW");
         $("#device_power").text("@Model.power"+"kW");

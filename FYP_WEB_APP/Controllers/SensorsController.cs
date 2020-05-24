@@ -566,7 +566,7 @@ namespace FYP_APP.Controllers
 					type = "°C";
 					break;
 				case "LS":
-					type = "lm";
+					type = "";
 					break;
 				case "HS":
 					type = "%";
@@ -694,7 +694,7 @@ namespace FYP_APP.Controllers
 					break;
 				case "LS":
 					SensorsDataList = SensorsDataList.Where(x => x.sensorId.Contains("LS")).ToList();
-					ViewBag.unit = " lm";
+					ViewBag.unit = " ";
 					ViewBag.unitName = "Luminosity";
 					break;
 				case "HS":
