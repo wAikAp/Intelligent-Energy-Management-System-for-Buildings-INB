@@ -6,7 +6,7 @@
     String fName = (String)ViewData["fName"];
     String lName = (String)ViewData["lName"];
     String userName = (String)ViewData["userName"];
-
+    String currentOpen = (String)ViewData["currentOpen"]; //EditUser , ChangePassword, PersonalUsagePlan
     var i = 0;
 }
 
@@ -17,10 +17,41 @@
     <meta name="viewport" content="width=device-width" />
     <title>UserSetting</title>
     <script src="~/js/jquery/jquery-3.5.1.min.js"></script>
-
-
+    <script>alert("@currentOpen");</script>
+    @if (currentOpen == "EditUser")
+    {
+        <script>
+            $(document).ready(function () {
+                $("#EditUser").show();
+                $("#PersonalUsagePlan").hide();
+                $("#ChangePassword").hide();
+            });
+        </script>
+    }
+    else if (currentOpen == "ChangePassword")
+    {
+        <script>
+            $(document).ready(function () {
+                $("#EditUser").hide();
+                $("#PersonalUsagePlan").hide();
+                $("#ChangePassword").show();
+            });
+        </script>
+    }
+    else if (currentOpen == "PersonalUsagePlan")
+    {
+        <script>
+            $(document).ready(function () {
+                $("#EditUser").hide();
+                $("#PersonalUsagePlan").show();
+                $("#ChangePassword").hide();
+            });
+        </script>
+    }
     <script>
         $(document).ready(function () {
+
+
             $("#EditUser").show();
             $("#PersonalUsagePlan").hide();
             $("#ChangePassword").hide();
@@ -41,7 +72,7 @@
                 $("#EditUser").hide();
                 $("#PersonalUsagePlan").hide();
                 $("#ChangePassword").show();
-            }); 
+            });
         });
     </script>
 
@@ -57,6 +88,8 @@
                         <a class="dropdown-item " id="userSettingButton">User Infomation</a>
                         <a class="dropdown-item " id="changePasswordButton">Password</a>
                         <a class="dropdown-item " id="userPrefereceButton">User preferece use plan</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item " href="~/Administration/Logout" id="userPrefereceButton"><button type="button" class="btn btn-danger w-100">Logout</button></a>
                     </div>
                 </div>
             </div>
@@ -65,19 +98,20 @@
         <div class="col-sm-8">
             <div class="col-12" id="EditUser">
                 <h4 class="mb-3">User setting</h4>
-                <form class="needs-validation" novalidate="" action="~/Administration/UpdateInfo" method="post">
+                <form class="needs-validation" action="~/Administration/UpdateInfo" method="post">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <input type="hidden" value="@userName" id="userName" name="userName">
+                            <input type="hidden" value="EditUser" id="currentOpen" name="currentOpen">
                             <label for="firstName">First name</label>
-                            <input type="text" class="form-control" id="firstName" placeholder="" name="fName" value="@fName" required>
+                            <input type="text" class="form-control" id="firstName" name="fName" placeholder="@fName" required>
                             <div class="invalid-feedback">
                                 Valid first name is required.
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="lastName">Last name</label>
-                            <input type="text" class="form-control" id="lastName" placeholder="" name="lName"value="@lName" required>
+                            <input type="text" class="form-control" id="lastName" name="lName" placeholder="@lName" required>
                             <div class="invalid-feedback">
                                 Valid last name is required.
                             </div>
@@ -91,16 +125,22 @@
 
             <div class="col-12" id="ChangePassword">
                 <h4 class="mb-3">Change password</h4>
-                <form class="needs-validation" novalidate="" action="~/Administration/UpdatePwd" method="post">
+                <form class="needs-validation" action="~/Administration/UpdatePwd" method="post">
                     <input type="hidden" value="@userName" id="userName" name="userName">
+                    <input type="hidden" value="ChangePassword" id="currentOpen" name="currentOpen">
                     <div class="mb-3">
                         <label for="password">New Password</label>
                         <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-
+                        <div class="invalid-feedback">
+                            Valid password is required.
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="password">Confirm Password</label>
                         <input type="password" class="form-control" id="cPassword" name="cPassword" placeholder="Confirm password" required>
+                        <div class="invalid-feedback">
+                            Valid confirm password is required.
+                        </div>
                     </div>
                     <hr class="mb-4">
                     <input type="submit" class="btn  btn-success w-25 mx-auto" value="Save">
@@ -143,20 +183,21 @@
                                                 <form action="~/Administration/UserSetting" method="post">
                                                     <div class="modal-header">
                                                         <h4 class="modal-title">@userPlan.name</h4>
-                                                    </div>
+                                                    </div>                                                  
                                                     <div class="modal-body">
                                                         <input type="hidden" value="@userPlan.userName" id="userName" name="userName">
+                                                        <input type="hidden" value="PersonalUsagePlan" id="currentOpen" name="currentOpen">
                                                         <div class="form-group">
                                                             <label for="pTemp">Preferred Temperature(16°C-30°C):</label>
-                                                            <input class="form-control" type="number" id="pTemp" name="pTemp" value="@userPlan.pTemp" min="16" max="30">
+                                                            <input class="form-control" type="number" id="pTemp" name="pTemp" value="@userPlan.pTemp" min="16" max="30" required>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="pHum">Preferred Humidity(80%-95%):</label>
-                                                            <input class="form-control" type="number" id="pHum" name="pHum" value="@userPlan.pHum" min="80" max="95">
+                                                            <input class="form-control" type="number" id="pHum" name="pHum" value="@userPlan.pHum" min="80" max="95" required>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="pLig">Preferred Lighting(2500lm-5000lm):</label>
-                                                            <input class="form-control" type="number" id="pLig" name="pLig" value="@userPlan.pLig" min="2500" max="5000">
+                                                            <input class="form-control" type="number" id="pLig" name="pLig" value="@userPlan.pLig" min="2500" max="5000" required>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="comment">Description:</label>
@@ -184,6 +225,7 @@
                                                     </div>
                                                     <div class="modal-body">
                                                         <input type="hidden" value="@userName" id="userName" name="userName">
+                                                        <input type="hidden" value="PersonalUsagePlan" id="currentOpen" name="currentOpen">
                                                         <input type="hidden" value="@userPlan.name" id="name" name="name">
                                                         <h4>Are you sure to delete Plan :@userPlan.name ?</h4>
                                                     </div>
@@ -214,6 +256,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <input type="hidden" value="@userName" id="userName" name="userName">
+                                    <input type="hidden" value="PersonalUsagePlan" id="currentOpen" name="currentOpen">
                                     <div class="form-group">
                                         <label for="name">Plan name</label>
                                         <input type="text" id="name" name="name" required>

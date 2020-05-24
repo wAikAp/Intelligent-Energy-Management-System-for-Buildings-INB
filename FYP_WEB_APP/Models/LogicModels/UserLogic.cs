@@ -62,6 +62,34 @@ namespace FYP_APP.Models.LogicModels
 			}
 		}
 
+		public List<MongoUserModel> getAllUserModel()
+		{
+			var collection = dbManager.DataBase.GetCollection<MongoUserModel>("USER");
+			try
+			{
+				var documentList = collection.Find(new BsonDocument()).ToList();
+				if (documentList != null)
+				{
+					foreach (MongoUserModel document in documentList)
+					{
+						Debug.WriteLine("find user: " + document.userName);
+					}
+					return documentList;
+				}
+				else
+				{
+					Debug.WriteLine("not find");
+					return null;
+				}
+			}
+			catch(Exception e)
+			{
+				Debug.WriteLine(e);
+				return null;
+			}
+			
+		}
+
 		public List<MongoPersonalUsagePlanModel> getPersonalUsagePlan(String userName)
 		{
 			var collection = dbManager.DataBase.GetCollection<MongoPersonalUsagePlanModel>("PERSONAL_USAGE_PLAN");
@@ -188,5 +216,72 @@ namespace FYP_APP.Models.LogicModels
 				return false;
 			}
 		}
+
+		public Boolean adminAddUser(String userName, String fName, String lName, String password)
+		{
+			try
+			{
+				var collection = dbManager.DataBase.GetCollection<MongoUserModel>("USER");
+				var filterBuilder = Builders<MongoUserModel>.Filter;
+				var filter = filterBuilder.Eq("userName", userName);
+				var Document = collection.Find(filter).FirstOrDefault();
+				if (Document == null)
+				{
+					MongoUserModel mongoUserModel = new MongoUserModel();
+					mongoUserModel.userName = userName;
+					mongoUserModel.fName = fName;
+					mongoUserModel.lName = lName;
+					mongoUserModel.password = password;
+					collection.InsertOne(mongoUserModel);
+					return true;
+					//Debug.WriteLine("Document "+ Document.name);
+				}
+
+			}
+			catch (Exception e)
+			{
+				Debug.WriteLine(e);
+				return false;
+			}
+
+			return false;
+		}
+
+		public Boolean adminUpdateUserInfo(String userName, String fName, String lName, String password)
+		{
+			try
+			{
+				var collection = dbManager.DataBase.GetCollection<MongoUserModel>("USER");
+				var filterBuilder = Builders<MongoUserModel>.Filter;
+				var filter = filterBuilder.Eq("userName", userName);
+				var update = Builders<MongoUserModel>.Update.Set("fName", fName).Set("lName", lName).Set("password", password);
+				collection.UpdateOne(filter, update);
+				return true;
+			}
+			catch (Exception e)
+			{
+				Debug.WriteLine(e);
+				return false;
+			}
+		}
+
+		public Boolean adminDeleteUser(String userName)
+		{
+			try
+			{
+				var collection = dbManager.DataBase.GetCollection<MongoUserModel>("USER");
+				var filterBuilder = Builders<MongoUserModel>.Filter;
+				var filter = filterBuilder.Eq("userName", userName);
+				collection.DeleteOne(filter);
+				return true;
+			}
+			catch (Exception e)
+			{
+				Debug.WriteLine(e);
+				return false;
+			}
+		}
+
+
 	}
 }

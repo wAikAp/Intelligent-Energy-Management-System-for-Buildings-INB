@@ -1,8 +1,156 @@
-﻿
+﻿@using Microsoft.AspNetCore.Http
+@using FYP_WEB_APP.Models.MongoModels;
+@using FYP_APP.Models.MongoModels;
 @{
-    ViewData["Title"] = "Administration";
     Layout = "_Layout";
+    var userList = (List<MongoUserModel>)ViewData["userList"];
+    var i = 0;
 }
+<!DOCTYPE html>
 
-<h1>Administration</h1>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>UserSetting</title>
+    <script src="~/js/jquery/jquery-3.5.1.min.js"></script>
 
+
+    <script>
+    </script>
+
+</head>
+<body>
+    @Html.Raw(TempData["msg"])
+    <div class="container">
+        <div class="row mt-4">       
+            <div class="col-12" id="UserAdministration">
+                <h1 class="mb-3">User Administration</h1>
+                <div class="overflow-auto">
+                    <button type="button" class="btn btn-primary float-right mb-3" data-toggle="modal" data-target="#AddPlanModal">Add user</button>
+                    <table class="table table-striped table-hover" id="RoomsTable">
+                        <thead>
+                            <tr>
+                                <th class="th-sm" scope="col">User Name</th>
+                                <th scope="col">First Name</th>
+                                <th scope="col">Last Name</th>
+                                <th scope="col" colspan="2">Options</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (userList != null)
+                            {
+                                @foreach (MongoUserModel user in userList)
+                                {
+                                    <tr class='clickable-row' data-href='@user.userName' style="cursor: pointer;">
+                                        <td>@user.userName</td>
+                                        <td>@user.fName</td>
+                                        <td>@user.lName</td>
+                                        <td><button type="button" class="btn btn-success" data-toggle="modal" data-target="#Modal_@i">Edit</button></td>
+                                        <td><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#DeleteModal_@i">Delete</button></td>
+                                    </tr>
+
+                                    <div id="Modal_@i" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <form action="~/Administration/AdminUpdateInfo" method="post">          <!-- wait for edit-->
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">@user.userName</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <input type="hidden" value="@user.userName" id="userName" name="userName">
+                                                        <div class="form-group">
+                                                            <label for="fName">First Name:</label>
+                                                            <input class="form-control" type="text" id="fName" name="fName" value="@user.fName" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="lName">Last Name:</label>
+                                                            <input class="form-control" type="text" id="lName" name="lName" value="@user.lName" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="password">Password:</label>
+                                                            <input class="form-control" type="password" id="password" name="password" value="@user.password" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <input type="submit" class="btn btn-success" value="Save">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- delete plan-->
+                                    <div id="DeleteModal_@i" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <form action="~/Administration/AdminDeleteUser" method="post"> <!--wait for edit -->
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">Delete user</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <input type="hidden" value="@user.userName" id="userName" name="userName">
+                                                        <h4>Are you sure to delete Plan :@user.userName ?</h4>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <input type="submit" class="btn btn-danger" value="Delete">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- delete plan-->
+                                    i++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+                <!-- add plan-->
+                <div id="AddPlanModal" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <form action="~/Administration/AdminAddUser" method="post"> <!-- wait change-->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Create new user</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="userName">User Name:</label>
+                                        <input class="form-control" type="text" id="userName" name="userName" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="fName">First Name:</label>
+                                        <input class="form-control" type="text" id="fName" name="fName" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="lName">Last Name:</label>
+                                        <input class="form-control" type="text" id="lName" name="lName" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">Password:</label>
+                                        <input class="form-control" type="password" id="password" name="password"  required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <input type="submit" class="btn btn-success" value="Create">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- add plan-->
+
+
+            </div>
+        </div>   
+    </div>
+        
+        </body>
+</html>
