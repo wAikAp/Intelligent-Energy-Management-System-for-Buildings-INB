@@ -1,4 +1,8 @@
-﻿using System;
+﻿using FYP_WEB_APP.Models.MongoModels;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace FYP_WEB_APP.Models.LogicModels
@@ -42,5 +46,179 @@ namespace FYP_WEB_APP.Models.LogicModels
             Debug.WriteLine("calApparenTemperature = " + AT);
             return AT;
         }
+
+        public double getAvgTemp(String roomId)
+        {
+            DBManger dbManager = new DBManger();
+            double avgTemp = 0;
+            int sensorsCount = 0;
+            List<String> count = new List<String>();
+            try
+            {
+                var SensorsListcollection = dbManager.DataBase.GetCollection<MongoSensorsListModel>("SENSOR_LIST");
+                var filter = Builders<MongoSensorsListModel>.Filter.Eq("roomId", roomId);
+                var documents = SensorsListcollection.Find(filter).ToList();
+                foreach (MongoSensorsListModel document in documents)
+                {
+                    Debug.WriteLine(document.sensorId);
+                    if (document.sensorId.Contains("TS"))
+                    {
+                        count.Add(document.sensorId);
+                    }
+                }
+                foreach (String sensorId in count)
+                {
+                    Debug.WriteLine("Matched sensors:" + sensorId);
+                    var Tcollection = dbManager.DataBase.GetCollection<MongoTmpSensor_Model>("TMP_SENSOR");
+                    var sort = Builders<MongoTmpSensor_Model>.Sort.Descending("latest_checking_time");
+                    var Tfilter = Builders<MongoTmpSensor_Model>.Filter.Eq("sensorId", sensorId);
+                    var Tdocuments = Tcollection.Find(Tfilter).Sort(sort).FirstOrDefault();
+                    if (Tdocuments != null)
+                    {
+                        Debug.WriteLine(Tdocuments.sensorId + " current " + Tdocuments.current + " record time:" + Tdocuments.latest_checking_time);
+                        avgTemp += Tdocuments.current;
+                        sensorsCount++;
+                    }
+                }
+                Debug.WriteLine("avg current " + avgTemp + "/" + sensorsCount + "=" + avgTemp / sensorsCount);
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+           
+
+            
+            return Math.Round(avgTemp / sensorsCount,2);
+        } //get data from sensors
+
+        public double getAvgHum(String roomId)
+        {
+            DBManger dbManager = new DBManger();
+            double avgHum = 0;
+            int sensorsCount = 0;
+            List<String> count = new List<String>();
+            try
+            {
+                var SensorsListcollection = dbManager.DataBase.GetCollection<MongoSensorsListModel>("SENSOR_LIST");
+                var filter = Builders<MongoSensorsListModel>.Filter.Eq("roomId", roomId);
+                var documents = SensorsListcollection.Find(filter).ToList();
+                foreach (MongoSensorsListModel document in documents)
+                {
+                    Debug.WriteLine(document.sensorId);
+                    if (document.sensorId.Contains("HS"))
+                    {
+                        count.Add(document.sensorId);
+                    }
+                }
+                foreach (String sensorId in count)
+                {
+                    Debug.WriteLine("Matched sensors:" + sensorId);
+                    var Tcollection = dbManager.DataBase.GetCollection<MongoHumSemsor_Model>("HUM_SENSOR");
+                    var sort = Builders<MongoHumSemsor_Model>.Sort.Descending("latest_checking_time");
+                    var Tfilter = Builders<MongoHumSemsor_Model>.Filter.Eq("sensorId", sensorId);
+                    var Tdocuments = Tcollection.Find(Tfilter).Sort(sort).FirstOrDefault();
+                    if (Tdocuments != null)
+                    {
+                        Debug.WriteLine(Tdocuments.sensorId + " current " + Tdocuments.current + " record time:" + Tdocuments.latest_checking_time);
+                        avgHum += Tdocuments.current;
+                        sensorsCount++;
+                    }
+                }
+
+                Debug.WriteLine("avg current " + avgHum + "/" + sensorsCount + "=" + avgHum / sensorsCount);
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+            return Math.Round(avgHum / sensorsCount, 2);
+        }
+
+        public double getAvgLig(String roomId)
+        {
+            DBManger dbManager = new DBManger();
+            double avg = 0;
+            int sensorsCount = 0;
+            List<String> count = new List<String>();
+            try
+            {
+                var SensorsListcollection = dbManager.DataBase.GetCollection<MongoSensorsListModel>("SENSOR_LIST");
+                var filter = Builders<MongoSensorsListModel>.Filter.Eq("roomId", roomId);
+                var documents = SensorsListcollection.Find(filter).ToList();
+                foreach (MongoSensorsListModel document in documents)
+                {
+                    Debug.WriteLine(document.sensorId);
+                    if (document.sensorId.Contains("LS"))
+                    {
+                        count.Add(document.sensorId);
+                    }
+                }
+                foreach (String sensorId in count)
+                {
+                    Debug.WriteLine("Matched sensors:" + sensorId);
+                    var Tcollection = dbManager.DataBase.GetCollection<MongoLigSensor_Model>("LIGHT_SENSOR");
+                    var sort = Builders<MongoLigSensor_Model>.Sort.Descending("latest_checking_time");
+                    var Tfilter = Builders<MongoLigSensor_Model>.Filter.Eq("sensorId", sensorId);
+                    var Tdocuments = Tcollection.Find(Tfilter).Sort(sort).FirstOrDefault();
+                    if (Tdocuments != null)
+                    {
+                        Debug.WriteLine(Tdocuments.sensorId + " current " + Tdocuments.current + " record time:" + Tdocuments.latest_checking_time);
+                        avg += Tdocuments.current;
+                        sensorsCount++;
+                    }
+                }
+
+                Debug.WriteLine("avg current " + avg + "/" + sensorsCount + "=" + avg / sensorsCount);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+            return Math.Round(avg / sensorsCount, 2);
+        }
+
+        public Boolean setAcCurrent(String roomId, double current)//set data
+        {
+            DBManger dbManager = new DBManger();
+            int sensorsCount = 0;
+            List<String> count = new List<String>();
+            try
+            {
+                var SensorsListcollection = dbManager.DataBase.GetCollection<MongoSensorsListModel>("DEVICES_LIST");
+                var filter = Builders<MongoSensorsListModel>.Filter.Eq("roomId", roomId);
+                var documents = SensorsListcollection.Find(filter).ToList();
+                foreach (MongoSensorsListModel document in documents)
+                {
+                    Debug.WriteLine(document.sensorId);
+                    if (document.sensorId.Contains("LS"))
+                    {
+                        count.Add(document.sensorId);
+                    }
+                }
+                foreach (String sensorId in count)
+                {
+                    Debug.WriteLine("Matched sensors:" + sensorId);
+                    var Tcollection = dbManager.DataBase.GetCollection<MongoLigSensor_Model>("LIGHT_SENSOR");
+                    var sort = Builders<MongoLigSensor_Model>.Sort.Descending("latest_checking_time");
+                    var Tfilter = Builders<MongoLigSensor_Model>.Filter.Eq("sensorId", sensorId);
+                    var Tdocuments = Tcollection.Find(Tfilter).Sort(sort).FirstOrDefault();
+                    if (Tdocuments != null)
+                    {
+                        Debug.WriteLine(Tdocuments.sensorId + " current " + Tdocuments.current + " record time:" + Tdocuments.latest_checking_time);
+                        avg += Tdocuments.current;
+                        sensorsCount++;
+                    }
+                }
+
+                Debug.WriteLine("avg current " + avg + "/" + sensorsCount + "=" + avg / sensorsCount);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+            return Math.Round(avg / sensorsCount, 2);
+        }
+
     }
 }
