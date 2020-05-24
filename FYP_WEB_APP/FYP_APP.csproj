@@ -37,8 +37,4 @@
   <ItemGroup>
     <Folder Include="Views\RoomDetail\" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Remove="wwwroot\img\icon\power-button-off36.png" />
-    <Content Remove="wwwroot\img\icon\power-button-on36.png" />
-  </ItemGroup>
 </Project>

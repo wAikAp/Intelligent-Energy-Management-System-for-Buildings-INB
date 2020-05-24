@@ -24,7 +24,9 @@ namespace FYP_WEB_APP.Controllers
         [HttpGet]
         public RegionalWeatherModel GetWeather()
         {
-            this.calHeatIndex(27,80);
+            calHeatIndex(27,80);
+            calApparenTemperature(27, 80, 0.5);
+
             try
             {
                 var sort = Builders<RegionalWeatherModel>.Sort.Descending("_id");
@@ -69,7 +71,14 @@ namespace FYP_WEB_APP.Controllers
             Debug.WriteLine("HeatIndex = "+ HI);
         }
 
-
+        public void calApparenTemperature(double T,double RH, double V ) {
+            //Where AT is somatosensory temperature (° C), T is air temperature (° C),
+            //e is water pressure (hPa), V is wind speed (m / sec), RH is relative humidity (%)
+            var e = RH / 100 * 6.105 * Math.Exp((17.26 * T) / (237.7 + T));
+            var AT = 1.07 * T + 0.2 * e - 0.65 * V - 2.7;
+            AT = Math.Round(AT, 2);
+            Debug.WriteLine("calApparenTemperature = " + AT);
+        }
     }
 
 }

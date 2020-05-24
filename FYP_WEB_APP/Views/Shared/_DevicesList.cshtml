@@ -111,7 +111,7 @@
                                         @ViewData["devicesType"]
                                     </a>
                                 </div>
-                                <form method="post" action="~/Devices/turnOnOffDevice">
+                                <form class="m-0" method="post" action="~/Devices/turnOnOffDevice">
                                     <input type="hidden" name="deviceID" value="@deviceModel.devicesId" />
                                     <input type="hidden" name="deviceCurrentStatus" value="@turnOFstr" />
 
