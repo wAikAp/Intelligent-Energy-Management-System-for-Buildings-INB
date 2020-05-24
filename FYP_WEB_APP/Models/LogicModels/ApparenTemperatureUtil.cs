@@ -198,7 +198,7 @@ namespace FYP_WEB_APP.Models.LogicModels
                     MongoAC_Model mongoAC_Model = new MongoAC_Model();
                     mongoAC_Model.devicesId = document.devicesId;
                     mongoAC_Model.current = current;
-                    mongoAC_Model.latest_checking_time = DateTime.Now;
+                    mongoAC_Model.latest_checking_time = DateTime.UtcNow.AddHours(8);
                     ACCollection.InsertOne(mongoAC_Model);
                 }
                 return true;
@@ -232,7 +232,7 @@ namespace FYP_WEB_APP.Models.LogicModels
                     MongoLig_Model mongo_Model = new MongoLig_Model();
                     mongo_Model.devicesId = document.devicesId;
                     mongo_Model.current = current;
-                    mongo_Model.latest_checking_time = DateTime.Now;
+                    mongo_Model.latest_checking_time = DateTime.UtcNow.AddHours(8);
                     Collection.InsertOne(mongo_Model);
                 }
                 return true;

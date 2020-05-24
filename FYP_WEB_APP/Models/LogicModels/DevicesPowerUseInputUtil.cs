@@ -50,7 +50,7 @@ namespace FYP_WEB_APP.Models.LogicModels
 				MongoDevicesPowerUse powerUseRecord = new MongoDevicesPowerUse();
 				powerUseRecord.devicesId = device.devicesId;
 				powerUseRecord.roomId = device.roomId;
-				powerUseRecord.recorded_time = DateTime.Now;
+				powerUseRecord.recorded_time = DateTime.UtcNow.AddHours(8);
 				powerUseRecord.recorded_used_time = usedTime;
 				powerUseRecord.power_used = Math.Round((device.power * (usedTime * 0.000277777778)), 2); //to kWh
 
