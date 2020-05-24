@@ -58,26 +58,9 @@
 
 			scheduler.locale.labels.section_custom = "Section";
 
-			var unit = [
-				{ key: 309, label: "309" },
-				{ key: 308, label: "308" },
-				{ key: 348, label: "348" },
-				{ key: 349, label: "349" },
-				{ key: 350, label: "350" }
-			];
-			var sections = [
-				{ key: 309, label: "309" },
-				{ key: 308, label: "308" },
-				{ key: 348, label: "348" },
-				{ key: 349, label: "349" },
-				{ key: 350, label: "350" }
-			];
-			var plan = [
-				{ key: 1, label: "A" },
-				{ key: 2, label: "B" },
-				{ key: 3, label: "C" },
-				{ key: 4, label: "D" }
-			];
+
+			var sections =@Html.Raw(ViewBag.Sections);
+			var plan = @Html.Raw(ViewBag.plan);
 
 			scheduler.createTimelineView({
 				name: "timeline",
@@ -101,7 +84,7 @@
 				days: 1
 			});
 
-			scheduler.addMarkedTimespan({
+		/*	scheduler.addMarkedTimespan({ //do user not match block
 				start_date:new Date(2020,5,30,15),
 				end_date: new Date(2020, 5,30, 19),
 				html:"<div class='justify-content-center align-items-center' style='  font-size: 25px;  font-weight: bold;'><div>Blocked<div></div>",
@@ -112,14 +95,14 @@
 					unit: 349 // list of sections
 				}
 			});
-
+            */
 
 			scheduler.templates.event_text = function (start, end, event) {
-				return "CW-" + event.room + "<br>" + event.user;
+				return "CW-" + event.Room + "<br>" + event.User;
 			};
 
 			scheduler.templates.event_bar_text = function (start, end, event) {
-				return "CW-" + event.room + "<br>" + event.user;
+                return "CW-" + event.Room + "<br>" + event.User;
 			};
 
 			scheduler.attachEvent("onClick", function (id, e) {
@@ -127,23 +110,18 @@
 				return true;
 			});
 
-			scheduler.config.lightbox.sections = [
-				{ name: "custom", height: 22, map_to: "section_id", type: "textarea", options: sections, vertical: "false" },
-				{ name: "user", height: 20, map_to: "user", type: "textarea", focus: true },
-                { name: "description", height: 130, map_to: "EventName", type: "textarea", focus: true },
-				{ name: "power Plan", height: 30, map_to: "powerPlan", type: "select", options: plan, vertical: "false" },
-				{ name: "recurring", height: 115, type: "recurring", map_to: "rec_type", button: "recurring" },
-				{ name: "time", height: 72, type: "time", map_to: "auto" }
-			];
+            scheduler.config.lightbox.sections = [
+                { name: "Event Name", height: 30, map_to: "EventName", type: "textarea", focus: true },
+                { name: "custom", height: 30, map_to: "section_id", type: "select", options: sections, vertical: "false" },
+                { name: "user", height: 30, map_to: "user",      type: "textarea", focus: true },
+                { name: "UsagePlan",   height: 30,  map_to: "powerPlan", type: "select",   options: plan, vertical: "false" },
+				{ name: "recurring",    height: 115, type: "recurring",     map_to: "rec_type", button: "recurring" },
+				{ name: "time",         height: 72,  type: "time",          map_to: "auto" }
+            ];
 
-			scheduler.init('scheduler_here', new Date(2020, 5, 30), "timeline");
+            scheduler.init('scheduler_here', new Date(@ViewBag.y, @ViewBag.m, @ViewBag.d), "timeline");
 
-			scheduler.parse([
-                { start_date: "2020-06-30 09:00", end_date: "2020-06-30 12:00", EventName: "Task A-12458", section_id: '309', user: "ricky...", powerPlan: "1", unit_id: "309" },
-                { start_date: "2020-06-30 10:00", end_date: "2020-06-30 16:00", EventName: "Task A-89411", section_id: '308', user: "ricky...", powerPlan: "1", unit_id: "308" },
-                { start_date: "2020-06-30 4:00", end_date: "2020-06-30 15:00", EventName: "Sections 1,3", section_id: '348', user: "ricky...", powerPlan: "1", unit_id: "348" },
-                { start_date: "2020-06-30 16:00", end_date: "2020-06-30 17:00", EventName: "Task A-46598", section_id: '350', user: "ricky...", powerPlan: "1", unit_id: "350" },
-			]);
+            scheduler.parse(@Html.Raw(ViewBag.ScheduleList));
 		}
     </script>
     <script>

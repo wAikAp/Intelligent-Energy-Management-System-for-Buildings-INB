@@ -20,7 +20,7 @@ namespace FYP_WEB_APP.Controllers.API
              */
         // GET: api/getRoomList
         [HttpGet]
-        public string Get()
+        public ActionResult Get()
         {
             List<getRoomListModel> roomList = new List<getRoomListModel>();
             foreach (var get in new RoomsController().getRoomListFromDB()) {
@@ -30,7 +30,7 @@ namespace FYP_WEB_APP.Controllers.API
                 };
                 roomList.Add(data);
             }
-                return roomList.ToJson();
+                return Ok(roomList);
         }
 
     }

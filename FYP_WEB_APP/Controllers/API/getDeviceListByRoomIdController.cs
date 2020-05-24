@@ -19,7 +19,7 @@ namespace FYP_WEB_APP.Controllers.API
 
         // GET: api/getDeviceListByRoomId/5
         [HttpGet("{id}", Name = "Get")]
-        public string Get(string id)
+        public ActionResult Get(string id)
         {
             List<StatusModel> Statuslist = new List<StatusModel>();
            var filter = Builders<MongoDevicesListModel>.Filter.Eq("roomId", id);
@@ -32,7 +32,7 @@ namespace FYP_WEB_APP.Controllers.API
                 };
                 Statuslist.Add(data);
                   }
-            return Statuslist.ToJson();
+            return Ok(Statuslist);
         }
 
   
