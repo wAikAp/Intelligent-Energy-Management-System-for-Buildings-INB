@@ -99,27 +99,27 @@ namespace FYP_WEB_APP.Models.LogicModels
 				foreach (MongoRoomModel room in roomModels)
 				{
 					RoomPower = 0;
-					Debug.WriteLine("Now checking Room id = :" + room.roomId);
+					//Debug.WriteLine("Now checking Room id = :" + room.roomId);
 					foreach(DailyUsageModel dailyUsageModel in dailyusage)
 					{
 						if(room.roomId == dailyUsageModel.roomId && currentDate == dailyUsageModel.recorded_date)
 						{
-							Debug.WriteLine("dailyUsageModel id =  "+ dailyUsageModel.roomId + " room.roomId " + room.roomId);
-							Debug.WriteLine("There are some record in dailyUsageModel");
-							Debug.WriteLine("old record " + room.power);
+							//Debug.WriteLine("dailyUsageModel id =  "+ dailyUsageModel.roomId + " room.roomId " + room.roomId);
+							//Debug.WriteLine("There are some record in dailyUsageModel");
+							//Debug.WriteLine("old record " + room.power);
 							room.power = dailyUsageModel.power_used;
-							Debug.WriteLine("new update : " + room.power);
+							//Debug.WriteLine("new update : " + room.power);
 
 							foreach(DevicesListModel deviceRecord in devicesListModel)
 							{
 								if(deviceRecord.roomId == room.roomId && deviceRecord.status == true )
 								{
-									Debug.WriteLine("There are some record in turned on and no add to dailyUsageModel");
-									Debug.WriteLine("Device Id: "+ deviceRecord.devicesId +" now used " + devicesPowerUseOutputUtil.getSpecApplianceTurnOnPowerUse(deviceRecord.devicesId)+"(kwh)");
+									//Debug.WriteLine("There are some record in turned on and no add to dailyUsageModel");
+									//Debug.WriteLine("Device Id: "+ deviceRecord.devicesId +" now used " + devicesPowerUseOutputUtil.getSpecApplianceTurnOnPowerUse(deviceRecord.devicesId)+"(kwh)");
 									RoomPower += devicesPowerUseOutputUtil.getSpecApplianceTurnOnPowerUse(deviceRecord.devicesId);
 								} 
 							}
-							Debug.WriteLine("turn on power using In Room Id "+room.roomId+ " power using :" + RoomPower + "(kwh)");
+							//Debug.WriteLine("turn on power using In Room Id "+room.roomId+ " power using :" + RoomPower + "(kwh)");
 						}
 						else
 						{
@@ -128,8 +128,8 @@ namespace FYP_WEB_APP.Models.LogicModels
 					}
 
 					room.power = room.power + RoomPower;
-					Debug.WriteLine("Total Room Power : " + room.power);
-					Debug.WriteLine("////////////////////////////");
+					//Debug.WriteLine("Total Room Power : " + room.power);
+					//Debug.WriteLine("////////////////////////////");
 
 					var filter = Builders<BsonDocument>.Filter.Eq("roomId", room.roomId);
 					var update = Builders<BsonDocument>.Update.Set("power", room.power);
