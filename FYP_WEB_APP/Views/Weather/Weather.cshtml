@@ -3,6 +3,12 @@
 
     FYP_WEB_APP.Models.RegionalWeatherModel Weather = ViewData["RegionalWeatherModel"] as FYP_WEB_APP.Models.RegionalWeatherModel;
 }
+<style>
+    .nav-link {
+        padding-top: 15px;
+    }
+
+</style>
 @if (Weather != null)
 {
     <li class="nav-item">
@@ -24,19 +30,29 @@
         </a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="#">
-            <img src="~/img/icon/sun24.png">
+    <li class="nav-item" style="padding-top: 2px;margin-left: -10px;margin-right: 10px;">
+        <a href="#" >
+            @{ string icon = @Weather.icon+".png"; }
+            <img width="36px" src="http://openweathermap.org/img/wn/@icon">
             <span id="" class="statusTxt">@Weather.Description</span>
-
         </a>
     </li>
-
     <li class="nav-item">
         <a class="nav-link" href="#">
-            Last Update :
-            <span id="" class="statusTxt">@Weather.LastUpdate @Weather.Location</span>
-
+            <b>Maximun</b>
+            <span id="" class="statusTxt">@Weather.Details.TempMax &#8451;</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <b>Minimun</b>
+            <span id="" class="statusTxt">@Weather.Details.TempMin &#8451;</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <b>Last Update</b>
+            <span id="" class="statusTxt">@Weather.LastUpdate @Weather.Date @Weather.Location</span>
         </a>
     </li>
 }
