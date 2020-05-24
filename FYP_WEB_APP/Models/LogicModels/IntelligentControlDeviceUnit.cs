@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using FYP_APP.Controllers;
 
 namespace FYP_WEB_APP.Models.LogicModels
 {
@@ -10,12 +11,12 @@ namespace FYP_WEB_APP.Models.LogicModels
 		public void IntelligentControlDevice()
 		{
 
-			ApparenTemperatureUtil apparenTemperatureUtil = new ApparenTemperatureUtil();
-			List<String> strList = apparenTemperatureUtil.getRoomList();
+			//ApparenTemperatureUtil apparenTemperatureUtil = new ApparenTemperatureUtil();
+			List<String> strList = apUtil.getRoomList();
 			foreach (String roomid in strList) {
 				//apparenTemperatureUtil.getAvgLig("F348");
-				double T = apparenTemperatureUtil.getAvgTemp(roomid);//room temp
-				double H = apparenTemperatureUtil.getAvgHum(roomid);//room hum
+				double T = apUtil.getAvgTemp(roomid);//room temp
+				double H = apUtil.getAvgHum(roomid);//room hum
 				double W = 0.15;//room wind 0.05 ~ 0.3m/s
 
 				double cT = 0;//Calculation the indoor feels like degree 
@@ -55,10 +56,35 @@ namespace FYP_WEB_APP.Models.LogicModels
 				{
 					AC1 = 30;
 				}
-				apparenTemperatureUtil.setAcCurrent(roomid, AC1);
+				apUtil.setAcCurrent(roomid, AC1);
 				Debug.WriteLine("Room:"+roomid+"feels like:" + cT + "AC temp:" + AC1);
 			}
 			
+		}
+
+		public void scheduledControl() {
+			//GetScheduleList
+			SchedulesController schedulesController = new SchedulesController();
+			List<ScheduleModel> scheduleModels = schedulesController.GetScheduleList();
+			foreach(ScheduleModel sm in scheduleModels){
+				DateTime sdate = DateTime.Parse(sm.Date + " " + sm.Time);
+				var dftmp = 25.5;
+				//"Lab","Lecture"
+				if (sm.EventName.Equals("Lab"))
+				{
+                    sdate = DateTime.Parse(sm.Date + " " + sm.Time).AddMinutes(-5);
+				}
+				else if (sm.EventName.Equals("Lecture")) {
+                    sdate = DateTime.Parse(sm.Date + " " + sm.Time).AddMinutes(-8);
+				}
+                DateTime now = DateTime.Now;
+				//TimeSpan timeSpan = now - sdate;
+				if (DateTime.Compare(now, sdate)==0) {
+					var roomID = sm.Location;
+					apUtil.setAcCurrent(roomID, dftmp);
+					Debug.WriteLine("scheduledControl: ready to have a booking: roomID = " + roomID);
+                }
+			}
 		}
 	}
 }
