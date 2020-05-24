@@ -153,8 +153,10 @@
 
         <div class="d-flex col-sm-12 ">
             @{
-                var AT = 0; var HI = 0;
+                double AT = 0; double HI = 0;
                 ApparenTemperatureUtil atUtil = new ApparenTemperatureUtil();
+                AT = atUtil.getAvgTemp(roomModel.roomId);
+                AT = atUtil.getAvgHum(roomModel.roomId);
                 var ATColStr = atUtil.getUIColor(AT);
                 var HIColStr = atUtil.getUIColor(HI);
             }

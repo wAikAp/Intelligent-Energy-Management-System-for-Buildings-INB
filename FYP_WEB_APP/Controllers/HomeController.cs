@@ -28,8 +28,21 @@ namespace FYP_APP.Controllers
 		public IActionResult Dashboard()
 		{
 
+
+			ApparenTemperatureUtil apparenTemperatureUtil = new ApparenTemperatureUtil();
+			//apparenTemperatureUtil.getAvgTemp("F348");
+			//apparenTemperatureUtil.getAvgHum("F348");
+			//apparenTemperatureUtil.getAvgLig("F348");
+			//apparenTemperatureUtil.setLTCurrent("F348",30);
+			//apparenTemperatureUtil.getRoomList()
+			
+
+
+
 			IntelligentControlDeviceUnit intelligentControlDeviceUnit = new IntelligentControlDeviceUnit();
 			RecurringJob.AddOrUpdate(() => intelligentControlDeviceUnit.IntelligentControlDevice(), "* * * * *");
+
+
 
 			//batch
 			DevicesPowerUseInputUtil devicesPowerUseInputUtil = new DevicesPowerUseInputUtil();
