@@ -42,5 +42,31 @@ namespace FYP_WEB_APP.Models.LogicModels
             Debug.WriteLine("calApparenTemperature = " + AT);
             return AT;
         }
+
+        public string getUIColor(double AT) {
+            
+            var ATbgCol = "badge-secondary";
+            if (AT > 25.5 && AT < 30)
+            {
+                ATbgCol = "badge-warning";
+            }
+            else if (AT > 30)
+            {
+                ATbgCol = "badge-danger";
+            }
+            else if (AT <= 25.5 && AT > 21)
+            {
+                ATbgCol = "badge-primary";
+            }
+            else if (AT <= 21 && AT > 0)
+            {
+                ATbgCol = "badge-info";
+            }
+            else {
+                ATbgCol = "badge-secondary";
+            }
+            return ATbgCol;
+        }
+
     }
 }
