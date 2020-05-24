@@ -31,7 +31,7 @@ namespace FYP_WEB_APP.Controllers.API
                         returnString = new StatusModel()
                         {
                             deviceId = DList.First().devicesId,
-                            status = DList.First().status,
+                            status = DList.First().status.ToString(),
                             set_value = DList.First().set_value,
                             lastest_checking_time = DList.First().lastest_checking_time
                         };
