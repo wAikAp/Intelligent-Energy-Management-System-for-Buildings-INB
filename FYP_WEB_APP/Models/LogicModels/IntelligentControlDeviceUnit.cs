@@ -7,12 +7,13 @@ namespace FYP_WEB_APP.Models.LogicModels
     {
         static ApparenTemperatureUtil apUtil = new ApparenTemperatureUtil();
         public void IntelligentControlDevice() {
+
             ApparenTemperatureUtil apparenTemperatureUtil = new ApparenTemperatureUtil();
             //apparenTemperatureUtil.getAvgLig("F348");
             double T = apparenTemperatureUtil.getAvgTemp("F348");//room temp
             double H = apparenTemperatureUtil.getAvgHum("F348");//room hum
             double W = 0.15;//room wind 0.05 ~ 0.3m/s
-
+            
             double cT = 0;//Calculation the indoor feels like degree 
             if (T >= 26.7)
             {//heat index
@@ -50,8 +51,7 @@ namespace FYP_WEB_APP.Models.LogicModels
             {
                 AC1 = 30;
             }
-
-            apparenTemperatureUtil.setAcCurrent('F348');
+            //apparenTemperatureUtil.setAcCurrent('F348',AC1);
             Debug.WriteLine("feels like:" + cT + "AC temp:"+AC1);
         }
     }
