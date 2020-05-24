@@ -31,11 +31,11 @@ namespace FYP_APP.Models.LogicModels
 
 
             ExcelPackage.LicenseContext = LicenseContext.Commercial;
-            FileOutputUtil.OutputDir = new DirectoryInfo(@"c:\TestingDirForEx");        //File dicectory which you want to store in
-            var fi1 = FileOutputUtil.GetFileInfo("Testing.xlsx");          //File Name and type
+            FileOutputUtil.OutputDir = new DirectoryInfo("wwwroot\\DirFoeEx\\");        //File dicectory which you want to store in
+            var fi1 = FileOutputUtil.GetFileInfo("Power_consumption_report.xlsx");          //File Name and type
             using (var xlPackage = new ExcelPackage(fi1))               //Fill data
             {
-                ExcelWorksheet worksheet = xlPackage.Workbook.Worksheets.Add("Testing"); //Add worksheets
+                ExcelWorksheet worksheet = xlPackage.Workbook.Worksheets.Add("Power consumption report"); //Add worksheets
                 var namedStyle = xlPackage.Workbook.Styles.CreateNamedStyle("HyperLink");
                 namedStyle.Style.Font.UnderLine = true;
                 namedStyle.Style.Font.Color.SetColor(Color.Blue);
@@ -118,7 +118,7 @@ namespace FYP_APP.Models.LogicModels
                 // save the new spreadsheet
                 xlPackage.Save();
             }
-            return fi1.FullName;
+            return fi1.Name;
         }
     }
 }
