@@ -15,6 +15,8 @@ using MongoDB.Bson;
 using FYP_WEB_APP.Models.LogicModels;
 using Newtonsoft.Json.Linq;
 using Hangfire;
+using System.Net;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace FYP_APP.Controllers
 {
@@ -146,16 +148,25 @@ namespace FYP_APP.Controllers
 		{
 			try
 			{
-				Debug.WriteLine("Running sample 8");
-				var output = PrintOutInExcel.Run();
-				Debug.WriteLine("Sample 8 created: {0}", output);
-				Debug.WriteLine("");
+				
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine("Error: {0}", ex.Message);
 			}
-			return RedirectToAction("Dashboard", "Home");
+			//return RedirectToAction("Dashboard", "Home");
+
+			Debug.WriteLine("Running sample 8");
+			var output = PrintOutInExcel.Run();
+			Debug.WriteLine("Sample 8 created: {0}", output);
+			Debug.WriteLine("");
+
+			var net = new System.Net.WebClient();
+			var data = net.DownloadData(@"c:\TestingDirForEx");
+			var content = new System.IO.MemoryStream(data);
+			var contentType = "APPLICATION/octet-stream";
+			var fileName = output;
+			return File(content, contentType, fileName);
 		}
 
 
