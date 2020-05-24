@@ -149,7 +149,7 @@ namespace FYP_WEB_APP.Controllers
 			{
 				case "TS":
 					SensorsDataList = SensorsDataList.Where(x => x.sensorId.Contains("TS")).ToList();
-					ViewBag.unit = " C";
+					ViewBag.unit = "℃";
 					ViewBag.unitName = "Temperature";
 					tableName = "TMP_SENSOR";
 
@@ -172,7 +172,7 @@ namespace FYP_WEB_APP.Controllers
 					switch (iid.Substring(0,2))
 					{
 						case "TS":
-							ViewBag.unit = " C";
+							ViewBag.unit = "℃";
 							ViewBag.unitName = "Temperature";
 							tableName = "TMP_SENSOR";
 

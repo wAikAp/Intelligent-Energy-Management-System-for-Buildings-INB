@@ -68,7 +68,7 @@ goption = {
                             {
                                 ticks: {
                                     callback: function (label, index, labels) {
-                                        return label + '@ViewBag.unit';
+                                        return label + '@Html.Raw(ViewBag.unit)';
                                     }
                                 },
                                 scaleLabel: {
