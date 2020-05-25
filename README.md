@@ -30,3 +30,71 @@
 #### Hardware Diagram
 ![](resources/assets/HardwareDiagram.png)
 > Hardware design
+
+
+# The development code and mode here using the C# .net core 3.1.
+#### Environment and library
+C sharp Web App => source code 
+**front end**
+* Bootstrap v4.41
+* Jquery v3.5.1
+* Jquery-ui-1.12.1
+* popper.js
+* Chart.js
+* heatmap.js
+* javascript_Cookie
+* Modernizr.js v2.8.3
+
+**Back end**
+* .net core 3.1
+* MongoDB v4.2.6
+* Python 3.7
+* https://www.hangfire.io/
+* OpenWeatherMap API
+
+**Hardware**
+* Raspberry pi4
+* Arduino UNO REV3
+* DS18B20 Digital Temperature Sensor
+* DH11 Humidity and Temperature Sensor
+* MDY26479 photoresistor Sensor
+* Panasonic AMG8854 Specialized Sensor
+
+# Hardware Prototype
+#### Prototype circuit graph Hardware prototype
+![](resources/assets/circuitgraph.png)
+#### Hardware prototype model
+![](resources/assets/hardwarePrototype2.png)
+#### Prototype circuit graph Hardware prototype
+![](resources/assets/hardwarePrototype1.png)
+
+# Web Prototype
+#### System Workflow (Overview)
+![](resources/assets/systemworkflow.png)
+#### Web system (Overview)
+![](resources/assets/web1.png)
+> Darsh Board
+<br>
+![](resources/assets/web2.png)
+> Sensor List
+<br>
+![](resources/assets/web3.png)
+> Device List
+<br>
+![](resources/assets/web4.png)
+> Room Detail
+<br>
+
+# Heat Index & Apparent Temperature
+#### Heat index 
+![](resources/assets/heatindex.png)
+#### Apparent Temperature
+![](resources/assets/apparenttemp.png)
+![](resources/assets/ATFormula.png)
+>  Apparent Temperature Formual 
+>  Among them, AT is somatosensory temperature (° C), T is air temperature (° C), e is water pressure (hPa), V is wind speed (m / sec), and RH is relative humidity (%).
+<br>
+
+• When the indoor temperature >= 26.7C, the system will use the indoor temperature and humidity to calculate the heat index, and according to the heat index to control the AC to a suitable temperature.
+
+•Otherwise  when  <  26.7C, the system will use Apparent  temperature, and according to the Apparent  temperature to control the AC to a suitable temperature.
