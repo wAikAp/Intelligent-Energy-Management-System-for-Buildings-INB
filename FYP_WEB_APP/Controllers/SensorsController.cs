@@ -571,6 +571,9 @@ namespace FYP_APP.Controllers
 				case "HS":
 					type = "%";
 					break;
+				case "AS":
+					type = "µm";
+					break;
 				default:
 					break;
 			}
@@ -633,6 +636,8 @@ namespace FYP_APP.Controllers
 		{
 			string tableName = "";
 			List<CurrentDataModel> List = new List<CurrentDataModel>();
+			CurrentDataModel query = new CurrentDataModel();
+
 			switch (sensorId.Substring(0, 2))
 			{
 				case "TS":
@@ -644,12 +649,25 @@ namespace FYP_APP.Controllers
 				case "HS":
 					tableName = "HUM_SENSOR";
 					break;
+				case "AS":
+					tableName = "";
+					var filter = Builders<MongoASModel>.Filter.Eq(x => x.sensorId, sensorId);
+					MongoASModel asquery = new MongoASModel();
+
+					asquery = new DBManger().DataBase.GetCollection<MongoASModel>("AS_SENSOR").Find(filter).Limit(1).Sort(Builders<MongoASModel>.Sort.Descending("latest_checking_time")).FirstOrDefault();
+					query = new CurrentDataModel {
+                        sensorId= asquery.sensorId,
+                        current= asquery.C_AVG_PM25,
+                        latest_checking_time=asquery.latest_checking_time
+					};
+					break;
 				default:
+					tableName = "";
 					break;
 			}
+			Debug.WriteLine("^^^^^"+tableName);
 			//db collection
-			CurrentDataModel query=new CurrentDataModel();
-			if (!string.IsNullOrEmpty(tableName)) {
+			if (!string.IsNullOrEmpty(tableName) && tableName!="AS") {
 				var filter = Builders<CurrentDataModel>.Filter.Eq(x => x.sensorId, sensorId);
 
 				query = database.GetCollection<CurrentDataModel>(tableName).Find(filter).Limit(1).Sort(Builders<CurrentDataModel>.Sort.Descending("latest_checking_time")).FirstOrDefault();
@@ -669,23 +687,9 @@ namespace FYP_APP.Controllers
 		{
 			DateTime value = new DateTime();
 
-			switch (sensorId.Substring(0, 2))
-			{
-				case "TS":
+
 					value = GetCurrentDateByidBytable(sensorId);
 
-					break;
-				case "LS":
-					value = GetCurrentDateByidBytable(sensorId);
-
-					break;
-				case "HS":
-					value = GetCurrentDateByidBytable(sensorId);
-
-					break;
-				default:
-					break;
-			}
 			return value;
 
 		}
@@ -731,6 +735,11 @@ namespace FYP_APP.Controllers
 					SensorsDataList = SensorsDataList.Where(x => x.sensorId.Contains("HS")).ToList();
 					ViewBag.unit = " %";
 					ViewBag.unitName = "Humidity";
+					break;
+				case "AS":
+					ViewBag.unit = " µm";
+
+					
 					break;
 				default:
 					break;
