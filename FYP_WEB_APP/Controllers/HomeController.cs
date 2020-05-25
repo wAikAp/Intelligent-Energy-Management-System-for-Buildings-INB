@@ -29,15 +29,15 @@ namespace FYP_APP.Controllers
 		{
 
 			IntelligentControlDeviceUnit intelligentControlDeviceUnit = new IntelligentControlDeviceUnit();
-			RecurringJob.AddOrUpdate(() => intelligentControlDeviceUnit.IntelligentControlDevice(), "5 * * * *");
-			//RecurringJob.AddOrUpdate(() => intelligentControlDeviceUnit.scheduledControl(), "10 * * * *");
+            RecurringJob.AddOrUpdate(() => intelligentControlDeviceUnit.IntelligentControlDevice(), "5 * * * *");
+            RecurringJob.AddOrUpdate(() => intelligentControlDeviceUnit.scheduledControl(), "10 * * * *");
 
             //batch
-			DevicesPowerUseInputUtil devicesPowerUseInputUtil = new DevicesPowerUseInputUtil();
-			RecurringJob.AddOrUpdate(() => devicesPowerUseInputUtil.updateRoomPower(), "* * * * *");
+            DevicesPowerUseInputUtil devicesPowerUseInputUtil = new DevicesPowerUseInputUtil();
+            RecurringJob.AddOrUpdate(() => devicesPowerUseInputUtil.updateRoomPower(), "* * * * *");
 
 
-			DevicesPowerUseOutputUtil powerUseOutputUtil = new DevicesPowerUseOutputUtil();
+            DevicesPowerUseOutputUtil powerUseOutputUtil = new DevicesPowerUseOutputUtil();
 
 
 			double TotalSavings = 0;

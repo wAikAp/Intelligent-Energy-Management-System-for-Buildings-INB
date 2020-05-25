@@ -22,7 +22,8 @@ namespace FYP_WEB_APP.Controllers.API
         DateTime utcNow = DateTime.UtcNow.AddHours(8);
 
         [HttpPost]
-        public string Post(object SensorJson)
+        //[Route("updatesensors")]
+        public string post(object SensorJson)
         {
             var str = "";
             bool isdone = true;
@@ -30,11 +31,12 @@ namespace FYP_WEB_APP.Controllers.API
             bool isErrorData = false;
             try
             {
+                Debug.WriteLine("SensorUpdateCurrentValueController Come!!!!!!!!");
                 var json = System.Text.Json.JsonSerializer.Serialize(SensorJson);
-
+                Debug.WriteLine("post json = " + SensorJson.ToString());
                 var data = JsonConvert.DeserializeObject<List<SensorUpdateCurrentValueModel>>(json);
-
-
+                
+                
                 if (SensorJson != null)
                 {
 
@@ -136,7 +138,7 @@ namespace FYP_WEB_APP.Controllers.API
                                         double v = S.values.First();
                                         new DBManger().DataBase.GetCollection<BsonDocument>(dbname).InsertOne(new BsonDocument { { "sensorId", S.sensorId }, { "current", v }, { "latest_checking_time", utcNow } });
                                         trueStatus(S.sensorId);
-                                        str += "{ sensorId , " + S.sensorId + "},{ value," + S.values.ToJson().ToString() + "},{ latest_checking_time," + utcNow + "}\n";
+                                        str += "{ sensorId , " + S.sensorId + "},{ values," + S.values.ToJson().ToString() + "},{ latest_checking_time," + utcNow + "}\n";
 
                                     }
                                 }
@@ -152,14 +154,14 @@ namespace FYP_WEB_APP.Controllers.API
                                     { "C_H2", S.values[4] },
                                     { "C_CH4", S.values[5] },
                                     { "C_H2S", S.values[6] },
-                                     { "C_NO2", S.values[7] },
-                                   { "C_O3", S.values[8] },
+                                    { "C_NO2", S.values[7] },
+                                    { "C_O3", S.values[8] },
                                     { "C_C2CI4", S.values[9] },
-                                   { "C_SO2", S.values[10] },
-                                   { "C_VOC", S.values[11] },
+                                    { "C_SO2", S.values[10] },
+                                    { "C_VOC", S.values[11] },
                                     { "C_AVG_PM25", S.values[12] },
                                     { "latest_checking_time", utcNow } });
-
+                                    trueStatus(S.sensorId);
                                     str += S.values.ToJson().ToString();
                                 }
                                 else
@@ -187,6 +189,7 @@ namespace FYP_WEB_APP.Controllers.API
 
                     throw new System.ArgumentException("Parameter cannot be null", "original");
                 }
+                
                 //return utcNow+" => "+isdone + ": "+str;
             }
             catch (Exception e) { return e.ToString(); }

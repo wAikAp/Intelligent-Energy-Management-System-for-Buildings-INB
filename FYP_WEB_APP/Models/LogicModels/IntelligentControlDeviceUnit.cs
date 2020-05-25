@@ -81,8 +81,16 @@ namespace FYP_WEB_APP.Models.LogicModels
 				//TimeSpan timeSpan = now - sdate;
 				if (DateTime.Compare(now, sdate)==0) {
 					var roomID = sm.Location;
-					apUtil.setAcCurrent(roomID, dftmp);
-					Debug.WriteLine("scheduledControl: ready to have a booking: roomID = " + roomID);
+					Boolean success = apUtil.setAcCurrentAndTurnON(roomID, dftmp);
+					if (success)
+					{
+						Debug.WriteLine("scheduledControl: ready to have a booking: roomID = " + roomID);
+					}
+					else {
+						Debug.WriteLine("scheduledControl: booked room turn on fail = " + roomID);
+					}
+					
+
                 }
 			}
 		}
