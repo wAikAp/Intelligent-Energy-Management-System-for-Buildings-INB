@@ -319,10 +319,10 @@
                             <div id="heatmapControl" class="heatmap" style="position: relative;">
                                 <div id="heatmap" class="heatmap">
 
-                                    <img id="planImg" src="@roomModel.floorPlanImg" width="500px" height="700px" style="background-color: black;">
+                                    <img id="planImg" src="@roomModel.floorPlanImg" width="500" height="700" style="background-color: black;">
 
                                 </div>
-                                <canvas id="BlueCanvas" class="heatmap-canvas" style="position: absolute; left: 0px; top: 0px; ></canvas>
+                                <canvas id="BlueCanvas" class="heatmap-canvas" style="position: absolute; left: 0px; top: 0px;" ></canvas>
                             </div>
                             <div class="tooltips" style="display: none; transform: translate(39px, 352px);">593</div>
                             <div id="legendArea" class="legend-area">
@@ -352,7 +352,7 @@
 
                         wrapper.style.width = floorPlanImgW + "px";
                         wrapper.style.height = floorPlanImgH + "px";
-                        var x = moveY - parseInt(moveX) * 3;
+                        //var x = moveY - parseInt(moveX) * 3;
                         //legendArea.style.marginBottom="-"+x+"px";
 
                         //floorPlanImgW -= moveX;
@@ -398,174 +398,178 @@
         </div>
     </div>
     <!--heatmap js-->
-    <script>/*
-                                                                                                                                window.onload = function () {
+    <script>
+            window.onload = function () {
 
-                                                                                                                                    function generateRandomData(len) {
-                                                                                                                                        var floorPlanImgW = document.getElementById('planImg').offsetWidth;
-                                                                                                                                        var floorPlanImgH = document.getElementById('planImg').offsetHeight;
-
-
-                                                                                                                                        // generate some random data
-                                                                                                                                        var points = [];
-                                                                                                                                        var max = 0;
-                                                                                                                                        var min = 0;
-                                                                                                                                        var width = floorPlanImgW;
-                                                                                                                                        var height = floorPlanImgH;
-
-                                                                                                                                        var TData = [[137, 193, 18],
-                                                                                                                                        [162, 346, 31],
-                                                                                                                                        [292, 249, 31],
-                                                                                                                                        [354, 121, 23],
-                                                                                                                                        [198, 10, 15],
-                                                                                                                                        [197, 198, 24],
-                                                                                                                                        [296, 111, 24],
-                                                                                                                                        [185, 40, 20],
-                                                                                                                                        [237, 394, 19],
-                                                                                                                                        [105, 358, 18],
-                                                                                                                                        [251, 390, 29],
-                                                                                                                                        [265, 368, 21],
-                                                                                                                                        [187, 146, 17],
-                                                                                                                                        [168, 226, 17],
-                                                                                                                                        [324, 277, 33],
-                                                                                                                                        [341, 285, 30],
-                                                                                                                                        [182, 412, 24],
-                                                                                                                                        [228, 344, 16],
-                                                                                                                                        [206, 398, 29],
-                                                                                                                                        [377, 206, 30],
-                                                                                                                                        [371, 422, 20],
-                                                                                                                                        [263, 73, 15],
-                                                                                                                                        [253, 431, 30],
-                                                                                                                                        [183, 237, 19],
-                                                                                                                                        [319, 109, 27],
-                                                                                                                                        [365, 21, 27],
-                                                                                                                                        [97, 312, 26],
-                                                                                                                                        [354, 379, 15],
-                                                                                                                                        [149, 11, 17],
-                                                                                                                                        [284, 166, 31],
-                                                                                                                                        [370, 332, 31],
-                                                                                                                                        [307, 282, 28],
-                                                                                                                                        [85, 236, 26],
-                                                                                                                                        [172, 386, 19],
-                                                                                                                                        [324, 356, 17],
-                                                                                                                                        [142, 285, 27],
-                                                                                                                                        [183, 1, 25],
-                                                                                                                                        [304, 157, 20],
-                                                                                                                                        [183, 185, 16],
-                                                                                                                                        ];
-                                                                                                                                        for (let i = 0; i < TData.length; i++) {
-                                                                                                                                            var val = TData[i][2];
-
-                                                                                                                                            max = Math.max(max, val);
-                                                                                                                                            min = Math.min(min, val);
-                                                                                                                                            var x = TData[i][0];
-                                                                                                                                            var y = TData[i][1];
-                                                                                                                                            var point = {
-                                                                                                                                                x: x,
-                                                                                                                                                y: y,
-                                                                                                                                                value: val
-                                                                                                                                            };
-                                                                                                                                            points.push(point);
-                                                                                                                                        }
+                function generateRandomData(len) {
+                    var floorPlanImgW = document.getElementById('planImg').offsetWidth;
+                    var floorPlanImgH = document.getElementById('planImg').offsetHeight;
 
 
-                                                                                                                                        var data = { max: max, min: min, data: points };
+                    // generate some random data
+                    var points = [];
+                    var max = 0;
+                    var min = 0;
+                    var width = floorPlanImgW;
+                    var height = floorPlanImgH;
 
-                                                                                                                                        return data;
-                                                                                                                                    };
+                    @{
+                        string str = "[";
+                        int count = 0;
 
+                        int sensorsListCount = sensorsList.Count();
+                        var sensorsListwhere = sensorsList.Where(s => s.sensorId.Contains("TS")).ToList();
+                        foreach (var get in sensorsListwhere) {
+                            int x = 0;
+                            int y = 0;
+                            int addxy = 10;
+                            var setx = Convert.ToInt32(get.pos_x)-10;
+                            var sety = Convert.ToInt32(get.pos_y)-10;
+                            while (x < 6)
+                            {
+                                setx += 20;
 
-                                                                                                                                    // legend code
-                                                                                                                                    // we want to display the gradient, so we have to draw it
-                                                                                                                                    var legendCanvas = document.createElement('canvas');
-                                                                                                                                    legendCanvas.width = 100;
-                                                                                                                                    legendCanvas.height = 10;
-                                                                                                                                    var min = document.querySelector('#min');
-                                                                                                                                    var max = document.querySelector('#max');
-                                                                                                                                    var gradientImg = document.querySelector('#gradient');
+                                while (y < 4)
+                                {
+                                    sety += 20;
 
-                                                                                                                                    var legendCtx = legendCanvas.getContext('2d');
-                                                                                                                                    var gradientCfg = {};
+                                    if (count == 0 && x == 0 && y == 0)
+                                    {
+                                        str += "[" + 50 + "," + sety + "," + Convert.ToInt32(get.current_Value) + "]";
+                                    }
+                                    else
+                                    {
+                                        str += ",[" + setx + "," + sety + "," + Convert.ToInt32(get.current_Value) + "]";
 
-                                                                                                                                    function updateLegend(data) {
-                                                                                                                                        // the onExtremaChange callback gives us min, max, and the gradientConfig
-                                                                                                                                        // so we can update the legend
-                                                                                                                                        min.innerHTML = data.min;
-                                                                                                                                        max.innerHTML = data.max;
-                                                                                                                                        // regenerate gradient image
-                                                                                                                                        if (data.gradient != gradientCfg) {
-                                                                                                                                            gradientCfg = data.gradient;
-                                                                                                                                            var gradient = legendCtx.createLinearGradient(0, 0, 100, 1);
-                                                                                                                                            for (var key in gradientCfg) {
-                                                                                                                                                gradient.addColorStop(key, gradientCfg[key]);
-                                                                                                                                            }
+                                    }
+                                    y++;
+                                }
+                                x++;
 
-                                                                                                                                            legendCtx.fillStyle = gradient;
-                                                                                                                                            legendCtx.fillRect(0, 0, 100, 10);
-                                                                                                                                            gradientImg.src = legendCanvas.toDataURL();
-                                                                                                                                        }
-                                                                                                                                    };
-                                                                                                                                    //legend code end
+                            }
+                            count += 1;
 
-                                                                                                                                    var heatmapInstance = h337.create({
-                                                                                                                                        container: document.querySelector('.heatmap'),
-                                                                                                                                        onExtremaChange: function (data) {
-                                                                                                                                            updateLegend(data);
-                                                                                                                                        }
-                                                                                                                                    });
+                        }
+                        str += "]";
+                        }
+                        obj = JSON.parse('@Html.Raw(str)');
 
-                                                                                                                                    // generate 200 random datapoints
-                                                                                                                                    var data = generateRandomData(200);
-                                                                                                                                    heatmapInstance.setData(data);
+                        var TData = @Html.Raw(str);
 
-                                                                                                                                    var demoWrapper = document.querySelector('.demo-wrapper');
-                                                                                                                                    var tooltip = document.querySelector('.tooltips');
+                        for (let i = 0; i < TData.length; i++) {
+                        var val = TData[i][2];
 
-                                                                                                                                    function updateTooltip(x, y, value) {
-                                                                                                                                        // + 15 for distance to cursor
-                                                                                                                                        var transform = 'translate(' + (x + 15) + 'px, ' + (y + 15) + 'px)';
-                                                                                                                                        tooltip.style.MozTransform = transform; // Firefox
-                                                                                                                                        tooltip.style.msTransform = transform; // IE (9+) - note ms is lowercase
-                                                                                                                                        tooltip.style.OTransform = transform; // Opera
-                                                                                                                                        tooltip.style.WebkitTransform = transform; // Safari and Chrome
-                                                                                                                                        tooltip.style.transform = transform; // One day, my pretty
-                                                                                                                                        tooltip.innerHTML = "x:" + x + ",y:" + y + ",value:" + value;
-                                                                                                                                    }
-
-                                                                                                                                    demoWrapper.onmousemove = function (ev) {
-                                                                                                                                        var x = ev.layerX;
-                                                                                                                                        var y = ev.layerY;
-                                                                                                                                        var value = heatmapInstance.getValueAt({
-                                                                                                                                            x: x,
-                                                                                                                                            y: y
-                                                                                                                                        });
-
-                                                                                                                                        tooltip.style.display = 'block';
-
-                                                                                                                                        updateTooltip(x, y, value);
-                                                                                                                                    };
-                                                                                                                                    demoWrapper.onmouseout = function () {
-                                                                                                                                        tooltip.style.display = 'none';
-                                                                                                                                    };
+                       // max = Math.max(max, val);
+                       // min = Math.min(min, val);
+                        var x = TData[i][0];
+                        var y = TData[i][1];
+                        var point = {
+                            x: x,
+                            y: y,
+                            value: val
+                        };
+                        points.push(point);
+                    }
 
 
-                                                                                                                                    document.querySelector('.trigger-refresh').onclick = function () {
-                                                                                                                                        heatmapInstance.setData(generateRandomData(200));
-                                                                                                                                    };
+                    var data = { max: 40, min: 0, data: points };
 
-                                                                                                                                    document.querySelector('.thankyou').onclick = function () {
-                                                                                                                                        ga('send', 'event', 'social', 'thanks');
-                                                                                                                                        document.querySelector('.thankyou').style.display = 'none';
-                                                                                                                                        document.querySelector('#share').style.display = 'block';
-                                                                                                                                    };
-                                                                                                                                    var btns = document.querySelectorAll('.symbol');
-                                                                                                                                    for (var i = 0; i < btns.length; i++) {
-                                                                                                                                        btns[i].onclick = function () {
-                                                                                                                                            ga('send', 'event', 'social', 'share');
-                                                                                                                                        };
-                                                                                                                                    }
+                    return data;
+                };
 
-                                                                                                                                };*/</script>
+
+      /*  legend code */
+      // we want to display the gradient, so we have to draw it
+      var legendCanvas = document.createElement('canvas');
+      legendCanvas.width = 100;
+      legendCanvas.height = 10;
+      var min = document.querySelector('#min');
+      var max = document.querySelector('#max');
+      var gradientImg = document.querySelector('#gradient');
+
+      var legendCtx = legendCanvas.getContext('2d');
+      var gradientCfg = {};
+
+      function updateLegend(data) {
+                // the onExtremaChange callback gives us min, max, and the gradientConfig
+                // so we can update the legend
+                min.innerHTML = data.min;
+        max.innerHTML = data.max;
+        // regenerate gradient image
+        if (data.gradient != gradientCfg) {
+                gradientCfg = data.gradient;
+          var gradient = legendCtx.createLinearGradient(0, 0, 100, 1);
+          for (var key in gradientCfg) {
+                gradient.addColorStop(key, gradientCfg[key]);
+          }
+
+          legendCtx.fillStyle = gradient;
+          legendCtx.fillRect(0, 0, 100, 10);
+          gradientImg.src = legendCanvas.toDataURL();
+        }
+      };
+      /* legend code end */
+
+      var heatmapInstance = h337.create({
+                container: document.querySelector('.heatmap'),
+        onExtremaChange: function (data) {
+                updateLegend(data);
+        }
+      });
+
+      // generate 200 random datapoints
+      var data = generateRandomData(200);
+      heatmapInstance.setData(data);
+
+      var demoWrapper = document.querySelector('.demo-wrapper');
+      var tooltip = document.querySelector('.tooltips');
+
+      function updateTooltip(x, y, value) {
+        // + 15 for distance to cursor
+        var transform = 'translate(' + (x + 15) + 'px, ' + (y + 15) + 'px)';
+        tooltip.style.MozTransform = transform; /* Firefox */
+        tooltip.style.msTransform = transform; /* IE (9+) - note ms is lowercase */
+        tooltip.style.OTransform = transform; /* Opera */
+        tooltip.style.WebkitTransform = transform; /* Safari and Chrome */
+        tooltip.style.transform = transform; /* One day, my pretty */
+        tooltip.innerHTML = "x:" + x + ",y:" + y + ",value:" + value;
+      }
+
+      demoWrapper.onmousemove = function (ev) {
+        var x = ev.layerX;
+        var y = ev.layerY;
+        var value = heatmapInstance.getValueAt({
+                x: x,
+          y: y
+        });
+
+        tooltip.style.display = 'block';
+
+        updateTooltip(x, y, value);
+      };
+      demoWrapper.onmouseout = function () {
+                tooltip.style.display = 'none';
+      };
+
+
+      document.querySelector('.trigger-refresh').onclick = function () {
+                heatmapInstance.setData(generateRandomData(200));
+      };
+
+      document.querySelector('.thankyou').onclick = function () {
+                ga('send', 'event', 'social', 'thanks');
+        document.querySelector('.thankyou').style.display = 'none';
+        document.querySelector('#share').style.display = 'block';
+      };
+      var btns = document.querySelectorAll('.symbol');
+      for (var i = 0; i < btns.length;) {
+                btns[i].onclick = function () {
+                    ga('send', 'event', 'social', 'share');
+                };
+      }
+
+};
+    </script>
     <!--heatmap js-->
 
 </body>
