@@ -1,0 +1,134 @@
+﻿@*
+    drag button with sensor and device
+*@
+@{
+}
+@model FYP_WEB_APP.Models.SensorsListModel
+
+<link rel="stylesheet" href="~/css/dragButton.css">
+<script src="~/js/DragSensorDeviceButtonJSModel.js"></script>
+@{
+    String sensorClassType = "";
+    String sensorUnit = "";
+    string tempUnitUcode = "\u00B0\u0043";
+    String sensorImg = "";
+    String displayType = "";
+
+    string deviceClass = Model.status ? "device_on" : "device_off";
+
+    switch (Model.sensorId.Substring(0, 2))
+    {
+        case "TS":
+            sensorClassType = "TSensor";
+            sensorUnit = tempUnitUcode;
+            sensorImg = "temperature96.png";
+            displayType = "Temperature Sensor";
+            break;
+        case "LS":
+            sensorClassType = "LSensor";
+            sensorUnit = "";
+
+            sensorImg = "lightSensor96.png";
+            displayType = "Luminosity Sensor";
+            break;
+        case "HS":
+            sensorClassType = "HSensor";
+            sensorUnit = "%";
+            sensorImg = "humidity96.png";
+            displayType = "Humidity Sensor";
+            break;
+        case "AS":
+            sensorClassType = "ASensor";
+            sensorUnit = "PM";
+            sensorImg = "aqSensor96.png";
+            displayType = "Air Quality Sensor";
+            break;
+
+    }
+    string turnOFstr = Model.status ? "Online" : "Offline";
+    string turnOFClr = Model.status ? "badge-success" : "badge-danger";
+   }
+<div class="draggable @sensorClassType" id="@Model.sensorId">
+
+
+    <p style="margin:0; padding:0;">@Model.sensorId</p>
+    <img src="~/img/icon/@sensorImg" height="24px" />
+    <p>@Model.current_Value @sensorUnit</p>
+</div>
+
+
+<script>
+    $("#@Model.sensorId").click(function () {
+        //the id from _SensorDeviceDetail to change those UI
+
+        $("#editBtn").attr("onclick", "EditSensors('@Model.sensorId')");
+        $("#editBtn").css({ filter: "" });
+
+        $("#typeName").text("@displayType");
+        $("#sdid").text("@Model.sensorId");
+        $("#typeImg").attr('src', '/img/icon/@sensorImg');
+        $("#typeImg").css({ filter: "" });
+        $("#current_value").html('@Model.current_Value  @sensorUnit');
+        $("#totalPower").text("N/A");
+        $("#avgPower").text("N/A");
+        $("#device_power").text("N/A");
+
+
+        $("#lastUpdateTimes").text('@Model.latest_checking_time');
+        $("#detailDiv").removeClass('HSensor');
+        $("#detailDiv").removeClass('TSensor');
+        $("#detailDiv").removeClass('LSensor');
+        $("#detailDiv").removeClass('ASensor');
+        $("#detailDiv").removeClass('bg-dark');
+        $("#detailDiv").removeClass('device_on');
+        $("#detailDiv").removeClass('device_off');
+        $("#detailDiv").removeClass('LightDevice_on');
+        $("#detailDiv").removeClass('LightDevice_off');
+        $("#detailDiv").removeClass("text-white");
+        $("#detailDiv").removeClass("text-dark");
+        $("#detailDiv").addClass('@sensorClassType');
+        $("#detailDiv").addClass('text-white');
+
+        $("#turnOnOff").removeClass("badge-success");
+        $("#turnOnOff").removeClass("badge-danger");
+        $("#turnOnOff").addClass("@turnOFClr");
+        $("#turnOnOff").text("@turnOFstr");
+        $("#turnOnDate").text('@Model.total_run_time');
+        $("#onOff").css("display", "none");
+        $("#turnOnTime").text('N/A');
+        $("#turnedOnUsage").text('N/A');
+    });
+
+    $("#@Model.sensorId").css({ left: @Model.pos_x +'px', top:  @Model.pos_y +'px' });
+
+    $(function () {
+        $("#@Model.sensorId").draggable({
+
+            stop: function () {
+                //var position = $(this).position();
+                //since the Model.pos_x is the server side c# cannot direct change it.
+                //so need a js model first, then use to save on cookie
+                //change to js model
+
+                //var jsSDmodel = new DragSensorDeviceButtonJSModel('Model.sensorId', position.left, position.top);
+
+                //var JSSensorsList = JSON.parse(Cookies.get('JSSensorsList'));
+
+                //for (var sensorBtnObj of JSSensorsList) {
+                //    console.log(sensorBtnObj.id);
+                //    if (sensorBtnObj.id == 'Model.sensorId') {
+                //        sensorBtnObj.pos_x = jsSDmodel.left;
+                //        sensorBtnObj.pos_y = jsSDmodel.top;
+                //    } else {
+                //        JSSensorsList.push(jsSDmodel);
+                //    }
+                //}
+                //JSSensorsList.push(jsSDmodel);
+                //save again to cookie
+                //Cookies.set('JSSensorsList', JSON.stringify(JSSensorsList));
+            }
+        });
+    });
+
+
+</script>

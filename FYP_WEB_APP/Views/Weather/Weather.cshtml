@@ -1,0 +1,125 @@
+﻿
+@{
+
+    FYP_WEB_APP.Models.RegionalWeatherModel Weather = ViewData["RegionalWeatherModel"] as FYP_WEB_APP.Models.RegionalWeatherModel;
+}
+<style>
+
+
+
+
+    .nav-link {
+        /*padding-top: 15px;*/
+    }
+
+    .tempShow {
+    }
+</style>
+@if (Weather != null)
+{
+    <li class="nav-item">
+        <a class="nav-link" href="#" style="padding-top:10px"><span class="statusTxt"><b>@Weather.Location</b></span></a>
+    </li>
+
+    <li class="nav-item" style="padding-top: 5px; margin-left: -10px; margin-right: 10px;">
+        <a href="#">
+            @{ string icon = @Weather.icon + ".png"; }
+            <img width="36px" src="http://openweathermap.org/img/wn/@icon">
+            <span class="statusTxt" style="margin-left: -5px;">@Weather.Description</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link tempShow" href="#">
+            <img src="~/img/icon/weather24.png">
+            <span id="" class="statusTxt">@Weather.Temperature &#8451;</span>
+        </a>
+    </li>
+
+    <li class="nav-item ">
+        <a class="nav-link tempShow" href="#">
+            <img src="~/img/icon/humidity24.png">
+            <span id="" class="statusTxt">@Weather.Humidity %</span>
+
+        </a>
+    </li>
+
+
+    <li class="nav-item ">
+        <a class="nav-link tempShow" href="#">
+            <b>Max</b>
+            <span id="" class="statusTxt">@Weather.Details.TempMax &#8451;</span>
+        </a>
+    </li>
+    <li class="nav-item ">
+        <a class="nav-link tempShow" href="#">
+            <b>Min</b>
+            <span id="" class="statusTxt">@Weather.Details.TempMin &#8451;</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="#" title="Apparent Temperature">
+            <b>AT</b>
+            @{
+                FYP_WEB_APP.Models.LogicModels.ApparenTemperatureUtil atUtil = new FYP_WEB_APP.Models.LogicModels.ApparenTemperatureUtil();
+                var at = atUtil.calApparenTemperature(Weather.Temperature, Weather.Humidity, Weather.Wind);
+            }
+            <span id="" class="statusTxt">@at</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#" title="Heat Index">
+            <b>HI</b>
+            @{
+                var hi = atUtil.calHeatIndex(Weather.Temperature, Weather.Humidity);
+            }
+            <span id="" class="statusTxt">@hi</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <b>Updated</b>
+            <span id="" class="statusTxt">@Weather.LastUpdate</span>
+        </a>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link" href="#"><span id="" class="statusTxt"><b>OUT DOOR</b></span></a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link " href="#">
+            <img src="~/img/icon/weather24.png">
+            <span id="" class="statusTxt">N/A &#8451;</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <img src="~/img/icon/humidity24.png">
+            <span id="" class="statusTxt">N/A %</span>
+
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <img src="~/img/icon/sun24.png">
+            <span id="" class="statusTxt">N/A</span>
+
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            Last Update :
+            <span id="" class="statusTxt">N/A</span>
+
+        </a>
+    </li>
+}
+

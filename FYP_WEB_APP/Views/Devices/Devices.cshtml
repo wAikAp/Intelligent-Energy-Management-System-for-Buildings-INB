@@ -1,0 +1,204 @@
+﻿
+@{
+    ViewData["Title"] = "Devices";
+    Layout = "_Layout";
+
+    string returnUrl = Context.Request.Path + Context.Request.QueryString;
+    Context.Response.Cookies.Append("returnUrl", returnUrl);
+
+    List<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>
+DevicesList = ViewData["MongoDevicesListModel"] as List<FYP_WEB_APP.Models.MongoModels.MongoDevicesListModel>;
+
+    List<FYP_WEB_APP.Models.RoomsListModel>
+    Rooms= ViewData["RoomListModel"] as List<FYP_WEB_APP.Models.RoomsListModel>;
+
+
+}
+<globalization requestEncoding="utf-8" responseEncoding="utf-8" />
+
+<head>
+    <title>@ViewData["Title"]</title>
+</head>
+
+<body class="">
+
+
+
+    <div class="main  ">
+        <div class=" bg-light p-3">
+
+            <div class="d-flex flex-column">
+                <div class="container-fluid ">
+                    <div class=" h2">
+                        <div>
+                            Devices
+                        </div>
+                    </div>
+                </div>
+                <div class="p-2 bd-highlight">
+                    <form method="get" action="Devices">
+                        <div class="d-flex flex-row mb-2 p-2 w-100">
+                            <div class="col px-0">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">
+                                            <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="15.000000pt"
+                                                 height="15.000000pt" viewBox="0 0 240.000000 240.000000"
+                                                 preserveAspectRatio="xMidYMid meet">
+                                                <g transform="translate(0.000000,240.000000) scale(0.100000,-0.100000)"
+                                                   fill="#000000" stroke="none">
+                                                    <path d="M721 2379 c-259 -58 -457 -198 -591 -418 -76 -123 -130 -316 -130 -458 0 -101 38 -269 83 -366 133 -287 398 -479 716 -517 121 -15 251 -1 375 41 l90 30 346 -346 c233 -233 352 -345 366 -345 38 0 138 40 192 77 107 73 198 207 210 309 l5 46 -341 342 -341 341 34 100 c46 136 61 255 46 381 -46 393 -316 693 -699 780 -130 29 -242 30 -361 3z m387 -315 c182 -73 318 -225 366 -411 20 -78 20 -218 0 -297 -52 -203 -227 -378 -430 -430 -78 -20 -222 -21 -297 -1 -207 54 -378 225 -432 433 -20 74 -20 221 0 297 49 186 191 343 371 411 127 48 298 47 422 -2z" />
+                                                </g>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    @{
+                                        //if searched get the searched input record
+                                        var searchedRoomId = ViewData["searchedRoomId"];
+                                        var searchedDeviceId = ViewData["searchedDeviceId"];
+                                        List<string> typeCheckedList = ViewData["typeCheckedList"] as List<string>;
+                                        if (searchedRoomId == null)
+                                        {
+                                            searchedRoomId = "";
+                                            searchedDeviceId = "";
+                                            typeCheckedList = new List<string>() { "checked", "checked", "checked", "checked", "checked" };
+                                        }
+                                    }
+                                    <div class="col align-items-center bg-white  text-dark border border-secondary">
+                                        <div class="col-4  d-flex  flex-row py-2">
+                                            <div class="d-flex px-3 align-items-center">
+                                                <b>Search</b>
+                                                <input class="pl-2 ml-2" type="text" id="device_id" name="device_id" placeholder="Device ID" value="@searchedDeviceId" style="border-radius:8px" />
+                                            </div>
+
+
+
+                                            <div class="d-flex px-3 align-items-center">
+                                                Room
+                                                <select class="form-control bg-white px-2 ml-2" id="roomIdSelecter" name="roomId" style="width:120px; border-radius:8px" @ViewBag.SearchRoomIdENorDisable>
+                                                    <option value="">All Room No. </option>
+                                                    @foreach (var Room in Rooms)
+                                                    {
+                                                        <option value="@Room.roomId">@Room.roomId</option>
+                                                    }
+
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col  d-flex  flex-row align-items-center py-2">
+                                            <div class="d-flex px-3 align-items-center">
+                                                <input type="checkbox" id="typeSelecter4" name="All" />
+                                                <label for="typeSelecter4">
+                                                    &nbsp
+                                                    <img src="~/img/icon/all.png" width="32" />
+                                                    All
+                                                </label>
+                                            </div>
+                                            <div class="d-flex px-3 align-items-center">
+                                                <input class="typeSelecter" type="checkbox" id="typeSelecter0" name="AC" value="true" />
+                                                <label for="typeSelecter0">
+                                                    &nbsp
+                                                    <img src="~/img/icon/air-conditioner96.png" width="32" style="filter:invert(100%)" />
+                                                    AC
+                                                </label>
+                                            </div>
+                                            <div class="d-flex px-3 align-items-center">
+                                                <input class="typeSelecter" type="checkbox" id="typeSelecter1" name="LT" value="true" />
+                                                <label for="typeSelecter1">
+                                                    &nbsp
+                                                    <img src="~/img/icon/light-off96.png" width="32" style="filter:invert(100%)" />
+                                                    Light
+                                                </label>
+                                            </div>
+                                            <div class="d-flex px-3 align-items-center">
+                                                <input class="typeSelecter" type="checkbox" id="typeSelecter2" name="HD" value="true" />
+                                                <label for="typeSelecter2">
+                                                    &nbsp
+                                                    <img src="~/img/icon/humidifier96.png" width="32" style="filter:invert(100%)" />
+                                                    Humidifier
+                                                </label>
+
+                                            </div>
+                                            <div class="d-flex px-3 align-items-center">
+                                                <input class="typeSelecter" type="checkbox" id="typeSelecter3" name="EF" value="true" />
+                                                <label for="typeSelecter3">
+                                                    &nbsp
+                                                    <img src="~/img/icon/fan96.png" width="32" style="filter:invert(100%)" />
+                                                    Fan
+                                                </label>
+                                            </div>
+                                            <script>
+
+                                                //assign check box cheked
+                                                @for (int i = 0; i < typeCheckedList.Count; i++) {
+                                                    string str = typeCheckedList[i];
+                                                    int check = str.Equals("checked") ? 1 : 0;
+                                                    <Text>
+                                                    $("#typeSelecter" +@i).prop("checked",@check);
+                                                    </Text>
+                                                }
+
+                                                $("#roomIdSelecter").val('@searchedRoomId');
+
+                                                $(".typeSelecter").click(function () {
+                                                    $("#typeSelecter4").prop("checked", false);
+                                                });
+
+
+                                                $("#typeSelecter4").click(function () {
+                                                    if ($("#typeSelecter4").prop("checked")) {
+                                                        $(".typeSelecter").prop("checked", true);
+
+                                                    } else {
+                                                        $(".typeSelecter").prop("checked", false);
+                                                    }
+                                                });
+                                            </script>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="input-group-append">
+                                        <input class="btn btn-outline-secondary" type="submit" value="search" />
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <partial name="_DevicesList" />
+                    @if (ViewData["isnull"] != "true")
+                    {
+                        <!--   <div class="card d-flex flex-row mb-2 mx-2 p-2 ">
+               <button class="p-3 mx-2 btn btn-outline-secondary"> power report</button>
+               <button class="p-3 mx-2 btn btn-outline-secondary">debices report</button>
+               <button class="p-3 mx-2 btn btn-outline-secondary">maintain report</button>
+               <button class="p-3 mx-2 btn btn-outline-secondary">money report</button>
+           </div>-->
+                        // <partial name="_DevicesChart" />
+                        <div id="DevicesChartAC" class="flex-fill bd-highlight col-12 h-100"></div>
+                        <div id="DevicesChartLT" class="flex-fill bd-highlight col-12 h-100"></div>
+                        <div id="DevicesChartHD" class="flex-fill bd-highlight col-12 h-100"></div>
+                        <div id="DevicesChartEF" class="flex-fill bd-highlight col-12 h-100"></div>
+                        <script>
+                $(document).ready(function () {
+                    $("#DevicesChartAC").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "Air Conditioner Temperature Log Record", chartType = "line" ,position ="top" , download = false , time = 6 , timeSpacing = 1 , type = "AC" }))", function () {});
+                    $("#DevicesChartLT").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "Light Luminosity Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "LT" }))", function () {});
+                    $("#DevicesChartHD").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "Humidifier Humidity Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "HD" }))", function () {});
+                    $("#DevicesChartEF").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "FAN Revolution(s) Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 1 , type = "EF" }))", function () {});
+
+                });
+
+                        </script>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+
+
+

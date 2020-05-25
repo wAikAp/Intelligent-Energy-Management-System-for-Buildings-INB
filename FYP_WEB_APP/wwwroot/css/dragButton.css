@@ -1,0 +1,50 @@
+﻿.draggable {
+    text-align: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 40px;
+    z-index: 99;
+    position: absolute;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    padding-top: 10px;
+    -webkit-box-shadow: 5px 6px 10px 4px rgba(0,0,0,0.19);
+    -moz-box-shadow: 5px 6px 10px 4px rgba(0,0,0,0.19);
+    box-shadow: 5px 6px 10px 4px rgba(0,0,0,0.19);
+}
+
+.draggable:hover {
+    cursor: all-scroll;
+}
+
+.TSensor {
+    background-color: #159bfb;
+
+}
+
+.HSensor {
+    background-color: #1ab8a3;
+}
+
+.LSensor {
+    background-color: #fdbf2f;
+}
+
+.ASensor {
+    background-color: #3bd5e3;
+}
+
+.device_off {
+    background-color: #343a40;
+}
+.device_on {
+    background-color: #f7f7f7;
+}
+
+.LightDevice_off {
+    background-color: #343a40;
+}
+.LightDevice_on {
+    background-color: #fffff0;
+}

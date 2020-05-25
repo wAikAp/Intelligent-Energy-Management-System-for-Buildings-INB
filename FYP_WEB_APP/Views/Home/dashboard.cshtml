@@ -1,0 +1,240 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewBag.Title = "Home Page";
+    Layout = null;
+
+    var date = ViewBag.Date;
+    var student = ViewBag.Student;
+    var list = ViewBag.List;
+    Layout = "_Layout";
+
+}
+
+    <head>
+        <link rel="stylesheet" href="~/css/style.css">
+        <!--https://www.chartjs.org/-->
+        <link rel="stylesheet" href="~/css/bootstrap.min.css">
+        <script src="~/js/chart/Chart.min.js"></script>
+        <script src="~/js/chart/utils.js"></script>
+        <script src="~/js/bootstrap/popper.min.js"></script>
+        <script src="~/js/bootstrap/bootstrap.min.js"></script>
+        <script src="~/js/heatmap/heatmap.js"></script>
+        <script src="~/js/heatmap/heatmap.min.js"></script>
+        <script src="~/js/prism.js"></script>
+        <!--loading js-->
+        <script src="~/js/modernizr.js"></script>
+        <script src="~/js/jquery/jquery-3.5.1.min.js"></script>
+        <!--loading js-->
+
+        <title>InB</title>
+        <script>
+
+            $(document).ready(function () {
+                //navbar ui
+                $('.navbar-nav .nav-link').removeClass('active');
+                $("#index").addClass('active');
+
+                //<!--loading js-->
+
+            });
+
+            $(window).load(function () {
+                // Animate loader off screen
+                $(".se-pre-con").fadeOut("fast");
+            });
+        </script>
+        <!--Testing-->
+        <style>
+            canvas {
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+            }
+        </style>
+        <!--Testing-->
+    </head>
+
+<!--loading page graphic-->
+<div class="se-pre-con"></div>
+<!--loading page graphic-->
+<!--header-->
+<!--<script src="header.js"></script>-->
+<!--header-->
+
+<div class="">
+    <div class=" bg-light p-3">
+        <div class="container-fluid">
+            <div class="container-fluid ">
+                <dt class=" h2"><b>Overall Usage</b></dt>
+            </div>
+            <div class="row ">
+                <div class=" col-xl-4 col-sm">
+                    <div class="card mb-3 shadow-sm h-100 p-3 justify-content-center align-items-center  ">
+                        <div id="PowerUsageChart" class="flex-fill bd-highlight col-12 h-100"></div>
+                        <script>
+                        $(document).ready(function () {
+                         $("#PowerUsageChart").load("@Html.Raw(Url.Action("DoughnutChart", "Home", new { title = "Power Usage(kWh)", chartType = "doughnut", position = "right" }))", function () {});
+
+                                    });
+                        </script>
+                    </div>
+                </div>
+                <div class=" col-xl-4 col-sm">
+                    <div class="card mb-3 shadow-sm h-100 p-3 justify-content-center align-items-center">
+                        <div id="DoughnutChart" class="flex-fill bd-highlight col-12 h-100"></div>
+                        <script>
+                        $(document).ready(function () {
+                            $("#DoughnutChart").load("@Html.Raw(Url.Action("DoughnutUseTimeChart", "Home", new { title = "Use Time(hrs)", chartType = "doughnut", position = "right" }))", function () {});
+
+                                    });
+
+                        </script>
+                    </div>
+                </div>
+
+                <div class=" col-xl-4 col-sm">
+                    <div class="">
+                        <div class="card mb-3 shadow-sm px-3 pt-3 pb-0">
+                            Total Savings
+
+                            <div class="text-right h2">
+                                @ViewBag.TotalSavings
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="card mb-3 shadow-sm px-3 pt-3 pb-0 w-100">
+                            Total Usage
+
+                            <div class="text-right h2">
+                                @ViewBag.TotalUsage
+                                kWh
+                            </div>
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="card  shadow-sm px-3 pt-3 pb-0 ">
+                            <div class="">
+                                <div class=" d-flex flex-row ">
+                                    <div class=" mb-4  w-50 ">
+                                        Air Conditioner
+                                    </div>
+                                    <div class=" mb-4  w-25 text-right">
+                                        @ViewBag.ACpower
+                                    </div>
+                                    <div class=" mb-4  w-25 text-right">kWh</div>
+                                </div>
+                            </div>
+                            <div class="">
+                                <div class=" d-flex flex-row">
+                                    <div class=" mb-4  w-50 ">
+                                        Light
+                                    </div>
+                                    <div class=" mb-4  w-25 text-right">
+                                        @ViewBag.LTpower
+                                    </div>
+                                    <div class=" mb-4  w-25 text-right">kWh</div>
+                                </div>
+                            </div>
+                            <div class="">
+                                <div class=" d-flex flex-row">
+                                    <div class=" mb-4  w-50 ">
+                                        Humidifier
+                                    </div>
+                                    <div class=" mb-4  w-25 text-right">
+                                        @ViewBag.HDpower
+                                    </div>
+                                    <div class=" mb-4  w-25 text-right">kWh</div>
+                                </div>
+                            </div>
+                            <div class="">
+                                <div class=" d-flex flex-row">
+                                    <div class=" mb-4  w-50 ">
+                                        Exhaust Fan
+                                    </div>
+                                    <div class=" mb-4  w-25 text-right">
+                                        @ViewBag.EFpower
+                                    </div>
+                                    <div class=" mb-4  w-25 text-right">kWh</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class=" bg-light p-3">
+
+        <div class="col-md ">
+            <div class="card shadow-sm w-100 h-100 p-3 justify-content-center align-items-center flex-row flex-wrap">
+                <div style="width:75%;">
+                    <canvas id="canvas"></canvas>
+                </div>
+                <br>
+                <br>
+                <script>
+                    // record current 8 hours trend
+                    //
+                    var today = new Date();
+                    var time = today.getHours();
+
+                    var config = {
+                        type: 'line',
+                        data: @Html.Raw(ViewBag.trendJsonString) 
+                       ,
+                        options: {
+                                responsive: true,
+                                title: {
+                                    display: true,
+                                    text: 'Room power consumption',
+                                    fontSize: 35
+                                },
+                                tooltips: {
+                                    mode: 'index',
+                                    intersect: false,
+                                },
+                                hover: {
+                                    mode: 'nearest',
+                                    intersect: true
+                                },
+                                scales: {
+                                    xAxes: [{
+                                        display: true,
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: 'Time'
+                                        }
+                                    }],
+                                    yAxes: [{
+                                        display: true,
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: 'Device Usage(kWh)'
+                                        }
+                                    }]
+                                }
+                            }
+                                        };
+
+                        window.onload = function () {
+                            var ctx = document.getElementById('canvas').getContext('2d');
+                            ctx.font = "500px Arial";
+                            window.myLine = new Chart(ctx, config);
+                        };
+                </script>
+                <br />
+                
+                <a class="nav-link" href="~/Home/DownloadFile">
+                    <button class="p-3 mx-2 btn btn-outline-secondary">Download the report</button>
+                </a>
+
+                <!---->
+            </div>
+        </div>
+    </div>
+</div>

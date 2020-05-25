@@ -1,0 +1,321 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    List<FYP_WEB_APP.Models.SensorsListModel> Sensors = null;
+    List<FYP_WEB_APP.Models.RoomsListModel> Rooms = null;
+    if (ViewBag.viewType.Equals("Edit") || ViewBag.viewType.Equals("Drop"))
+    {
+        Sensors = ViewData["EditSensorsListModel"] as List<FYP_WEB_APP.Models.SensorsListModel>;
+    }
+    else if (ViewBag.viewType.Equals("Add"))
+    {
+        Rooms = ViewData["RoomListModel"] as List<FYP_WEB_APP.Models.RoomsListModel>;
+    }
+
+}
+
+@{ string url = ViewBag.action;}
+<form action="@Url.Action(url,"sensors")" method="post">
+
+    <div class="modal-header">
+
+        <h5 class="modal-title" id="exampleModalLabel"> @ViewBag.viewType Sensor </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+
+            <span aria-hidden="true">&times;</span>
+
+        </button>
+
+    </div>
+    <div class="modal-body p-2">
+        @if (ViewBag.viewType.Equals("Add"))
+        {
+
+
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+                <label class="col h5" for="SensorRoomId">Room</label>
+
+                <div class="col">
+                    @{
+                        string chid = ViewBag.CheckRoomid;}
+
+                    @if (chid == "undefined" || chid == null)
+                    {
+
+                        <select id="roomId" name="roomId" class="form-control bg-white">
+                            <option value="">Room.No</option>
+                            @foreach (var Room in Rooms)
+                            {
+
+                                <option value="@Room.roomId">@Room.roomId</option>
+
+                            }
+
+                        </select>
+                    }
+                    else
+                    {
+
+                        <input type="text" class="form-control bg-white" id="roomId" name="roomId" value="@ViewBag.CheckRoomid" required readonly>
+                    }
+
+
+                </div>
+            </div>
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                <label class="col h5" for="sensor_name">sensor_name</label>
+                <div class="col">
+                    <input type="text" class="form-control bg-white" id="sensor_name" name="sensor_name" placeholder="name for sensor" value="" required>
+                </div>
+            </div>
+
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                <label class="col h5" for="Sensortype">Sensor type</label>
+                <div class="col">
+                    <select class="form-control bg-white" id="Sensortype" name="Sensortype" placeholder="type" required>
+                        <option value="TS">Temperature</option>
+                        <option value="HS">Humidity</option>
+                        <option value="LS">Luminosity</option>
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                <label class="col h5" for="pos_x">Position X</label>
+                <div class="col">
+
+                    <input type="number" class="form-control bg-white" id="pos_x" name="pos_x" placeholder="0" value="0" required>
+                </div>
+            </div>
+
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                <label class="col h5" for="pos_y"> Position Y</label>
+                <div class="col">
+                    <input type="number" class="form-control bg-white" id="pos_y" name="pos_y" placeholder="0" value="0" required>
+                </div>
+
+            </div>
+
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                <label class="col h5" for="desc">Description</label>
+                <div class="col">
+
+                    <input type="text" class="form-control bg-white" id="desc" name="desc" placeholder=" Description of Sensor" value=" ">
+
+                </div>
+
+            </div>
+
+            <!--end modal body-->
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" id="editSensorSetup" class="btn btn-primary">Submit</button>
+            </div>
+        }
+        else if (ViewBag.viewType.Equals("Edit"))
+        {
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+                <label class="col h5" for="roomId">Room</label>
+
+                <div class="col">
+
+                    <input type="text" class="form-control bg-white" id="roomId" name="roomId" placeholder="id" value="@if (Sensors != null && ViewBag.viewType.Equals("Edit"))
+                            {@Sensors.First().roomId}" required readonly>
+
+                </div>
+            </div>
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                <label class="col h5" for="sensor_name">sensor_name</label>
+                <div class="col">
+                    <input type="text" class="form-control bg-white" id="sensor_name" name="sensor_name" placeholder="name for sensor" value="@Sensors.First().sensor_name" required>
+                </div>
+            </div>
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                <label class="col h5" for="SensorId">Sensor ID</label>
+                <div class="col">
+
+                    <input type="text" class="form-control bg-white" id="SensorId" name="SensorId" placeholder="SensorId" value="@if (Sensors != null)
+                            {@Sensors.First().sensorId}" required readonly>
+
+                </div>
+            </div>
+
+
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                <label class="col h5" for="Sensortype">Sensor type</label>
+                <div class="col">
+                    @{
+                        string str = "";}
+                    <select class="form-control bg-white" id="Sensortype" name="Sensortype" placeholder="type" required disabled>
+
+                        <option value="@Sensors.First().sensorId.Substring(0, 2)">
+                            @switch (Sensors.First().sensorId.Substring(0, 2))
+                            {
+                                case "TS":
+                                    str = "Temperature";
+                                    break;
+                                case "LS":
+                                    str = "Luminosity";
+                                    break;
+                                case "HS":
+                                    str = "Humidity";
+                                    break;
+                                default:
+                                    break;
+                            }
+                            @str
+                        </option>
+                    </select>
+
+
+
+                </div>
+            </div>
+
+
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                <label class="col h5" for="pos_x">Position X</label>
+                <div class="col">
+
+                    <input type="number" class="form-control bg-white" id="pos_x" name="pos_x" placeholder="pos_x" value="@if (Sensors != null)
+                        {@Sensors.First().pos_x}" required>
+                </div>
+
+
+            </div>
+
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                <label class="col h5" for="pos_y"> Position Y</label>
+                <div class="col">
+                    <input type="number" class="form-control bg-white" id="pos_y" name="pos_y" placeholder="pos_y" value="@if (Sensors != null)
+                        {@Sensors.First().pos_y}" required>
+                </div>
+
+            </div>
+
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                <label class="col h5" for="desc">Description</label>
+                <div class="col">
+
+                    <input type="text" class="form-control bg-white" id="desc" name="desc" placeholder=" Description of Sensor" value="@if (Sensors != null)
+                        {@Sensors.First().desc}">
+
+                </div>
+
+            </div>
+
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                <label class="col h5" for="latest_checking_time">Latest checking time</label>
+                <div class="col">
+
+                    <input type="datetime" class="form-control bg-white" id="latest_checking_time" name="latest_checking_time" value="@if (Sensors != null)
+                            {@Sensors.First().latest_checking_time}" required readonly>
+
+                </div>
+
+            </div>
+
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                <label class="col h5" for="total_run_time">Total run time</label>
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <input type="datetime" class="form-control bg-white" id="total_run_time" name="total_run_time" value="@if (Sensors != null)
+                                {@Sensors.First().total_run_time}" required readonly>
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="resetRunTime"><img src="https://cdn.onlinewebfonts.com/svg/img_260976.png" width="25" height="25" /></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+
+                <label class="col h5" for="Exception">Exception</label>
+                <div class="col">
+
+                    <input type="datetime" class="form-control bg-white" id="Exception" name="Exception" value="@if (Sensors != null)
+                            {@Sensors.First().Exception}" required >
+
+                </div>
+
+            </div>
+            <!--end modal body-->
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" id="editSensorSetup" class="btn btn-primary">Save changes</button>
+
+            </div>
+        }
+        else if (ViewBag.viewType.Equals("Drop"))
+        {
+
+            <div class="row mx-3 justify-content-center align-items-center pb-2">
+                <label class="col">Are you sure to delete it?</label>
+
+                <input type="hidden" class="form-control bg-white d-none" id="sensorId" name="sensorId" value="@Sensors.First().sensorId" required readonly />
+                <input type="hidden" class="form-control bg-white d-none" id="roomId" name="roomId" value="@Sensors.First().roomId" required readonly>
+                <script>$("#sensorIdTxt").val($("#dropSensorID").val())</script>
+            </div>
+
+            <!--end modal body-->
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" id="editSensorSetup" class="btn btn-primary">Drop</button>
+
+            </div>
+        }
+    </div>
+    </form>
+    <script>
+        $("#resetRunTime").click(function () {
+            var today = Date(Date.now());
+
+            if (confirm("is reset the Time Count ?")) {
+                $("#total_run_time").val(today);
+            } else {
+            }
+        });
+    </script>
+
+
+    <script>
+        $("#editSensorSetup").click(function () {
+            var match = ($("#CSensorId").val() == $("#SensorId").val() && $("#CroomId").val() == $("#roomId").val());
+            var vi =@ViewBag.viewType ;
+            if (vi == "Drop") {
+                if (match) {
+                    if (confirm("Please confirm the data !! ")) {
+                        form.submit();
+                        alert("Successful Your Submition !!");
+                    } else {
+                    }
+                } else {
+                    alert("You select the item and input form is NOT MATCH!! \n Please tryAgain");
+
+                }
+            } else {
+                if (confirm("Please confirm the data !! ")) {
+                    form.submit();
+                    alert("Successful Your Submition !!");
+                } else {
+                }}
+        });
+    </script>
+

@@ -1,0 +1,201 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    List<List<FYP_WEB_APP.Models.SensorsListModel>> SensorsByroomList = ViewData["SensorsListModel"] as List<List<FYP_WEB_APP.Models.SensorsListModel>>;
+
+}
+    <link rel="stylesheet" href="~/css/dragButton.css">
+<div class="modal fade" id="EditSensors" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered" role="document">
+
+        <div class="modal-content" id="EditSensorsBody">
+
+
+        </div>
+
+    </div>
+</div>
+<div class="p-2 bd-highlight">
+    <div class="card d-flex flex-column mb-2 mx-2 p-2" style="">
+        <div class="row justify-content-between align-items-center mb-2 d-flex flex-wrap">
+            <div class="col ">
+                <div class="col h4">
+                    Sensor List
+                </div>
+            </div>
+            @if (!ViewData["NotGroup"].Equals("true"))
+            {
+                <!--
+        <div class=" d-flex justify-content-center align-items-center">
+            <a class="btn btn-outline-dark mx-2" href='@ViewBag.roomIdSortParm'>
+                roomId
+                <img src="~/img/icon/@ViewBag.sortIMG" height="25" />
+            </a>
+        </div>
+        -->
+            }
+            <div class="d-flex justify-content-end">
+                @if (ViewData["roomID"] != null)
+                {
+                    <a href="#" class="btn btn-outline-success px-2 mr-3" onclick="AddtSensors('@ViewData["roomID"]')">
+                        &#43; Add
+                    </a>
+                }
+                else
+                { <a href="#" class="btn btn-outline-success px-2 mr-3" onclick="AddtSensors()">
+                        &#43; Add
+                    </a>
+
+                }
+
+
+
+            </div>
+        </div>
+        @if (SensorsByroomList.Count == 0){
+            <div class="alert alert-warning text-center font-weight-bold" role="alert">
+                <h3>Please try again, no corresponding conditions.  </h3>
+            </div>
+            }
+        else
+        {
+            @foreach (var getSensorsByroom in SensorsByroomList)
+            {
+                <div class="card m-2">
+                    @if (!ViewData["NotGroup"].Equals("true"))
+                    {
+                        <div class="card-header p-0" id="heading_@getSensorsByroom.First().roomId">
+                            <h3 class="mb-0">
+                                <button class="btn btn-outline-secondary w-100 border-0" data-toggle="collapse" data-target="#collapse_@getSensorsByroom.First().roomId" aria-expanded="true" aria-controls="collapse_@getSensorsByroom.First().roomId">
+                                    @getSensorsByroom.First().roomId
+                                </button>
+                            </h3>
+                        </div>
+                    }
+                    <div id="collapse_@getSensorsByroom.First().roomId" class="collapse show" aria-labelledby="heading_@getSensorsByroom.First().roomId">
+                        <div class="card-body d-flex flex-wrap">
+                            @foreach (var sensorModel in getSensorsByroom)
+                            {
+                                string turnOFstr = sensorModel.status ? "Online" : "Offline";
+                                string turnOFClr = sensorModel.status ? "badge-success" : "badge-danger";
+                                string expStr = sensorModel.Exception;
+                                switch (sensorModel.sensorId.Substring(0, 2))
+                                {
+                                    case "TS":
+                                        ViewData["devicesType"] = "Temperature";
+                                        ViewData["TypeColor"] = "TSensor";
+                                        break;
+                                    case "LS":
+                                        ViewData["devicesType"] = "Luminosity";
+                                        ViewData["TypeColor"] = "LSensor";
+                                        break;
+                                    case "HS":
+                                        ViewData["devicesType"] = "Humidity";
+                                        ViewData["TypeColor"] = "HSensor";
+                                        break;
+                                    case "AS":
+                                        ViewData["devicesType"] = "Air Quality";
+                                        ViewData["TypeColor"] = "ASensor";
+                                        break;
+
+                                }
+                            <div class="card text-white @ViewData["TypeColor"] mb-3 mx-3" style="max-width: 15rem; min-width:13rem;">
+                                @Html.Partial("_loader", "sensorLoader")
+                                <div class="card-header">
+                                    <div class="d-flex bd-highlight align-items-center">
+                                        <div class="mr-auto text-white bd-highlight">
+                                            <a class="  align-middle text-white h-100" href="#">
+                                                @ViewData["devicesType"]
+                                            </a>
+                                        </div>
+                                        <div class="dropdown  bd-highlight">
+
+                                            <button role="button" class="btn  float-right mt-1 ml-2" type="button" id="dropdownMenuButton0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <img class=" mt-1" style="width: 16px;@ViewData["backimg"]" src="~/img/icon/rightArrow.png" />
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton0">
+                                                <a href="#" class="btn text-success mx-2" onclick="EditSensors('@sensorModel.sensorId')">edit </a>
+
+                                                <a href="#" class="btn text-danger mx-2" onclick="DropSensors('@sensorModel.sensorId')">Delete </a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="card-body">
+                                    <p class="ard-text p-0 m-0"><b>@sensorModel.roomId @sensorModel.sensorId</b></p>
+                                    <input id="dropSensorID" type="hidden" value="@sensorModel.sensorId" />
+                                    <h4 class="card-title" style="margin-top:5px">
+                                        <img src="~/img/icon/@sensorModel.typeImg" height="36">
+                                        @sensorModel.current_Value @sensorModel.typeUnit
+                                    </h4>
+                                    <a class="shadow badge badge-pill  @turnOFClr" style="margin-left:-2px; margin-top:2px font-size: 14px" href="#">@turnOFstr</a>
+                                    <p class="card-text my-1" style="font-size:12px">
+                                        @if (sensorModel.current_Time != DateTime.MinValue)
+                                        {
+                                            <b style="font-size:14px">@sensorModel.latest_checking_time</b>
+                                        }
+                                        else
+                                        {
+                                            <b> N/A </b>
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            }}
+
+    </div>
+</div>
+
+<script>
+
+    var EditSensors = function (sensorId) {
+
+        var url = "/Sensors/EditSensors/" + sensorId;
+
+        $("#EditSensorsBody").load(url, function () {
+            $("#EditSensors").modal("show");
+
+        })
+
+    }
+    var DropSensors = function (sensorId) {
+
+        var url = "/Sensors/DropSensors/" + sensorId;
+
+        $("#EditSensorsBody").load(url, function () {
+            $("#EditSensors").modal("show");
+        })
+
+    }
+    var AddtSensors = function () {
+
+        var url = "/Sensors/AddSensors";
+
+        $("#EditSensorsBody").load(url, function () {
+            $("#EditSensors").modal("show");
+
+        })
+
+    }
+    var AddtSensors = function (roomid) {
+
+        var url = "/Sensors/AddSensors/" + roomid;
+
+        $("#EditSensorsBody").load(url, function () {
+            $("#EditSensors").modal("show");
+
+        })
+
+    }
+</script>

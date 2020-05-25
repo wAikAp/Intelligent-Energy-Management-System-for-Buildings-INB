@@ -1,0 +1,134 @@
+﻿
+@using FYP_APP.Models.MongoModels;
+
+@{
+    ViewData["Title"] = "Rooms";
+    Layout = "_Layout";
+
+    var roomsDatalist = (List<MongoRoomModel>)ViewData["roomsDatalist"];//get room list 
+  
+}
+
+    <head>
+
+        <title>@ViewData["Title"]</title>
+        <script>
+        $(document).ready(function () {
+            //navbar ui
+            $('.navbar-nav .nav-link').removeClass('active');
+            $("#rooms").addClass('active');
+
+
+            $(".clickable").click(function () {
+                var roomID = $(this).data("href");
+                var url = '@Url.Action("RoomDetail", "RoomDetail")';
+                url += "?roomID=" + escape(roomID);
+                window.location.href = url;
+
+            });
+        });
+        </script>
+    </head>
+
+<!--body-->
+    <body>
+        @Html.Partial("_addRoom")
+        <div class="container-fluid p-4 ">
+            <div class="row mb-2">
+                <h1 class="col-sm-9"><b>Room List</b></h1>
+                <div class="d-flex col-sm-3 btn-sm justify-content-end">
+                    <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addRoomModal">+Add Room</button>
+                </div>
+            </div>
+
+            <!--searchbox-->
+            <div class="card">
+                <div class="row">
+                    <div class="col-sm-12 ">
+                        <form method="post" action="~/Rooms/searchRoom">
+                            <div class="input-group">
+
+                                <span class="input-group-text" style="height:39px">🔍 </span>
+                                <input class="form-control " type="text" placeholder="Search Room ID" name="searchRoomID" value="@ViewData["searchedID"]">
+                                <button class="btn-sm btn-outline-secondary float-right m-2 " type="submit">search</button>
+                            </div>
+                            
+                        </form>
+                    </div>
+
+                </div>
+                <!--table-->
+                <div class="overflow-auto">
+                    <table class="table table-striped table-hover" id="RoomsTable">
+                        <thead>
+                            <tr>
+                                <th class="th-sm" scope="col">Room name</th>
+                                <th scope="col">Room type</th>
+                                <th scope="col">Room ID</th>
+                                <th scope="col">Floor</th>
+                                <th scope="col">Today Usage</th>
+                                <th scope="col">Humidity</th>
+                                <th scope="col">Luminosity</th>
+                                <th scope="col">Temperature</th>
+                                <th scope="col">Description</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <!--load data from ViewData:List<MongoRoomModel> -->
+                            @foreach (MongoRoomModel roomModel in roomsDatalist)
+                            {
+                                @Html.Partial("_editRoom", roomModel)
+                                <tr style="cursor: pointer;">
+                                    <td class='clickable' data-href='@roomModel.roomId'>@roomModel.roomName </td>
+                                    <td class='clickable' data-href='@roomModel.roomId'>@roomModel.type </td>
+                                    <td class='clickable' data-href='@roomModel.roomId'>@roomModel.roomId</td>
+                                    <td class='clickable' data-href='@roomModel.roomId'>@roomModel.floor</td>
+                                    @{
+                                        double power = Convert.ToDouble(roomModel.power.ToString("0.00"));
+                                    }
+                                    <td class='clickable' data-href='@roomModel.roomId'>@power kW</td>
+                                    <td class='clickable' data-href='@roomModel.roomId'>@roomModel.hum %</td>
+                                    <td class='clickable' data-href='@roomModel.roomId'>@roomModel.lig lm</td>
+                                    <td class='clickable' data-href='@roomModel.roomId'>@roomModel.temp &#8451;</td>
+                                    <td class='clickable' data-href='@roomModel.roomId'>@roomModel.desc</td>
+                                    @{
+                                        var modalViewID = "#editRoomModal" + roomModel.roomId;//for modal view
+                                        var formID = "form" + roomModel.roomId;//formid for drop room
+                                    }
+                                    <td>
+                                        <button class="btn btn-primary" type="button" data-toggle="modal" data-target="@modalViewID"><img src="~/img/icon/edit32_white.png" width="24px"> Edit</button>
+                                        <button class="btn btn-danger" type="button" onclick="dropRoom('@roomModel.roomId')"><img src="~/img/icon/trash96.png" width="24px"> Drop</button>
+                                    </td>
+
+                                </tr>
+                                <form id="@formID" action="~/Rooms/dropRoom" method="post">
+                                    <input type="hidden" value="@roomModel.roomId" name="roomID" />
+                                </form>
+
+
+                            }
+                        </tbody>
+                        </table>
+                </div>
+            </div>
+            <script>
+
+                function dropRoom(roomid) {
+                    //alert("roomid = " + roomid);
+                    var r = confirm("Are you sure to drop room " + roomid+"?");
+                    if (r == true) {
+                        var formID = "#form" + roomid;
+                        $(formID).submit();
+                    } 
+                    
+                }
+
+            </script>
+
+
+        </div>
+    </body>
+
+

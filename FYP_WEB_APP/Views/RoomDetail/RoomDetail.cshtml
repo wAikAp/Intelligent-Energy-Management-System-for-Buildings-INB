@@ -1,0 +1,576 @@
+﻿
+@{
+    @using FYP_WEB_APP.Models
+    @using FYP_WEB_APP.Models.LogicModels
+    @using FYP_APP.Models.MongoModels
+    ViewData["Title"] = "Rooms Detail";
+    Layout = "_Layout";
+
+    string returnUrl = Context.Request.Path + Context.Request.QueryString;
+    Context.Response.Cookies.Append("returnUrl", returnUrl);
+
+
+    List<SensorsListModel> sensorsList = ViewData["sensorsList"] as List<SensorsListModel>;
+    List<DevicesListModel> devicesLists = ViewData["devicesList"] as List<DevicesListModel>;
+    MongoRoomModel roomModel = ViewData["roomModel"] as MongoRoomModel;
+}
+
+<head>
+    <title>@ViewData["Title"]</title>
+    <!--https://github.com/js-cookie/js-cookie-->
+    <script src="~/js/javascript_Cookie/js.cookie.js"></script>
+    <script src="~/js/DragSensorDeviceButtonJSModel.js"></script>
+
+    <script>
+
+            function savePosition() {
+                var JSSensorList = [];
+                var JSDeviceList = [];
+                //get all the sensor id from the C# list then back to js to get the element
+                @foreach (SensorsListModel sensor in sensorsList) {
+                    <Text>
+                    var position = $("#@sensor.sensorId").position();
+                    console.log(position);
+                    var jsSpModel = new DragSensorDeviceButtonJSModel('@sensor.sensorId', position.left, position.top);
+                    JSSensorList.push(jsSpModel);
+
+                    </Text>
+                }
+                //get all the device id from the C# list then back to js to get the element position
+                @foreach (DevicesListModel device in devicesLists) {
+                    <Text>
+                    var position = $("#@device.devicesId").position();
+                    console.log(position);
+                    var jsDpModel = new DragSensorDeviceButtonJSModel('@device.devicesId', position.left, position.top);
+                    JSDeviceList.push(jsDpModel);
+
+                    </Text>
+                }
+
+                var sPositionList = JSON.stringify(JSSensorList);
+                var dPositionList = JSON.stringify(JSDeviceList);
+
+                var formData = new FormData();
+                formData.append("sPositionList", sPositionList);
+                formData.append("dPositionList", dPositionList);
+                formData.append("roomID", '@ViewData["roomID"]');
+                //{ 'sPositionList': sPositionList, 'dPositionList': dPositionList, 'roomID':@ViewData["roomID"] }
+
+                $.ajax({
+                    url: '@Url.Action("UpdateSensorDevicePosition", "RoomDetail")',
+                    type: "POST",
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    data: formData,
+                    success: function (response) {
+                        alert("Saved");
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert('Cannot save, please try again!');
+                        console.log(XMLHttpRequest);
+                        console.log(textStatus);
+                        console.log(errorThrown);
+
+                    }
+                });
+            }
+
+    </script>
+
+</head>
+
+
+<body>
+
+
+    @Html.Partial("_loader", "roomDetailLoader")
+    <!--page title-->
+    <div class="container-fluid p-4 ">
+        <div class="col-12 d-flex">
+            <div class="col-lg-4">
+                <h1 class="display-4"><strong>Room @ViewData["roomID"]</strong><span class="badge badge-pill badge-success" style="font-size: 14px">Online</span></h1>
+                <!-- tag -->
+                <div class="d-flex col-sm-12 ml-0 pl-0">
+                    <a href="#" class="badge badge-primary mx-0">@roomModel.type</a>
+                    <a href="#" class="badge badge-warning mx-1">@roomModel.floor / f</a>
+                </div>
+
+                <nav class="col-sm-12 my-2 " aria-label="breadcrumb" style="margin-left: -20px;">
+                    <ol class="breadcrumb ">
+                        <li class="breadcrumb-item"><a href="~/Rooms/Rooms">Rooms List</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Room detail</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col-lg-8 row row-cols-4">
+                <!-- totalPowerUsage -->
+                <div class="col bd-callout bd-callout-warning py-2 shadow-sm m-0 ml-sm-4 " style="max-width: 300px; min-width: 220px; max-height: 100px; overflow:hidden">
+                    <h4>
+                        <b style="font-size: .6em;"><img src="~/img/icon/lighting32.png" />Total Power Usage</b>
+                    </h4>
+                    <h3><strong class="pl-sm-2">@ViewData["totalPowerUsage"]</strong><snap class="text-black" style="font-size: .6em;">KW </snap></h3>
+                </div>
+
+                <!-- monthPowerUsage -->
+                <div class="col bd-callout bd-callout-danger py-2 shadow-sm m-0 ml-sm-4 " style="max-width: 300px; min-width: 220px; max-height: 100px;">
+                    <h4>
+                        <b style="font-size: .6em;"><img src="~/img/icon/lighting32.png" />Month Power Usage</b>
+                    </h4>
+                    @{
+                        var monthName = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(DateTime.Now.Month);
+                    }
+                    <h3><strong class="pl-sm-2">@ViewData["monthPowerUsage"]</strong><snap class="text-black" style="font-size: .6em;">KW <small style="font-size:6px"><b>/@monthName</b></small></snap></h3>
+                </div>
+
+                <!-- TodayPowerUsage -->
+                <div class="col bd-callout bd-callout-info py-2 shadow-sm m-0 ml-sm-4 " style="max-width: 300px; min-width: 220px; max-height: 100px;">
+                    <h4>
+                        <b style="font-size: .6em;"><img src="~/img/icon/lighting32.png" />Today Power Usage</b>
+                    </h4>
+                    <h3><strong class="pl-sm-2">@Math.Round(roomModel.power, 2, MidpointRounding.AwayFromZero)</strong><snap class="text-black" style="font-size: .6em;">KW </snap></h3>
+                </div>
+
+                <div class="col bd-callout bd-callout-info py-2 shadow-sm m-0 ml-sm-4 " style="max-width: 300px; min-width: 220px; max-height: 100px;">
+                    <h4>
+                        <b style="font-size: .6em;"><img src="~/img/icon/lighting32.png" />Daily Power Usage</b>
+                    </h4>
+                    @{
+                        double avgDayUsage = (double)ViewData["monthPowerUsage"];
+                    }
+                    <h3><small style="font-size:6px">Average</small><strong class="pl-sm-2">@Math.Round(avgDayUsage / 30, 2, MidpointRounding.AwayFromZero)</strong><snap class="text-black" style="font-size: .6em;">KW </snap><small style="font-size:8px">of 30 days</small></h3>
+                </div>
+
+
+                <div class="col bd-callout bd-callout-warning py-2 shadow-sm m-0 ml-sm-4 " style="max-width: 300px; min-width: 220px; max-height: 100px;">
+                    <h4>
+                        <b style="font-size: .6em;"><img src="~/img/icon/lighting32.png" />AC Power Usage</b>
+                    </h4>
+                    <h3><strong class="pl-sm-2">@ViewData["thisMonthAcUsage"]</strong><snap class="text-black" style="font-size: .6em;">KW <small style="font-size:6px">/@monthName</small></snap></h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex col-sm-12 ">
+            @{
+                double AT = 0; double HI = 0;
+                ApparenTemperatureUtil atUtil = new ApparenTemperatureUtil();
+                double temp = atUtil.getAvgTemp(roomModel.roomId);
+                double hum = atUtil.getAvgHum(roomModel.roomId);
+                HI = atUtil.calHeatIndex(temp, hum);
+                AT = atUtil.calApparenTemperature(temp, hum, 0.15);
+                var ATColStr = atUtil.getUIColor(AT);
+                var HIColStr = atUtil.getUIColor(HI);
+            }
+            <button type="button" class="btn mx-0 @ATColStr" style="font-weight:bold">
+                Apparent Temperature <span class="badge badge-light" style="font-size:16px">@AT °C</span>
+            </button>
+            <button type="button" class="btn mx-1 h-50 @HIColStr" style="font-weight:bold">
+                Heat Index <span class="badge badge-light" style="font-size:16px">@HI °C</span>
+            </button>
+            <button type="button" class="btn mx-1 h-50 @HIColStr" style="font-weight:bold">
+                Avg Temp <span class="badge badge-light" style="font-size:16px">@temp °C</span>
+            </button>
+        </div>
+
+        <div id="sensorView"></div>
+        <div id="devicesView"></div>
+
+        <div class="d-flex bd-highlight flex-wrap flex-column">
+            <div id="sensorChartTS" class="flex-fill bd-highlight col-12 h-100"></div>
+            <div id="sensorChartHS" class="flex-fill bd-highlight  col-12 h-100"></div>
+            <div id="sensorChartLS" class="flex-fill bd-highlight  col-12 h-100"></div>
+
+            <div id="DevicesChartAC" class="flex-fill bd-highlight col-12 h-100"></div>
+            <div id="DevicesChartLT" class="flex-fill bd-highlight col-12 h-100"></div>
+            <div id="DevicesChartHD" class="flex-fill bd-highlight col-12 h-100"></div>
+            <div id="DevicesChartEF" class="flex-fill bd-highlight col-12 h-100"></div>
+            <script>
+                    $(".roomDetailLoader").css("top", "300px");
+                    $(".roomDetailLoader").css("left", "45%");
+                    $(".roomDetailLoader").show();
+
+                    //load sensor device list
+                    updateSensorDeviceList();
+                    $(".roomDetailLoader").delay(5000).hide(1250);
+
+
+                    //each 30s to referash the sensor status
+                    var myVar = setInterval(function () {
+                        $.when(updateSensorDeviceList()).then(dismissLoader());
+                    }, 30000);
+
+                    function updateSensorDeviceList() {
+
+                        $(".sensorLoader").show();
+                        $(".deviceLoader").show();
+
+                        //sensors
+                        $("#devicesView").load("..@Url.Action("SearchDevicesByRoomid", "Devices", new { roomID = ViewData["roomID"] })", function () { });
+                        $("#sensorView").load("..@Url.Action("SensorsListByRoomid", "Sensors", new { roomID = ViewData["roomID"] })", function () {});
+                        $("#sensorChartTS").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "Temperature Sensor Log Record", chartType = "line" ,position ="top" , download = false , time = 6 , timeSpacing = 10 , type = "TS" }))", function () {});
+                        $("#sensorChartHS").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "Humidity Sensor Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 10 , type = "HS" }))", function () {});
+                        $("#sensorChartLS").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "Luminosity Sensor Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 10 , type = "LS" }))", function () { });
+
+                        //devices
+                        $("#DevicesChartAC").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "Air Conditioning Log Record", chartType = "line" ,position ="top" , download = false , time = 6 , timeSpacing = 10 , type = "AC" }))", function () {});
+                        $("#DevicesChartLT").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "Light Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 10 , type = "LT" }))", function () {});
+                        $("#DevicesChartHD").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "Humidifier Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 10 , type = "HD" }))", function () {});
+                        $("#DevicesChartEF").load("..@Html.Raw(Url.Action("chart", "chart", new { title = "FAN Log Record", chartType = "line" ,position ="top" , download = false, time = 6 , timeSpacing = 10 , type = "EF" }))", function () {});
+
+                    }
+
+                    function dismissLoader() {
+                        //delay(2000)
+                        $(".sensorLoader").hide(3500);
+                        $(".deviceLoader").hide(3500);
+                    }
+            </script>
+        </div>
+        <!-- data end -->
+        <!--  chart end   -->
+        <!--   floor plan     -->
+
+        <div class="card d-flex flex-column mb-2 mx-2 p-2 ">
+
+            <div class="row justify-content-between mb-2">
+                <div class="col">
+                    <h3 id="floorPlan">
+                        <b>Room Floor Plan </b>
+                    </h3>
+                </div>
+                <div class="col-12 d-flex ">
+
+                    <form id="floorPlanSubmit" method="post" action="~/RoomDetail/uploadFloorPlan">
+                        <!--upload file-->
+                        <input type="hidden" name="roomID" value="@ViewData["roomID"]" />
+                        <input type="hidden" id="floorPlanBase64" name="floorPlanBase64" value="" />
+                        <input style="display:none" type="file" id="imgUpload1" onchange="encodeImageFileAsURL(this)" />
+                        <button title="Upload floor plan" class="btn btn-outline-secondary px-0 mr-1 ml-2 " type="button" style="width: 40px; height: 40px" onclick='$("#imgUpload1").click()'><img src="~/img/icon/floor-plans512.png" style="height: auto;width:24px;"></button>
+
+                    </form>
+                    <script>var imagebase64 = "";
+
+                        function encodeImageFileAsURL(element) {
+                            var file = element.files[0];
+                            var reader = new FileReader();
+                            reader.onloadend = function () {
+                                imagebase64 = reader.result;
+                                $("#floorPlanBase64").val(reader.result);
+                                console.log('imagebase64', $("#floorPlanBase64").val());
+                                $("#floorPlanSubmit").submit();
+                            }
+                            reader.readAsDataURL(file);
+
+
+
+                        }</script>
+                    <button title="Add Sensor" type="button" class="btn btn-outline-secondary px-2" style="width: 40px; height: 40px;" onclick='AddtSensors("@ViewData["roomID"]")'>
+                        <img src="~/img/icon/temp.png" width="24px">
+                    </button>
+                    <button title="Add Device" type="button" class="btn btn-outline-secondary px-2" style="width: 40px; height: 40px;" onclick='AddtDevices("@ViewData["roomID"]")'>
+                        <img src="~/img/icon/ACBlack32.png" width="24px">
+                    </button>
+                    <button title="Save all positions" id="positionSaveBtn" type="button" class="btn btn-outline-secondary px-2" style="width: 40px; height: 40px;" onclick="savePosition()">
+                        <img src="~/img/icon/save64.png" width="24px">
+                    </button>
+                    @{
+                        //update img status
+                        string msgDisply = "display: none;";
+                        string msgStr = "";
+                        string msgColor = "bg-success";
+                        if (TempData["updateSuccess"] != null)
+                        {
+                            Boolean upstatus = TempData["updateSuccess"].Equals("true") ? true : false;
+                            msgStr = upstatus ? "Floor plan updated" : "Floor plan upload fail";
+                            msgDisply = "display: block;";
+                            msgColor = upstatus ? "bg-success" : "bg-danger";
+                        }
+                    }
+
+                </div>
+            </div>
+            <!--upload status-->
+            <div class="col-8 @msgColor" style="border-radius: 5px; height:auto; width:180px; padding:5px; text-align:center; margin-bottom:5px; @msgDisply">
+                <p class="text-white" style="margin:0"><b>@msgStr</b></p>
+            </div>
+
+            <div class="row mb-2">
+
+                <!--floor plan-->
+                <div class="col col-lg-4 col-xl-6 col-md-12 ml-4 p-2" style="background-color: lightgrey;  max-width: 510px; max-height: 710px; min-width: 510px; min-height: 710px; overflow: hidden">
+                    @{
+
+                        foreach (SensorsListModel sensorModel in sensorsList)
+                        {
+                            @Html.Partial("_dragButtonSensor", sensorModel)
+                        }
+                    }
+
+                    @{
+                        foreach (DevicesListModel devicesModel in devicesLists)
+                        {
+                            @Html.Partial("_dragButtonDevice", devicesModel)
+                        }
+                    }
+
+                    <div id="heatmapCol" class="">
+                        <div id="wrapper" class="demo-wrapper" style="border-width:1px;">
+                            <div id="heatmapControl" class="heatmap" style="position: relative;">
+                                <div id="heatmap" class="heatmap">
+
+                                    <img id="planImg" src="@roomModel.floorPlanImg" width="500" height="700" style="background-color: black;">
+
+                                </div>
+                                <canvas id="BlueCanvas" class="heatmap-canvas" style="position: absolute; left: 0px; top: 0px;" ></canvas>
+                            </div>
+                            <div class="tooltips" style="display: none; transform: translate(39px, 352px);">593</div>
+                            <div id="legendArea" class="legend-area">
+                                <h4>Legend Title</h4>
+                                <span id="min">0</span>
+                                <span id="max">40</span>
+                                <img id="gradient" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAKCAYAAABCHPt+AAAAnklEQVRYR+2WQQqDQBAES5wB/f8/Y05RcMWwSu6JIT0Dm4WlH1DUdHew7/z6WYFhhnGRpnlhAEaQpi/ADbh/np0MiBhGhW+2ymFU+DZfg1EhaoB4jCFuMYYcQKZrXwPEVvm5Og0pcYakBvI35G1jNIZ4jCHexxjSpz9ZFUjAynLbpOvqteaODkm9sloz5JF+ZTVmSAWSu9Qb65AvgDwBQoLgVDlWfAQAAAAASUVORK5CYII=" style="width:100%">
+                            </div>
+                        </div>
+                    </div>
+                    <script>//this return value has "px"
+                        //var moveX = document.getElementById("wrapper").style.borderWidth;
+                        //var moveY = 100;
+
+                        var heatmapCol = document.getElementById('heatmapCol').offsetWidth;
+                        var floorPlanImgW = document.getElementById('planImg').offsetWidth;
+                        var floorPlanImgH = document.getElementById('planImg').offsetHeight;
+                        var wrapper = document.getElementById("wrapper");
+                        var heatmapControl = document.getElementById("heatmapControl");
+                        var heatmap = document.getElementById("heatmap");
+                        var BlueCanvas = document.getElementById("BlueCanvas");
+                        var legendArea = document.getElementById("legendArea");
+
+                        //floorPlanImgW += moveX;
+                        //floorPlanImgH += (moveY - parseInt(moveX));
+
+
+                        wrapper.style.width = floorPlanImgW + "px";
+                        wrapper.style.height = floorPlanImgH + "px";
+                        //var x = moveY - parseInt(moveX) * 3;
+                        //legendArea.style.marginBottom="-"+x+"px";
+
+                        //floorPlanImgW -= moveX;
+                        BlueCanvas.style.width = floorPlanImgW + "px";
+                        BlueCanvas.style.height = floorPlanImgH + "px";
+
+                        //floorPlanImgH -= (moveY - parseInt(moveX));
+                        heatmapControl.style.width = floorPlanImgW + "px";
+                        heatmapControl.style.height = floorPlanImgH + "px";
+                        heatmap.style.width = floorPlanImgW + "px";
+                        heatmap.style.height = floorPlanImgH + "px";
+                        heatmapCol.style.width = floorPlanImgW + "px";
+                        heatmapCol.style.height = floorPlanImgH + "px";</script>
+                </div>
+
+                <!--     Detail     -->
+                <div class="col-lg-6 col-xl-6 offset-xl-0 ml-4  py-0" style=" max-width: 700px">
+                    @Html.Partial("_SensorDeviceDetail")
+
+                    <div class="card text-white bg-secondary mb-3" style="max-width: 300px;">
+                        <div class="card-header" style="padding-bottom:0">
+                            <p><b>Room infrared thermal imaging</b></p>
+                        </div>
+                        <!--<iframe id="ircam" class="myframe" name="myframe" src="http://47.56.85.130:18888/simg?n=f348" width="300px" height="300px"></iframe>-->
+                        <!--<div id="ircam"></div>-->
+                        <img id="IRCAMimg" src="http://47.56.85.130:18888/simg?n=f348" />
+
+                    </div>
+
+                    <script>//each 1s to referash the sensor status
+                        var myVar = setInterval(function () {
+                            //$('#ircam').attr('src', $('#ircam').attr('src'));
+                            //$("#ircam").html('<img id="IRCAMimg" src="http://47.56.85.130:18888/simg?n=f348" />');
+
+                            //$("#IRCAMimg").attr("src", "");
+
+                            $("#IRCAMimg").attr("src", "http://47.56.85.130:18888/simg?n=f348" + "&x=" + new Date().getTime());
+                            console.log("IRCAMimg ");
+                        }, 1000);</script>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--heatmap js-->
+    <script>
+            window.onload = function () {
+
+                function generateRandomData(len) {
+                    var floorPlanImgW = document.getElementById('planImg').offsetWidth;
+                    var floorPlanImgH = document.getElementById('planImg').offsetHeight;
+
+
+                    // generate some random data
+                    var points = [];
+                    var max = 0;
+                    var min = 0;
+                    var width = floorPlanImgW;
+                    var height = floorPlanImgH;
+
+                    @{
+                        string str = "[";
+                        int count = 0;
+
+                        int sensorsListCount = sensorsList.Count();
+                        var sensorsListwhere = sensorsList.Where(s => s.sensorId.Contains("TS")).ToList();
+                        foreach (var get in sensorsListwhere) {
+                            int x = 0;
+                            int y = 0;
+                            int addxy = 10;
+                            var setx = Convert.ToInt32(get.pos_x)-10;
+                            var sety = Convert.ToInt32(get.pos_y)-20;
+                            while (x < 6)
+                            {
+                                setx += 20;
+
+                                while (y < 5)
+                                {
+                                    sety += 20;
+
+                                    if (count == 0 && x == 0 && y == 0)
+                                    {
+                                        str += "[" + 50 + "," + sety + "," + Convert.ToInt32(get.current_Value) + "]";
+                                    }
+                                    else
+                                    {
+                                        str += ",[" + setx + "," + sety + "," + Convert.ToInt32(get.current_Value) + "]";
+
+                                    }
+                                    y++;
+                                }
+                                x++;
+
+                            }
+                            count += 1;
+
+                        }
+                        str += "]";
+                        }
+                        obj = JSON.parse('@Html.Raw(str)');
+
+                        var TData = @Html.Raw(str);
+
+                        for (let i = 0; i < TData.length; i++) {
+                        var val = TData[i][2];
+
+                       // max = Math.max(max, val);
+                       // min = Math.min(min, val);
+                        var x = TData[i][0];
+                        var y = TData[i][1];
+                        var point = {
+                            x: x,
+                            y: y,
+                            value: val
+                        };
+                        points.push(point);
+                    }
+
+
+                    var data = { max: 40, min: 0, data: points };
+
+                    return data;
+                };
+
+
+      /*  legend code */
+      // we want to display the gradient, so we have to draw it
+      var legendCanvas = document.createElement('canvas');
+      legendCanvas.width = 100;
+      legendCanvas.height = 10;
+      var min = document.querySelector('#min');
+      var max = document.querySelector('#max');
+      var gradientImg = document.querySelector('#gradient');
+
+      var legendCtx = legendCanvas.getContext('2d');
+      var gradientCfg = {};
+
+      function updateLegend(data) {
+                // the onExtremaChange callback gives us min, max, and the gradientConfig
+                // so we can update the legend
+                min.innerHTML = data.min;
+        max.innerHTML = data.max;
+        // regenerate gradient image
+        if (data.gradient != gradientCfg) {
+                gradientCfg = data.gradient;
+          var gradient = legendCtx.createLinearGradient(0, 0, 100, 1);
+          for (var key in gradientCfg) {
+                gradient.addColorStop(key, gradientCfg[key]);
+          }
+
+          legendCtx.fillStyle = gradient;
+          legendCtx.fillRect(0, 0, 100, 10);
+          gradientImg.src = legendCanvas.toDataURL();
+        }
+      };
+      /* legend code end */
+
+      var heatmapInstance = h337.create({
+                container: document.querySelector('.heatmap'),
+        onExtremaChange: function (data) {
+                updateLegend(data);
+        }
+      });
+
+      // generate 200 random datapoints
+      var data = generateRandomData(200);
+      heatmapInstance.setData(data);
+
+      var demoWrapper = document.querySelector('.demo-wrapper');
+      var tooltip = document.querySelector('.tooltips');
+
+      function updateTooltip(x, y, value) {
+        // + 15 for distance to cursor
+        var transform = 'translate(' + (x + 15) + 'px, ' + (y + 15) + 'px)';
+        tooltip.style.MozTransform = transform; /* Firefox */
+        tooltip.style.msTransform = transform; /* IE (9+) - note ms is lowercase */
+        tooltip.style.OTransform = transform; /* Opera */
+        tooltip.style.WebkitTransform = transform; /* Safari and Chrome */
+        tooltip.style.transform = transform; /* One day, my pretty */
+        tooltip.innerHTML = "x:" + x + ",y:" + y + ",value:" + value;
+      }
+
+      demoWrapper.onmousemove = function (ev) {
+        var x = ev.layerX;
+        var y = ev.layerY;
+        var value = heatmapInstance.getValueAt({
+                x: x,
+          y: y
+        });
+
+        tooltip.style.display = 'block';
+
+        updateTooltip(x, y, value);
+      };
+      demoWrapper.onmouseout = function () {
+                tooltip.style.display = 'none';
+      };
+
+
+      document.querySelector('.trigger-refresh').onclick = function () {
+                heatmapInstance.setData(generateRandomData(200));
+      };
+
+      document.querySelector('.thankyou').onclick = function () {
+                ga('send', 'event', 'social', 'thanks');
+        document.querySelector('.thankyou').style.display = 'none';
+        document.querySelector('#share').style.display = 'block';
+      };
+      var btns = document.querySelectorAll('.symbol');
+      for (var i = 0; i < btns.length;) {
+                btns[i].onclick = function () {
+                    ga('send', 'event', 'social', 'share');
+                };
+      }
+
+};
+    </script>
+    <!--heatmap js-->
+
+</body>
+

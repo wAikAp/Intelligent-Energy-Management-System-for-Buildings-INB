@@ -1,0 +1,114 @@
+﻿@*
+    drag button with sensor and device
+*@
+
+@model FYP_WEB_APP.Models.DevicesListModel
+
+<link rel="stylesheet" href="~/css/dragButton.css">
+
+@{
+
+    String deviceImg = "";
+    String displayType = "";
+    String value_unit = "";
+    string deviceClass = Model.status ? "device_on" : "device_off";
+    string devImgInv = Model.status ? "invert(100%)" : "";
+
+    switch (Model.devicesId.Substring(0, 2))
+    {
+        case "AC":
+            deviceImg = "air-conditioner96.png";
+            displayType = "Air Conditioner";
+            value_unit = "ºC";
+            break;
+        case "LT":
+            deviceImg = Model.status ? "light-on64.png": "light-off96.png";
+            displayType = "Light";
+            value_unit = "";
+            deviceClass = Model.status ? "LightDevice_on " : "LightDevice_off ";
+            devImgInv = "";
+            break;
+        case "EF":
+            deviceImg = "fan96.png";
+            displayType = "Fan";
+            break;
+        case "CA":
+            deviceImg = "camera96.png";
+            displayType = "Camera";
+            break;
+    }
+    string turnOFstr = Model.status ? "Turning On" : "Turning Off";
+    string turnOFClr = Model.status ? "badge-success" : "badge-danger";
+    string turnOFimg = Model.status ? "power-button-on36.png" : "power-button-off36.png";
+    string textClr = Model.status ? "text-dark" : "text-white";
+
+}
+<div class="draggable @deviceClass @textClr" id="@Model.devicesId">
+    <p style="margin:0; padding:0;">@Model.devicesId</p>
+    <img src="~/img/icon/@deviceImg" style="filter:@devImgInv" height="24px" />
+    <p>@Model.set_value @value_unit</p>
+</div>
+
+
+<script>
+    $("#@Model.devicesId").click(function () {
+        //the id from _SensorDeviceDetail to change those UI
+
+        $("#editBtn").attr("onclick", "EditDevices('@Model.devicesId')");
+        $("#editBtn").css({ filter: "@devImgInv" });
+        $("#typeName").text("@displayType");
+        $("#sdid").text("@Model.devicesId - @Model.devices_Name");
+        $("#desc").text("@Model.desc");
+        $("#typeImg").attr('src', '/img/icon/@deviceImg');
+        $("#typeImg").css({ filter: "@devImgInv" });
+        $("#current_value").html('@Model.set_value @value_unit');
+        $("#totalPower").text("@Model.currentMonthUsage"+"kW");
+        $("#avgPower").text("@Model.avgPower" + "kW");
+        $("#device_power").text("@Model.power"+"kW");
+
+        $("#lastUpdateTimes").text('@Model.lastest_checking_time');
+        $("#detailDiv").removeClass('HSensor');
+        $("#detailDiv").removeClass('TSensor');
+        $("#detailDiv").removeClass('LSensor');
+        $("#detailDiv").removeClass('bg-dark');
+        $("#detailDiv").removeClass('device_on');
+        $("#detailDiv").removeClass('device_off');
+        $("#detailDiv").removeClass('LightDevice_on');
+        $("#detailDiv").removeClass('LightDevice_off');
+        $("#detailDiv").removeClass("text-white");
+        $("#detailDiv").removeClass("text-dark");
+        $("#detailDiv").addClass('@deviceClass');
+        $("#detailDiv").addClass('@textClr');
+
+        $("#turnOnOff").removeClass("badge-success");
+        $("#turnOnOff").removeClass("badge-danger");
+        $("#turnOnOff").addClass("@turnOFClr");
+        $("#turnOnOff").text("@turnOFstr");
+
+        $("#onOff").css("display", "inline");
+        $("#onOff").attr("src", '/img/icon/@turnOFimg');
+        $("#turnOnDate").text('@Model.turn_on_time');
+        $("#turnOnTime").text('@Model.turnedOnTime');
+        $("#turnedOnUsage").text('@Model.turnedOnUsage');
+
+        //turnOFDeviceID and turnOFDeviceStatus for form post data tp update db
+        $("#turnOFDeviceID").val("@Model.devicesId");
+        $("#turnOFDeviceStatus").val("@turnOFstr");
+
+    });
+
+    $("#@Model.devicesId").css({ left: @Model.pos_x +'px', top:  @Model.pos_y +'px' });
+
+    $(function () {
+        $("#@Model.devicesId").draggable({
+
+            stop: function () {
+                //var position = $(this).position();
+                //var jsSDmodel = new DragSensorDeviceButtonJSModel('@Model.devicesId', position.left, position.top);
+                //JSdeviceList.push(jsSDmodel);
+            }
+        });
+    });
+
+
+</script>

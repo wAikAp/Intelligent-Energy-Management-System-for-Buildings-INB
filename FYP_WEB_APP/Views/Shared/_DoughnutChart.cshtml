@@ -1,0 +1,90 @@
+﻿
+@{
+    ViewData["Title"] = "_DoughnutChart";
+}
+<script src="~/js/Chart/Chart.min.js"></script>
+
+<canvas id="@ViewBag.divId" class=""></canvas>
+<script>
+
+    var chartID = '@ViewBag.divId';
+    var charttitle = '@ViewBag.charttitle';
+    var chartType = '@ViewBag.chartType';
+    var position = '@ViewBag.position';
+
+    var devices = [];
+    var devicesData = [];
+    var gcolor = [];
+    var gdata;
+    var goption;
+
+    getPowerUsageDate();
+    function getPowerUsageDate() {
+
+      /*  devices.push('Light');
+        devices.push('Other');
+        devices.push('Air conditioning');
+        devicesData.push(30);
+        devicesData.push(20);
+        devicesData.push(50);
+        devices.forEach(getRandomColor);*/
+        //set chart data
+        var jdatasets =@Html.Raw(ViewBag.datasets);
+        var devices =@Html.Raw(ViewData["devices"]);
+
+        dataop = {
+            labels: devices,
+            datasets: jdatasets
+        };
+        //set chart option
+
+        goption = {
+            responsive: true,
+
+            title: {
+                display: true,
+                text: charttitle,
+                fontSize: 25
+            },
+            legend: {
+                display: true,
+                position: position,
+                labels: {
+                    boxWidth: 20,
+                    fontColor: '#111',
+                    padding: 15
+                }
+            }
+
+
+        };
+
+
+        draw();
+
+    }
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        gcolor.push(color);
+    }
+
+    function draw() {
+
+        let myChart = document.getElementById(chartID).getContext('2d');
+        // Global Options
+        Chart.defaults.global.defaultFontFamily = 'Lato';
+        Chart.defaults.global.defaultFontSize = 18;
+        Chart.defaults.global.defaultFontColor = '#777';
+
+
+        let barChart = new Chart(myChart, {
+            type: chartType,//bar,horizontalBar,pie,line,doughnut,radar,polarArea
+            data: dataop,
+            options: goption
+        });
+    }
+</script>
