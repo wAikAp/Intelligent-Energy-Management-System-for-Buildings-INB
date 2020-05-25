@@ -618,13 +618,43 @@ namespace FYP_APP.Controllers
 					break;
 			}
 			//db collection
-			List<CurrentDataModel> query=new List<CurrentDataModel>();
-			if (!string.IsNullOrEmpty(tableName)) {
+			List<CurrentDataModel> query = new List<CurrentDataModel>();
+			if (!string.IsNullOrEmpty(tableName))
+			{
 				var filter = Builders<CurrentDataModel>.Filter.Eq(x => x.sensorId, sensorId);
 
 				query = database.GetCollection<CurrentDataModel>(tableName).Find(filter).Limit(1).Sort(Builders<CurrentDataModel>.Sort.Descending("latest_checking_time")).ToList();
 			}
 			//IQueryable<CurrentDataModel> query;
+			//query = from c in collection.AsQueryable<CurrentDataModel>() orderby c.latest_checking_time descending where c.sensorId.Contains(sensorId) select c;
+			return query;
+		}
+		public CurrentDataModel GetSensorIDCurrent(string sensorId)
+		{
+			string tableName = "";
+			List<CurrentDataModel> List = new List<CurrentDataModel>();
+			switch (sensorId.Substring(0, 2))
+			{
+				case "TS":
+					tableName = "TMP_SENSOR";
+					break;
+				case "LS":
+					tableName = "LIGHT_SENSOR";
+					break;
+				case "HS":
+					tableName = "HUM_SENSOR";
+					break;
+				default:
+					break;
+			}
+			//db collection
+			CurrentDataModel query=new CurrentDataModel();
+			if (!string.IsNullOrEmpty(tableName)) {
+				var filter = Builders<CurrentDataModel>.Filter.Eq(x => x.sensorId, sensorId);
+
+				query = database.GetCollection<CurrentDataModel>(tableName).Find(filter).Limit(1).Sort(Builders<CurrentDataModel>.Sort.Descending("latest_checking_time")).FirstOrDefault();
+			}
+			//IQ ueryable<CurrentDataModel> query;
 			//query = from c in collection.AsQueryable<CurrentDataModel>() orderby c.latest_checking_time descending where c.sensorId.Contains(sensorId) select c;
 			return query;
 		}
@@ -662,10 +692,10 @@ namespace FYP_APP.Controllers
 		public double GetCurrentValueByidBytable(string sensorId)
 		{
 
-			List<CurrentDataModel> SensorsDataList = GetSensorIDCurrentList(sensorId);
-			if (SensorsDataList.Count > 1)
+			var SensorsDataList = GetSensorIDCurrent(sensorId);
+			if (SensorsDataList!=null)
 			{
-				return Convert.ToDouble(SensorsDataList.First().current);
+				return Convert.ToDouble(SensorsDataList.current);
 			}
 			else
 			{
@@ -674,13 +704,13 @@ namespace FYP_APP.Controllers
 		}
 		public DateTime GetCurrentDateByidBytable(string sensorId)
 		{
-			List<CurrentDataModel> SensorsDataList = GetSensorIDCurrentList(sensorId);
-			if (SensorsDataList.Count < 1)
+			CurrentDataModel SensorsDataList = GetSensorIDCurrent(sensorId);
+			if (SensorsDataList==null)
 			{
 				return default;
 			}
 			else { 
-			return Convert.ToDateTime(SensorsDataList.First().latest_checking_time);
+			return Convert.ToDateTime(SensorsDataList.latest_checking_time);
 			}
 		}
 		public string ChartData(List<SensorsListModel> SensorsDataList, string type)
