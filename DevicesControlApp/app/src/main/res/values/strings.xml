@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">DevicesControl</string>
+    <string name="roomList">Room List</string>
+    <string name="roomId">Room</string>
+    <string name="DevicesList">Devices</string>
+</resources>
