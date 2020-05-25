@@ -67,10 +67,11 @@ namespace FYP_WEB_APP.Models.LogicModels
 			SchedulesController schedulesController = new SchedulesController();
 			List<ScheduleModel> scheduleModels = schedulesController.GetScheduleList();
 			foreach(ScheduleModel sm in scheduleModels){
-
+				var roomID = sm.Location;
 				DateTime sdate = DateTime.Parse(sm.Date + " " + sm.Time);
 
-				var dftmp = 40;
+				var dftmp = calGoodTemp(roomID);
+				
 				//"Lab","Lecture"
 				if (sm.EventType.Equals("Lab"))
 				{
@@ -86,7 +87,6 @@ namespace FYP_WEB_APP.Models.LogicModels
 				//TimeSpan timeSpan = now - sdate;
 				if (now == scheduleTime) 
 				{
-					var roomID = sm.Location;
 					Boolean success = apUtil.setAcCurrentAndTurnON(roomID, dftmp);
 					if (success)
 					{
@@ -100,7 +100,53 @@ namespace FYP_WEB_APP.Models.LogicModels
 			}
 		}
 
+		public double calGoodTemp(String roomId)
+		{
+			double T = apUtil.getAvgTemp(roomId);//room temp
+			double H = apUtil.getAvgHum(roomId);//room hum
+			double W = 0.15;//room wind 0.05 ~ 0.3m/s
 
+			double cT = 0;//Calculation the indoor feels like degree 
+			if (T >= 26.7)
+			{//heat index
+				cT = apUtil.calHeatIndex(T, H);
+			}
+			else
+			{//Apparent Temperature
+				cT = apUtil.calApparenTemperature(T, H, W);
+			}
+
+			double AC1 = 25.5;
+
+			//check the temp each 3'C 
+			if (28 <= cT && cT <= 30)
+			{
+				AC1 = 16;
+			}
+			else if (24 <= cT && cT <= 27)
+			{
+				AC1 = 19;
+			}
+			else if (21 <= cT && cT <= 23)
+			{
+				AC1 = 22;
+			}
+			else if (18 <= cT && cT <= 20)
+			{
+				AC1 = 25;
+			}
+			else if (15 <= cT && cT <= 17)
+			{
+				AC1 = 27;
+			}
+			else if (10 <= cT && cT <= 14)
+			{
+				AC1 = 30;
+			}
+
+			//Debug.WriteLine("roomID: " + roomId +" good temp = "+AC1);
+			return AC1;
+		}
 		public void scheduledRoom()
 		{
 			//GetScheduleList

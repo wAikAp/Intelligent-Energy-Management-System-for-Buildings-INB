@@ -39,7 +39,8 @@ namespace FYP_APP.Controllers
 
             DevicesPowerUseOutputUtil powerUseOutputUtil = new DevicesPowerUseOutputUtil();
 
-			//intelligentControlDeviceUnit.scheduledControl();
+
+			//intelligentControlDeviceUnit.calGoodTemp("F348");
 
 
 			//ApparenTemperatureUtil apparenTemperatureUtil = new ApparenTemperatureUtil();
