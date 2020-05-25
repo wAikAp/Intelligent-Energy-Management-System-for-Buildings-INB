@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using FYP_WEB_APP.Models;
@@ -36,65 +37,53 @@ namespace FYP_WEB_APP.Controllers.API
         public string Post(object imgJson)
         {
             var json = System.Text.Json.JsonSerializer.Serialize(imgJson);
+            var piJsonModel = JsonConvert.DeserializeObject<pi_cam_model>(json);
+            
+            var deviceFilter = Builders<MongoDevicesListModel>.Filter.Eq(x => x.devicesId, piJsonModel.deviceId);
+            var PiFilter = Builders<pi_cam_model>.Filter.Eq(x => x.deviceId, piJsonModel.deviceId);
 
-            var data = JsonConvert.DeserializeObject<List<pi_cam_model>>(json);
-            foreach (var get in data) {
-                var deviceFilter = Builders<MongoDevicesListModel>.Filter.Eq(x => x.devicesId, get.deviceId);
-                var PiFilter = Builders<pi_cam_model>.Filter.Eq(x => x.deviceId, get.deviceId);
-
-                var check =new DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").Find(deviceFilter).ToList();
-                System.Diagnostics.Debug.WriteLine(get.deviceId +"has "+check.Count());
-                try
-                {
-                    if (check.Count() != 0)
+            var deviceList =new DBManger().DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST").Find(deviceFilter).ToList();
+            //Debug.WriteLine(get.deviceId +"has "+check.Count());
+            try
+            {
+                if (deviceList.Count() != 0)
+                {//user need added to devicesList first
+                    var piCamList = new DBManger().DataBase.GetCollection<pi_cam_model>("PI_CAM").Find(PiFilter).ToList();
+                    if (piCamList.Count() != 0)
                     {
+                        var up = Builders<pi_cam_model>.Update
+                            .Set(x => x.base_cam_img, piJsonModel.base_cam_img)
+                            .Set(x => x.latest_checking_time, DateTime.UtcNow.AddHours(8));
 
-                        var picheck = new DBManger().DataBase.GetCollection<pi_cam_model>("PI_CAM").Find(PiFilter).ToList();
-                        if (picheck.Count() != 0)
+                        var UpdateResult = new DBManger().DataBase.GetCollection<pi_cam_model>("PI_CAM").FindOneAndUpdateAsync(u => u.deviceId == piJsonModel.deviceId, up);
+                        if (UpdateResult == null)
                         {
-                            var up = Builders<pi_cam_model>.Update.Set(x=>x.base_cam_img, get.base_cam_img);
-                            var UpdateResult = new DBManger().DataBase.GetCollection<pi_cam_model>("PI_CAM").FindOneAndUpdateAsync(u => u.deviceId == get.deviceId, up);
-                             up = Builders<pi_cam_model>.Update.Set(x=>x.latest_checking_time, DateTime.UtcNow.AddHours(8));
-                             UpdateResult = new DBManger().DataBase.GetCollection<pi_cam_model>("PI_CAM").FindOneAndUpdateAsync(u => u.deviceId == get.deviceId, up);
-
-
-                            if (UpdateResult == null)
-                            {
-                                //error 
-                                //return ;
-                                //Debug.WriteLine("error: line 306 =>> "+ property.Name);
-                            }
+                            Debug.WriteLine("Can not Update PI CAM Result =>> " + UpdateResult);
+                            throw new System.ArgumentException("Update PI cam to db fail", "original");
                         }
-                        else
+                    }
+                    else
+                    {//first upload data
+                        var newCamModelTodb =new pi_cam_model()
                         {
-
-                            var insert =new pi_cam_model()
-                            {
-                                roomId = check.FirstOrDefault().roomId,
-                                deviceId = get.deviceId,
-                                latest_checking_time = DateTime.UtcNow.AddHours(8),
-                                 base_cam_img = get.base_cam_img,
-                                current = 0
-                        };
-
-                            new DBManger().DataBase.GetCollection<pi_cam_model>("PI_CAM").InsertOneAsync(insert);
-
-                        }
-
+                            roomId = deviceList.FirstOrDefault().roomId,
+                            deviceId = piJsonModel.deviceId,
+                            latest_checking_time = DateTime.UtcNow.AddHours(8),
+                            base_cam_img = piJsonModel.base_cam_img,
+                            current = 0
+                    };
+                        new DBManger().DataBase.GetCollection<pi_cam_model>("PI_CAM").InsertOneAsync(newCamModelTodb);
                     }
-                    else {
-                        throw new System.ArgumentException("No device error", "original");
 
-                    }
                 }
-                catch (Exception e)
-                {
+                else {// didn't add to the devicesList
+                    throw new System.ArgumentException("Please add the device to db on UI", "original");
+                }
+            }catch (Exception e){
+                return "{ status: false,"+ "msg:" + e.Message.ToString()+"}";
+            };
 
-                    return e.Message.ToString();
-                };
-              
-            }
-            return "";
+            return "{ status: true," + "msg: Success, Pi cam updated}";
 
         }
         /*
