@@ -51,79 +51,84 @@ namespace FYP_WEB_APP.Controllers.API
                         {
                             //  string id = S.sensorId;
                             //  string Value = S.value;
-
-                            switch (S.sensorId.Substring(0, 2))
+                            try
                             {
-                                case "TS":
-                                    dbname = "TMP_SENSOR";
-                                    if (Convert.ToDouble(S.values.First()) <= -120)
-                                    {
-                                        isErrorData = true;
-                                        doException(S.sensorId, false, "The Sensor is disConnnection");
-                                    }
-                                    else if (Convert.ToDouble(S.values.First()) < 0)
-                                    {
-                                        isErrorData = true;
+                                switch (S.sensorId.Substring(0, 2))
+                                {
+                                    case "TS":
+                                        dbname = "TMP_SENSOR";
+                                        if (Convert.ToDouble(S.values.First()) <= -120)
+                                        {
+                                            isErrorData = true;
+                                            doException(S.sensorId, false, "The Sensor is disConnnection");
+                                        }
+                                        else if (Convert.ToDouble(S.values.First()) < 0)
+                                        {
+                                            isErrorData = true;
 
-                                        doException(S.sensorId, "Sensor value error, value < 0");
-                                    }
-                                    else if (Convert.ToDouble(S.values.First()) > 50)
-                                    {
-                                        isErrorData = true;
+                                            doException(S.sensorId, "Sensor value error, value < 0");
+                                        }
+                                        else if (Convert.ToDouble(S.values.First()) > 50)
+                                        {
+                                            isErrorData = true;
 
-                                        doException(S.sensorId, "Sensor value error, value > 50");
-                                    }
-                                    break;
-                                case "HS":
-                                    dbname = "HUM_SENSOR";
-                                    if (Convert.ToDouble(S.values.First()) == -999)
-                                    {
-                                        isErrorData = true;
+                                            doException(S.sensorId, "Sensor value error, value > 50");
+                                        }
+                                        break;
+                                    case "HS":
+                                        dbname = "HUM_SENSOR";
+                                        if (Convert.ToDouble(S.values.First()) == -999)
+                                        {
+                                            isErrorData = true;
 
-                                        doException(S.sensorId, false, "The Sensor is disConnnection");
+                                            doException(S.sensorId, false, "The Sensor is disConnnection");
 
-                                    }
-                                    else if (Convert.ToDouble(S.values.First()) < 0)
-                                    {
-                                        isErrorData = true;
+                                        }
+                                        else if (Convert.ToDouble(S.values.First()) < 0)
+                                        {
+                                            isErrorData = true;
 
-                                        doException(S.sensorId, "Sensor value error,  value  " + S.values.First() + " < 0");
-                                    }
-                                    else if (Convert.ToDouble(S.values.First()) > 100)
-                                        isErrorData = true;
-                                    {
-                                        doException(S.sensorId, "Sensor value error,  value " + S.values.First() + " > 100");
-                                    }
-                                    break;
-                                case "LS":
-                                    dbname = "LIGHT_SENSOR";
-                                    if (Convert.ToDouble(S.values.First()) < 0)
-                                    {
-                                        isErrorData = true;
+                                            doException(S.sensorId, "Sensor value error,  value  " + S.values.First() + " < 0");
+                                        }
+                                        else if (Convert.ToDouble(S.values.First()) > 100)
+                                            isErrorData = true;
+                                        {
+                                            doException(S.sensorId, "Sensor value error,  value " + S.values.First() + " > 100");
+                                        }
+                                        break;
+                                    case "LS":
+                                        dbname = "LIGHT_SENSOR";
+                                        if (Convert.ToDouble(S.values.First()) < 0)
+                                        {
+                                            isErrorData = true;
 
-                                        doException(S.sensorId, false, "The Sensor is disConnnection");
-                                    }
-                                    else if (Convert.ToDouble(S.values.First()) < 0)
-                                    {
-                                        isErrorData = true;
+                                            doException(S.sensorId, false, "The Sensor is disConnnection");
+                                        }
+                                        else if (Convert.ToDouble(S.values.First()) < 0)
+                                        {
+                                            isErrorData = true;
 
-                                        doException(S.sensorId, "Sensor value error,  value  " + S.values.First() + " < 0");
-                                    }
-                                    else if (Convert.ToDouble(S.values.First()) > 999)
-                                    {
-                                        isErrorData = true;
+                                            doException(S.sensorId, "Sensor value error,  value  " + S.values.First() + " < 0");
+                                        }
+                                        else if (Convert.ToDouble(S.values.First()) > 999)
+                                        {
+                                            isErrorData = true;
 
-                                        doException(S.sensorId, "Sensor value error, value " + S.values.First() + " > 999");
-                                    }
-                                    break;
-                                case "AS":
-                                    dbname = "AS_SENSOR";
-                                    Debug.WriteLine("\n\n AS SENSOR ==>");
+                                            doException(S.sensorId, "Sensor value error, value " + S.values.First() + " > 999");
+                                        }
+                                        break;
+                                    case "AS":
+                                        dbname = "AS_SENSOR";
+                                        Debug.WriteLine("\n\n AS SENSOR ==>");
 
-                                    break;
-                                default:
-                                    isdone = false;
-                                    break;
+                                        break;
+                                    default:
+                                        isdone = false;
+                                        break;
+                                }
+                            }
+                            catch (Exception e) {
+                                str += e.Message;
                             }
                             FYP_APP.Controllers.SensorsController sensorC = new FYP_APP.Controllers.SensorsController();
                             var hasSensorInList = sensorC.GetAllSensors().Where(s => s.sensorId.Contains(S.sensorId));
