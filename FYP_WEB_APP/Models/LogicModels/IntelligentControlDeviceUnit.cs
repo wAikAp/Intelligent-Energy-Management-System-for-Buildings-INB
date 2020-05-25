@@ -67,19 +67,25 @@ namespace FYP_WEB_APP.Models.LogicModels
 			SchedulesController schedulesController = new SchedulesController();
 			List<ScheduleModel> scheduleModels = schedulesController.GetScheduleList();
 			foreach(ScheduleModel sm in scheduleModels){
+
 				DateTime sdate = DateTime.Parse(sm.Date + " " + sm.Time);
-				var dftmp = 25.5;
+
+				var dftmp = 40;
 				//"Lab","Lecture"
-				if (sm.EventName.Equals("Lab"))
+				if (sm.EventType.Equals("Lab"))
 				{
-                    sdate = DateTime.Parse(sm.Date + " " + sm.Time).AddMinutes(-5);
+                    sdate = sdate.AddMinutes(-5);
 				}
-				else if (sm.EventName.Equals("Lecture")) {
-                    sdate = DateTime.Parse(sm.Date + " " + sm.Time).AddMinutes(-8);
+				else if (sm.EventType.Equals("Lecture")) {
+                    sdate = sdate.AddMinutes(-8);
 				}
-                DateTime now = DateTime.Now;
+				String scheduleTime = sdate.ToString("dd/MM/yyyy HH:mm");
+				Debug.WriteLine("scheduleTime: " + scheduleTime);
+				String now = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+				Debug.WriteLine("DateTime.Now: " + now);
 				//TimeSpan timeSpan = now - sdate;
-				if (DateTime.Compare(now, sdate)==0) {
+				if (now == scheduleTime) 
+				{
 					var roomID = sm.Location;
 					Boolean success = apUtil.setAcCurrentAndTurnON(roomID, dftmp);
 					if (success)
@@ -89,10 +95,25 @@ namespace FYP_WEB_APP.Models.LogicModels
 					else {
 						Debug.WriteLine("scheduledControl: booked room turn on fail = " + roomID);
 					}
-					
 
-                }
+				}
 			}
+		}
+
+
+		public void scheduledRoom()
+		{
+			//GetScheduleList
+			SchedulesController schedulesController = new SchedulesController();
+			List<ScheduleModel> scheduleModels = schedulesController.GetScheduleList();
+			List<String> scheduledRoomList = new List<string>();
+			foreach (ScheduleModel sm in scheduleModels)
+			{
+
+				Debug.WriteLine("sm.Location:" + sm.Location);
+				
+			}
+			
 		}
 	}
 }

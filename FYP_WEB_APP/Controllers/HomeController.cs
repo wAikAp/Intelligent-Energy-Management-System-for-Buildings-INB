@@ -30,7 +30,7 @@ namespace FYP_APP.Controllers
 
 			IntelligentControlDeviceUnit intelligentControlDeviceUnit = new IntelligentControlDeviceUnit();
             RecurringJob.AddOrUpdate(() => intelligentControlDeviceUnit.IntelligentControlDevice(), "5 * * * *");
-            RecurringJob.AddOrUpdate(() => intelligentControlDeviceUnit.scheduledControl(), "10 * * * *");
+            RecurringJob.AddOrUpdate(() => intelligentControlDeviceUnit.scheduledControl(), "* * * * *");
 
             //batch
             DevicesPowerUseInputUtil devicesPowerUseInputUtil = new DevicesPowerUseInputUtil();
@@ -38,6 +38,12 @@ namespace FYP_APP.Controllers
 
 
             DevicesPowerUseOutputUtil powerUseOutputUtil = new DevicesPowerUseOutputUtil();
+
+			//intelligentControlDeviceUnit.scheduledControl();
+
+
+			//ApparenTemperatureUtil apparenTemperatureUtil = new ApparenTemperatureUtil();
+			//apparenTemperatureUtil.setAcCurrentAndTurnON("F348", 33);
 
 
 			double TotalSavings = 0;
