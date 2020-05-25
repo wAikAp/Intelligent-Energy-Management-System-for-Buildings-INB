@@ -212,6 +212,40 @@ namespace FYP_WEB_APP.Models.LogicModels
             
         }
 
+        public Boolean setAcCurrentAndTurnON(String roomId, double current)//set data
+        {
+            DBManger dbManager = new DBManger();
+            List<String> count = new List<String>();
+            try
+            {
+                var devicesListcollection = dbManager.DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST");
+                var ACCollection = dbManager.DataBase.GetCollection<MongoAC_Model>("AC");
+                var filter = Builders<MongoDevicesListModel>.Filter.Eq("roomId", roomId) & Builders<MongoDevicesListModel>.Filter.Regex("devicesId", "AC");
+                var documents = devicesListcollection.Find(filter).ToList();
+                foreach (MongoDevicesListModel document in documents)
+                {
+                    Debug.WriteLine(document.devicesId);
+                    var filter2 = Builders<MongoDevicesListModel>.Filter.Eq("devicesId", document.devicesId);
+                    var update = Builders<MongoDevicesListModel>.Update.Set("set_value", current).Set("status", true);
+                    devicesListcollection.UpdateOne(filter2, update);
+
+                    MongoAC_Model mongoAC_Model = new MongoAC_Model();
+                    mongoAC_Model.devicesId = document.devicesId;
+                    mongoAC_Model.current = current;
+                    mongoAC_Model.latest_checking_time = DateTime.UtcNow.AddHours(8);
+                    ACCollection.InsertOne(mongoAC_Model);
+                }
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+                return false;
+            }
+
+        }
+
         public Boolean setLTCurrent(String roomId, double current)//set data
         {
             DBManger dbManager = new DBManger();
@@ -227,6 +261,39 @@ namespace FYP_WEB_APP.Models.LogicModels
                     //Debug.WriteLine(document.devicesId);
                     var filter2 = Builders<MongoDevicesListModel>.Filter.Eq("devicesId", document.devicesId);
                     var update = Builders<MongoDevicesListModel>.Update.Set("set_value", current);
+                    devicesListcollection.UpdateOne(filter2, update);
+
+                    MongoLig_Model mongo_Model = new MongoLig_Model();
+                    mongo_Model.devicesId = document.devicesId;
+                    mongo_Model.current = current;
+                    mongo_Model.latest_checking_time = DateTime.UtcNow.AddHours(8);
+                    Collection.InsertOne(mongo_Model);
+                }
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+                return false;
+            }
+        }
+
+        public Boolean setLTCurrentAndTurnON(String roomId, double current)//set data
+        {
+            DBManger dbManager = new DBManger();
+            List<String> count = new List<String>();
+            try
+            {
+                var devicesListcollection = dbManager.DataBase.GetCollection<MongoDevicesListModel>("DEVICES_LIST");
+                var Collection = dbManager.DataBase.GetCollection<MongoLig_Model>("LIGHT");
+                var filter = Builders<MongoDevicesListModel>.Filter.Eq("roomId", roomId) & Builders<MongoDevicesListModel>.Filter.Regex("devicesId", "LT");
+                var documents = devicesListcollection.Find(filter).ToList();
+                foreach (MongoDevicesListModel document in documents)
+                {
+                    //Debug.WriteLine(document.devicesId);
+                    var filter2 = Builders<MongoDevicesListModel>.Filter.Eq("devicesId", document.devicesId);
+                    var update = Builders<MongoDevicesListModel>.Update.Set("set_value", current).Set("status", true);
                     devicesListcollection.UpdateOne(filter2, update);
 
                     MongoLig_Model mongo_Model = new MongoLig_Model();

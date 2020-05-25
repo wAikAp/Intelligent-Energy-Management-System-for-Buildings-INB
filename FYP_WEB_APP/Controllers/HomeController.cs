@@ -37,8 +37,8 @@ namespace FYP_APP.Controllers
 			RecurringJob.AddOrUpdate(() => devicesPowerUseInputUtil.updateRoomPower(), "* * * * *");
 
 
-
 			DevicesPowerUseOutputUtil powerUseOutputUtil = new DevicesPowerUseOutputUtil();
+
 
 			double TotalSavings = 0;
 			double TotalUsage = Math.Round(powerUseOutputUtil.getTotalPowerUse(), 2);
