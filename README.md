@@ -21,6 +21,16 @@
 - Power saving report and power-saving plan based on data analysis, reporting of electrical energy usage, visualize form for using data analysis.
 <br>
 
+
+#### Intelligent Energy Management Web system 
+http://13.75.55.240/
+> Intelligent Energy Management Web system 
+
+#### Scheduling system
+http://13.75.55.240:8001/
+> Scheduling system
+<br>
+
 #### System Architecture
 ![](resources/assets/Systemarchiteture.png)
 > System architeture design
