@@ -19,17 +19,42 @@ using System.Net;
 using static System.Net.Mime.MediaTypeNames;
 using System.Threading.Tasks;
 using System.Net.Mime;
+using FYP_WEB_APP.Models;
+using MongoDB.Driver;
+using FYP_WEB_APP.Models.MongoModels;
 
 namespace FYP_APP.Controllers
 {
 	public class HomeController : Controller
 	{
-		
-		public IActionResult Dashboard()
+		private static DBManger dBManger = new DBManger();
+		private readonly IMongoCollection<MongoIndoorTempSetting_Model> SETTINGCOLLECTION = dBManger.DataBase.GetCollection<MongoIndoorTempSetting_Model>("INDOOR_TEMP_SETTING");
+
+        public IActionResult Dashboard()
 		{
+			MongoIndoorTempSetting_Model mongoIndoor = new MongoIndoorTempSetting_Model();
+			List<MongoIndoorTempSetting_Model> settingList = SETTINGCOLLECTION.Find(_ => true).ToList();
+			if (settingList.Count <= 0) {//no record
+				mongoIndoor.Id = "";
+				mongoIndoor.acDefaultTemp = 25.5;
+				mongoIndoor.tempRangeHighest = 30;
+				mongoIndoor.checkDegRange = 2;
+				mongoIndoor.eachTempRange = 3;
+				mongoIndoor.acLowestTemp = 16;
+			}
+			foreach (MongoIndoorTempSetting_Model m in settingList) {//have setting record
+				mongoIndoor = m;
+			}
 
 			IntelligentControlDeviceUnit intelligentControlDeviceUnit = new IntelligentControlDeviceUnit();
-            RecurringJob.AddOrUpdate(() => intelligentControlDeviceUnit.IntelligentControlDevice(), "5 * * * *");
+			intelligentControlDeviceUnit.mongoIndoor = mongoIndoor;
+			string checkTimeMin = "5 * * * *";
+			if (mongoIndoor != null) {
+				checkTimeMin = mongoIndoor.checkTimeMinutes + " * * * *";
+				Debug.WriteLine("checkTimeMin!!!!!!!!" + checkTimeMin);
+            }
+			RecurringJob.AddOrUpdate(() => intelligentControlDeviceUnit.IntelligentControlDevice(), checkTimeMin.ToString());
+			//RecurringJob.AddOrUpdate(() => intelligentControlDeviceUnit.IntelligentControlDevice(), "5 * * * *");
             RecurringJob.AddOrUpdate(() => intelligentControlDeviceUnit.scheduledControl(), "* * * * *");
 
             //batch

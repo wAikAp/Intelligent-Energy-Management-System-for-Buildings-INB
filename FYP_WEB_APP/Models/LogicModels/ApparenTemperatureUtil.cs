@@ -38,12 +38,15 @@ namespace FYP_WEB_APP.Models.LogicModels
 
         public double calApparenTemperature(double T, double RH, double V)
         {
+            V = 1;
             //Where AT is somatosensory temperature (° C), T is air temperature (° C),
             //e is water pressure (hPa), V is wind speed (m / sec), RH is relative humidity (%)
             var e = RH / 100 * 6.105 * Math.Exp((17.26 * T) / (237.7 + T));
             var AT = 1.07 * T + 0.2 * e - 0.65 * V - 2.7;
             AT = Math.Round(AT, 2);
-           // Debug.WriteLine("calApparenTemperature = " + AT);
+            Debug.WriteLine("Temp! = " + T);
+            Debug.WriteLine("RH! = " + RH);
+            Debug.WriteLine("calApparenTemperature = " + AT);
             return AT;
         }
 
@@ -315,7 +318,7 @@ namespace FYP_WEB_APP.Models.LogicModels
         public string getUIColor(double AT) {
             
             var ATbgCol = "badge-secondary";
-            if (AT > 25.5 && AT < 30)
+            if (AT > 26 && AT < 30)
             {
                 ATbgCol = "badge-warning";
             }
@@ -323,7 +326,7 @@ namespace FYP_WEB_APP.Models.LogicModels
             {
                 ATbgCol = "badge-danger";
             }
-            else if (AT <= 25.5 && AT > 21)
+            else if (21 <AT && AT <= 26 )
             {
                 ATbgCol = "badge-primary";
             }
