@@ -235,7 +235,7 @@ namespace FYP_WEB_APP.Controllers
 			DevicesController DevicesControl = new DevicesController();
 		
 			string tableName = "";
-			List<DevicesListModel> DevicesDataList = DevicesControl.GetAllDevices().Where(d => d.roomId.Contains(roomId)).ToList(); 
+			List<DevicesListModel> DevicesDataList = DevicesControl.GetSearchDevices().Where(d => d.roomId.Contains(roomId)).ToList(); 
 			switch (type)
 			{
 				case "AC":
