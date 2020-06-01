@@ -25,6 +25,8 @@ namespace FYP_APP.Controllers
 		private readonly IMongoCollection<MongoSensorsListModel> SensorsCollection = new DBManger().DataBase.GetCollection<MongoSensorsListModel>("SENSOR_LIST");
 		private readonly IMongoCollection<RoomsListModel> RoomCollection = new DBManger().DataBase.GetCollection<RoomsListModel>("ROOM");
 
+		public List<SensorsListModel> _sensorList;
+
 		private string PageRoomId = "";
 		private bool isUpdated;
 
@@ -36,10 +38,19 @@ namespace FYP_APP.Controllers
 			ViewData["NotGroup"] = "false";
 			ViewBag.SearchRoomIdENorDisable = "";
 			Debug.WriteLine("\n\n sensor Page Start");
-			ViewData["SensorsListModel"] = Setgroup(GetSensorsData());
+			_sensorList = GetSensorsData();
+			ViewData["SensorsListModel"] = Setgroup(_sensorList);
 
 			ViewData["RoomListModel"] = GetRoomData();
+			if (!string.IsNullOrEmpty(Request.QueryString.ToString()))
+			{
+				ViewData["queryString"] ="&"+ Request.QueryString.ToString().Substring(1, Request.QueryString.ToString().Length-1);
 
+			}
+			else {
+				ViewData["queryString"] = "";
+
+			}
 			return View();
 		}
 		public ActionResult ReturnUrl()
@@ -59,14 +70,15 @@ namespace FYP_APP.Controllers
 		{
 			//string id  = Request.Query["roomID"];
 
-			List<SensorsListModel> lists = GetSensorsData();
+			//List<SensorsListModel> lists = GetSensorsData();
 
 			ViewBag.charttitle = Request.Query["title"];
 			ViewBag.chartType = Request.Query["chartType"];
 			ViewBag.position = Request.Query["position"];
 			ViewBag.download = Request.Query["download"];
 
-			ViewBag.datasets = ChartData(lists, Request.Query["sensorType"]);
+			Debug.WriteLine("****"+ _sensorList.ToJson().ToString());
+			ViewBag.datasets = ChartData(_sensorList, Request.Query["sensorType"]);
 
 			ChartController chart = new ChartController();
 
@@ -301,8 +313,9 @@ namespace FYP_APP.Controllers
 			List<SensorsListModel> newSearchedlist = new List<SensorsListModel> { };
 			//sensorsDataList = SensorsDataList;// database.GetCollection<SensorsListModel>("SENSOR_LIST").Find(_ => true).ToList();
 			Debug.WriteLine("sensorsDataList! = " + sensorsDataList.ToJson().ToString());
-			if (Request.Query.Keys.Count() > 0) {//search 
-                //search sensor
+
+				if (Request.Query.Keys.Count() > 0 ) {//search 
+												 //search sensor
 				var roomid = ""; //get room id if have
 				if (Request.Query.ContainsKey("roomId"))
 				{
@@ -351,18 +364,18 @@ namespace FYP_APP.Controllers
 						}
 					}
 				}
-				
+
 				//var filter = Builders<SensorsListModel>.Filter.Regex("roomId", new BsonRegularExpression(".*"+ roomid+".*"));
 				if (!Request.Query.ContainsKey("All"))//all sensor type
 				{
-					
+
 					//if not all type need check which type the user selected.
 					foreach (string stype in typeList)
 					{
 						newSearchedlist.AddRange(sensorsDataList.Where(ls => ls.sensorId.Contains(stype)).ToList());
 					}
-					Debug.WriteLine("Not all! = "+ newSearchedlist.ToJson().ToString());
-				}else{
+					Debug.WriteLine("Not all! = " + newSearchedlist.ToJson().ToString());
+				} else {
 					typeCheckedList[3] = chkStr;
 					//if all type, then get all sensor type
 					newSearchedlist = sensorsDataList;
@@ -384,12 +397,13 @@ namespace FYP_APP.Controllers
 				ViewData["searchedSensorId"] = sen_id;
 				ViewData["typeCheckedList"] = typeCheckedList;
 			}
-			else{//not search 
-			    // senosrs page 1st load 
+			else {//not search 
+				  // senosrs page 1st load 
 				Debug.WriteLine("only 1st load");
 				newSearchedlist = sensorsDataList;
 			}
-
+				
+			
 
 			return newSearchedlist;
 		}
@@ -470,9 +484,11 @@ namespace FYP_APP.Controllers
 		public List<SensorsListModel> GetSensorsData()
 		{
 			List<SensorsListModel> SensorsDataList = GetAllSensors();
-
+			if (Request != null) {
+				Debug.WriteLine("***f*"+ Request.QueryString);
 				SensorsDataList = FindSensors(SensorsDataList);
-				SensorsDataList = SortList(SensorsDataList);
+			}
+			SensorsDataList = SortList(SensorsDataList);
 
 				
 			//Debug.WriteLine("\n\n     last list ");
