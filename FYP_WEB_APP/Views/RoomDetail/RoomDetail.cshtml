@@ -158,19 +158,21 @@
                 double temp = atUtil.getAvgTemp(roomModel.roomId);
                 double hum = atUtil.getAvgHum(roomModel.roomId);
                 HI = atUtil.calHeatIndex(temp, hum);
-                AT = atUtil.calApparenTemperature(temp, hum, 0.15);
+                AT = atUtil.calApparenTemperature(temp, hum, 0.5);
                 var ATColStr = atUtil.getUIColor(AT);
                 var HIColStr = atUtil.getUIColor(HI);
             }
+
+            <button type="button" class="btn mx-1 h-50 @HIColStr" style="font-weight:bold">
+                Avg Temp <span class="badge badge-light" style="font-size:16px">@temp °C</span>
+            </button>
             <button type="button" class="btn mx-0 @ATColStr" style="font-weight:bold">
                 Apparent Temperature <span class="badge badge-light" style="font-size:16px">@AT °C</span>
             </button>
             <button type="button" class="btn mx-1 h-50 @HIColStr" style="font-weight:bold">
                 Heat Index <span class="badge badge-light" style="font-size:16px">@HI °C</span>
             </button>
-            <button type="button" class="btn mx-1 h-50 @HIColStr" style="font-weight:bold">
-                Avg Temp <span class="badge badge-light" style="font-size:16px">@temp °C</span>
-            </button>
+
         </div>
 
         <div id="sensorView"></div>
