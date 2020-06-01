@@ -135,7 +135,8 @@ namespace FYP_WEB_APP.Controllers
 		{
 			SensorsController SensorsControl = new SensorsController();
             //var SensorsDataList = SensorsControl.GetSensorsData().Where(s => s.roomId.Contains(roomId)).ToList();
-			var SensorsDataList = SensorsControl.GetAllSensors().Where(s => s.roomId.Contains(roomId)).ToList();
+
+			var SensorsDataList = SensorsControl.GetSensorsData().Where(s => s.roomId.Contains(roomId)).ToList();
 
 			string tableName = "";
 
@@ -152,6 +153,7 @@ namespace FYP_WEB_APP.Controllers
 					ViewBag.unit = "℃";
 					ViewBag.unitName = "Temperature";
 					tableName = "TMP_SENSOR";
+					Debug.WriteLine("**** TMP_SENSOR" + "=>>" + SensorsDataList.ToJson().ToString());
 
 					break;
 				case "LS":
@@ -159,6 +161,7 @@ namespace FYP_WEB_APP.Controllers
 					ViewBag.unit = " lm";
 					ViewBag.unitName = "Luminosity";
 					tableName = "LIGHT_SENSOR";
+					Debug.WriteLine("**** LIGHT_SENSOR" + "=>>" + SensorsDataList.ToJson().ToString());
 
 					break;
 				case "HS":
@@ -166,6 +169,8 @@ namespace FYP_WEB_APP.Controllers
 					ViewBag.unit = " %";
 					tableName = "HUM_SENSOR";
 					ViewBag.unitName = "Humidity";
+					Debug.WriteLine("**** Humidity"  + "=>>" + SensorsDataList.ToJson().ToString());
+
 					break;
 				case "true":
 					SensorsDataList = SensorsDataList.Where(x => x.sensorId.Contains(iid)).ToList();
@@ -189,9 +194,10 @@ namespace FYP_WEB_APP.Controllers
 					tableName = "HUM_SENSOR";
 							break;
 					}
+					Debug.WriteLine("****" + type + "=>>" + SensorsDataList.ToJson().ToString());
+
 					break;
 			}
-
 			List<CurrentDataModel> CurrentList = new List<CurrentDataModel>();
 			//only ts
 
