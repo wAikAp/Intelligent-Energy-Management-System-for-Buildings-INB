@@ -52,15 +52,6 @@ namespace FYP_WEB_APP.Models.LogicModels
 
 				var dftmp = calGoodTemp(roomID);
 				
-				//"Lab","Lecture"
-                /*
-				if (sm.EventType.Equals("Lab"))
-				{
-                    sdate = sdate.AddMinutes(-5);
-				}
-				else if (sm.EventType.Equals("Lecture")) {
-                    sdate = sdate.AddMinutes(-8);
-				}*/
 				sdate = sdate.AddMinutes(-8);
 				String scheduleTime = sdate.ToString("dd/MM/yyyy HH:mm");
 				Debug.WriteLine("scheduleTime: " + scheduleTime);

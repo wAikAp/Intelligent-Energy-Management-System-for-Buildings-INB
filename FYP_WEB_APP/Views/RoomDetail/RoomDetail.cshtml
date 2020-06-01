@@ -324,7 +324,7 @@
                                     <img id="planImg" src="@roomModel.floorPlanImg" width="500" height="700" style="background-color: black;">
 
                                 </div>
-                                <canvas id="BlueCanvas" class="heatmap-canvas" style="position: absolute; left: 0px; top: 0px;" ></canvas>
+                                <canvas id="BlueCanvas" class="heatmap-canvas" style="position: absolute; left: 0px; top: 0px;"></canvas>
                             </div>
                             <div class="tooltips" style="display: none; transform: translate(39px, 352px);">593</div>
                             <div id="legendArea" class="legend-area">
@@ -374,30 +374,44 @@
                 <div class="col-lg-6 col-xl-6 offset-xl-0 ml-4  py-0" style=" max-width: 700px">
                     @Html.Partial("_SensorDeviceDetail")
 
-                    <div class="card text-white bg-secondary mb-3" style="max-width: 300px;">
-                        <div class="card-header" style="padding-bottom:0">
-                            <p><b>Room infrared thermal imaging</b></p>
+                    <div class="col-lg-6 col-xl-6 offset-xl-0 ml-0 p-0 d-flex justify-content-between" style=" max-width: 620px" >
+                        <div class="card text-white bg-secondary mb-3" style="max-width: 300px;">
+                            <div class="card-header" style="padding-bottom:0">
+                                <p><b>Room infrared thermal imaging</b></p>
+                            </div>
+                            <img id="IRCAMimg" src="http://47.56.85.130:18888/simg?n=f348" />
                         </div>
-                        <!--<iframe id="ircam" class="myframe" name="myframe" src="http://47.56.85.130:18888/simg?n=f348" width="300px" height="300px"></iframe>-->
-                        <!--<div id="ircam"></div>-->
-                        <img id="IRCAMimg" src="http://47.56.85.130:18888/simg?n=f348" />
 
+                        @{
+                            PiCamUtil piCamUtil = new PiCamUtil();
+                            var piCamBase64_img = "";
+                            var camlist = devicesLists.Where(ls => ls.devicesId.Contains("CA")).ToList();
+                            foreach (var cam in camlist) {
+                                piCamBase64_img = piCamUtil.getCamBase64_img(cam.devicesId);
+                            }
+                        }
+
+                        <div class="card text-white bg-secondary mb-3" style="max-width: 300px; min-width: 300px">
+                            <div class="card-header" style="padding-bottom:0">
+                                <p><b>PI CAM</b></p>
+                            </div>
+                            <img id="PICAMimg" src="@piCamBase64_img.ToString()" />
+                        </div>
+
+
+
+                        <script>//each 1s to referash the IRCam sensor status
+                            
+                            var myVar = setInterval(function () {
+                                $("#IRCAMimg").attr("src", "http://47.56.85.130:18888/simg?n=f348" + "&x=" + new Date().getTime());
+                                console.log("IRCAMimg ");
+                            }, 1000);
+
+                        </script>
                     </div>
-
-                    <script>//each 1s to referash the sensor status
-                        var myVar = setInterval(function () {
-                            //$('#ircam').attr('src', $('#ircam').attr('src'));
-                            //$("#ircam").html('<img id="IRCAMimg" src="http://47.56.85.130:18888/simg?n=f348" />');
-
-                            //$("#IRCAMimg").attr("src", "");
-
-                            $("#IRCAMimg").attr("src", "http://47.56.85.130:18888/simg?n=f348" + "&x=" + new Date().getTime());
-                            console.log("IRCAMimg ");
-                        }, 1000);</script>
                 </div>
-
+ 
             </div>
-        </div>
     </div>
     <!--heatmap js-->
     <script>

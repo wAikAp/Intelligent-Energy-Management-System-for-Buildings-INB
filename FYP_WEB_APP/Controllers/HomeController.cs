@@ -48,13 +48,12 @@ namespace FYP_APP.Controllers
 
 			IntelligentControlDeviceUnit intelligentControlDeviceUnit = new IntelligentControlDeviceUnit();
 			intelligentControlDeviceUnit.mongoIndoor = mongoIndoor;
-			string checkTimeMin = "5 * * * *";
+			string checkTimeMin = "*/5 * * * *";
 			if (mongoIndoor != null) {
-				checkTimeMin = mongoIndoor.checkTimeMinutes + " * * * *";
+				checkTimeMin = "*/"+mongoIndoor.checkTimeMinutes + " * * * *";
 				Debug.WriteLine("checkTimeMin!!!!!!!!" + checkTimeMin);
             }
 			RecurringJob.AddOrUpdate(() => intelligentControlDeviceUnit.IntelligentControlDevice(), checkTimeMin.ToString());
-			//RecurringJob.AddOrUpdate(() => intelligentControlDeviceUnit.IntelligentControlDevice(), "5 * * * *");
             RecurringJob.AddOrUpdate(() => intelligentControlDeviceUnit.scheduledControl(), "* * * * *");
 
             //batch
@@ -63,14 +62,6 @@ namespace FYP_APP.Controllers
 
 
             DevicesPowerUseOutputUtil powerUseOutputUtil = new DevicesPowerUseOutputUtil();
-
-
-			//intelligentControlDeviceUnit.calGoodTemp("F348");
-
-
-			//ApparenTemperatureUtil apparenTemperatureUtil = new ApparenTemperatureUtil();
-			//apparenTemperatureUtil.setAcCurrentAndTurnON("F348", 33);
-
 
 			double TotalSavings = 0;
 			double TotalUsage = Math.Round(powerUseOutputUtil.getTotalPowerUse(), 2);
