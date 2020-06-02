@@ -414,10 +414,10 @@
             </div>
     </div>
     <!--heatmap js-->
-    <script>
+        <script>
             window.onload = function () {
 
-                function generateRandomData(len) {
+                function generateRandomData() {
                     var floorPlanImgW = document.getElementById('planImg').offsetWidth;
                     var floorPlanImgH = document.getElementById('planImg').offsetHeight;
 
@@ -436,45 +436,41 @@
                         int sensorsListCount = sensorsList.Count();
                         var sensorsListwhere = sensorsList.Where(s => s.sensorId.Contains("TS")).ToList();
                         foreach (var get in sensorsListwhere) {
-                            int x = 0;
-                            int y = 0;
-                            int addxy = 10;
-                            var setx = Convert.ToInt32(get.pos_x)-10;
-                            var sety = Convert.ToInt32(get.pos_y)-20;
-                            while (x < 6)
-                            {
-                                setx += 20;
+  
+                            var setx = Convert.ToInt32(get.pos_x)+30 ;
+                            int countX = 0;
 
-                                while (y < 5)
-                                {
-                                    sety += 20;
+                            var sety = Convert.ToInt32(get.pos_y)+30;
 
-                                    if (count == 0 && x == 0 && y == 0)
-                                    {
-                                        str += "[" + 50 + "," + sety + "," + Convert.ToInt32(get.current_Value) + "]";
-                                    }
-                                    else
-                                    {
-                                        str += ",[" + setx + "," + sety + "," + Convert.ToInt32(get.current_Value) + "]";
 
-                                    }
-                                    y++;
-                                }
-                                x++;
 
-                            }
-                            count += 1;
+
+
+                                 
+                                        if (count > 0 )
+                                        {
+                                            str += ",[" + setx + "," + sety + "," + (Convert.ToInt32(get.current_Value)) + "]";
+                                            System.Diagnostics.Debug.WriteLine("****" + setx + " , " + sety + " // " + setx + " , " + sety + " // " + get.current_Value);
+
+                                        }
+                                        else
+                                        {
+                                            System.Diagnostics.Debug.WriteLine("****=0==>" + setx + " , " + sety + " // " + setx + " , " + sety + " // " + get.current_Value);
+
+                                            str += "[" + setx + "," + sety + "," + (Convert.ToInt32(get.current_Value)) + "]";
+
+                                        }
+                                        count += 1;                            
 
                         }
                         str += "]";
                         }
-                        obj = JSON.parse('@Html.Raw(str)');
 
                         var TData = @Html.Raw(str);
 
                         for (let i = 0; i < TData.length; i++) {
-                        var val = TData[i][2];
-
+                            var val = TData[i][2];
+                           // console.log("**** " + i + " ****" + TData[i][2]);
                        // max = Math.max(max, val);
                        // min = Math.min(min, val);
                         var x = TData[i][0];
@@ -489,7 +485,7 @@
 
 
                     var data = { max: 40, min: 0, data: points };
-
+                    //console.log(data);
                     return data;
                 };
 
@@ -525,18 +521,19 @@
         }
       };
       /* legend code end */
-
+                //radius sensor distance
       var heatmapInstance = h337.create({
-                container: document.querySelector('.heatmap'),
+          container: document.querySelector('.heatmap'),
+          radius: 250,
         onExtremaChange: function (data) {
                 updateLegend(data);
         }
       });
 
       // generate 200 random datapoints
-      var data = generateRandomData(200);
-      heatmapInstance.setData(data);
-
+      var data = generateRandomData();
+                heatmapInstance.setData(data);
+           
       var demoWrapper = document.querySelector('.demo-wrapper');
       var tooltip = document.querySelector('.tooltips');
 
@@ -558,9 +555,8 @@
                 x: x,
           y: y
         });
-
-        tooltip.style.display = 'block';
-
+         // console.log("********"+value);
+          tooltip.style.display = 'block';
         updateTooltip(x, y, value);
       };
       demoWrapper.onmouseout = function () {
@@ -569,7 +565,7 @@
 
 
       document.querySelector('.trigger-refresh').onclick = function () {
-                heatmapInstance.setData(generateRandomData(200));
+                heatmapInstance.setData(generateRandomData());
       };
 
       document.querySelector('.thankyou').onclick = function () {
@@ -585,7 +581,7 @@
       }
 
 };
-    </script>
+        </script>
     <!--heatmap js-->
 
 </body>
