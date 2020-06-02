@@ -17,6 +17,8 @@ namespace FYP_APP.Controllers
 {
 	public class DevicesController : Controller
 	{
+		List<string> typeCheckedList = new List<string>() { "", "", "", "", "" };//last one is all checked
+
 		public List<DevicesListModel> MongoDevicesList = new List<DevicesListModel> { };
 		public IMongoCollection<DevicesListModel> Getconn()
 		{
@@ -157,7 +159,7 @@ namespace FYP_APP.Controllers
 			List<string> typeList = new List<string>();
 			//record the check box
 			string chkStr = "checked";
-			List<string> typeCheckedList = new List<string>() {"", "", "", "", "" };//last one is all checked
+			typeCheckedList = new List<string>() {"", "", "", "", "" };//last one is all checked
 
             if (Request.Query.Keys.Count() > 2) { 
 			    foreach (string key in Request.Query.Keys)
