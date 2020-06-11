@@ -1,0 +1,54 @@
+﻿@page
+@model ISSF2020.Pages.Schedule.BookingModel
+@{
+    ViewData["Title"] = "Booking";
+}
+
+
+
+<div class="user-form">
+    <form method="post">
+        <h3 class="display-4">Make booking</h3>
+        @if (ViewData["User"] != null)
+        {
+            <p class="hint-text">Schedule an event as <b>@ViewData["User"]</b></p>
+        }
+        else
+        {
+            <p class="hint-text">Schedule an event</p>
+        }
+        <div class="form-group">
+            <label for="dateField">Date</label>
+            <input id="dateField" type="date" class="form-control" name="date" placeholder="Date" required="required">
+        </div>
+        <div class="form-group">
+            <label for="timeField">Time</label>
+            <input id="timeField" type="time" class="form-control" name="time" placeholder="Time" required="required">
+        </div>
+        <div class="form-group">
+            <input type="number" class="form-control" name="duration" max="10080" placeholder="Duration (in minutes)" required="required">
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" name="eventname" placeholder="Event name" required="required">
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" name="eventtype" placeholder="Event type" required="required">
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" name="location" placeholder="Location" required="required">
+        </div>
+        <div class="form-group">
+            <label for="usageSelect">Select usage plan</label>
+            <select multiple class="form-control" id="usageSelect" name="usage">
+                <option value="smallclass">Small class</option>
+                <option value="largeclass">Large class</option>
+                <option value="meeting">Meeting</option>
+                <option value="party">Party</option>
+                <option value="forum">Forum</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-success btn-lg btn-block">Schedule event</button>
+        </div>
+    </form>
+</div>

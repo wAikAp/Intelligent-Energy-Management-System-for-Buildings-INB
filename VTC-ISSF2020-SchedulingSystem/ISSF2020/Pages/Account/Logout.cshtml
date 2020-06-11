@@ -1,0 +1,17 @@
+﻿@page
+@model ISSF2020.Pages.Account.LogoutModel
+@{
+    ViewData["Title"] = "Logout";
+}
+
+<div class="user-form">
+    <form method="post">
+        <h2>Logout</h2>
+        <p class="hint-text">Are you sure you want to log out?</p>
+        <div class="form-group">
+            <button type="submit" name="action" value="accept" class="btn btn-success btn-lg btn-block">Yes, log me out.</button>
+            <button type="submit" name="action" value="cancel" class="btn btn-danger btn-lg btn-block">No, stay signed in.</button>
+        </div>
+    </form>
+</div>
+

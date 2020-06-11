@@ -1,0 +1,44 @@
+﻿<Properties StartupConfiguration="{B46160FF-CD44-4631-AC03-C1EA59F2F1FB}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="ISSF2020/Services/RegionalWeatherService.cs">
+    <Files>
+      <File FileName="ISSF2020/Controllers/AccountController.cs" Line="1" Column="1" />
+      <File FileName="ISSF2020/Controllers/ScheduleController.cs" />
+      <File FileName="ISSF2020/Services/RegionalWeatherService.cs" Line="17" Column="1" />
+      <File FileName="ISSF2020/appsettings.json" />
+      <File FileName="ISSF2020/Startup.cs" />
+      <File FileName="ISSF2020/Program.cs" />
+      <File FileName="ISSF2020/Properties/launchSettings.json" />
+      <File FileName="ISSF2020/Models/RegionalWeatherDatabaseSettings.cs" />
+      <File FileName="ISSF2020/Models/RegionalWeatherModel.cs" />
+      <File FileName="ISSF2020/Models/UserDatabaseSettings.cs" />
+      <File FileName="ISSF2020/Models/UserModel.cs" />
+      <File FileName="ISSF2020/Models/ScheduleModel.cs" />
+      <File FileName="ISSF2020/Services/ScheduleService.cs" />
+      <File FileName="ISSF2020/Pages/Privacy.cshtml" />
+      <File FileName="ISSF2020/Pages/Index.cshtml" />
+      <File FileName="ISSF2020/Pages/_ViewStart.cshtml" />
+      <File FileName="ISSF2020/Pages/_ViewImports.cshtml" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="ISSF2020" expanded="True">
+            <Node name="ISSF2020" expanded="True">
+              <Node name="Controllers" expanded="True" />
+              <Node name="Services" expanded="True">
+                <Node name="RegionalWeatherService.cs" selected="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.ISSF2020 PreferredExecutionTarget="/Applications/Google Chrome.app" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

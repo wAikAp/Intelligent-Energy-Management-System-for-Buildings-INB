@@ -1,0 +1,25 @@
+﻿@page
+@model ISSF2020.Pages.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="user-form">
+    <form method="post">
+        <h2>Login</h2>
+        <p class="hint-text">Sign in your account</p>
+        <div class="form-group">
+            <input type="text" class="form-control" name="username" placeholder="Username" required="required">
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" name="password" placeholder="Password" required="required">
+        </div>
+        <div class="form-group">
+            <label class="checkbox-inline"><input type="checkbox"> Keep me logged in </label>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-success btn-lg btn-block">Sign-In</button>
+        </div>
+    </form>
+    <div class="text-center"> Don't have an account? <a href="/account/register">Create one</a></div>
+</div>

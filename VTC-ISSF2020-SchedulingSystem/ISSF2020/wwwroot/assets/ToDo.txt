@@ -1,0 +1,10 @@
+﻿User System:
+Implement ASP.NET Core Identity
+Hash passwords before saving to DB
+Add authentication and authorization
+User should be authorized to view "private" pages once they have been authenticated
+Cookies, session etc.
+
+User can then schedule a room through an online form, the form data is sent to the DB
+User can edit or cancel the scheduling of a room if the schedule has been created by them, or if their role permits it
+Users can see which rooms are already booked by another user, but they shouldn't be able to see the details if they are not allowed.

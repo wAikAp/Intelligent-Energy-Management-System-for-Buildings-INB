@@ -1,0 +1,108 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+
+        <!--if (ViewData["User"] != null)
+        {
+        <h3> Current user: ViewData["User"]</h3>
+        <a href="/account/logout">Logout</a>
+        }-->
+        <hr />
+
+        @if (ViewData["WeatherData"] != null)
+        {
+            var weatherData = (ISSF2020.Models.RegionalWeatherModel)ViewData["WeatherData"];
+
+            <div class="list-group-item list-group-item-action flex-column align-items-start mb-3">
+                <div class="d-flex w-100 justify-content-center mb-2">
+                    <h5 class="mb-1 text-info">Current Regional Weather</h5>
+                </div>
+
+                <p class="d-flex w-100 justify-content-around mb-1">
+
+                    <span><small class="text-muted">Temperature:</small> @weatherData.Temperature °C</span>
+
+                    <span><small class="text-muted">Humidity:</small> @weatherData.Humidity %</span>
+
+                    <span><small class="text-muted">Description:</small> @weatherData.Description</span>
+
+                </p>
+
+                <small class="text-info">
+                    <span class="text-muted">Last update:</span>
+                    @weatherData.LastUpdate
+                    <span class="text-muted">@weatherData.Location Time</span>
+                </small>
+
+            </div>
+        }
+
+        <br />
+        <hr />
+
+        <h3>Progress List</h3>
+        <div class="list-group">
+            <div class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">User Authentication and Authorization</h5>
+                    <small class="text-muted">1</small>
+                </div>
+
+                <h6 class="mb-1 mt-4 text-center">Done</h6>
+                <p class="mb-1">Simple registration and login system. Users can create an account and then log-in with the credentials.</p>
+                <p class="mb-1">Field validation for both forms; usernames checked with DB to be unique.</p>
+
+                <h6 class="mb-1 mt-4 text-center">To do</h6>
+                <p class="mb-1">
+                    Use <a href="https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity?view=aspnetcore-3.1&tabs=visual-studio">ASP.NET Core Identity</a>
+                    or other similar systems to properly develop this system.
+                </p>
+                <p class="mb-1">Password hashing and secure storage</p>
+                <p class="mb-1">Role based access control</p>
+
+                <small>Note: This system needs to be properly developed since, at the moment, logged in user is only saved as Session key.</small>
+            </div>
+            <div class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">Schedule system</h5>
+                    <small class="text-muted">2</small>
+                </div>
+
+                <h6 class="mb-1 mt-4 text-center">Done</h6>
+                <p class="mb-1">Can now schedule event. Bookings are saved in the DB.</p>
+                <p class="mb-1">List of bookings can be viewed in the Schedules page.</p>
+
+                <h6 class="mb-1 mt-4 text-center">To do</h6>
+                <p class="mb-1">Prevent overlaps by adding booking validation. </p>
+                <p class="mb-1">User management of own bookings (cancel, update, edit)</p>
+                <p class="mb-1">Add schedules access control once user system is more stable.</p>
+
+            </div>
+            <div class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">Other features</h5>
+                    <small class="text-muted">3</small>
+                </div>
+
+                <h6 class="mb-1 mt-4 text-center">Done</h6>
+                <p class="mb-1">Messages for user as action results through TempData.</p>
+                <p class="mb-1">Regular expression patterns as validation for some form fields.</p>
+                <p class="mb-1">Logout page and form to clear session data (cookie remains).</p>
+
+
+                <h6 class="mb-1 mt-4 text-center">To do</h6>
+                <p class="mb-1">Option to save schedule list as .CSV, ICS or Excel</p>
+                <p class="mb-1">Display schedule list through graphs/timetable etc. (and not just raw json)</p>
+                <p class="mb-1">Add sort-by and filters for the schedules viewing page</p>
+
+                <small class="text-muted"></small>
+            </div>
+        </div>
+        <hr />
+        <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    </div>

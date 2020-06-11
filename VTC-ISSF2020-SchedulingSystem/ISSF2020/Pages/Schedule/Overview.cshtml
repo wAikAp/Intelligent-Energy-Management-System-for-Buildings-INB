@@ -1,0 +1,37 @@
+﻿@page
+@model ISSF2020.Pages.Schedule.OverviewModel
+@{
+    ViewData["Title"] = "Overview";
+}
+
+<h1 class="display-4 text-center mb-5 mt-4">View bookings</h1>
+
+<div class="list-group">
+    @foreach (var item in ViewData["Schedules"] as IEnumerable<ISSF2020.Models.ScheduleModel>)
+    {
+    <div class="list-group-item list-group-item-action flex-column align-items-start mb-3">
+        <div class="d-flex w-100 justify-content-between mb-1">
+            <h5 class="mb-1 text-primary">@item.EventName</h5>
+            @if (item.User != null)
+            {
+                <small><small class="text-muted">Booked by</small> <b>@item.User</b></small>
+            }
+        </div>
+
+        <p class="mb-0">@item.Date @item.Time</p>
+        <p class="mb-1"><small class="text-muted">Duration:</small> @item.Duration min</p>
+        <p class="mb-1">
+
+            <small class="text-muted">Location:</small> @item.Location
+
+            <small class="text-muted">Plan:</small> @item.UsagePlan
+
+            <small class="text-muted">Type:</small> @item.EventType
+
+        </p>
+
+        <small class="text-info">@item.Id</small>
+
+    </div>
+    }
+</div>

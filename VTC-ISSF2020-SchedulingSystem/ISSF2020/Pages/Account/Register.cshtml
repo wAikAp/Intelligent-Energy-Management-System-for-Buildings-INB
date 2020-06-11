@@ -1,0 +1,36 @@
+﻿@page
+@model ISSF2020.Pages.RegisterModel
+@{
+    ViewData["Title"] = "User Registration";
+}
+
+<div class="user-form">
+    <form method="post"
+          oninput='confirm_password.setCustomValidity(confirm_password.value != password.value ? "Passwords do not match." : "")'>
+        <h2>Register</h2>
+        <p class="hint-text">Create your account</p>
+        <div class="form-group">
+            <input type="text" class="form-control" name="username" placeholder="Username" required="required"
+                   pattern="^(?=.{3,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$"
+                   oninvalid="setCustomValidity('Username must be between 3 and 20 characters (letters and numbers).')"
+                   oninput="setCustomValidity('')">
+        </div>
+        <div class="form-group">
+            <input type="email" class="form-control" name="email" placeholder="Email (optional)" maxlength="120">
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" name="password" placeholder="Password" required="required"
+                   minlength="6" maxlength="120">
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" name="confirm_password" placeholder="Confirm Password" required="required">
+        </div>
+        <div class="form-group">
+            <label class="checkbox-inline"><input type="checkbox" required="required"> I accept the <a href="/Privacy">Terms of Use</a> &amp; <a href="/Privacy">Privacy Policy</a></label>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-success btn-lg btn-block">Register Now</button>
+        </div>
+    </form>
+    <div class="text-center">Already have an account? <a href="/account/login">Sign in</a></div>
+</div>
