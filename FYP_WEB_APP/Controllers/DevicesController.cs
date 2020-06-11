@@ -17,6 +17,8 @@ namespace FYP_APP.Controllers
 {
 	public class DevicesController : Controller
 	{
+		List<string> typeCheckedList = new List<string>() { "", "", "", "", "" };//last one is all checked
+
 		public List<DevicesListModel> MongoDevicesList = new List<DevicesListModel> { };
 		public IMongoCollection<DevicesListModel> Getconn()
 		{
@@ -40,6 +42,7 @@ namespace FYP_APP.Controllers
 			else if (!Request.Query.ContainsKey("sortOrder") && Request.Query.Keys.Count() > 0)
 			{
 				SearchDevices();
+				ViewData["queryString"] ="&"+ Request.QueryString.ToString().Substring(1, Request.QueryString.ToString().Length-1);
 			}
 			else
 			{
@@ -156,7 +159,7 @@ namespace FYP_APP.Controllers
 			List<string> typeList = new List<string>();
 			//record the check box
 			string chkStr = "checked";
-			List<string> typeCheckedList = new List<string>() {"", "", "", "", "" };//last one is all checked
+			typeCheckedList = new List<string>() {"", "", "", "", "" };//last one is all checked
 
             if (Request.Query.Keys.Count() > 2) { 
 			    foreach (string key in Request.Query.Keys)
@@ -215,7 +218,108 @@ namespace FYP_APP.Controllers
 			//Debug.WriteLine("Find list = " + deivcelist.ToJson().ToString());
 			ViewData["RoomListModel"] = GetRoomData();
 		}
+		public List<DevicesListModel> GetSearchDevices()
+		{
 
+			ViewData["Title"] = "Search Devices";
+
+			var roomid = ""; //get room id if have
+			if (Request != null)
+			{
+				if (Request.Query.ContainsKey("roomId"))
+				{
+					if (Request.Query["roomId"] != string.Empty || Request.Query["roomId"] != "")
+					{
+						roomid = Request.Query["roomId"];
+					}
+				}
+
+				var dev_id = "";//get device id if have
+				if (Request.Query.ContainsKey("device_id"))
+				{
+					if (Request.Query["device_id"] != string.Empty || Request.Query["device_id"] != "")
+					{
+						dev_id = Request.Query["device_id"];
+					}
+				}
+
+				//get what type need to search if have
+				List<string> typeList = new List<string>();
+				//record the check box
+				string chkStr = "checked";
+				List<string> typeCheckedList = new List<string>() { "", "", "", "", "" };//last one is all checked
+
+				if (Request.Query.Keys.Count() > 2)
+				{
+					foreach (string key in Request.Query.Keys)
+					{
+						switch (key)
+						{
+							case "AC":
+								typeCheckedList[0] = chkStr;
+								typeList.Add(key);
+								break;
+							case "LT":
+								typeCheckedList[1] = chkStr;
+								typeList.Add(key);
+								break;
+							case "HD":
+								typeCheckedList[2] = chkStr;
+								typeList.Add(key);
+								break;
+							case "EF":
+								typeCheckedList[3] = chkStr;
+								typeList.Add(key);
+								break;
+							default:
+								break;
+						}
+					}
+				}
+
+
+				var deivcelist = GetAllDevices();
+				List<DevicesListModel> newSearchedlist = new List<DevicesListModel>();
+				if (!Request.Query.ContainsKey("All"))
+				{
+
+					//if not all type need check which type the user selected.
+					foreach (string dtype in typeList)
+					{
+						newSearchedlist.AddRange(deivcelist.Where(ls => ls.devicesId.Contains(dtype)).ToList());
+					}
+				}
+				else
+				{
+					typeCheckedList[4] = chkStr;
+					//if all type, then get all devices
+					newSearchedlist = deivcelist;
+				}
+
+				if (!roomid.Equals(" ") || roomid.Length > 0)
+				{
+					//search by room id
+					newSearchedlist = newSearchedlist.Where(ls => ls.roomId.Contains(roomid)).ToList();
+				}
+
+				if (!dev_id.Equals(" ") || dev_id.Length > 0)
+				{
+					//search by device id
+					newSearchedlist = newSearchedlist.Where(ls => ls.devicesId.Contains(dev_id)).ToList();
+				}
+				ViewData["searchedRoomId"] = roomid;
+				ViewData["searchedDeviceId"] = dev_id;
+				ViewData["typeCheckedList"] = typeCheckedList;
+				ViewData["MongoDevicesListModel"] = newSearchedlist;
+				//Debug.WriteLine("Find list = " + deivcelist.ToJson().ToString());
+				ViewData["RoomListModel"] = GetRoomData();
+				return newSearchedlist;
+			}
+			else {
+
+				return GetAllDevices();
+			}
+		}
 
 
 		[Route("Devices/AddDevices")]

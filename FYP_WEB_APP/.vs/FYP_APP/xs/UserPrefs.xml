@@ -1,17 +1,23 @@
 ﻿<Properties StartupConfiguration="{E72E6020-7406-4CA0-8D7D-C94AFF755D9F}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Views/RoomDetail/RoomDetail.cshtml">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Models/LogicModels/PiCamUtil.cs">
     <Files>
-      <File FileName="Views/RoomDetail/RoomDetail.cshtml" Line="577" Column="1" />
+      <File FileName="Views/RoomDetail/RoomDetail.cshtml" Line="390" Column="72" />
+      <File FileName="Models/LogicModels/PiCamUtil.cs" Line="19" Column="73" />
+      <File FileName="Controllers/RoomsController.cs" Line="166" Column="84" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="FYP_APP" expanded="True">
             <Node name="FYP_APP" expanded="True">
-              <Node name="Views" expanded="True">
-                <Node name="RoomDetail" expanded="True">
-                  <Node name="RoomDetail.cshtml" selected="True" />
+              <Node name="Controllers" expanded="True" />
+              <Node name="Models" expanded="True">
+                <Node name="LogicModels" expanded="True">
+                  <Node name="PiCamUtil.cs" selected="True" />
                 </Node>
+              </Node>
+              <Node name="Views" expanded="True">
+                <Node name="RoomDetail" expanded="True" />
               </Node>
             </Node>
           </Node>

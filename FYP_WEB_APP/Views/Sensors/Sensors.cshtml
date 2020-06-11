@@ -185,10 +185,22 @@
                         $(document).ready(function () {
                             var host = window.location.hostname ;
                             console.log(host);
-                            $("#sensorChartTS").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Temperature Sensor Log Record", chartType = "line" ,position ="top" , download = false , time = 1 , timeSpacing = 5 , type = "TS" , roomId=""}))", function () {});
-                            $("#sensorChartHS").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Humidity Sensor Log Record", chartType = "line" ,position ="top" , download = false, time = 1 , timeSpacing =5 , type = "HS", roomId="" }))", function () {});
-                            $("#sensorChartLS").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Luminosity Sensor Log Record", chartType = "line" ,position ="top" , download = false, time = 1 , timeSpacing = 5 , type = "LS", roomId="" }))", function () {});
 
+                            @if (typeCheckedList[0] != "") {
+                                <text>
+                                $("#sensorChartTS").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Temperature Sensor Log Record", chartType = "line" ,position ="top" , download = false , time = 1 , timeSpacing = 5 , type = "TS" , roomId=""}))@Html.Raw(ViewData["queryString"]) ", function () {});
+                                </text>
+                            }
+                            @if (typeCheckedList[1] != "") {
+                                <text>
+                             $("#sensorChartHS").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Humidity Sensor Log Record", chartType = "line" ,position ="top" , download = false, time = 1 , timeSpacing =5 , type = "HS", roomId="" }))@Html.Raw(ViewData["queryString"])", function () {});
+                               </text>
+                            }
+                            @if (typeCheckedList[2] != "") {
+                                <text>
+                            $("#sensorChartLS").load("@Html.Raw(Url.Action("chart", "chart", new { title = "Luminosity Sensor Log Record", chartType = "line" ,position ="top" , download = false, time = 1 , timeSpacing = 5 , type = "LS", roomId="" }))@Html.Raw(ViewData["queryString"])", function () { });
+                                                           </text>
+                            }
                 });
 
                     </script>
