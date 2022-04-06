@@ -107,7 +107,3 @@ C sharp Web App => source code
 >  Apparent Temperature Formual 
 >  Among them, AT is somatosensory temperature (° C), T is air temperature (° C), e is water pressure (hPa), V is wind speed (m / sec), and RH is relative humidity (%).
 <br>
-
-• When the indoor temperature >= 26.7C, the system will use the indoor temperature and humidity to calculate the heat index, and according to the heat index to control the AC to a suitable temperature.
-
-•Otherwise  when  <  26.7C, the system will use Apparent  temperature, and according to the Apparent  temperature to control the AC to a suitable temperature.
