@@ -23,11 +23,9 @@
 
 
 #### Intelligent Energy Management Web system 
-http://13.75.55.240/
 > Intelligent Energy Management Web system 
 
 #### Scheduling system
-http://13.75.55.240:8001/
 > Scheduling system
 <br>
 
